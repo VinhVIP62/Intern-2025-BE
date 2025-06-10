@@ -24,7 +24,13 @@
       "@infrastructure/*": ["src/infrastructure/*"],
       "@presentation/*": ["src/presentation/*"],
       "@shared/*": ["src/shared/*"],
-      "@config/*": ["src/config/*"]
+      "@config/*": ["src/config/*"],
+      "@modules/*": ["src/modules/*"],
+      "@core/*": ["src/shared/core/*"],
+      "@utils/*": ["src/shared/utils/*"],
+      "@constants/*": ["src/shared/constants/*"],
+      "@interfaces/*": ["src/shared/interfaces/*"],
+      "@decorators/*": ["src/shared/decorators/*"]
     }
   },
   "include": ["src/**/*"],
