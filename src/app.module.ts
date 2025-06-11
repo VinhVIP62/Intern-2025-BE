@@ -13,24 +13,24 @@ import { UserModule } from './modules/user/user.module';
 import loggerConfig from '@configs/logger.config';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({
-      expandVariables: true,
-      cache: true,
-      isGlobal: true,
-      load: [config],
-    }),
-    LoggerModule.forRootAsync({
-      useFactory: loggerConfig,
-    }),
-    AuthModule,
-    AdminModule,
-    EventModule,
-    NotificationModule,
-    PostModule,
-    UserModule,
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+	imports: [
+		ConfigModule.forRoot({
+			expandVariables: true,
+			cache: true,
+			isGlobal: true,
+			load: [config],
+		}),
+		LoggerModule.forRootAsync({
+			useFactory: loggerConfig,
+		}),
+		AuthModule,
+		AdminModule,
+		EventModule,
+		NotificationModule,
+		PostModule,
+		UserModule,
+	],
+	controllers: [AppController],
+	providers: [AppService],
 })
 export class AppModule {}
