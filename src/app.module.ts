@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
-import config from './configs/config';
+import config from '@configs/config';
 import { LoggerModule } from 'nestjs-pino';
-import loggerConfig from './configs/logger.config';
+import loggerConfig from '@configs/logger.config';
 
 @Module({
   imports: [

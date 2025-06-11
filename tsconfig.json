@@ -17,6 +17,13 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      "@configs/*": ["./src/configs/*"],
+      "@common/*": ["./src/common/*"],
+      "@languages/*": ["./src/languages/*"],
+      "@modules/*": ["./src/modules/*"],
+      "@shared/*": ["./src/shared/*"]
+    }
   }
 }
