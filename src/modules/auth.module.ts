@@ -1,12 +1,29 @@
-import { Module } from '@nestjs/common';
-import { UserModule } from './user.module';
-import { GroupModule } from './group.module';
-import { EventModule } from './event.module';
-import { PostModule } from './post.module';
-import { NotificationModule } from './notification.module';
-import { AchievementModule } from './achievement.module';
+import { Module, Global } from '@nestjs/common';
+import { JwtModule, JwtService } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { JwtStrategy } from '@infrastructure/auth/strategies/jwt.strategy';
+import { JwtAuthGuard } from '@infrastructure/auth/guards/jwt-auth.guard';
+import { RolesGuard } from '@infrastructure/auth/guards/roles.guard';
+import { TokenService } from '@application/services/auth/token.service';
+import { AuthService } from '@application/services/auth.service';
+import { AuthController } from '@presentation/controllers/auth.controller';
 
+@Global()
 @Module({
-  imports: [UserModule, GroupModule, EventModule, PostModule, NotificationModule, AchievementModule]
+  imports: [
+    PassportModule,
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        secret: configService.get<string>('jwt.secret') || 'secret',
+        signOptions: { expiresIn: configService.get<string>('jwt.accessTokenExpiration') || '15m' }, // Access token expires in 15 minutes
+      }),
+      inject: [ConfigService],
+    }),
+  ],
+  controllers: [AuthController],
+  providers: [JwtStrategy, JwtAuthGuard, RolesGuard, TokenService, AuthService, JwtService],
+  exports: [JwtModule, JwtAuthGuard, RolesGuard, TokenService, AuthService],
 })
 export class AuthModule {}

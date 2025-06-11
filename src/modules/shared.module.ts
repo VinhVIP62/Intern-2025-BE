@@ -4,7 +4,6 @@ import { LoggerModule } from '@infrastructure/logger/logger.module';
 import { UserService } from '@application/services/user.service';
 import { GroupService } from '@application/services/group.service';
 import { NotificationService } from '@application/services/notification.service';
-import { AuthService } from '@application/services/auth.service';
 import { EventService } from '@application/services/event.service';
 import { CommentService } from '@application/services/comment.service';
 import { PostService } from '@application/services/post.service';
@@ -17,7 +16,6 @@ import { AchievementService } from '@application/services/achievement.service';
     UserService,
     GroupService,
     NotificationService,
-    AuthService,
     EventService,
     CommentService,
     PostService,
@@ -29,7 +27,6 @@ import { AchievementService } from '@application/services/achievement.service';
     UserService,
     GroupService,
     NotificationService,
-    AuthService,
     EventService,
     CommentService,
     PostService,
