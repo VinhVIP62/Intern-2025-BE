@@ -14,7 +14,9 @@ import loggerConfig from './configs/logger.config';
       isGlobal: true,
       load: [config],
     }),
-    LoggerModule.forRootAsync(loggerConfig.asProvider()),
+    LoggerModule.forRootAsync({
+      useFactory: loggerConfig,
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,4 +1,7 @@
-import { registerAs } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { Params as PinoModuleOptions } from 'nestjs-pino';
+import { IEnvVars } from './config';
 
-export default registerAs('pino', (): PinoModuleOptions => ({}));
+export default (
+  configService: ConfigService<IEnvVars>,
+): PinoModuleOptions => ({});
