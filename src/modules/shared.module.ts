@@ -1,6 +1,7 @@
 import { Module, Global } from '@nestjs/common';
 import { ConfigModule } from '@infrastructure/config/config.module';
 import { LoggerModule } from '@infrastructure/logger/logger.module';
+import { DatabaseModule } from '@src/modules/database.module';
 import { UserService } from '@application/services/user.service';
 import { GroupService } from '@application/services/group.service';
 import { NotificationService } from '@application/services/notification.service';
@@ -11,7 +12,7 @@ import { AchievementService } from '@application/services/achievement.service';
 
 @Global()
 @Module({
-  imports: [ConfigModule, LoggerModule],
+  imports: [ConfigModule, LoggerModule, DatabaseModule],
   providers: [
     UserService,
     GroupService,
@@ -24,6 +25,7 @@ import { AchievementService } from '@application/services/achievement.service';
   exports: [
     ConfigModule,
     LoggerModule,
+    DatabaseModule,
     UserService,
     GroupService,
     NotificationService,
