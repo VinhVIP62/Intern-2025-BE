@@ -6,6 +6,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { VersioningType } from '@nestjs/common';
 import { WinstonLogger } from './common/logger/winston.logger';
 import { GlobalExceptionFilter } from '@common/filters/all-exceptions.filters';
+import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
 
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -22,7 +23,15 @@ async function bootstrap() {
 		defaultVersion: '1',
 		type: VersioningType.URI,
 	});
+
 	app.useGlobalFilters(new GlobalExceptionFilter());
+
+	app.useGlobalPipes(new ValidationPipe({
+		whitelist: true,
+		forbidNonWhitelisted: true,
+		transform: true,
+  	}));
+
 	await app.listen(configService.get('port', { infer: true })!);
 }
 
