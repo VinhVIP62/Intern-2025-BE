@@ -5,6 +5,7 @@ import { Public } from '@common/decorators/public.decorator';
 import { Roles } from '@common/decorators/roles.decorator';
 import { RolesGuard } from '@common/guards/roles.guard';
 import { Role } from '@common/enum/roles.enum';
+import { I18n, I18nContext } from 'nestjs-i18n';
 
 @Controller('auth')
 export class AuthController {
@@ -51,8 +52,10 @@ export class AuthController {
 	@Roles(Role.ADMIN)
 	@Version('1')
 	@Get('admin-only')
-	adminOnlyRoute() {
-		return { message: 'This route is only accessible to admins' };
+	adminOnlyRoute(@I18n() i18n: I18nContext) {
+		return i18n.t('common.ROUTE_WARN', {
+			args: { role: Role.ADMIN },
+		});
 	}
 
 	@UseGuards(JwtAuthGuard, RolesGuard)

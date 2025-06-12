@@ -12,6 +12,10 @@ import {
 	PostModule,
 	UserModule,
 } from './modules';
+import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
+import path from 'path';
+import { APP_FILTER } from '@nestjs/core';
+import { GlobalExceptionFilter } from '@common/filters/all-exceptions.filters';
 
 @Module({
 	imports: [
@@ -25,6 +29,14 @@ import {
 			inject: [ConfigService],
 			useFactory: mongooseConfig,
 		}),
+		I18nModule.forRoot({
+			fallbackLanguage: 'en',
+			loaderOptions: {
+				path: path.join(__dirname, '/i18n/'),
+				watch: true,
+			},
+			resolvers: [{ use: QueryResolver, options: ['lang'] }, AcceptLanguageResolver],
+		}),
 		AuthModule,
 		AdminModule,
 		EventModule,
@@ -32,6 +44,12 @@ import {
 		PostModule,
 		UserModule,
 	],
-	providers: [AppService],
+	providers: [
+		AppService,
+		{
+			provide: APP_FILTER,
+			useClass: GlobalExceptionFilter, // Let NestJS inject I18nService
+		},
+	],
 })
 export class AppModule {}

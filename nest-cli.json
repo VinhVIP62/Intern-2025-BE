@@ -10,6 +10,7 @@
 			}
 		},
 		"typeCheck": true,
-		"tsConfigPath": "tsconfig.json"
+		"tsConfigPath": "tsconfig.json",
+		"assets": [{ "include": "i18n/**/*", "watchAssets": true }]
 	}
 }
