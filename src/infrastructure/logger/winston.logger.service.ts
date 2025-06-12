@@ -2,7 +2,7 @@ import { Injectable, LoggerService } from '@nestjs/common';
 import { createLogger, format, transports, Logger } from 'winston';
 import { ILogger } from '../../domain/interfaces/logger.interface';
 import * as path from 'path';
-import { LOG_PREFIXES, LOG_LEVELS } from '../../shared/constants/logger.constants';
+import { LOG_PREFIXES, LOG_LEVELS } from './logger.constants';
 
 @Injectable()
 export class WinstonLoggerService implements LoggerService, ILogger {
@@ -11,7 +11,7 @@ export class WinstonLoggerService implements LoggerService, ILogger {
   constructor() {
     // Định nghĩa đường dẫn logs
     const logsDir = path.join(process.cwd(), 'src', 'infrastructure', 'logs');
-    
+
     this.logger = createLogger({
       level: LOG_LEVELS.INFO,
       format: format.combine(
@@ -69,4 +69,4 @@ export class WinstonLoggerService implements LoggerService, ILogger {
   verbose(message: string, context?: string) {
     this.logger.verbose(this.formatMessage(LOG_PREFIXES.VERBOSE, message, context));
   }
-} 
+}

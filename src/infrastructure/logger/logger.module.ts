@@ -1,7 +1,7 @@
 import { Global, Module } from '@nestjs/common';
 import { WinstonLoggerService } from './winston.logger.service';
 import { ILogger } from '../../domain/interfaces/logger.interface';
-import { LOGGER_TOKEN } from 'src/shared/constants/logger.constants';
+import { LOGGER_TOKEN } from '@src/infrastructure/logger/logger.constants';
 
 @Global()
 @Module({
@@ -13,4 +13,4 @@ import { LOGGER_TOKEN } from 'src/shared/constants/logger.constants';
   ],
   exports: [LOGGER_TOKEN],
 })
-export class LoggerModule {} 
+export class LoggerModule {}
