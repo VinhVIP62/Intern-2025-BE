@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { mongooseConfig } from './configs/database.config';
 import config from '@configs/config';
@@ -22,6 +22,7 @@ import {
 			load: [config],
 		}),
 		MongooseModule.forRootAsync({
+			inject: [ConfigService],
 			useFactory: mongooseConfig,
 		}),
 		AuthModule,
