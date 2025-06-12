@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './configs/configuration';
+import { RouteModule } from '@router/router.module';
 
 @Module({
   imports: [
@@ -8,7 +9,10 @@ import configuration from './configs/configuration';
       load: [configuration],
       isGlobal: true,
       envFilePath: '.env',
+      cache: true,
+      expandVariables: true,
     }),
+    RouteModule,
   ],
 })
 export class AppModule {}
