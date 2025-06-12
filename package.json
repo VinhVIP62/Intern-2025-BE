@@ -8,7 +8,7 @@
 	"scripts": {
 		"build": "nest build --builder swc",
 		"format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-		"start": "node ./dist/main",
+		"start": "nest start",
 		"start:dev": "nest start --watch --builder swc",
 		"start:debug": "nest start --debug --watch --builder swc",
 		"start:prod": "node dist/main",
@@ -17,11 +17,10 @@
 		"test:watch": "jest --watch",
 		"test:cov": "jest --coverage",
 		"test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-		"test:e2e": "jest --config ./test/jest-e2e.json",
-		"prepare": "husky"
+		"test:e2e": "jest --config ./test/jest-e2e.json"
 	},
 	"dependencies": {
-		"@nestjs/common": "^11.0.1",
+		"@nestjs/common": "^11.1.3",
 		"@nestjs/config": "^4.0.2",
 		"@nestjs/core": "^11.0.1",
 		"@nestjs/platform-express": "^11.0.1",
@@ -38,12 +37,11 @@
 		"@nestjs/schematics": "^11.0.0",
 		"@nestjs/testing": "^11.0.1",
 		"@swc/cli": "^0.6.0",
-		"@swc/core": "^1.12.0",
+		"@swc/core": "^1.10.7",
 		"@types/express": "^5.0.0",
 		"@types/jest": "^29.5.14",
 		"@types/node": "^22.10.7",
 		"@types/supertest": "^6.0.2",
-		"dotenv": "^16.5.0",
 		"eslint": "^9.18.0",
 		"eslint-config-prettier": "^10.0.1",
 		"eslint-plugin-prettier": "^5.2.2",
