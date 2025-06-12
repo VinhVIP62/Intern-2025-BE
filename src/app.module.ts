@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+import { mongooseConfig } from './configs/database.config';
 import config from '@configs/config';
 import {
 	AuthModule,
@@ -19,6 +21,10 @@ import {
 			isGlobal: true,
 			load: [config],
 		}),
+		MongooseModule.forRootAsync({
+			useFactory: mongooseConfig,
+		}),
+
 		AuthModule,
 		AdminModule,
 		EventModule,
