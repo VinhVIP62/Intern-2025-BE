@@ -5,6 +5,7 @@ import { IEnvVars } from '@configs/config';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { VersioningType } from '@nestjs/common';
 import { WinstonLogger } from './common/logger/winston.logger';
+import { GlobalExceptionFilter } from '@common/filters/all-exceptions.filters';
 
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -21,7 +22,7 @@ async function bootstrap() {
 		defaultVersion: '1',
 		type: VersioningType.URI,
 	});
-
+	app.useGlobalFilters(new GlobalExceptionFilter());
 	await app.listen(configService.get('port', { infer: true })!);
 }
 
