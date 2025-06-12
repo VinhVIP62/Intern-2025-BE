@@ -13,7 +13,7 @@ export class UserRepositoryImpl implements IUserRepository {
 		return new this.userModel(data).save();
 	}
 
-	async update(id: string, data: Partial<User>): Promise<User> {
+	async update(id: string, data: Partial<User>): Promise<User | null> {
 		return this.userModel.findByIdAndUpdate(id, data).exec();
 	}
 }
