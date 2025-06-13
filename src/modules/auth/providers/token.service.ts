@@ -1,61 +1,40 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
 import { UserService } from '@modules/user/providers/user.service';
-import * as crypto from 'crypto';
+import { Payload, Tokens } from '../types';
 
 @Injectable()
 export class TokenService {
 	constructor(
-		private jwtService: JwtService,
-		private configService: ConfigService,
-		private userService: UserService,
+		@Inject('JWT_ACCESS_TOKEN') private readonly AccessTokenService: JwtService,
+		@Inject('JWT_REFRESH_TOKEN') private readonly RefreshTokenService: JwtService,
+		private readonly userService: UserService,
 	) {}
 
-	async generateTokens(userId: string, email: string, roles: string[]) {
+	async generateTokens(payload: Payload, genRefresh: boolean = false): Promise<Tokens> {
+		// Only generate refresh token if genRefresh is true
 		const [accessToken, refreshToken] = await Promise.all([
-			this.generateAccessToken(userId, email, roles),
-			this.generateRefreshToken(userId),
+			this.generateAccessToken(payload),
+			genRefresh ? this.generateRefreshToken(payload) : undefined,
 		]);
 
 		return {
 			accessToken,
-			refreshToken,
+			...(genRefresh && { refreshToken }),
 		};
 	}
 
-	private async generateAccessToken(userId: string, email: string, roles: string[]) {
-		const payload = {
-			sub: userId,
-			email,
-			roles,
-		};
-
-		return this.jwtService.signAsync(payload, {
-			secret: this.configService.get<string>('jwt.secret'),
-			expiresIn: this.configService.get<string>('jwt.accessTokenExpiration'),
-		});
+	private async generateAccessToken(payload: Payload) {
+		return this.AccessTokenService.signAsync(payload);
 	}
 
-	private async generateRefreshToken(userId: string) {
-		const token = crypto.randomBytes(40).toString('hex');
-		await this.userService.updateRefreshToken(userId, token);
+	private async generateRefreshToken(payload: Payload) {
+		const token = await this.RefreshTokenService.signAsync(payload);
 		return token;
 	}
 
-	async validateRefreshToken(token: string): Promise<boolean> {
-		const user = await this.userService.findByRefreshToken(token);
-		return !!user;
-	}
-
-	async revokeRefreshToken(token: string): Promise<void> {
-		const user = await this.userService.findByRefreshToken(token);
-		if (user) {
-			await this.userService.updateRefreshToken(user._id, '');
-		}
-	}
-
-	async revokeAllUserTokens(userId: string): Promise<void> {
-		await this.userService.updateRefreshToken(userId, '');
+	async validateRefreshToken(token: string): Promise<Payload> {
+		const payload = await this.RefreshTokenService.verifyAsync<Payload>(token);
+		return payload;
 	}
 }

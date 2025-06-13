@@ -5,7 +5,8 @@ interface DbVars {
 }
 
 interface JwtVars {
-	secret: string;
+	accessSecret: string;
+	refreshSecret: string;
 	accessTokenExpiration: string | number;
 	refreshTokenExpiration: string | number;
 }
@@ -25,7 +26,8 @@ const envFileSchema = Joi.object<IEnvVars, true>({
 		uri: Joi.string().uri().required(),
 	}).required(),
 	jwt: Joi.object<JwtVars, true>({
-		secret: Joi.string().required(),
+		accessSecret: Joi.string().required(),
+		refreshSecret: Joi.string().required(),
 		accessTokenExpiration: Joi.alternatives(Joi.number(), Joi.string()).default('15m'),
 		refreshTokenExpiration: Joi.alternatives(Joi.number(), Joi.string()).default('7d'),
 	}).required(),
@@ -39,7 +41,8 @@ const loadEnv = () => ({
 		uri: process.env.DATABASE_URI,
 	},
 	jwt: {
-		secret: process.env.JWT_SECRET,
+		accessSecret: process.env.JWT_SECRET,
+		refreshSecret: process.env.JWT_REFRESH_SECRET,
 		accessTokenExpiration: process.env.JWT_ACCESS_TOKEN_EXPIRATION,
 		refreshTokenExpiration: process.env.JWT_REFRESH_TOKEN_EXPIRATION,
 	},

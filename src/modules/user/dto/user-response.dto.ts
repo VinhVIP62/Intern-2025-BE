@@ -1,19 +1,21 @@
-/* eslint-disable prettier/prettier */
 import { Exclude, Expose } from 'class-transformer';
 
 export class ResponseUserDto {
-    @Expose()
-    id: string;
+	@Expose()
+	_id: string;
 
-    @Expose()
-    username: string;
+	@Expose()
+	username: string;
 
-    @Exclude()
-    password: string;
+	@Exclude()
+	password: string;
 
-    @Expose()
-    createdAt?: Date;
+	@Expose()
+	roles: string[];
 
-    @Expose()
-    updatedAt?: Date;
+	@Expose()
+	createdAt?: Date;
+
+	@Expose()
+	updatedAt?: Date;
 }

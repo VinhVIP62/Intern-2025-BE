@@ -2,8 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { mongooseConfig } from './configs/database.config';
-import config from '@configs/config';
+import { DatabaseConfig, Config } from '@configs';
 import {
 	AuthModule,
 	AdminModule,
@@ -14,8 +13,9 @@ import {
 } from './modules';
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 import path from 'path';
-import { APP_FILTER } from '@nestjs/core';
-import { GlobalExceptionFilter } from '@common/filters/all-exceptions.filters';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { GlobalExceptionFilter, CustomExceptionFilter, HttpExceptionFilter } from '@common/filters';
+import { JwtAuthGuard } from '@common/guards';
 
 @Module({
 	imports: [
@@ -23,11 +23,11 @@ import { GlobalExceptionFilter } from '@common/filters/all-exceptions.filters';
 			expandVariables: true,
 			cache: true,
 			isGlobal: true,
-			load: [config],
+			load: [Config],
 		}),
 		MongooseModule.forRootAsync({
 			inject: [ConfigService],
-			useFactory: mongooseConfig,
+			useFactory: DatabaseConfig,
 		}),
 		I18nModule.forRoot({
 			fallbackLanguage: 'en',
@@ -48,7 +48,19 @@ import { GlobalExceptionFilter } from '@common/filters/all-exceptions.filters';
 		AppService,
 		{
 			provide: APP_FILTER,
-			useClass: GlobalExceptionFilter, // Let NestJS inject I18nService
+			useClass: GlobalExceptionFilter,
+		},
+		{
+			provide: APP_FILTER,
+			useClass: CustomExceptionFilter,
+		},
+		{
+			provide: APP_FILTER,
+			useClass: HttpExceptionFilter,
+		},
+		{
+			provide: APP_GUARD,
+			useClass: JwtAuthGuard,
 		},
 	],
 })
