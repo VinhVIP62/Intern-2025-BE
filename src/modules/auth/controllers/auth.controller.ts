@@ -1,76 +1,46 @@
-import { Controller, Post, Body, UseGuards, Get, Version } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Version, Req } from '@nestjs/common';
 import { AuthService } from '../providers/auth.service';
-import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
-import { Public } from '@common/decorators/public.decorator';
-import { Roles } from '@common/decorators/roles.decorator';
-import { RolesGuard } from '@common/guards/roles.guard';
-import { Role } from '@common/enum/roles.enum';
-import { I18n, I18nContext } from 'nestjs-i18n';
+import { Public } from '@common/decorators';
+import { LoginDto, RegisterDto, ResponseAuthDto } from '../dto';
+import { ResponseEntity } from '@common/types';
+import { JwtRefreshAuthGuard } from '@common/guards';
+import { Request } from 'express';
 
+@Public()
 @Controller('auth')
 export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 
-	@Public()
 	@Version('1')
 	@Post('login')
-	async login(@Body() body: { email: string; password: string }) {
-		return this.authService.login(body.email, body.password);
+	async login(@Body() body: LoginDto): Promise<ResponseEntity<ResponseAuthDto>> {
+		const tokens = await this.authService.login(body.username, body.password);
+		return {
+			success: true,
+			data: tokens,
+		};
 	}
 
-	@Public()
 	@Version('1')
 	@Post('register')
 	async register(
 		@Body()
-		userData: {
-			email: string;
-			password: string;
-			firstName: string;
-			lastName: string;
-		},
-	) {
-		return this.authService.register(userData);
+		body: RegisterDto,
+	): Promise<ResponseEntity<ResponseAuthDto>> {
+		const tokens = await this.authService.register(body.username, body.password);
+		return {
+			success: true,
+			data: tokens,
+		};
 	}
 
-	@Public()
 	@Version('1')
 	@Post('refresh')
-	async refreshToken(@Body() body: { refreshToken: string }) {
-		return this.authService.refreshToken(body.refreshToken);
-	}
-
-	@UseGuards(JwtAuthGuard)
-	@Version('1')
-	@Post('logout')
-	async logout(@Body() body: { refreshToken: string }) {
-		return this.authService.logout(body.refreshToken);
-	}
-
-	// New protected routes to test RBAC
-	@UseGuards(JwtAuthGuard, RolesGuard)
-	@Roles(Role.ADMIN)
-	@Version('1')
-	@Get('admin-only')
-	adminOnlyRoute(@I18n() i18n: I18nContext) {
-		return i18n.t('common.ROUTE_WARN', {
-			args: { role: Role.ADMIN },
+	@UseGuards(JwtRefreshAuthGuard)
+	async refreshToken(@Req() req: Request) {
+		const tokens = await this.authService.refreshToken({
+			sub: req.user as { id: string; roles: string[] },
 		});
-	}
-
-	@UseGuards(JwtAuthGuard, RolesGuard)
-	@Roles(Role.MODERATOR, Role.ADMIN)
-	@Version('1')
-	@Get('moderator-and-admin')
-	moderatorAndAdminRoute() {
-		return { message: 'This route is accessible to moderators and admins' };
-	}
-
-	@UseGuards(JwtAuthGuard, RolesGuard)
-	@Roles(Role.USER, Role.MODERATOR, Role.ADMIN)
-	@Version('1')
-	@Get('all-users')
-	allUsersRoute() {
-		return { message: 'This route is accessible to all authenticated users' };
+		return { success: true, data: tokens };
 	}
 }

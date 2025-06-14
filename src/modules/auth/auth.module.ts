@@ -1,39 +1,46 @@
 import { Module, Global } from '@nestjs/common';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
 import { RolesGuard } from '@common/guards/roles.guard';
 import { TokenService } from '@modules/auth/providers/token.service';
 import { AuthService } from './providers/auth.service';
 import { AuthController } from './controllers/auth.controller';
-import jwtConfig from '@configs/jwt.config';
 import { UserModule } from '@modules/user/user.module';
-import { UserService } from '@modules/user/providers/user.service';
+import { IEnvVars } from '@configs/config';
+import { JwtAccessConfig, JwtRefreshConfig } from '@configs/index';
+import { JwtRefreshStrategy } from './strategies/jwt-refresh-strategy';
 
 @Global()
 @Module({
-	imports: [
-		PassportModule,
-		JwtModule.registerAsync({
-			imports: [ConfigModule],
-			useFactory: jwtConfig,
-			inject: [ConfigService],
-		}),
-		UserModule,
-	],
+	imports: [PassportModule, UserModule],
 	controllers: [AuthController],
 	providers: [
 		JwtStrategy,
+		JwtRefreshStrategy,
 		JwtAuthGuard,
 		RolesGuard,
 		TokenService,
 		AuthService,
-		JwtService,
-		TokenService,
-		UserService,
+		{
+			inject: [ConfigService],
+			provide: 'JWT_ACCESS_TOKEN',
+			useFactory: (configService: ConfigService<IEnvVars>) => {
+				const config = JwtAccessConfig(configService);
+				return new JwtService(config);
+			},
+		},
+		{
+			inject: [ConfigService],
+			provide: 'JWT_REFRESH_TOKEN',
+			useFactory: (configService: ConfigService<IEnvVars>) => {
+				const config = JwtRefreshConfig(configService);
+				return new JwtService(config);
+			},
+		},
 	],
-	exports: [JwtModule, JwtAuthGuard, RolesGuard, TokenService, AuthService],
+	exports: [JwtAuthGuard, RolesGuard, TokenService, AuthService],
 })
 export class AuthModule {}

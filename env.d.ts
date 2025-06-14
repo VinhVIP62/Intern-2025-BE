@@ -7,6 +7,8 @@ declare namespace NodeJS {
 		readonly NODE_ENV: 'development' | 'production' | 'test';
 		readonly PORT: number;
 		readonly DATABASE_URI: string;
+		readonly JWT_SECRET: string;
+		readonly JWT_REFRESH_SECRET: string;
 		readonly JWT_ACCESS_TOKEN_EXPIRATION: string | number;
 		readonly JWT_REFRESH_TOKEN_EXPIRATION: string | number;
 	}

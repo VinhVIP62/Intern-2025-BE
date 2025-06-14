@@ -1,4 +1,5 @@
-import { ExceptionFilter, Catch, ArgumentsHost, HttpException, HttpStatus } from '@nestjs/common';
+import { ResponseEntity } from '@common/types';
+import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { I18nService } from 'nestjs-i18n';
 
@@ -8,29 +9,34 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
 	catch(exception: unknown, host: ArgumentsHost) {
 		const ctx = host.switchToHttp();
-		const response = ctx.getResponse<Response>();
-		const request = ctx.getRequest<Request>();
+		const res = ctx.getResponse<Response>();
+		const req = ctx.getRequest<Request>();
 
-		const status =
-			exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+		const resolved = this.resolve(exception, req);
+		return res.status(resolved.status).json({
+			...resolved.response,
+		});
+	}
 
-		const rawMessage =
-			exception instanceof HttpException ? exception.getResponse() : 'Internal server error';
-
-		const message =
-			typeof rawMessage === 'object' && 'message' in rawMessage ? rawMessage.message : rawMessage;
-
+	private resolve(
+		exception: unknown,
+		req: Request,
+	): {
+		status: HttpStatus;
+		response: ResponseEntity<null>;
+	} {
 		const translatedMessage = this.i18n.translate('common.ERROR_MESSAGE', {
-			lang: request.headers['accept-language'] || 'en',
-			args: { message: String(message) },
+			lang: req.headers['accept-language'] || 'en',
+			args: { message: String(exception) },
 		});
 
-		// Response format thống nhất
-		response.status(status).json({
-			statusCode: status,
-			timestamp: new Date().toISOString(),
-			path: request.url,
-			message: translatedMessage,
-		});
+		return {
+			status: HttpStatus.INTERNAL_SERVER_ERROR,
+			response: {
+				success: false,
+				error: translatedMessage,
+				data: null,
+			},
+		};
 	}
 }
