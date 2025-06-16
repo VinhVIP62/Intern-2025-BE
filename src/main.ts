@@ -6,6 +6,8 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { VersioningType } from '@nestjs/common';
 import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
 import { AppLoggerService } from '@common/logger/logger.service';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as fs from 'fs';
 
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -32,6 +34,18 @@ async function bootstrap() {
 			transform: true,
 		}),
 	);
+
+	const swaggerConfig = new DocumentBuilder()
+		.setTitle('API Documentation')
+		.setDescription('Swagger docs for the project')
+		.setVersion('1.0')
+		.addBearerAuth()
+		.build();
+
+	const document = SwaggerModule.createDocument(app, swaggerConfig);
+	SwaggerModule.setup('api-docs', app, document);
+
+	fs.writeFileSync('./openapi.json', JSON.stringify(document, null, 2));
 
 	await app.listen(configService.get('port', { infer: true })!);
 }
