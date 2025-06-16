@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 import { IEnvVars } from '@configs/config';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { VersioningType } from '@nestjs/common';
+import { VersioningType, ValidationPipe } from '@nestjs/common';
 import { WinstonLogger } from './common/logger/winston.logger';
 
 async function bootstrap() {
@@ -14,13 +14,19 @@ async function bootstrap() {
 
 	const configService = app.get(ConfigService<IEnvVars>);
 
-	// /api/v1
-
+	app.useGlobalPipes(
+		new ValidationPipe({
+			whitelist: true,
+			forbidNonWhitelisted: true,
+			transform: true,
+		}),
+	);
 	app.setGlobalPrefix('api');
 	app.enableVersioning({
 		defaultVersion: '1',
 		type: VersioningType.URI,
 	});
+	// /api/v1
 
 	await app.listen(configService.get('port', { infer: true })!);
 }
