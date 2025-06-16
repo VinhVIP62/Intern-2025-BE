@@ -1,16 +1,9 @@
 import { Module } from '@nestjs/common';
-import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DatabaseConfig, Config } from '@configs';
-import {
-	AuthModule,
-	AdminModule,
-	EventModule,
-	NotificationModule,
-	PostModule,
-	UserModule,
-} from './modules';
+import { LoggerModule } from '@common/logger/logger.module';
+import { RouteModule } from '@router/router.module';
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 import path from 'path';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
@@ -37,15 +30,10 @@ import { JwtAuthGuard } from '@common/guards';
 			},
 			resolvers: [{ use: QueryResolver, options: ['lang'] }, AcceptLanguageResolver],
 		}),
-		AuthModule,
-		AdminModule,
-		EventModule,
-		NotificationModule,
-		PostModule,
-		UserModule,
+		LoggerModule,
+		RouteModule,
 	],
 	providers: [
-		AppService,
 		{
 			provide: APP_FILTER,
 			useClass: GlobalExceptionFilter,

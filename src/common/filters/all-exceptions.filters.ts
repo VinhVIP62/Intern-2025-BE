@@ -1,3 +1,4 @@
+import { AppLoggerService } from '@common/logger/logger.service';
 import { ResponseEntity } from '@common/types';
 import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus } from '@nestjs/common';
 import { Request, Response } from 'express';
@@ -5,7 +6,10 @@ import { I18nService } from 'nestjs-i18n';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
-	constructor(private readonly i18n: I18nService) {}
+	constructor(
+		private readonly i18n: I18nService,
+		private readonly logger: AppLoggerService,
+	) {}
 
 	catch(exception: unknown, host: ArgumentsHost) {
 		const ctx = host.switchToHttp();
@@ -13,6 +17,12 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 		const req = ctx.getRequest<Request>();
 
 		const resolved = this.resolve(exception, req);
+
+		this.logger.error(
+			`Exception Caught - ${req.method} ${req.url}`,
+			exception instanceof Error ? exception.stack : String(exception),
+		);
+
 		return res.status(resolved.status).json({
 			...resolved.response,
 		});
