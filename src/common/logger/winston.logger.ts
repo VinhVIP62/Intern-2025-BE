@@ -10,7 +10,7 @@ export const winstonLogger = winston.createLogger({
 			level: process.env.LOG_LEVEL || 'info',
 			format: winston.format.combine(
 				winston.format.timestamp(),
-				utilities.format.nestLike('MyApp', {
+				utilities.format.nestLike('SPORT-HUB', {
 					colors: true,
 					prettyPrint: true,
 				}),
@@ -22,7 +22,7 @@ export const winstonLogger = winston.createLogger({
 			level: process.env.LOG_LEVEL || 'info',
 			format: winston.format.combine(
 				winston.format.timestamp(),
-				utilities.format.nestLike('MyApp', {
+				utilities.format.nestLike('SPORT-HUB', {
 					colors: false,
 					prettyPrint: false,
 				}),
