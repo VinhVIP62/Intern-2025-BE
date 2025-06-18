@@ -11,5 +11,7 @@ declare namespace NodeJS {
 		readonly JWT_REFRESH_SECRET: string;
 		readonly JWT_ACCESS_TOKEN_EXPIRATION: string | number;
 		readonly JWT_REFRESH_TOKEN_EXPIRATION: string | number;
+		readonly THROTTLE_TTL: number;
+		readonly THROTTLE_LIMIT: number;
 	}
 }
