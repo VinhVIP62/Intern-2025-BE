@@ -9,6 +9,7 @@ import path from 'path';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { GlobalExceptionFilter, CustomExceptionFilter, HttpExceptionFilter } from '@common/filters';
 import { JwtAuthGuard } from '@common/guards';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
 	imports: [
@@ -32,6 +33,15 @@ import { JwtAuthGuard } from '@common/guards';
 		}),
 		LoggerModule,
 		RouteModule,
+		ThrottlerModule.forRoot({
+			throttlers: [
+				{
+					ttl: 60000,
+					limit: 60,
+				},
+			],
+			errorMessage: 'Rate limit reached',
+		}),
 	],
 	providers: [
 		{
@@ -49,6 +59,10 @@ import { JwtAuthGuard } from '@common/guards';
 		{
 			provide: APP_GUARD,
 			useClass: JwtAuthGuard,
+		},
+		{
+			provide: APP_GUARD,
+			useClass: ThrottlerGuard,
 		},
 	],
 })

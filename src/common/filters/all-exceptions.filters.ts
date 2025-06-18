@@ -37,7 +37,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 	} {
 		const translatedMessage = this.i18n.translate('common.ERROR_MESSAGE', {
 			lang: req.headers['accept-language'] || 'en',
-			args: { message: String(exception) },
+			args: { message: String((exception as { message: string })?.message || exception) },
 		});
 
 		return {

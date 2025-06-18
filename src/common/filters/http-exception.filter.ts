@@ -32,7 +32,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
 				success: false,
 				error: this.i18n.translate('common.ERROR_MESSAGE', {
 					lang: req.headers['accept-language'] || 'en',
-					args: { message: (exception.getResponse() as { message?: string })?.message },
+					args: {
+						message:
+							(exception.getResponse() as { message?: string })?.message || exception.getResponse(),
+					},
 				}),
 				data: null,
 			},

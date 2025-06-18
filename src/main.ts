@@ -37,6 +37,9 @@ async function bootstrap() {
 		}),
 	);
 
+	// CORS config
+	app.enableCors();
+
 	// serve my own doc in a separate file without auto genning
 	const openApiSpecPath = path.join(__dirname, '../openapi.json');
 	const openApiDocument = JSON.parse(fs.readFileSync(openApiSpecPath, 'utf8')) as OpenAPIObject;
