@@ -1,0 +1,9 @@
+{
+	"SUCCESS": "Thao tác thành công",
+	"ERROR": "Đã xảy ra lỗi",
+	"NOT_FOUND": "Không tìm thấy tài nguyên",
+	"UNAUTHORIZED": "Không có quyền truy cập",
+	"FORBIDDEN": "Truy cập bị cấm",
+	"BAD_REQUEST": "Yêu cầu không hợp lệ",
+	"VALIDATION": "Xác thực thất bại"
+}

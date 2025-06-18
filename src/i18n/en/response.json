@@ -1,0 +1,9 @@
+{
+	"SUCCESS": "Operation completed successfully",
+	"ERROR": "An error occurred",
+	"NOT_FOUND": "Resource not found",
+	"UNAUTHORIZED": "Unauthorized access",
+	"FORBIDDEN": "Access forbidden",
+	"BAD_REQUEST": "Invalid request",
+	"VALIDATION": "Validation failed"
+}
