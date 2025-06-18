@@ -3,7 +3,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DatabaseConfig, Config } from '@configs';
 import { LoggerModule } from '@common/logger/logger.module';
-import { RouteModule } from '@router/router.module';
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 import path from 'path';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
@@ -34,7 +33,6 @@ import { throttlerConfig } from '@configs/throttler.config';
 		}),
 		ThrottlerModule.forRoot(throttlerConfig),
 		LoggerModule,
-		RouteModule,
 	],
 	providers: [
 		{
