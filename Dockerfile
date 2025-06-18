@@ -53,6 +53,8 @@ FROM base AS final
 # Use production node environment by default.
 ENV NODE_ENV=production
 
+COPY --chown=node:node . .
+
 # Run the application as a non-root user.
 USER node
 

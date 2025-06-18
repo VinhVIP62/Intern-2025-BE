@@ -1,4 +1,4 @@
 import { Controller } from '@nestjs/common';
 
-@Controller('event')
+@Controller()
 export class EventController {}

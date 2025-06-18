@@ -4,7 +4,7 @@ import { RolesGuard } from '@common/guards';
 import { Controller, Get, UseGuards, Version } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-@Controller('user')
+@Controller()
 export class UserController {
 	// New protected routes to test RBAC
 	// These routes' return values do not follow the ResponseEntity interface

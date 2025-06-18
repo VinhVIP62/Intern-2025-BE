@@ -9,7 +9,7 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagg
 
 @Public()
 @ApiTags('Auth')
-@Controller('auth')
+@Controller()
 export class AuthController {
 	constructor(private readonly authService: AuthService) {}
 
