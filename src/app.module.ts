@@ -9,6 +9,8 @@ import path from 'path';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { GlobalExceptionFilter, CustomExceptionFilter, HttpExceptionFilter } from '@common/filters';
 import { JwtAuthGuard } from '@common/guards';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { throttlerConfig } from '@configs/throttler.config';
 
 @Module({
 	imports: [
@@ -30,6 +32,7 @@ import { JwtAuthGuard } from '@common/guards';
 			},
 			resolvers: [{ use: QueryResolver, options: ['lang'] }, AcceptLanguageResolver],
 		}),
+		ThrottlerModule.forRoot(throttlerConfig),
 		LoggerModule,
 		RouteModule,
 	],
@@ -49,6 +52,10 @@ import { JwtAuthGuard } from '@common/guards';
 		{
 			provide: APP_GUARD,
 			useClass: JwtAuthGuard,
+		},
+		{
+			provide: APP_GUARD,
+			useClass: ThrottlerGuard,
 		},
 	],
 })
