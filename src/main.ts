@@ -6,8 +6,10 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { VersioningType } from '@nestjs/common';
 import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
 import { AppLoggerService } from '@common/logger/logger.service';
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as swaggerUi from 'swagger-ui-express';
+import * as path from 'path';
 import * as fs from 'fs';
+import { OpenAPIObject } from '@nestjs/swagger';
 
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -35,17 +37,10 @@ async function bootstrap() {
 		}),
 	);
 
-	const swaggerConfig = new DocumentBuilder()
-		.setTitle('API Documentation')
-		.setDescription('Swagger docs for the project')
-		.setVersion('1.0')
-		.addBearerAuth()
-		.build();
-
-	const document = SwaggerModule.createDocument(app, swaggerConfig);
-	SwaggerModule.setup('api-docs', app, document);
-
-	fs.writeFileSync('./openapi.json', JSON.stringify(document, null, 2));
+	// serve my own doc in a separate file without auto genning
+	const openApiSpecPath = path.join(__dirname, '../openapi.json');
+	const openApiDocument = JSON.parse(fs.readFileSync(openApiSpecPath, 'utf8')) as OpenAPIObject;
+	app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiDocument));
 
 	await app.listen(configService.get('port', { infer: true })!);
 }
