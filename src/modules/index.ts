@@ -3,3 +3,7 @@ export * from './event/event.module';
 export * from './notification/notification.module';
 export * from './post/post.module';
 export * from './user/user.module';
+export * from './group/group.module';
+export * from './comment/comment.module';
+export * from './friend-request/friend-request.module';
+export * from './achievement/achievement.module';
