@@ -19,6 +19,20 @@ async function bootstrap() {
 
 	const configService = app.get(ConfigService<IEnvVars>);
 
+	// Enable CORS
+	app.enableCors({
+		origin: [
+			'http://localhost:3000', // Frontend development
+			'http://localhost:5173', // Vite default port
+			'https://alobo-sport-hub.com', // Production domain
+		],
+		methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+		allowedHeaders: ['Content-Type', 'Accept', 'Authorization', 'X-Requested-With'],
+		exposedHeaders: ['Content-Range', 'X-Content-Range'],
+		credentials: true,
+		maxAge: 3600, // Cache preflight requests for 1 hour
+	});
+
 	// /api/v1
 
 	app.setGlobalPrefix('api');
