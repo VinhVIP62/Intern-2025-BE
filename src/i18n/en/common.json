@@ -1,0 +1,4 @@
+{
+	"ERROR_MESSAGE": "Error {message}",
+	"ROUTE_WARN": "This route is only allowed for {role}"
+}
