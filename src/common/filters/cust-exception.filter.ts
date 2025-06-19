@@ -36,6 +36,7 @@ export class CustomExceptionFilter implements ExceptionFilter {
 				status: HttpStatus.NOT_FOUND,
 				response: {
 					success: false,
+					statusCode: HttpStatus.NOT_FOUND,
 					error: exception.message,
 					data: null,
 				},
@@ -45,6 +46,7 @@ export class CustomExceptionFilter implements ExceptionFilter {
 			status: HttpStatus.INTERNAL_SERVER_ERROR,
 			response: {
 				success: false,
+				statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
 				error: exception.message,
 				data: null,
 			},

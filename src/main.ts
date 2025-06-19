@@ -47,6 +47,13 @@ async function bootstrap() {
 
 	fs.writeFileSync('./openapi.json', JSON.stringify(document, null, 2));
 
+	app.enableCors({
+		origin: configService.get('cors') || '*',
+		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+		allowedHeaders: 'Content-Type, Accept, Authorization',
+		credentials: true,
+	});
+
 	await app.listen(configService.get('port', { infer: true })!);
 }
 

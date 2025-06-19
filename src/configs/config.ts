@@ -16,6 +16,9 @@ export interface IEnvVars {
 	readonly port: number;
 	readonly database: DbVars;
 	readonly jwt: JwtVars;
+	readonly cors?: string;
+	readonly throttle_ttl?: number;
+	readonly throttle_limit?: number;
 }
 
 // env validation schema for Joi
@@ -31,6 +34,9 @@ const envFileSchema = Joi.object<IEnvVars, true>({
 		accessTokenExpiration: Joi.alternatives(Joi.number(), Joi.string()).default('15m'),
 		refreshTokenExpiration: Joi.alternatives(Joi.number(), Joi.string()).default('7d'),
 	}).required(),
+	cors: Joi.string().uri().optional(),
+	throttle_ttl: Joi.number().default(60000), // 1 minute
+	throttle_limit: Joi.number().default(50),
 });
 
 // map your env vars to ConfigService's properties
@@ -46,6 +52,9 @@ const loadEnv = () => ({
 		accessTokenExpiration: process.env.JWT_ACCESS_TOKEN_EXPIRATION,
 		refreshTokenExpiration: process.env.JWT_REFRESH_TOKEN_EXPIRATION,
 	},
+	cors: process.env.CORS,
+	throttle_ttl: process.env.THROTTLE_TTL,
+	throttle_limit: process.env.THROTTLE_LIMIT,
 });
 
 // validate and optionally transform your env variables here
