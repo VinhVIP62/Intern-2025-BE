@@ -11,6 +11,7 @@ export class FriendRequest extends Document {
 	recipient: Types.ObjectId;
 
 	@Prop({
+		type: String,
 		default: FriendRequestStatus.PENDING,
 		index: true,
 		enum: Object.values(FriendRequestStatus),

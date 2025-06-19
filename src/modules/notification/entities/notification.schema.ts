@@ -11,6 +11,7 @@ export class Notification extends Document {
 	sender: Types.ObjectId;
 
 	@Prop({
+		type: String,
 		required: true,
 		index: true,
 		enum: Object.values(NotificationType),
@@ -29,6 +30,7 @@ export class Notification extends Document {
 	@Prop({
 		default: null,
 		index: true,
+		type: String,
 		enum: Object.values(ReferenceModel),
 	})
 	referenceModel: ReferenceModel; // 'Post', 'Event', 'Group', etc.
