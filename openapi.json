@@ -139,6 +139,45 @@
           "User"
         ]
       }
+    },
+    "/api/v1/email/send-otp": {
+      "post": {
+        "description": "Gửi mã OTP đến email người dùng",
+        "operationId": "EmailController_sendOTP_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "to": {
+                    "type": "string",
+                    "example": "user@example.com",
+                    "description": "Email nhận OTP"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OTP đã được gửi thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseEmailDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Send OTP",
+        "tags": [
+          "Email"
+        ]
+      }
     }
   },
   "info": {
@@ -362,6 +401,39 @@
         "required": [
           "email",
           "password"
+        ]
+      },
+      "ResponseEmailDto": {
+        "type": "object",
+        "properties": {
+          "messageId": {
+            "type": "string",
+            "description": "ID của email đã gửi",
+            "example": "abc123"
+          },
+          "accepted": {
+            "description": "Danh sách email gửi thành công",
+            "example": [
+              "user@example.com"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rejected": {
+            "description": "Danh sách email gửi thất bại",
+            "example": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "messageId",
+          "accepted",
+          "rejected"
         ]
       }
     }
