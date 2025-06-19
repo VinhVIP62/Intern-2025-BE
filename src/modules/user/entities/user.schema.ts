@@ -88,9 +88,29 @@ export class User extends Document {
 
 	@Prop({ index: true })
 	updatedAt?: Date;
+
+	// Virtual field for fullName
+	get fullName(): string {
+		return `${this.firstName} ${this.lastName}`.trim();
+	}
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
+
+// Virtual field configuration
+UserSchema.virtual('fullName')
+	.get(function () {
+		return `${this.firstName} ${this.lastName}`.trim();
+	})
+	.set(function (value: string) {
+		const parts = value.split(' ');
+		this.firstName = parts[0] || '';
+		this.lastName = parts.slice(1).join(' ') || '';
+	});
+
+// Ensure virtual fields are included when converting to JSON
+UserSchema.set('toJSON', { virtuals: true });
+UserSchema.set('toObject', { virtuals: true });
 
 // Pre-save hook để hash password
 UserSchema.pre('save', function () {
