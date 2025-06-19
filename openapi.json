@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/api/v1/client/auth/auth/login": {
+    "/api/v1/auth/login": {
       "post": {
         "description": "Đăng nhập tài khoản người dùng",
         "operationId": "AuthController_login_v1",
@@ -34,7 +34,7 @@
         ]
       }
     },
-    "/api/v1/client/auth/auth/register": {
+    "/api/v1/auth/register": {
       "post": {
         "description": "Đăng ký tài khoản mới",
         "operationId": "AuthController_register_v1",
@@ -67,7 +67,7 @@
         ]
       }
     },
-    "/api/v1/client/auth/auth/refresh": {
+    "/api/v1/auth/refresh": {
       "post": {
         "description": "Cấp lại access token từ refresh token",
         "operationId": "AuthController_refreshToken_v1",
@@ -95,7 +95,7 @@
         ]
       }
     },
-    "/api/v1/client/users/user/admin-only": {
+    "/api/v1/user/admin-only": {
       "get": {
         "operationId": "UserController_adminOnlyRoute_v1",
         "parameters": [],
@@ -110,7 +110,7 @@
         ]
       }
     },
-    "/api/v1/client/users/user/moderator-and-admin": {
+    "/api/v1/user/moderator-and-admin": {
       "get": {
         "operationId": "UserController_moderatorAndAdminRoute_v1",
         "parameters": [],
@@ -125,7 +125,7 @@
         ]
       }
     },
-    "/api/v1/client/users/user/all-users": {
+    "/api/v1/user/all-users": {
       "get": {
         "operationId": "UserController_allUsersRoute_v1",
         "parameters": [],
