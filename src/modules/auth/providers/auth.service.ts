@@ -24,9 +24,9 @@ export class AuthService {
 
 		const tokens = await this.tokenService.generateTokens(
 			{
-				username: user.username,
+				email: user.email,
 				sub: {
-					id: user._id,
+					id: user._id as number,
 					roles: user.roles,
 				},
 			},
@@ -36,14 +36,14 @@ export class AuthService {
 		return tokens;
 	}
 
-	async register(username: string, password: string): Promise<Tokens> {
-		const user = await this.userService.create({ username, password });
+	async register(email: string, password: string): Promise<Tokens> {
+		const user = await this.userService.create({ email, password });
 
 		const tokens = await this.tokenService.generateTokens(
 			{
-				username: user.username,
+				email: user.email,
 				sub: {
-					id: user._id,
+					id: user._id as number,
 					roles: user.roles,
 				},
 			},
