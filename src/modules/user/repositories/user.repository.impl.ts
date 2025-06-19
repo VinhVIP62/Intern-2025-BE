@@ -20,8 +20,8 @@ export class UserRepositoryImpl implements IUserRepository {
 		return updatedUser;
 	}
 
-	async findOneByUsername(username: string): Promise<User | null> {
-		return await this.userModel.findOne({ username });
+	async findOneByEmail(email: string): Promise<User | null> {
+		return await this.userModel.findOne({ email });
 	}
 
 	async findOneById(id: string): Promise<User | null> {

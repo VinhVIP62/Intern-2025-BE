@@ -22,7 +22,7 @@ export class AuthController {
 		type: ResponseAuthDto,
 	})
 	async login(@Body() body: LoginDto): Promise<ResponseEntity<ResponseAuthDto>> {
-		const tokens = await this.authService.login(body.username, body.password);
+		const tokens = await this.authService.login(body.email, body.password);
 		return {
 			success: true,
 			data: tokens,
@@ -41,7 +41,7 @@ export class AuthController {
 		@Body()
 		body: RegisterDto,
 	): Promise<ResponseEntity<ResponseAuthDto>> {
-		const tokens = await this.authService.register(body.username, body.password);
+		const tokens = await this.authService.register(body.email, body.password);
 		return {
 			success: true,
 			data: tokens,

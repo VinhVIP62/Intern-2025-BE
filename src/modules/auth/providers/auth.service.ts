@@ -11,10 +11,10 @@ export class AuthService {
 		private readonly tokenService: TokenService,
 	) {}
 
-	async login(username: string, password: string): Promise<Tokens> {
-		const user = await this.userService.findOneByUsername(username);
+	async login(email: string, password: string): Promise<Tokens> {
+		const user = await this.userService.findOneByEmail(email);
 		if (!user) {
-			throw new UnauthorizedException('Username not found');
+			throw new UnauthorizedException('Email not found');
 		}
 
 		const isPasswordValid = await bcrypt.compare(password, user.password);

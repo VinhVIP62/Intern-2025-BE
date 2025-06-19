@@ -16,10 +16,10 @@ export class User extends Document {
 	@Prop({ default: null })
 	refToken: string;
 
-	@Prop({ required: true, trim: true })
+	@Prop({ trim: true })
 	firstName: string;
 
-	@Prop({ required: true, trim: true })
+	@Prop({ trim: true })
 	lastName: string;
 
 	@Prop({ default: null })
