@@ -112,6 +112,34 @@ UserSchema.virtual('fullName')
 UserSchema.set('toJSON', { virtuals: true });
 UserSchema.set('toObject', { virtuals: true });
 
+// Virtual populate for friends
+UserSchema.virtual('friendUsers', {
+	ref: 'User',
+	localField: 'friends',
+	foreignField: '_id',
+});
+
+// Virtual populate for following
+UserSchema.virtual('followingUsers', {
+	ref: 'User',
+	localField: 'following',
+	foreignField: '_id',
+});
+
+// Virtual populate for followers
+UserSchema.virtual('followerUsers', {
+	ref: 'User',
+	localField: 'followers',
+	foreignField: '_id',
+});
+
+// Virtual populate for joined groups
+UserSchema.virtual('joinedGroupDetails', {
+	ref: 'Group',
+	localField: 'joinedGroups',
+	foreignField: '_id',
+});
+
 // Pre-save hook để hash password
 UserSchema.pre('save', function () {
 	if (this.isModified('password')) {
