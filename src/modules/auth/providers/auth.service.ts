@@ -3,6 +3,8 @@ import { TokenService } from './token.service';
 import { UserService } from '@modules/user/providers/user.service';
 import * as bcrypt from 'bcrypt';
 import { Payload, Tokens } from '../types';
+import { RegisterDto } from '../dto/register.dto';
+import { User } from '@modules/user/entities/user.schema';
 
 @Injectable()
 export class AuthService {
@@ -36,8 +38,8 @@ export class AuthService {
 		return tokens;
 	}
 
-	async register(email: string, password: string): Promise<Tokens> {
-		const user = await this.userService.create({ email, password });
+	async register(data: RegisterDto): Promise<Tokens> {
+		const user = await this.userService.create(data as Partial<User>);
 
 		const tokens = await this.tokenService.generateTokens(
 			{

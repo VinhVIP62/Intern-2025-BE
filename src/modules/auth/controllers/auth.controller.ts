@@ -41,7 +41,7 @@ export class AuthController {
 		@Body()
 		body: RegisterDto,
 	): Promise<ResponseEntity<ResponseAuthDto>> {
-		const tokens = await this.authService.register(body.email, body.password);
+		const tokens = await this.authService.register(body);
 		return {
 			success: true,
 			data: tokens,

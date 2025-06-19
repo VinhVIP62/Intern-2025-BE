@@ -7,7 +7,17 @@ export class UserService {
 	constructor(private readonly userRepository: IUserRepository) {}
 
 	async create(data: Partial<User>): Promise<User> {
-		const newUser = this.userRepository.create(data);
+		let userData = { ...data };
+		if (data.location) {
+			userData.location = {
+				city: data.location.city ?? '',
+				district: data.location.district ?? '',
+				address: data.location.address ?? '',
+			};
+		} else {
+			delete userData.location;
+		}
+		const newUser = this.userRepository.create(userData);
 		return newUser;
 	}
 

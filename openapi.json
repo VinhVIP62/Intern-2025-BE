@@ -188,6 +188,23 @@
           }
         }
       },
+      "LocationDto": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "example": "Hanoi"
+          },
+          "district": {
+            "type": "string",
+            "example": "Cau Giay"
+          },
+          "address": {
+            "type": "string",
+            "example": "123 Main St"
+          }
+        }
+      },
       "RegisterDto": {
         "type": "object",
         "properties": {
@@ -200,6 +217,134 @@
             "type": "string",
             "description": "Mật khẩu mạnh (tối thiểu 8 ký tự, 1 số, 1 chữ in hoa, 1 ký tự đặc biệt)",
             "example": "StrongP@ssw0rd"
+          },
+          "refToken": {
+            "type": "string",
+            "description": "Refresh Token",
+            "example": "..."
+          },
+          "firstName": {
+            "type": "string",
+            "description": "Tên",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Họ",
+            "example": "Doe"
+          },
+          "avatar": {
+            "type": "string",
+            "description": "Avatar URL",
+            "example": "https://..."
+          },
+          "coverImage": {
+            "type": "string",
+            "description": "Cover Image URL",
+            "example": "https://..."
+          },
+          "bio": {
+            "type": "string",
+            "description": "Bio",
+            "example": "I love sports!"
+          },
+          "dateOfBirth": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Ngày sinh",
+            "example": "2000-01-01"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Số điện thoại",
+            "example": "+84987654321"
+          },
+          "location": {
+            "description": "Địa chỉ",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LocationDto"
+              }
+            ]
+          },
+          "favoritesSports": {
+            "type": "array",
+            "description": "Danh sách môn thể thao yêu thích",
+            "items": {
+              "type": "string",
+              "enum": [
+                "football",
+                "basketball",
+                "tennis",
+                "badminton",
+                "volleyball",
+                "table_tennis",
+                "swimming",
+                "running",
+                "cycling",
+                "yoga",
+                "gym",
+                "martial_arts",
+                "boxing",
+                "golf",
+                "rock_climbing"
+              ]
+            }
+          },
+          "skillLevels": {
+            "type": "object",
+            "description": "Trình độ kỹ năng theo môn thể thao",
+            "example": {
+              "football": "beginner",
+              "tennis": "advanced"
+            },
+            "additionalProperties": {
+              "type": "string",
+              "enum": [
+                "beginner",
+                "intermediate",
+                "advanced",
+                "professional"
+              ]
+            }
+          },
+          "friends": {
+            "description": "Danh sách bạn bè",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "following": {
+            "description": "Danh sách đang theo dõi",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "followers": {
+            "description": "Danh sách người theo dõi",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "joinedGroups": {
+            "description": "Danh sách nhóm đã tham gia",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Trạng thái hoạt động",
+            "example": true
+          },
+          "isVerified": {
+            "type": "boolean",
+            "description": "Đã xác thực email",
+            "example": false
           },
           "roles": {
             "type": "array",
