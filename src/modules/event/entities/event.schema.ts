@@ -65,7 +65,6 @@ export const EventSchema = SchemaFactory.createForClass(Event);
 EventSchema.index({ organizer: 1, startDate: 1 });
 EventSchema.index({ sport: 1, startDate: 1 });
 EventSchema.index({ status: 1, startDate: 1 });
-EventSchema.index({ location: '2dsphere' });
 
 // Virtual populate for participants
 EventSchema.virtual('participantUsers', {
