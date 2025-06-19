@@ -10,10 +10,11 @@ import {
 	FriendRequestModule,
 	AchievementModule,
 } from '@modules';
-
+import { EmailModule } from '@modules/email/email.module';
 @Module({
 	imports: [
 		AuthModule,
+		EmailModule,
 		EventModule,
 		NotificationModule,
 		PostModule,
@@ -25,6 +26,7 @@ import {
 	],
 	exports: [
 		AuthModule,
+		EmailModule,
 		EventModule,
 		NotificationModule,
 		PostModule,
