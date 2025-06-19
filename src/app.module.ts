@@ -11,6 +11,7 @@ import { JwtAuthGuard } from '@common/guards';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { throttlerConfig } from '@configs/throttler.config';
 import { SharedModule } from './shared/shared.module';
+import { DatabaseModule } from '@common/database/database.module';
 
 @Module({
 	imports: [
@@ -35,6 +36,7 @@ import { SharedModule } from './shared/shared.module';
 		ThrottlerModule.forRoot(throttlerConfig),
 		LoggerModule,
 		SharedModule,
+		DatabaseModule,
 	],
 	providers: [
 		{
