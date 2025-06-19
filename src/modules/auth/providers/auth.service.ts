@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 import { Payload, Tokens } from '../types';
 import { RegisterDto } from '../dto/register.dto';
 import { User } from '@modules/user/entities/user.schema';
+import { LoginDto } from '../dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -13,13 +14,13 @@ export class AuthService {
 		private readonly tokenService: TokenService,
 	) {}
 
-	async login(email: string, password: string): Promise<Tokens> {
-		const user = await this.userService.findOneByEmail(email);
+	async login(data: LoginDto): Promise<Tokens> {
+		const user = await this.userService.findOneByEmail(data.email);
 		if (!user) {
 			throw new UnauthorizedException('Email not found');
 		}
 
-		const isPasswordValid = await bcrypt.compare(password, user.password);
+		const isPasswordValid = await bcrypt.compare(data.password, user.password);
 		if (!isPasswordValid) {
 			throw new UnauthorizedException('Invalid password');
 		}
@@ -28,12 +29,15 @@ export class AuthService {
 			{
 				email: user.email,
 				sub: {
-					id: user._id as number,
+					id: user._id as string,
 					roles: user.roles,
 				},
 			},
 			true,
 		);
+
+		// Save refToken to database
+		await this.userService.update(user._id as string, { refToken: tokens.refreshToken });
 
 		return tokens;
 	}
@@ -45,7 +49,7 @@ export class AuthService {
 			{
 				email: user.email,
 				sub: {
-					id: user._id as number,
+					id: user._id as string,
 					roles: user.roles,
 				},
 			},
