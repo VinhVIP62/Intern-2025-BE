@@ -1,4 +1,3 @@
-// src/configs/mongoose.config.ts
 import { ConfigService } from '@nestjs/config';
 import { MongooseModuleOptions } from '@nestjs/mongoose';
 import { IEnvVars } from '@configs/config';

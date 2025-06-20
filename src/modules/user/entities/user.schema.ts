@@ -1,4 +1,3 @@
-// src/modules/user/entities/user.schema.ts
 import { Role } from '@common/enum/roles.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import bcrypt from 'bcrypt';

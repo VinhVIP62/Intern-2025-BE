@@ -6,10 +6,11 @@ import { LoggerModule } from '@common/logger/logger.module';
 import { RouteModule } from '@router/router.module';
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 import path from 'path';
-import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { GlobalExceptionFilter, CustomExceptionFilter, HttpExceptionFilter } from '@common/filters';
 import { JwtAuthGuard } from '@common/guards';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { ResponseTransformInterceptor } from '@common/interceptor/response-transform.interceptor';
 
 @Module({
 	imports: [
@@ -63,6 +64,10 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 		{
 			provide: APP_GUARD,
 			useClass: ThrottlerGuard,
+		},
+		{
+			provide: APP_INTERCEPTOR,
+			useClass: ResponseTransformInterceptor,
 		},
 	],
 })
