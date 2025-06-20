@@ -1,8 +1,8 @@
 {
-	"name": "nestjs_base_intern",
+	"name": "asocio",
 	"version": "0.0.1",
 	"description": "",
-	"author": "",
+	"author": "D-ng7721",
 	"private": true,
 	"license": "UNLICENSED",
 	"scripts": {
@@ -17,7 +17,8 @@
 		"test:watch": "jest --watch",
 		"test:cov": "jest --coverage",
 		"test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-		"test:e2e": "jest --config ./test/jest-e2e.json"
+		"test:e2e": "jest --config ./test/jest-e2e.json",
+		"prepare": "node -e \"if (process.env.NODE_ENV !== 'production'){process.exit(1)} \" || husky install"
 	},
 	"dependencies": {
 		"@nestjs/common": "^11.1.3",
