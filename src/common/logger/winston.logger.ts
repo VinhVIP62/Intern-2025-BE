@@ -1,8 +1,9 @@
 import { utilities } from 'nest-winston';
 import * as winston from 'winston';
 import * as path from 'path';
+import * as os from 'os';
 
-const logDir = path.join(process.cwd(), 'logs');
+const logDir = path.join(os.tmpdir(), '/logs');
 
 export const winstonLogger = winston.createLogger({
 	transports: [

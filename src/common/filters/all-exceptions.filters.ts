@@ -2,14 +2,10 @@ import { AppLoggerService } from '@common/logger/logger.service';
 import { ResponseEntity } from '@common/types';
 import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { I18nService } from 'nestjs-i18n';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
-	constructor(
-		private readonly i18n: I18nService,
-		private readonly logger: AppLoggerService,
-	) {}
+	constructor(private readonly logger: AppLoggerService) {}
 
 	catch(exception: unknown, host: ArgumentsHost) {
 		const ctx = host.switchToHttp();
@@ -23,30 +19,17 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 			exception instanceof Error ? exception.stack : String(exception),
 		);
 
-		return res.status(resolved.status).json({
-			...resolved.response,
-		});
+		return res.status(resolved.statusCode).json(resolved);
 	}
 
-	private resolve(
-		exception: unknown,
-		req: Request,
-	): {
-		status: HttpStatus;
-		response: ResponseEntity<null>;
-	} {
-		const translatedMessage = this.i18n.translate('common.ERROR_MESSAGE', {
-			lang: req.headers['accept-language'] || 'en',
-			args: { message: String(exception) },
-		});
-
+	private resolve(exception: unknown, req: Request): ResponseEntity<null> {
 		return {
-			status: HttpStatus.INTERNAL_SERVER_ERROR,
-			response: {
-				success: false,
-				error: translatedMessage,
-				data: null,
-			},
+			path: req.url,
+			statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+			success: false,
+			timestamp: Date.now(),
+			error: 'Internal server error',
+			data: null,
 		};
 	}
 }
