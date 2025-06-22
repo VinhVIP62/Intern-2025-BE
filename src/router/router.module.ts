@@ -8,14 +8,16 @@ import {
 	NotificationModule,
 	PostModule,
 	UserModule,
-} from '../modules';
+} from '@modules';
+import { DevModule } from '@modules/dev/dev.module';
+import { ConditionalModule } from '@nestjs/config';
 
 @Module({
 	imports: [
 		RouterModule.register([
 			{
 				path: 'admin',
-				children: [{ path: 'admin', module: AdminModule }],
+				module: AdminModule,
 			},
 			{
 				path: 'client',
@@ -27,7 +29,17 @@ import {
 					{ path: 'users', module: UserModule },
 				],
 			},
+			{
+				path: 'dev',
+				module: DevModule,
+			},
 		]),
+		/* dev modules for testing */
+		ConditionalModule.registerWhen(
+			DevModule,
+			(env: NodeJS.ProcessEnv) => env.NODE_ENV === 'development',
+		),
+		/* production modules */
 		AuthModule,
 		AdminModule,
 		EventModule,
