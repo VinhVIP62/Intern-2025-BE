@@ -95,56 +95,21 @@
         ]
       }
     },
-    "/api/v1/user/admin-only": {
-      "get": {
-        "operationId": "UserController_adminOnlyRoute_v1",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Truy cập thành công với quyền admin"
-          }
-        },
-        "summary": "Chỉ Admin được phép truy cập",
-        "tags": [
-          "User"
-        ]
-      }
-    },
-    "/api/v1/user/moderator-and-admin": {
-      "get": {
-        "operationId": "UserController_moderatorAndAdminRoute_v1",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Truy cập thành công với quyền moderator hoặc admin"
-          }
-        },
-        "summary": "Moderator hoặc Admin được phép truy cập",
-        "tags": [
-          "User"
-        ]
-      }
-    },
-    "/api/v1/user/all-users": {
-      "get": {
-        "operationId": "UserController_allUsersRoute_v1",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Truy cập thành công với bất kỳ user nào"
-          }
-        },
-        "summary": "Tất cả user có thể truy cập",
-        "tags": [
-          "User"
-        ]
-      }
-    },
     "/api/v1/email/send-otp": {
       "post": {
         "description": "Gửi mã OTP đến email người dùng",
         "operationId": "EmailController_sendOTP_v1",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "accept-language",
+            "in": "header",
+            "description": "Ngôn ngữ (en hoặc vi) - Có thể dùng header này hoặc query parameter ?lang=en",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -174,6 +139,60 @@
           }
         },
         "summary": "Send OTP",
+        "tags": [
+          "Email"
+        ]
+      }
+    },
+    "/api/v1/email/verify-otp": {
+      "post": {
+        "description": "Xác thực OTP",
+        "operationId": "EmailController_verifyOtp_v1",
+        "parameters": [
+          {
+            "name": "accept-language",
+            "in": "header",
+            "description": "Ngôn ngữ (en hoặc vi) - Có thể dùng header này hoặc query parameter ?lang=en",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "user@example.com",
+                    "description": "Email nhận OTP"
+                  },
+                  "otp": {
+                    "type": "string",
+                    "example": "123456",
+                    "description": "OTP"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OTP đã được xác thực thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseEmailDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Verify OTP",
         "tags": [
           "Email"
         ]
@@ -437,8 +456,26 @@
           "otpExpired": {
             "format": "date-time",
             "type": "string",
-            "description": "Thời hạn OTP",
+            "description": "Thời hạn OTP (UTC)",
             "example": "2021-01-01T00:00:00.000Z"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Múi giờ được sử dụng (UTC cho en, GMT+7 cho vi)",
+            "example": "UTC",
+            "enum": [
+              "UTC",
+              "GMT+7"
+            ]
+          },
+          "formattedExpiredTime": {
+            "type": "string",
+            "description": "Thời gian hết hạn được format theo ngôn ngữ và múi giờ địa phương",
+            "example": "01/01/2021, 12:00:00 AM",
+            "examples": {
+              "en": "01/01/2021, 12:00:00 AM",
+              "vi": "01/01/2021, 07:00:00"
+            }
           }
         },
         "required": [
