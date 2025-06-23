@@ -1,4 +1,24 @@
 {
-  "singleQuote": true,
-  "trailingComma": "all"
+	"singleQuote": true,
+	"trailingComma": "all",
+	"printWidth": 100,
+	"tabWidth": 2,
+	"semi": true,
+	"bracketSpacing": true,
+	"arrowParens": "avoid",
+	"endOfLine": "lf",
+	"bracketSameLine": false,
+	"importOrderSeparation": true,
+	"importOrderSortSpecifiers": true,
+	"experimentalTernaries": true,
+	"useTabs": true,
+	"importOrder": [
+		"^@app(/.*)?$",
+		"^@common(/.*)?$",
+		"^@configs(/.*)?$",
+		"^@languages(/.*)?$",
+		"^@modules(/.*)?$",
+		"^@router(/.*)?$",
+		"^[./]"
+	]
 }
