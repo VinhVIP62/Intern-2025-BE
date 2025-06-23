@@ -56,6 +56,9 @@ export class AuthService {
 			true,
 		);
 
+		// Save refToken to database
+		await this.userService.update(user._id as string, { refToken: tokens.refreshToken });
+
 		return tokens;
 	}
 
