@@ -12,11 +12,9 @@ export interface IOtp extends Document {
 @Schema({
 	timestamps: true,
 	autoIndex: true,
-	// TTL index để tự động xóa sau 5 phút (300 giây)
-	expires: 300,
 })
 export class Otp extends Document implements IOtp {
-	@Prop({ required: true, lowercase: true, index: true })
+	@Prop({ required: true, unique: true, lowercase: true, index: true })
 	email: string;
 
 	@Prop({ required: true, length: 6 })
@@ -28,14 +26,12 @@ export class Otp extends Document implements IOtp {
 	@Prop({ index: true })
 	updatedAt?: Date;
 
-	// Method để kiểm tra OTP có hợp lệ không
 	isValid(): boolean {
 		const now = new Date();
 		const createdAt = this.createdAt;
 		if (!createdAt) return false;
 
 		const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
-
 		return createdAt > fiveMinutesAgo;
 	}
 }
@@ -48,6 +44,20 @@ OtpSchema.index({ otp: 1, email: 1 });
 
 // Text index cho search functionality
 OtpSchema.index({ email: 'text' });
+
+// TTL index để tự động xóa sau 5 phút (300 giây)
+OtpSchema.index({ createdAt: 1 }, { expireAfterSeconds: 300 });
+
+// Thêm instance method vào schema để có thể sử dụng trên documents
+OtpSchema.methods.isValid = function (): boolean {
+	const now = new Date();
+	const createdAt = this.createdAt;
+	if (!createdAt) return false;
+
+	const fiveMinutesAgo = new Date(now.getTime() - 5 * 60 * 1000);
+
+	return createdAt > fiveMinutesAgo;
+};
 
 // Pre-save hook để đảm bảo OTP có đúng 6 ký tự
 OtpSchema.pre('save', function () {
