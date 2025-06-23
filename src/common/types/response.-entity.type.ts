@@ -7,3 +7,4 @@ export type ResponseEntity<T> = {
 	// if there's an error, data will be null
 	data: T;
 };
+

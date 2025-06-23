@@ -6,7 +6,8 @@ import { ResponseEntity } from '@common/types';
 import { JwtRefreshAuthGuard } from '@common/guards';
 import { Request } from 'express';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-
+import { ResponsePaging } from '@common/decorators/responsePaging.decorator';
+import { Response } from '@common/decorators/response.decorator';
 @Public()
 @ApiTags('Auth')
 @Controller('auth')
@@ -15,6 +16,7 @@ export class AuthController {
 
 	@Version('1')
 	@Post('login')
+	@ResponsePaging()
 	@ApiOperation({ summary: 'Login user', description: 'Đăng nhập tài khoản người dùng' })
 	@ApiResponse({
 		status: 200,

@@ -1,4 +1,6 @@
 {
+	"success": "Thành công",
+	"error": "Lỗi",
 	"ERROR_MESSAGE": "Lỗi {message}",
 	"ROUTE_WARN": "Đường dẫn này chỉ dành cho {role}"
 }

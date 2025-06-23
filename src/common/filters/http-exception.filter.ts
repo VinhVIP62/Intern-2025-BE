@@ -30,6 +30,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
 			status: exception.getStatus() || HttpStatus.INTERNAL_SERVER_ERROR,
 			response: {
 				success: false,
+				statusCode: exception.getStatus() || HttpStatus.INTERNAL_SERVER_ERROR,
 				error: this.i18n.translate('common.ERROR_MESSAGE', {
 					lang: req.headers['accept-language'] || 'en',
 					args: { message: (exception.getResponse() as { message?: string })?.message },
