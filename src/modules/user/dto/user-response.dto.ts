@@ -6,9 +6,13 @@ export class ResponseUserDto {
 	@Expose()
 	_id: string;
 
-	@ApiProperty({ description: 'Tên đăng nhập' })
+	@ApiProperty({ description: 'Email đăng nhập' })
 	@Expose()
-	username: string;
+	email: string;
+
+	@ApiProperty({ description: 'Số điện thoại' })
+	@Expose()
+	phoneNumber: string;
 
 	@ApiProperty({ description: 'Mật khẩu' })
 	@Exclude()

@@ -16,8 +16,8 @@ export class UserService {
 		return updatedUser;
 	}
 
-	async findOneByUsername(username: string): Promise<User | null> {
-		const foundUser = this.userRepository.findOneByUsername(username);
-		return foundUser;
+	async findByEmailOrNumber(accInput: string) {
+		const user = this.userRepository.findByEmailOrNumber(accInput);
+		return user;
 	}
 }

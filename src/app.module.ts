@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { DatabaseConfig, Config } from '@configs';
@@ -12,7 +13,7 @@ import { JwtAuthGuard } from '@common/guards';
 import { ThrottlerGuard, ThrottlerModule, ThrottlerModuleOptions } from '@nestjs/throttler';
 import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 import { ResponsePagingInterceptor } from '@common/interceptors/responsePaging.interceptor';
-
+// import { redisStore } from 'cache-manager-redis-store';
 @Module({
 	imports: [
 		ConfigModule.forRoot({
@@ -33,6 +34,7 @@ import { ResponsePagingInterceptor } from '@common/interceptors/responsePaging.i
 			},
 			resolvers: [{ use: QueryResolver, options: ['lang'] }, AcceptLanguageResolver],
 		}),
+
 		LoggerModule,
 		RouteModule,
 		ThrottlerModule.forRootAsync({

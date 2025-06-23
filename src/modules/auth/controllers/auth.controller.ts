@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Version, Req } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Version, Req, Get } from '@nestjs/common';
 import { AuthService } from '../providers/auth.service';
 import { Public } from '@common/decorators';
 import { LoginDto, RegisterDto, ResponseAuthDto } from '../dto';
@@ -8,15 +8,22 @@ import { Request } from 'express';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ResponsePaging } from '@common/decorators/responsePaging.decorator';
 import { Response } from '@common/decorators/response.decorator';
+import { GoogleAuthGuard } from '@common/guards/google-auth.guard';
+import { RequestOtpDto, VerifyOtpDto } from '../../verification/dto/otp.dto';
+import { verificationService } from '@modules/verification/providers/verification.service';
+
 @Public()
 @ApiTags('Auth')
-@Controller('auth')
+@Controller('/')
 export class AuthController {
-	constructor(private readonly authService: AuthService) {}
+	constructor(
+		private readonly authService: AuthService,
+		private readonly verificationService: verificationService,
+	) {}
 
 	@Version('1')
 	@Post('login')
-	@ResponsePaging()
+	@Response()
 	@ApiOperation({ summary: 'Login user', description: 'Đăng nhập tài khoản người dùng' })
 	@ApiResponse({
 		status: 200,
@@ -24,7 +31,8 @@ export class AuthController {
 		type: ResponseAuthDto,
 	})
 	async login(@Body() body: LoginDto): Promise<ResponseEntity<ResponseAuthDto>> {
-		const tokens = await this.authService.login(body.username, body.password);
+		const tokens = await this.authService.login(body.accInput, body.password);
+		console.log('controller return token', tokens);
 		return {
 			success: true,
 			data: tokens,
@@ -43,11 +51,24 @@ export class AuthController {
 		@Body()
 		body: RegisterDto,
 	): Promise<ResponseEntity<ResponseAuthDto>> {
-		const tokens = await this.authService.register(body.username, body.password);
+		const tokens = await this.authService.register(body);
 		return {
 			success: true,
 			data: tokens,
 		};
+	}
+	@Version('1')
+	@Post('request-otp')
+	async requestOtp(@Body() dto: RequestOtpDto) {
+		await this.verificationService.requestOtp(dto.accInput);
+		return { success: true, message: 'OTP sent successfully' };
+	}
+
+	@Version('1')
+	@Post('verify-otp')
+	async verifyOtp(@Body() dto: VerifyOtpDto) {
+		const tokens = await this.verificationService.otpVerify(dto.accInput, dto.otp);
+		return tokens;
 	}
 
 	@Version('1')
@@ -66,4 +87,15 @@ export class AuthController {
 		});
 		return { success: true, data: tokens };
 	}
+	@Version('1')
+	@Public()
+	@UseGuards(GoogleAuthGuard)
+	@Get('login/google')
+	googleLogin() {}
+
+	@Version('1')
+	@Public()
+	@UseGuards(GoogleAuthGuard)
+	@Get('google/callback')
+	googleCallback() {}
 }

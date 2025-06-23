@@ -7,14 +7,26 @@ import bcrypt from 'bcrypt';
 export class User {
 	_id: string;
 
-	@Prop({ required: true, unique: true })
-	username: string;
-
-	@Prop({ required: true })
+	@Prop()
 	password: string;
 
 	@Prop({ default: [Role.USER] })
 	roles: string[];
+
+	@Prop({ unique: true })
+	phoneNumber?: string;
+	@Prop({ unique: true })
+	email?: string;
+	@Prop()
+	externalId?: string;
+	@Prop()
+	externalType?: string;
+
+	@Prop()
+	fullName?: string;
+
+	@Prop()
+	avatar?: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

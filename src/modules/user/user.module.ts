@@ -23,6 +23,12 @@ import { User, UserSchema } from './entities/user.schema';
 			useClass: UserRepositoryImpl,
 		},
 	],
-	exports: [UserService],
+	exports: [
+		UserService,
+		{
+			provide: IUserRepository,
+			useClass: UserRepositoryImpl,
+		},
+	],
 })
 export class UserModule {}

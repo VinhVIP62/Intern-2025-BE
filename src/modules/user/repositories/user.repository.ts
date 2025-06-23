@@ -8,4 +8,6 @@ export abstract class IUserRepository {
 	abstract update(id: string, data: Partial<User>): Promise<User>;
 	abstract findOneByUsername(username: string): Promise<User | null>;
 	abstract findOneById(id: string): Promise<User | null>;
+	abstract findByEmail(email: string): Promise<User | null>;
+	abstract findByEmailOrNumber(emailOrNumber: string): Promise<User | null>;
 }

@@ -1,10 +1,10 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/api/v1/client/auth/auth/login": {
+    "/api/client/auth/login": {
       "post": {
         "description": "Đăng nhập tài khoản người dùng",
-        "operationId": "AuthController_login_v1",
+        "operationId": "AuthController_login",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -34,10 +34,10 @@
         ]
       }
     },
-    "/api/v1/client/auth/auth/register": {
+    "/api/client/auth/register": {
       "post": {
         "description": "Đăng ký tài khoản mới",
-        "operationId": "AuthController_register_v1",
+        "operationId": "AuthController_register",
         "parameters": [],
         "requestBody": {
           "required": true,
@@ -67,10 +67,58 @@
         ]
       }
     },
-    "/api/v1/client/auth/auth/refresh": {
+    "/api/client/auth/request-otp": {
+      "post": {
+        "operationId": "AuthController_requestOtp",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestOtpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/client/auth/verify-otp": {
+      "post": {
+        "operationId": "AuthController_verifyOtp",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VerifyOtpDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/client/auth/refresh": {
       "post": {
         "description": "Cấp lại access token từ refresh token",
-        "operationId": "AuthController_refreshToken_v1",
+        "operationId": "AuthController_refreshToken",
         "parameters": [],
         "responses": {
           "200": {
@@ -95,9 +143,37 @@
         ]
       }
     },
-    "/api/v1/client/users/user/admin-only": {
+    "/api/client/auth/login/google": {
       "get": {
-        "operationId": "UserController_adminOnlyRoute_v1",
+        "operationId": "AuthController_googleLogin",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/client/auth/google/callback": {
+      "get": {
+        "operationId": "AuthController_googleCallback",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/client/users/user/admin-only": {
+      "get": {
+        "operationId": "UserController_adminOnlyRoute",
         "parameters": [],
         "responses": {
           "200": {
@@ -110,9 +186,9 @@
         ]
       }
     },
-    "/api/v1/client/users/user/moderator-and-admin": {
+    "/api/client/users/user/moderator-and-admin": {
       "get": {
-        "operationId": "UserController_moderatorAndAdminRoute_v1",
+        "operationId": "UserController_moderatorAndAdminRoute",
         "parameters": [],
         "responses": {
           "200": {
@@ -125,9 +201,9 @@
         ]
       }
     },
-    "/api/v1/client/users/user/all-users": {
+    "/api/client/users/user/all-users": {
       "get": {
-        "operationId": "UserController_allUsersRoute_v1",
+        "operationId": "UserController_allUsersRoute",
         "parameters": [],
         "responses": {
           "200": {
@@ -161,7 +237,7 @@
       "LoginDto": {
         "type": "object",
         "properties": {
-          "username": {
+          "accInput": {
             "type": "string",
             "description": "Tên đăng nhập của người dùng"
           },
@@ -171,7 +247,7 @@
           }
         },
         "required": [
-          "username",
+          "accInput",
           "password"
         ]
       },
@@ -191,33 +267,29 @@
       "RegisterDto": {
         "type": "object",
         "properties": {
-          "username": {
-            "type": "string",
-            "description": "Tên đăng nhập",
-            "example": "johndoe"
-          },
           "password": {
             "type": "string",
             "description": "Mật khẩu mạnh (tối thiểu 8 ký tự, 1 số, 1 chữ in hoa, 1 ký tự đặc biệt)",
             "example": "StrongP@ssw0rd"
           },
-          "roles": {
-            "type": "array",
-            "description": "Danh sách role (ADMIN, MODERATOR, USER)",
-            "items": {
-              "type": "string",
-              "enum": [
-                "user",
-                "admin",
-                "moderator"
-              ]
-            }
+          "accInput": {
+            "type": "string",
+            "description": "Phone number or email",
+            "example": "0123456789 or abc@gmail.com"
           }
         },
         "required": [
-          "username",
-          "password"
+          "password",
+          "accInput"
         ]
+      },
+      "RequestOtpDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "VerifyOtpDto": {
+        "type": "object",
+        "properties": {}
       }
     }
   }

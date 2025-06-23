@@ -22,10 +22,10 @@ async function bootstrap() {
 	// /api/v1
 
 	app.setGlobalPrefix('api');
-	app.enableVersioning({
-		defaultVersion: '1',
-		type: VersioningType.URI,
-	});
+	// app.enableVersioning({
+	// 	defaultVersion: '1',
+	// 	type: VersioningType.URI,
+	// });
 
 	app.useGlobalPipes(
 		new ValidationPipe({
