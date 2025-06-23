@@ -44,8 +44,9 @@ export class EmailService {
 		};
 	}
 
-	async sendOTP(to: string): Promise<ResponseEmailDto & { otp: string }> {
+	async sendOTP(to: string): Promise<ResponseEmailDto> {
 		const otp = randomInt(100000, 1000000).toString();
+		const otpExpired = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
 
 		const subject = '[ALOBO Sport Hub] Verification Code';
 		const text = `Verification Code\n\nHello,\n\nYour verification code is:\n\n${otp}\n\nThis code will expire in 5 minutes.\n\nIf you didn't request this code, please ignore this email.`;
@@ -61,6 +62,6 @@ export class EmailService {
 			</div>
 		`;
 		const result = await this.sendMail({ to, subject, text, html });
-		return { ...result, otp };
+		return { ...result, otp, otpExpired };
 	}
 }

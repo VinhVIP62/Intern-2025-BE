@@ -27,9 +27,7 @@ export class EmailController {
 	})
 	@Public()
 	@Version('1')
-	async sendOTP(
-		@Body('to') to: string,
-	): Promise<ResponseEntity<ResponseEmailDto & { otp: string }>> {
+	async sendOTP(@Body('to') to: string): Promise<ResponseEntity<ResponseEmailDto>> {
 		const result = await this.emailService.sendOTP(to);
 		return {
 			success: true,
