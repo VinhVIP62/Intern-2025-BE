@@ -1,4 +1,6 @@
 {
 	"ERROR_MESSAGE": "Error {message}",
-	"ROUTE_WARN": "This route is only allowed for {role}"
+	"ROUTE_WARN": "This route is only allowed for {role}",
+	"FILE_UPLOAD_SUCCESS": "File uploaded successfully",
+	"FILE_UPLOAD_ERROR": "File upload failed"
 }

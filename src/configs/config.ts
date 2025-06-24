@@ -34,6 +34,12 @@ interface EmailVars {
 	from: string;
 }
 
+interface CloudinaryVars {
+	cloud_name: string;
+	api_key: string;
+	api_secret: string;
+}
+
 export interface IEnvVars {
 	readonly env: 'development' | 'production';
 	readonly port: number;
@@ -41,6 +47,7 @@ export interface IEnvVars {
 	readonly jwt: JwtVars;
 	readonly throttler: ThrottlerVars;
 	readonly email: EmailVars;
+	readonly cloudinary: CloudinaryVars;
 }
 
 // env validation schema for Joi
@@ -77,6 +84,11 @@ const envFileSchema = Joi.object<IEnvVars, true>({
 		pass: Joi.string().required(),
 		from: Joi.string().required(),
 	}).required(),
+	cloudinary: Joi.object<CloudinaryVars, true>({
+		cloud_name: Joi.string().required(),
+		api_key: Joi.string().required(),
+		api_secret: Joi.string().required(),
+	}).required(),
 });
 
 // map your env vars to ConfigService's properties
@@ -112,6 +124,11 @@ const loadEnv = () => ({
 		user: process.env.EMAIL_USER,
 		pass: process.env.EMAIL_PASS,
 		from: process.env.EMAIL_FROM,
+	},
+	cloudinary: {
+		cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+		api_key: process.env.CLOUDINARY_API_KEY,
+		api_secret: process.env.CLOUDINARY_API_SECRET,
 	},
 });
 
