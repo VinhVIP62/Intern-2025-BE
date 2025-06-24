@@ -2,5 +2,8 @@
 	"PASSWORD_UPDATED_SUCCESS": "Password has been updated successfully",
 	"PROFILE_UPDATED_SUCCESS": "Profile updated successfully",
 	"USER_NOT_FOUND": "User not found",
-	"PROFILE_RETRIEVED_SUCCESS": "Profile retrieved successfully"
+	"PROFILE_RETRIEVED_SUCCESS": "Profile retrieved successfully",
+	"SPORTS_RETRIEVED_SUCCESS": "All sports retrieved successfully",
+	"SKILL_LEVELS_UPDATED_SUCCESS": "Skill levels updated successfully",
+	"FAVORITE_SPORT_REMOVED_SUCCESS": "Favorite sport removed successfully"
 }

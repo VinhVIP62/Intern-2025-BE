@@ -164,14 +164,7 @@
         },
         "responses": {
           "200": {
-            "description": "Cập nhật profile thành công",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
+            "description": "Cập nhật profile thành công"
           }
         },
         "summary": "Cập nhật thông tin profile của người dùng hiện tại",
@@ -301,6 +294,130 @@
           }
         },
         "summary": "Upload cover image for current user",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/v1/user/all-sport": {
+      "get": {
+        "operationId": "UserController_getSports_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Danh sách tất cả các môn thể thao",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "football",
+                      "basketball",
+                      "tennis",
+                      "badminton",
+                      "volleyball",
+                      "table_tennis",
+                      "swimming",
+                      "running",
+                      "cycling",
+                      "yoga",
+                      "gym",
+                      "martial_arts",
+                      "boxing",
+                      "golf",
+                      "rock_climbing"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy danh sách tất cả các môn thể thao",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/v1/user/skills": {
+      "put": {
+        "operationId": "UserController_updateSkillLevels_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Skill levels",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "skillLevels": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string",
+                      "enum": [
+                        "beginner",
+                        "intermediate",
+                        "advanced",
+                        "professional"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cập nhật skill levels thành công"
+          }
+        },
+        "summary": "Cập nhật trình độ kỹ năng cho từng môn thể thao",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/v1/user/favorite-sport/{sportType}": {
+      "delete": {
+        "operationId": "UserController_removeFavoriteSport_v1",
+        "parameters": [
+          {
+            "name": "sportType",
+            "required": true,
+            "in": "path",
+            "description": "Tên môn thể thao cần xóa",
+            "schema": {
+              "enum": [
+                "football",
+                "basketball",
+                "tennis",
+                "badminton",
+                "volleyball",
+                "table_tennis",
+                "swimming",
+                "running",
+                "cycling",
+                "yoga",
+                "gym",
+                "martial_arts",
+                "boxing",
+                "golf",
+                "rock_climbing"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Xóa môn thể thao yêu thích thành công"
+          }
+        },
+        "summary": "Xóa 1 môn thể thao khỏi danh sách yêu thích và skillLevels",
         "tags": [
           "User"
         ]

@@ -14,6 +14,7 @@ import {
 	UploadedFile,
 	UseInterceptors,
 	BadRequestException,
+	Delete,
 } from '@nestjs/common';
 import {
 	ApiBody,
@@ -22,6 +23,7 @@ import {
 	ApiTags,
 	ApiParam,
 	ApiConsumes,
+	ApiOkResponse,
 } from '@nestjs/swagger';
 import { UserService } from '../providers/user.service';
 import { ResponseEntity } from '@common/types';
@@ -30,6 +32,7 @@ import { I18n, I18nContext } from 'nestjs-i18n';
 import { FileService } from '../../file/providers/file.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadApiResponse } from 'cloudinary';
+import { SportType, ActivityLevel } from '../enums/user.enum';
 
 @ApiTags('User')
 @Controller('user')
@@ -123,7 +126,6 @@ export class UserController {
 	@ApiResponse({
 		status: 200,
 		description: 'Cập nhật profile thành công',
-		type: String,
 	})
 	async updateCurrentUserProfile(
 		@Request() req,
@@ -131,7 +133,7 @@ export class UserController {
 		@I18n() i18n: I18nContext,
 	): Promise<ResponseEntity<null>> {
 		const userId = req.user.id;
-		const updatedProfile = await this.userService.updateProfile(userId, updateData, i18n);
+		await this.userService.updateProfile(userId, updateData, i18n);
 
 		return {
 			success: true,
@@ -245,5 +247,111 @@ export class UserController {
 			console.error('Upload cover image error:', error);
 			throw new BadRequestException(i18n.t('common.FILE_UPLOAD_ERROR'));
 		}
+	}
+
+	@Public()
+	@Version('1')
+	@Get('all-sport')
+	@ApiOperation({ summary: 'Lấy danh sách tất cả các môn thể thao' })
+	@ApiOkResponse({
+		description: 'Danh sách tất cả các môn thể thao',
+		schema: {
+			type: 'array',
+			items: { type: 'string', enum: Object.values(SportType) },
+		},
+	})
+	async getSports(@I18n() i18n: I18nContext): Promise<ResponseEntity<string[]>> {
+		return {
+			success: true,
+			data: Object.values(SportType),
+			message: i18n.t('user.SPORTS_RETRIEVED_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Put('skills')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Cập nhật trình độ kỹ năng cho từng môn thể thao' })
+	@ApiBody({
+		description: 'Skill levels',
+		schema: {
+			type: 'object',
+			properties: {
+				skillLevels: {
+					type: 'object',
+					additionalProperties: { type: 'string', enum: Object.values(ActivityLevel) },
+				},
+			},
+		},
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Cập nhật skill levels thành công',
+	})
+	async updateSkillLevels(
+		@Request() req,
+		@Body('skillLevels') skillLevels: Record<string, ActivityLevel>,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<null>> {
+		const userId = req.user.id;
+		const skillLevelsMap = new Map(
+			Object.entries(skillLevels).map(([k, v]) => [k as SportType, v as ActivityLevel]),
+		);
+		await this.userService.updateProfile(userId, { skillLevels: skillLevelsMap }, i18n);
+		return {
+			success: true,
+			message: i18n.t('user.SKILL_LEVELS_UPDATED_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Delete('favorite-sport/:sportType')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Xóa 1 môn thể thao khỏi danh sách yêu thích và skillLevels' })
+	@ApiParam({
+		name: 'sportType',
+		enum: Object.values(SportType),
+		description: 'Tên môn thể thao cần xóa',
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Xóa môn thể thao yêu thích thành công',
+	})
+	async removeFavoriteSport(
+		@Request() req,
+		@Param('sportType') sportType: string,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<null>> {
+		const userId = req.user.id;
+		const sport = sportType as SportType;
+
+		// Lấy profile hiện tại
+		const profile = await this.userService.getProfile(userId, i18n);
+		// Xóa sportType khỏi favoritesSports
+		const newFavorites = (profile.favoritesSports || []).filter(s => s !== sport);
+
+		// Xóa sportType khỏi skillLevels
+		const newSkillLevels = new Map(
+			Object.entries(profile.skillLevels || {}).map(([k, v]) => [
+				k as SportType,
+				v as ActivityLevel,
+			]),
+		);
+		newSkillLevels.delete(sport);
+
+		await this.userService.updateProfile(
+			userId,
+			{
+				favoritesSports: newFavorites,
+				skillLevels: newSkillLevels,
+			},
+			i18n,
+		);
+		return {
+			success: true,
+			message: i18n.t('user.FAVORITE_SPORT_REMOVED_SUCCESS'),
+		};
 	}
 }
