@@ -212,6 +212,199 @@
         ]
       }
     },
+    "/api/v1/user/avatar-image": {
+      "post": {
+        "operationId": "UserController_uploadAvatarImage_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Avatar image upload",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Upload avatar image successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "success": true,
+                    "data": {
+                      "asset_id": "some-asset-id",
+                      "public_id": "some-public-id",
+                      "url": "https://res.cloudinary.com/..."
+                    },
+                    "message": "Tải lên tệp tin thành công"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Upload avatar image for current user",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/v1/user/cover-image": {
+      "post": {
+        "operationId": "UserController_uploadCoverImage_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Cover image upload",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Upload cover image successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "success": true,
+                    "data": {
+                      "asset_id": "some-asset-id",
+                      "public_id": "some-public-id",
+                      "url": "https://res.cloudinary.com/..."
+                    },
+                    "message": "Tải lên tệp tin thành công"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Upload cover image for current user",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/v1/file/upload": {
+      "post": {
+        "operationId": "FileController_uploadFile_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "File upload",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Upload file successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "success": true,
+                    "data": {
+                      "asset_id": "some-asset-id",
+                      "public_id": "some-public-id",
+                      "url": "https://res.cloudinary.com/..."
+                    },
+                    "message": "File uploaded successfully"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Upload file",
+        "tags": [
+          "File"
+        ]
+      }
+    },
+    "/api/v1/file/upload-multiple": {
+      "post": {
+        "operationId": "FileController_uploadMultipleFiles_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Multiple file upload",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Upload multiple files successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "success": true,
+                    "data": [
+                      {
+                        "asset_id": "some-asset-id",
+                        "public_id": "some-public-id",
+                        "url": "https://res.cloudinary.com/..."
+                      }
+                    ],
+                    "message": "Files uploaded successfully"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Upload multiple files",
+        "tags": [
+          "File"
+        ]
+      }
+    },
     "/api/v1/email/send-otp": {
       "post": {
         "description": "Gửi mã OTP đến email người dùng",
@@ -312,105 +505,6 @@
         "summary": "Verify OTP",
         "tags": [
           "Email"
-        ]
-      }
-    },
-    "/api/v1/file/upload": {
-      "post": {
-        "operationId": "FileController_uploadFile_v1",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "description": "File upload",
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "file": {
-                    "type": "string",
-                    "format": "binary"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Upload file successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "success": true,
-                    "data": {
-                      "asset_id": "some-asset-id",
-                      "public_id": "some-public-id",
-                      "url": "https://res.cloudinary.com/..."
-                    },
-                    "message": "File uploaded successfully"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "Upload file",
-        "tags": [
-          "File"
-        ]
-      }
-    },
-    "/api/v1/file/upload-multiple": {
-      "post": {
-        "operationId": "FileController_uploadMultipleFiles_v1",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "description": "Multiple file upload",
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "files": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "format": "binary"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Upload multiple files successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "success": true,
-                    "data": [
-                      {
-                        "asset_id": "some-asset-id",
-                        "public_id": "some-public-id",
-                        "url": "https://res.cloudinary.com/..."
-                      }
-                    ],
-                    "message": "Files uploaded successfully"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "Upload multiple files",
-        "tags": [
-          "File"
         ]
       }
     }

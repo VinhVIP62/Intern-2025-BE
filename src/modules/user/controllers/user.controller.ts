@@ -11,17 +11,33 @@ import {
 	Version,
 	Param,
 	Request,
+	UploadedFile,
+	UseInterceptors,
+	BadRequestException,
 } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags, ApiParam } from '@nestjs/swagger';
+import {
+	ApiBody,
+	ApiOperation,
+	ApiResponse,
+	ApiTags,
+	ApiParam,
+	ApiConsumes,
+} from '@nestjs/swagger';
 import { UserService } from '../providers/user.service';
 import { ResponseEntity } from '@common/types';
 import { ResponseProfileDto, UpdateProfileDto } from '../dto';
 import { I18n, I18nContext } from 'nestjs-i18n';
+import { FileService } from '../../file/providers/file.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { UploadApiResponse } from 'cloudinary';
 
 @ApiTags('User')
 @Controller('user')
 export class UserController {
-	constructor(private readonly userService: UserService) {}
+	constructor(
+		private readonly userService: UserService,
+		private readonly fileService: FileService,
+	) {}
 
 	@Public()
 	@Version('1')
@@ -121,5 +137,113 @@ export class UserController {
 			success: true,
 			message: i18n.t('user.PROFILE_UPDATED_SUCCESS'),
 		};
+	}
+
+	@Version('1')
+	@Post('avatar-image')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@UseInterceptors(FileInterceptor('file'))
+	@ApiOperation({ summary: 'Upload avatar image for current user' })
+	@ApiConsumes('multipart/form-data')
+	@ApiBody({
+		description: 'Avatar image upload',
+		schema: {
+			type: 'object',
+			properties: {
+				file: {
+					type: 'string',
+					format: 'binary',
+				},
+			},
+		},
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Upload avatar image successfully',
+		schema: {
+			example: {
+				success: true,
+				data: {
+					asset_id: 'some-asset-id',
+					public_id: 'some-public-id',
+					url: 'https://res.cloudinary.com/...',
+					// ...other UploadApiResponse fields
+				},
+				message: 'Tải lên tệp tin thành công',
+			},
+		},
+	})
+	async uploadAvatarImage(
+		@Request() req,
+		@UploadedFile() file: Express.Multer.File,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<UploadApiResponse>> {
+		try {
+			const result = await this.fileService.uploadFile(file);
+			await this.userService.update(req.user.id, { avatar: result.secure_url });
+			return {
+				success: true,
+				data: result,
+				message: i18n.t('common.FILE_UPLOAD_SUCCESS'),
+			};
+		} catch (error) {
+			console.error('Upload avatar error:', error);
+			throw new BadRequestException(i18n.t('common.FILE_UPLOAD_ERROR'));
+		}
+	}
+
+	@Version('1')
+	@Post('cover-image')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@UseInterceptors(FileInterceptor('file'))
+	@ApiOperation({ summary: 'Upload cover image for current user' })
+	@ApiConsumes('multipart/form-data')
+	@ApiBody({
+		description: 'Cover image upload',
+		schema: {
+			type: 'object',
+			properties: {
+				file: {
+					type: 'string',
+					format: 'binary',
+				},
+			},
+		},
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Upload cover image successfully',
+		schema: {
+			example: {
+				success: true,
+				data: {
+					asset_id: 'some-asset-id',
+					public_id: 'some-public-id',
+					url: 'https://res.cloudinary.com/...',
+					// ...other UploadApiResponse fields
+				},
+				message: 'Tải lên tệp tin thành công',
+			},
+		},
+	})
+	async uploadCoverImage(
+		@Request() req,
+		@UploadedFile() file: Express.Multer.File,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<UploadApiResponse>> {
+		try {
+			const result = await this.fileService.uploadFile(file);
+			await this.userService.update(req.user.id, { coverImage: result.secure_url });
+			return {
+				success: true,
+				data: result,
+				message: i18n.t('common.FILE_UPLOAD_SUCCESS'),
+			};
+		} catch (error) {
+			console.error('Upload cover image error:', error);
+			throw new BadRequestException(i18n.t('common.FILE_UPLOAD_ERROR'));
+		}
 	}
 }
