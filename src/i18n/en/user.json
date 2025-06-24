@@ -1,0 +1,6 @@
+{
+	"PASSWORD_UPDATED_SUCCESS": "Password has been updated successfully",
+	"PROFILE_UPDATED_SUCCESS": "Profile updated successfully",
+	"USER_NOT_FOUND": "User not found",
+	"PROFILE_RETRIEVED_SUCCESS": "Profile retrieved successfully"
+}

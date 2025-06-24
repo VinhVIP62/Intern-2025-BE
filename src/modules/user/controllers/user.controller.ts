@@ -16,6 +16,7 @@ import { ApiBody, ApiOperation, ApiResponse, ApiTags, ApiParam } from '@nestjs/s
 import { UserService } from '../providers/user.service';
 import { ResponseEntity } from '@common/types';
 import { ResponseProfileDto, UpdateProfileDto } from '../dto';
+import { I18n, I18nContext } from 'nestjs-i18n';
 
 @ApiTags('User')
 @Controller('user')
@@ -38,12 +39,14 @@ export class UserController {
 	@ApiResponse({ status: 200, description: 'Tạo mật khẩu mới thành công' })
 	async updateNewPassword(
 		@Body() body: { email: string; newPassword: string },
-	): Promise<ResponseEntity<string>> {
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<null>> {
 		const { email, newPassword } = body;
-		await this.userService.updateNewPassword(email, newPassword);
+		await this.userService.updateNewPassword(email, newPassword, i18n);
+
 		return {
 			success: true,
-			data: 'Mật khẩu đã được cập nhật thành công',
+			message: i18n.t('user.PASSWORD_UPDATED_SUCCESS'),
 		};
 	}
 
@@ -57,12 +60,17 @@ export class UserController {
 		description: 'Lấy thông tin profile thành công',
 		type: ResponseProfileDto,
 	})
-	async getCurrentUserProfile(@Request() req): Promise<ResponseEntity<ResponseProfileDto>> {
+	async getCurrentUserProfile(
+		@Request() req,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<ResponseProfileDto>> {
 		const userId = req.user.id;
-		const profile = await this.userService.getProfile(userId);
+		const profile = await this.userService.getProfile(userId, i18n);
+
 		return {
 			success: true,
 			data: profile,
+			message: i18n.t('user.PROFILE_RETRIEVED_SUCCESS'),
 		};
 	}
 
@@ -79,11 +87,14 @@ export class UserController {
 	})
 	async getUserProfile(
 		@Param('userId') userId: string,
+		@I18n() i18n: I18nContext,
 	): Promise<ResponseEntity<ResponseProfileDto>> {
-		const profile = await this.userService.getProfile(userId);
+		const profile = await this.userService.getProfile(userId, i18n);
+
 		return {
 			success: true,
 			data: profile,
+			message: i18n.t('user.PROFILE_RETRIEVED_SUCCESS'),
 		};
 	}
 
@@ -101,12 +112,14 @@ export class UserController {
 	async updateCurrentUserProfile(
 		@Request() req,
 		@Body() updateData: UpdateProfileDto,
-	): Promise<ResponseEntity<string>> {
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<null>> {
 		const userId = req.user.id;
-		const updatedProfile = await this.userService.updateProfile(userId, updateData);
+		const updatedProfile = await this.userService.updateProfile(userId, updateData, i18n);
+
 		return {
 			success: true,
-			data: 'Cập nhật profile thành công',
+			message: i18n.t('user.PROFILE_UPDATED_SUCCESS'),
 		};
 	}
 }

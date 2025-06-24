@@ -4,6 +4,7 @@ import { User } from '../entities/user.schema';
 import { ResponseProfileDto } from '../dto/response-profile.dto';
 import { UpdateProfileDto } from '../dto/update-profile.dto';
 import { plainToClass } from 'class-transformer';
+import { I18nContext } from 'nestjs-i18n';
 
 @Injectable()
 export class UserService {
@@ -34,19 +35,21 @@ export class UserService {
 		return foundUser;
 	}
 
-	async updateNewPassword(email: string, newPassword: string): Promise<void> {
+	async updateNewPassword(email: string, newPassword: string, i18n?: I18nContext): Promise<void> {
 		const user = await this.userRepository.findOneByEmail(email);
 		if (!user) {
-			throw new NotFoundException('User not found');
+			const message = i18n ? i18n.t('user.USER_NOT_FOUND') : 'User not found';
+			throw new NotFoundException(message);
 		}
 		user.password = newPassword;
 		await user.save();
 	}
 
-	async getProfile(userId: string): Promise<ResponseProfileDto> {
+	async getProfile(userId: string, i18n?: I18nContext): Promise<ResponseProfileDto> {
 		const user = await this.userRepository.findOneById(userId);
 		if (!user) {
-			throw new NotFoundException('User not found');
+			const message = i18n ? i18n.t('user.USER_NOT_FOUND') : 'User not found';
+			throw new NotFoundException(message);
 		}
 
 		// Populate virtual fields to get counts
@@ -67,10 +70,15 @@ export class UserService {
 		return plainToClass(ResponseProfileDto, profileData, { excludeExtraneousValues: true });
 	}
 
-	async updateProfile(userId: string, updateData: UpdateProfileDto): Promise<ResponseProfileDto> {
+	async updateProfile(
+		userId: string,
+		updateData: UpdateProfileDto,
+		i18n?: I18nContext,
+	): Promise<ResponseProfileDto> {
 		const user = await this.userRepository.findOneById(userId);
 		if (!user) {
-			throw new NotFoundException('User not found');
+			const message = i18n ? i18n.t('user.USER_NOT_FOUND') : 'User not found';
+			throw new NotFoundException(message);
 		}
 
 		// Update user data
@@ -78,6 +86,6 @@ export class UserService {
 		await user.save();
 
 		// Return updated profile
-		return this.getProfile(userId);
+		return this.getProfile(userId, i18n);
 	}
 }
