@@ -21,10 +21,7 @@ export class FriendRequest extends Document {
 	@Prop({ default: null })
 	message: string;
 
-	@Prop({ index: true })
 	createdAt?: Date;
-
-	@Prop({ index: true })
 	updatedAt?: Date;
 }
 

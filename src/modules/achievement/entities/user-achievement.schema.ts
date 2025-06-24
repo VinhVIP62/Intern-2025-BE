@@ -15,10 +15,7 @@ export class UserAchievement extends Document {
 	@Prop({ default: null })
 	progress: number; // for progressive achievements
 
-	@Prop({ index: true })
 	createdAt?: Date;
-
-	@Prop({ index: true })
 	updatedAt?: Date;
 }
 

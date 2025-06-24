@@ -75,7 +75,7 @@ export class User extends Document {
 	joinedGroups: Types.ObjectId[];
 
 	@Prop({ default: true })
-	isActive: boolean; // optional, use for messaging
+	isActive: boolean;
 
 	@Prop({ default: false })
 	isVerified: boolean; // optional, for email verification
@@ -83,10 +83,8 @@ export class User extends Document {
 	@Prop({ type: [String], enum: Role, default: [Role.USER] })
 	roles: Role[];
 
-	@Prop({ index: true })
+	// Remove duplicate index declarations since timestamps: true handles them
 	createdAt?: Date;
-
-	@Prop({ index: true })
 	updatedAt?: Date;
 
 	// Virtual field for fullName
@@ -151,7 +149,6 @@ UserSchema.pre('save', function () {
 // Tạo compound indexes cho performance
 UserSchema.index({ email: 1, role: 1 });
 UserSchema.index({ firstName: 1, lastName: 1 });
-UserSchema.index({ createdAt: -1, updatedAt: -1 });
 UserSchema.index({ favoritesSports: 1 });
 UserSchema.index({ isActive: 1, isVerified: 1 });
 

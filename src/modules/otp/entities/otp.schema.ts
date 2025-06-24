@@ -20,10 +20,7 @@ export class Otp extends Document implements IOtp {
 	@Prop({ required: true, length: 6 })
 	otp: string;
 
-	@Prop({ index: true })
 	createdAt?: Date;
-
-	@Prop({ index: true })
 	updatedAt?: Date;
 
 	isValid(): boolean {

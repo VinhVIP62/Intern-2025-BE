@@ -118,6 +118,13 @@ const loadEnv = () => ({
 // validate and optionally transform your env variables here
 export default (): IEnvVars => {
 	const env = loadEnv();
+
+	// Debug: Log để kiểm tra file .env nào đang được sử dụng
+	console.log('🔍 Environment Debug:');
+	console.log('NODE_ENV:', process.env.NODE_ENV);
+	console.log('PORT:', process.env.PORT);
+	console.log('DATABASE_URI:', process.env.DATABASE_URI ? 'Set' : 'Not set');
+
 	const valResult = envFileSchema.validate(env, { abortEarly: false });
 
 	if (valResult.error) {

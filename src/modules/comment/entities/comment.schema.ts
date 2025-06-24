@@ -28,10 +28,7 @@ export class Comment extends Document {
 	@Prop({ default: 0, index: true })
 	replyCount: number;
 
-	@Prop({ index: true })
 	createdAt?: Date;
-
-	@Prop({ index: true })
 	updatedAt?: Date;
 }
 
