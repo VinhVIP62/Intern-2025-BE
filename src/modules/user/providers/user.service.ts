@@ -65,6 +65,7 @@ export class UserService {
 			followingCount: user.following?.length || 0,
 			followersCount: user.followers?.length || 0,
 			joinedGroupsCount: user.joinedGroups?.length || 0,
+			skillLevels: Object.fromEntries(user.skillLevels || []),
 		};
 
 		return plainToClass(ResponseProfileDto, profileData, { excludeExtraneousValues: true });
