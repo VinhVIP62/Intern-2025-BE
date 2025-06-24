@@ -6,6 +6,7 @@ import { Payload, Tokens } from '../types';
 import { RegisterDto } from '../dto/register.dto';
 import { User } from '@modules/user/entities/user.schema';
 import { LoginDto } from '../dto/login.dto';
+import { I18nContext } from 'nestjs-i18n';
 
 @Injectable()
 export class AuthService {
@@ -14,15 +15,17 @@ export class AuthService {
 		private readonly tokenService: TokenService,
 	) {}
 
-	async login(data: LoginDto): Promise<Tokens> {
+	async login(data: LoginDto, i18n?: I18nContext): Promise<Tokens> {
 		const user = await this.userService.findOneByEmail(data.email);
 		if (!user) {
-			throw new UnauthorizedException('Email not found');
+			const message = i18n ? i18n.t('auth.INVALID_CREDENTIALS') : 'Email not found';
+			throw new UnauthorizedException(message);
 		}
 
 		const isPasswordValid = await bcrypt.compare(data.password, user.password);
 		if (!isPasswordValid) {
-			throw new UnauthorizedException('Invalid password');
+			const message = i18n ? i18n.t('auth.INVALID_CREDENTIALS') : 'Invalid password';
+			throw new UnauthorizedException(message);
 		}
 
 		const tokens = await this.tokenService.generateTokens(
@@ -42,7 +45,14 @@ export class AuthService {
 		return tokens;
 	}
 
-	async register(data: RegisterDto): Promise<Tokens> {
+	async register(data: RegisterDto, i18n?: I18nContext): Promise<Tokens> {
+		// Check if user already exists
+		const existingUser = await this.userService.findOneByEmail(data.email);
+		if (existingUser) {
+			const message = i18n ? i18n.t('auth.EMAIL_ALREADY_EXISTS') : 'Email already exists';
+			throw new UnauthorizedException(message);
+		}
+
 		const user = await this.userService.create(data as Partial<User>);
 
 		const tokens = await this.tokenService.generateTokens(

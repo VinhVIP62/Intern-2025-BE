@@ -1,0 +1,15 @@
+{
+	"OTP_SENT_SUCCESS": "OTP sent successfully",
+	"OTP_VERIFIED_SUCCESS": "OTP verified successfully",
+	"OTP_VERIFICATION_FAILED": "OTP verification failed",
+	"OTP_EXPIRES_IN": "This code will expire in {minutes} minutes",
+	"OTP_EXPIRES_AT": "This code will expire at {time}",
+	"TIME_ZONE": "UTC",
+	"EMAIL_SUBJECT": "[ALOBO Sport Hub] Verification Code",
+	"EMAIL_GREETING": "Hello,",
+	"EMAIL_VERIFICATION_CODE": "Your verification code is:",
+	"EMAIL_IGNORE_MESSAGE": "If you didn't request this code, please ignore this email.",
+	"OTP_INVALID_OR_EMAIL": "Invalid OTP or email",
+	"OTP_EXPIRED": "OTP has expired",
+	"OTP_INVALID": "Invalid OTP"
+}

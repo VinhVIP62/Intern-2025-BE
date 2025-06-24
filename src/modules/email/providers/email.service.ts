@@ -6,7 +6,7 @@ import { ResponseEmailDto } from '../dto/response-email.dto';
 import { IEnvVars } from '@configs/config';
 import { randomInt } from 'crypto';
 import { OtpService } from '@modules/otp/providers/otp.service';
-import { I18nService, I18nContext } from 'nestjs-i18n';
+import { I18nContext } from 'nestjs-i18n';
 
 @Injectable()
 export class EmailService {
@@ -16,7 +16,6 @@ export class EmailService {
 	constructor(
 		private readonly configService: ConfigService<IEnvVars>,
 		private readonly otpService: OtpService,
-		private readonly i18n: I18nService,
 	) {
 		const emailConfig = this.configService.get('email', { infer: true });
 		if (!emailConfig) {
@@ -78,33 +77,33 @@ export class EmailService {
 		};
 	}
 
-	async sendOTP(to: string): Promise<ResponseEmailDto> {
+	async sendOTP(to: string, i18n?: I18nContext): Promise<ResponseEmailDto> {
 		const otp = randomInt(100000, 1000000).toString();
 		const otpExpired = this.createOtpExpiredTime();
 
 		// Get current language context
-		const lang = I18nContext.current()?.lang || 'en';
+		const lang = i18n?.lang || I18nContext.current()?.lang || 'en';
 
 		// Format time based on language
-		const timeZone = await this.i18n.translate('common.TIME_ZONE', { lang });
-		const expiresInText = await this.i18n.translate('common.OTP_EXPIRES_IN', {
-			lang,
-			args: { minutes: 5 },
-		});
-		const expiresAtText = await this.i18n.translate('common.OTP_EXPIRES_AT', {
-			lang,
-			args: {
-				time: this.formatDateTime(otpExpired, lang),
-			},
-		});
+		const timeZone = i18n ? i18n.t('email.TIME_ZONE') : 'UTC';
+		const expiresInText =
+			i18n ?
+				i18n.t('email.OTP_EXPIRES_IN', { args: { minutes: 5 } })
+			:	'This code will expire in 5 minutes';
+		const expiresAtText =
+			i18n ?
+				i18n.t('email.OTP_EXPIRES_AT', { args: { time: this.formatDateTime(otpExpired, lang) } })
+			:	`This code will expire at ${this.formatDateTime(otpExpired, lang)}`;
 
 		// Get email content from i18n
-		const subject = await this.i18n.translate('common.EMAIL_SUBJECT', { lang });
-		const greeting = await this.i18n.translate('common.EMAIL_GREETING', { lang });
-		const verificationCodeText = await this.i18n.translate('common.EMAIL_VERIFICATION_CODE', {
-			lang,
-		});
-		const ignoreMessage = await this.i18n.translate('common.EMAIL_IGNORE_MESSAGE', { lang });
+		const subject = i18n ? i18n.t('email.EMAIL_SUBJECT') : '[ALOBO Sport Hub] Verification Code';
+		const greeting = i18n ? i18n.t('email.EMAIL_GREETING') : 'Hello,';
+		const verificationCodeText =
+			i18n ? i18n.t('email.EMAIL_VERIFICATION_CODE') : 'Your verification code is:';
+		const ignoreMessage =
+			i18n ?
+				i18n.t('email.EMAIL_IGNORE_MESSAGE')
+			:	"If you didn't request this code, please ignore this email.";
 
 		const text = `${subject}\n\n${greeting}\n\n${verificationCodeText}\n\n${otp}\n\n${expiresInText}.\n\n${ignoreMessage}`;
 		const html = `
@@ -134,8 +133,18 @@ export class EmailService {
 		};
 	}
 
-	async verifyOtp(email: string, otp: string): Promise<boolean> {
+	async verifyOtp(
+		email: string,
+		otp: string,
+		i18n?: I18nContext,
+	): Promise<{ isValid: boolean; message?: string }> {
 		const isValid = await this.otpService.verifyOtp(email, otp);
-		return isValid;
+
+		if (!isValid && i18n) {
+			const message = i18n.t('email.OTP_VERIFICATION_FAILED');
+			return { isValid, message };
+		}
+
+		return { isValid };
 	}
 }

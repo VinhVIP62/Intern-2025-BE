@@ -6,6 +6,7 @@ import { ResponseEntity } from '@common/types';
 import { JwtRefreshAuthGuard } from '@common/guards';
 import { Request } from 'express';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { I18n, I18nContext } from 'nestjs-i18n';
 
 @Public()
 @ApiTags('Auth')
@@ -21,11 +22,15 @@ export class AuthController {
 		description: 'Login thành công',
 		type: ResponseAuthDto,
 	})
-	async login(@Body() body: LoginDto): Promise<ResponseEntity<ResponseAuthDto>> {
-		const tokens = await this.authService.login(body);
+	async login(
+		@Body() body: LoginDto,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<ResponseAuthDto>> {
+		const tokens = await this.authService.login(body, i18n);
 		return {
 			success: true,
 			data: tokens,
+			message: i18n.t('auth.LOGIN_SUCCESS'),
 		};
 	}
 
@@ -38,13 +43,14 @@ export class AuthController {
 		type: ResponseAuthDto,
 	})
 	async register(
-		@Body()
-		body: RegisterDto,
+		@Body() body: RegisterDto,
+		@I18n() i18n: I18nContext,
 	): Promise<ResponseEntity<ResponseAuthDto>> {
-		const tokens = await this.authService.register(body);
+		const tokens = await this.authService.register(body, i18n);
 		return {
 			success: true,
 			data: tokens,
+			message: i18n.t('auth.REGISTER_SUCCESS'),
 		};
 	}
 
@@ -58,10 +64,14 @@ export class AuthController {
 		description: 'Refresh token thành công',
 		type: ResponseAuthDto,
 	})
-	async refreshToken(@Req() req: Request) {
+	async refreshToken(@Req() req: Request, @I18n() i18n: I18nContext) {
 		const tokens = await this.authService.refreshToken({
 			sub: req.user as { id: string; roles: string[] },
 		});
-		return { success: true, data: tokens };
+		return {
+			success: true,
+			data: tokens,
+			message: i18n.t('auth.REFRESH_TOKEN_SUCCESS'),
+		};
 	}
 }
