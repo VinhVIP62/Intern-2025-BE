@@ -95,6 +95,39 @@
         ]
       }
     },
+    "/api/v1/user/new-password": {
+      "post": {
+        "operationId": "UserController_updateNewPassword_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "newPassword": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tạo mật khẩu mới thành công"
+          }
+        },
+        "summary": "Tạo mật khẩu mới",
+        "tags": [
+          "User"
+        ]
+      }
+    },
     "/api/v1/email/send-otp": {
       "post": {
         "description": "Gửi mã OTP đến email người dùng",

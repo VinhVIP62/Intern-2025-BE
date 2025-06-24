@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { IUserRepository } from '../repositories/user.repository';
 import { User } from '../entities/user.schema';
 
@@ -29,5 +29,14 @@ export class UserService {
 	async findOneByEmail(email: string): Promise<User | null> {
 		const foundUser = this.userRepository.findOneByEmail(email);
 		return foundUser;
+	}
+
+	async updateNewPassword(email: string, newPassword: string): Promise<void> {
+		const user = await this.userRepository.findOneByEmail(email);
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		user.password = newPassword;
+		await user.save();
 	}
 }
