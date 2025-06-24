@@ -8,3 +8,4 @@ export * from './comment/comment.module';
 export * from './friend-request/friend-request.module';
 export * from './achievement/achievement.module';
 export * from './otp/otp.module';
+export * from './file';
