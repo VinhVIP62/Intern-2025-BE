@@ -1,6 +1,5 @@
 import { ArgumentsHost, ExceptionFilter, HttpStatus, Catch } from '@nestjs/common';
 import { CustomError, EntityNotFound } from '@common/exceptions';
-import { ResponseEntity } from '@common/types';
 import { Response, Request } from 'express';
 import { I18nService } from 'nestjs-i18n';
 
@@ -24,7 +23,7 @@ export class CustomExceptionFilter implements ExceptionFilter {
 		req: Request,
 	): {
 		status: HttpStatus;
-		response: ResponseEntity<null>;
+		response: any;
 	} {
 		exception.message = this.i18n.translate('common.ERROR_MESSAGE', {
 			lang: req.headers['accept-language'] || 'en',

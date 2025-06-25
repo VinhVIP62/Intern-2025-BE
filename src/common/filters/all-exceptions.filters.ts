@@ -1,5 +1,4 @@
 import { AppLoggerService } from '@common/logger/logger.service';
-import { ResponseEntity } from '@common/types';
 import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { I18nService } from 'nestjs-i18n';
@@ -33,9 +32,9 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 		req: Request,
 	): {
 		status: HttpStatus;
-		response: ResponseEntity<null>;
+		response: any;
 	} {
-		const translatedMessage = this.i18n.translate('common.ERROR_MESSAGE', {
+		const translatedMessage = this.i18n.translate(String(exception), {
 			lang: req.headers['accept-language'] || 'en',
 			args: { message: String(exception) },
 		});
