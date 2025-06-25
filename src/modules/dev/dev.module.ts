@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { DevController } from './dev.controller';
+import { DevController } from './controllers/dev.controller';
 
 @Module({
 	controllers: [DevController],
