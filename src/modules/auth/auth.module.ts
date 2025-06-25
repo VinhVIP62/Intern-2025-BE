@@ -1,5 +1,5 @@
 import { Module, Global } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './strategies/jwt.strategy';
@@ -12,10 +12,13 @@ import { UserModule } from '@modules/user/user.module';
 import { IEnvVars } from '@configs/config';
 import { JwtAccessConfig, JwtRefreshConfig } from '@configs/index';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh-strategy';
+import { OtpService } from './providers/otp.service';
+import { MailModule } from '@modules/mail/mail.module';
+import { ResetPasswordService } from './providers/resetPassword.service';
 
 @Global()
 @Module({
-	imports: [PassportModule, UserModule],
+	imports: [PassportModule, UserModule, MailModule],
 	controllers: [AuthController],
 	providers: [
 		JwtStrategy,
@@ -23,6 +26,8 @@ import { JwtRefreshStrategy } from './strategies/jwt-refresh-strategy';
 		JwtAuthGuard,
 		RolesGuard,
 		TokenService,
+		OtpService,
+		ResetPasswordService,
 		AuthService,
 		{
 			inject: [ConfigService],

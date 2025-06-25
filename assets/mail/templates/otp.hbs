@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>OTP Code</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f7f7f7;
+        padding: 20px;
+      }
+      .container {
+        background-color: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+      }
+      .otp {
+        font-size: 24px;
+        color: #e74c3c;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Your OTP Code</h2>
+      <p>Please use the following code to verify your action:</p>
+      <p class="otp">{{otp}}</p>
+      <p>This code will expire in 1 minute.</p>
+    </div>
+  </body>
+</html>

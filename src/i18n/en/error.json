@@ -1,0 +1,15 @@
+{
+    "INTERNAL_SERVER_ERROR": "Internal server error. Please try again later.",
+	"invalidEmail": "Invalid email address.",
+	"passwordMismatch": "Passwords do not match.",
+	"requiredField": "This field is required.",
+	"invalidCredentials": "Invalid username or password.",
+	"accountLocked": "Your account has been locked due to multiple failed login attempts. Please try again later.",
+	"existingUsername": "Username already exists. Please choose a different username.",
+	"existingEmail": "Email already exists. Please use a different email address.",
+	"profileExists": "Profile already exists.",
+	"userNotFound": "User not found.",
+	"profileNotFound": "Profile not found.",
+	"forbidden": "You do not have permission",
+	"unauthorized": "Unauthorized"
+}
