@@ -8,6 +8,21 @@ import { I18nService } from 'nestjs-i18n';
 export class HttpExceptionFilter implements ExceptionFilter {
 	constructor(private readonly i18n: I18nService) {}
 
+	private getMessageKey(exception: HttpException): string {
+		const res = exception.getResponse();
+		console.log(res);
+		// Trường hợp getResponse() là string
+		if (typeof res === 'string') return res;
+
+		// Trường hợp getResponse() là object có .message
+		if (typeof res === 'object' && typeof (res as any).message === 'string') {
+			return (res as any).message;
+		}
+
+		// Fallback mặc định cho 500
+		return 'error.INTERNAL_SERVER_ERROR';
+	}
+
 	catch(exception: HttpException, host: ArgumentsHost) {
 		const ctx = host.switchToHttp();
 		const res = ctx.getResponse<Response>();
@@ -24,16 +39,18 @@ export class HttpExceptionFilter implements ExceptionFilter {
 		req: Request,
 	): {
 		status: HttpStatus;
-		response: ResponseEntity<null>;
+		response: any;
 	} {
+		const status = exception.getStatus() || HttpStatus.INTERNAL_SERVER_ERROR;
+		const messageKey = this.getMessageKey(exception);
+
 		return {
-			status: exception.getStatus() || HttpStatus.INTERNAL_SERVER_ERROR,
+			status: status,
 			response: {
 				success: false,
-				statusCode: exception.getStatus() || HttpStatus.INTERNAL_SERVER_ERROR,
-				error: this.i18n.translate('common.ERROR_MESSAGE', {
+				statusCode: status,
+				error: this.i18n.translate(messageKey, {
 					lang: req.headers['accept-language'] || 'en',
-					args: { message: (exception.getResponse() as { message?: string })?.message },
 				}),
 				data: null,
 			},

@@ -20,4 +20,9 @@ export class UserService {
 		const foundUser = this.userRepository.findOneByUsername(username);
 		return foundUser;
 	}
+
+	async findOneByEmail(email: string): Promise<User | null> {
+		const foundUser = this.userRepository.findOneByEmail(email);
+		return foundUser;
+	}
 }

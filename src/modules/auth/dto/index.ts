@@ -1,3 +1,3 @@
-export * from './auth-response.dto';
-export * from './login.dto';
-export * from './register.dto';
+export * from './response/auth-response.dto';
+export * from './request/login.dto';
+export * from './request/register.dto';

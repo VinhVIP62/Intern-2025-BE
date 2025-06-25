@@ -1,0 +1,15 @@
+{
+    "INTERNAL_SERVER_ERROR": "Lỗi máy chủ nội bộ. Vui lòng thử lại sau.",
+	"invalidEmail": "Địa chỉ email không hợp lệ.",
+	"passwordMismatch": "Mật khẩu không khớp.",
+	"requiredField": "Trường này là bắt buộc.",
+	"invalidCredentials": "Tên người dùng hoặc mật khẩu không hợp lệ.",
+	"accountLocked": "Tài khoản của bạn đã bị khóa do nhiều lần đăng nhập không thành công. Vui lòng thử lại sau.",
+	"existingUsername": "Tên người dùng đã tồn tại. Vui lòng chọn tên người dùng khác.",
+	"existingEmail": "Email đã tồn tại. Vui lòng sử dụng địa chỉ email khác.",
+	"profileExists": "Hồ sơ đã tồn tại.",
+	"userNotFound": "Không tìm thấy người dùng.",
+	"profileNotFound": "Không tìm thấy hồ sơ.",
+	"forbidden": "Bạn không được quyền thực hiện hành động này",
+	"unauthorized": "Không thể xác thực"
+}

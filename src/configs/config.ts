@@ -19,6 +19,12 @@ export interface IEnvVars {
 	readonly cors?: string;
 	readonly throttle_ttl?: number;
 	readonly throttle_limit?: number;
+	readonly redis_host?: string;
+	readonly redis_port?: number;
+	readonly mail_host?: string;
+	readonly mail_port?: number;
+	readonly mail_user?: string;
+	readonly mail_pass?: string;
 }
 
 // env validation schema for Joi
@@ -37,6 +43,12 @@ const envFileSchema = Joi.object<IEnvVars, true>({
 	cors: Joi.string().uri().optional(),
 	throttle_ttl: Joi.number().default(60000), // 1 minute
 	throttle_limit: Joi.number().default(50),
+	redis_host: Joi.string().default('localhost'),
+	redis_port: Joi.number().default(6379),
+	mail_host: Joi.string().optional(),
+	mail_port: Joi.number().optional(),
+	mail_user: Joi.string().optional(),
+	mail_pass: Joi.string().optional(),
 });
 
 // map your env vars to ConfigService's properties
@@ -55,6 +67,12 @@ const loadEnv = () => ({
 	cors: process.env.CORS,
 	throttle_ttl: process.env.THROTTLE_TTL,
 	throttle_limit: process.env.THROTTLE_LIMIT,
+	redis_host: process.env.REDIS_HOST,
+	redis_port: process.env.REDIS_PORT,
+	mail_host: process.env.MAIL_HOST,
+	mail_port: process.env.MAIL_PORT,
+	mail_user: process.env.MAIL_USER,
+	mail_pass: process.env.MAIL_PASS,
 });
 
 // validate and optionally transform your env variables here

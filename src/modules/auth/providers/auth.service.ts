@@ -1,12 +1,15 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConflictException, Injectable, UnauthorizedException, Inject } from '@nestjs/common';
 import { TokenService } from './token.service';
 import { UserService } from '@modules/user/providers/user.service';
 import * as bcrypt from 'bcrypt';
 import { Payload, Tokens } from '../types';
+import type { Redis } from 'ioredis';
+import { LogoutResponse } from '../dto/response/logoutResponse.dto';
 
 @Injectable()
 export class AuthService {
 	constructor(
+		@Inject('REDIS_CLIENT') private readonly redis: Redis,
 		private readonly userService: UserService,
 		private readonly tokenService: TokenService,
 	) {}
@@ -26,7 +29,7 @@ export class AuthService {
 			{
 				username: user.username,
 				sub: {
-					id: user._id,
+					id: user.id,
 					roles: user.roles,
 				},
 			},
@@ -36,7 +39,19 @@ export class AuthService {
 		return tokens;
 	}
 
+	async logout(invalidToken: string): Promise<LogoutResponse> {
+		await this.redis.set(`blacklist:${invalidToken}`, 1, 'EX', 60 * 15);
+		const response = new LogoutResponse();
+		response.message = 'logout.success';
+		return response;
+	}
+
 	async register(username: string, password: string): Promise<Tokens> {
+		const existingUser = await this.userService.findOneByUsername(username);
+		if (existingUser) {
+			throw new ConflictException('error.existingUsername');
+		}
+
 		const user = await this.userService.create({ username, password });
 
 		const tokens = await this.tokenService.generateTokens(

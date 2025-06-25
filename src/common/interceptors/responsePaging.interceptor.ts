@@ -21,14 +21,13 @@ export class ResponsePagingInterceptor<T> implements NestInterceptor<T, any> {
 		const response = ctx.getResponse();
 		const statusCode = response.statusCode || 200;
 		const lang = request.headers['accept-language'] || 'en';
-		const message = this.i18n.translate('common.success', {
-			lang: request.i18nLang,
-		});
 
 		return next.handle().pipe(
 			map(data => ({
 				statusCode,
-				message,
+				message: this.i18n.translate(data.data.message ? data.data.message : 'common.success', {
+					lang: request.i18nLang,
+				}),
 				data: data.data.items || [],
 				meta: {
 					totalItems: data.data.meta?.totalItems || null,
