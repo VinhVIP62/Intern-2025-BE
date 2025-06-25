@@ -1,8 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { ExecutionContext, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import type { Redis } from 'ioredis';
 
 @Injectable()
 export class JwtRefreshAuthGuard extends AuthGuard('refresh-jwt') {
+	constructor(@Inject('REDIS_CLIENT') private readonly redis: Redis) {
+		super();
+	}
 	async handleRequest<TUser = any>(
 		err: any,
 		user: any,
