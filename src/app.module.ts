@@ -7,7 +7,13 @@ import { RouteModule } from '@router/router.module';
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 import path from 'path';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { GlobalExceptionFilter, CustomExceptionFilter, HttpExceptionFilter } from '@common/filters';
+import {
+	GlobalExceptionFilter,
+	CustomExceptionFilter,
+	HttpExceptionFilter,
+	MongoExceptionFilter,
+	MongooseExceptionFilter,
+} from '@common/filters';
 import { JwtAuthGuard } from '@common/guards';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ResponseTransformInterceptor } from '@common/interceptor/response-transform.interceptor';
@@ -56,6 +62,14 @@ import { ResponseTransformInterceptor } from '@common/interceptor/response-trans
 		{
 			provide: APP_FILTER,
 			useClass: HttpExceptionFilter,
+		},
+		{
+			provide: APP_FILTER,
+			useClass: MongoExceptionFilter,
+		},
+		{
+			provide: APP_FILTER,
+			useClass: MongooseExceptionFilter,
 		},
 		{
 			provide: APP_GUARD,

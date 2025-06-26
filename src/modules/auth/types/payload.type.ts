@@ -1,7 +1,10 @@
+export type Sub = {
+	id: string;
+	roles: string[];
+	hasFinishedSetup: boolean;
+};
+
 export type Payload = {
 	username?: string;
-	sub: {
-		id: string;
-		roles: string[];
-	};
+	sub: Sub;
 };

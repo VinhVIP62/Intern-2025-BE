@@ -1,20 +1,24 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { TokenService } from './token.service';
-import { UserService } from '@modules/user/providers/user.service';
-import * as bcrypt from 'bcrypt';
 import { Payload, Tokens } from '../types';
+import { UserService } from '@modules/user/providers/user.service';
+import { isPhoneNumber } from 'class-validator';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
 	constructor(
-		private readonly userService: UserService,
 		private readonly tokenService: TokenService,
+		private readonly userService: UserService,
 	) {}
 
-	async login(username: string, password: string): Promise<Tokens> {
-		const user = await this.userService.findOneByUsername(username);
+	async login(id: string, password: string): Promise<Tokens> {
+		const isLoggedInViaPhone = isPhoneNumber(id);
+		const user = await (isLoggedInViaPhone ?
+			this.userService.findOneBy({ phone: id })
+		:	this.userService.findOneBy({ mail: id }));
 		if (!user) {
-			throw new UnauthorizedException('Username not found');
+			throw new UnauthorizedException(`${isLoggedInViaPhone ? 'Phone number' : 'Email'} not found`);
 		}
 
 		const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -28,6 +32,7 @@ export class AuthService {
 				sub: {
 					id: user._id,
 					roles: user.roles,
+					hasFinishedSetup: user.hasFinishedSetup,
 				},
 			},
 			true,
@@ -36,8 +41,8 @@ export class AuthService {
 		return tokens;
 	}
 
-	async register(username: string, password: string): Promise<Tokens> {
-		const user = await this.userService.create({ username, password });
+	async register(username: string, password: string, mail: string, phone: string): Promise<Tokens> {
+		const user = await this.userService.create({ username, password, mail, phone });
 
 		const tokens = await this.tokenService.generateTokens(
 			{
@@ -45,6 +50,7 @@ export class AuthService {
 				sub: {
 					id: user._id,
 					roles: user.roles,
+					hasFinishedSetup: user.hasFinishedSetup,
 				},
 			},
 			true,

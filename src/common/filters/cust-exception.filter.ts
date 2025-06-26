@@ -36,22 +36,14 @@ export class CustomExceptionFilter implements ExceptionFilter {
 		});
 
 		if (exception instanceof EntityNotFound) {
-			return {
-				path: req.url,
-				statusCode: HttpStatus.NOT_FOUND,
-				success: false,
-				timestamp: Date.now(),
-				error: translatedMessage,
-				data: null,
-			};
+			return new ResponseEntity<null>(req.url, HttpStatus.NOT_FOUND, null, translatedMessage);
 		}
-		return {
-			path: req.url,
-			statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-			success: false,
-			timestamp: Date.now(),
-			error: translatedMessage,
-			data: null,
-		};
+
+		return new ResponseEntity<null>(
+			req.url,
+			HttpStatus.INTERNAL_SERVER_ERROR,
+			null,
+			translatedMessage,
+		);
 	}
 }

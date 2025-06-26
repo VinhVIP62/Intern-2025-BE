@@ -1,10 +1,8 @@
-import { Injectable } from '@nestjs/common';
 import { User } from '../entities/user.schema';
+import { IBaseRepository } from '@common/types';
 
-@Injectable()
-export abstract class IUserRepository {
-	abstract create(data: Partial<User>): Promise<User>;
-	abstract update(id: string, data: Partial<User>): Promise<User>;
-	abstract findOneByUsername(username: string): Promise<User | null>;
-	abstract findOneById(id: string): Promise<User | null>;
+export interface IUserRepository extends IBaseRepository<User> {
+	findOneByUsername(username: string): Promise<User | null>;
 }
+
+export const IUserRepositoryToken = Symbol('IUserRepository');

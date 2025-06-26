@@ -21,6 +21,7 @@
 		"prepare": "node -e \"if (process.env.NODE_ENV !== 'production'){process.exit(1)} \" || husky install"
 	},
 	"dependencies": {
+		"@nestjs/axios": "^4.0.0",
 		"@nestjs/common": "^11.1.3",
 		"@nestjs/config": "^4.0.2",
 		"@nestjs/core": "^11.0.1",
@@ -31,10 +32,16 @@
 		"@nestjs/platform-express": "^11.0.1",
 		"@nestjs/swagger": "^11.2.0",
 		"@nestjs/throttler": "^6.4.0",
+		"@types/mongoose-delete": "^1.0.6",
+		"axios": "^1.10.0",
 		"bcrypt": "^6.0.0",
+		"class-transformer": "^0.5.1",
+		"class-validator": "^0.14.2",
 		"cross-env": "^7.0.3",
 		"joi": "^17.13.3",
+		"mongoose-delete": "^1.0.2",
 		"nest-winston": "^1.10.2",
+		"nestjs-form-data": "^1.9.93",
 		"nestjs-i18n": "^10.5.1",
 		"passport": "^0.7.0",
 		"passport-jwt": "^4.0.1",
@@ -54,6 +61,7 @@
 		"@types/bcrypt": "^5.0.2",
 		"@types/express": "^5.0.0",
 		"@types/jest": "^29.5.14",
+		"@types/multer": "^1.4.13",
 		"@types/node": "^22.10.7",
 		"@types/passport-jwt": "^4.0.1",
 		"@types/passport-local": "^1.0.38",
@@ -76,6 +84,7 @@
 		"typescript-eslint": "^8.20.0"
 	},
 	"jest": {
+		"preset": "ts-jest",
 		"moduleFileExtensions": [
 			"js",
 			"json",
@@ -90,6 +99,20 @@
 			"**/*.(t|j)s"
 		],
 		"coverageDirectory": "../coverage",
-		"testEnvironment": "node"
+		"testEnvironment": "node",
+		"moduleNameMapper": {
+			"^@app/(.*)$": "<rootDir>/app/$1",
+			"^@common/(.*)$": "<rootDir>/common/$1",
+			"^@configs/(.*)$": "<rootDir>/configs/$1",
+			"^@languages/(.*)$": "<rootDir>/languages/$1",
+			"^@modules/(.*)$": "<rootDir>/modules/$1",
+			"^@router/(.*)$": "<rootDir>/router/$1",
+			"^@app$": "<rootDir>/app",
+			"^@common$": "<rootDir>/common",
+			"^@configs$": "<rootDir>/configs",
+			"^@languages$": "<rootDir>/languages",
+			"^@modules$": "<rootDir>/modules",
+			"^@router$": "<rootDir>/router"
+		}
 	}
 }

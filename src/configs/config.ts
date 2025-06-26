@@ -16,6 +16,7 @@ export interface IEnvVars {
 	readonly port: number;
 	readonly database: DbVars;
 	readonly jwt: JwtVars;
+	readonly imgKitKey: string;
 }
 
 // env validation schema for Joi
@@ -31,10 +32,11 @@ const envFileSchema = Joi.object<IEnvVars, true>({
 		accessTokenExpiration: Joi.alternatives(Joi.number(), Joi.string()).default('15m'),
 		refreshTokenExpiration: Joi.alternatives(Joi.number(), Joi.string()).default('7d'),
 	}).required(),
+	imgKitKey: Joi.string().required(),
 });
 
 // map your env vars to ConfigService's properties
-const loadEnv = () => ({
+const loadEnv = (): IEnvVars => ({
 	env: process.env.NODE_ENV,
 	port: process.env.PORT,
 	database: {
@@ -46,6 +48,7 @@ const loadEnv = () => ({
 		accessTokenExpiration: process.env.JWT_ACCESS_TOKEN_EXPIRATION,
 		refreshTokenExpiration: process.env.JWT_REFRESH_TOKEN_EXPIRATION,
 	},
+	imgKitKey: Buffer.from(process.env.IMGKIT_API_PRIVATE_KEY + ':').toString('base64'),
 });
 
 // validate and optionally transform your env variables here

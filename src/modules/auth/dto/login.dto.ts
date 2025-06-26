@@ -1,11 +1,14 @@
+import { IsEmailOrPhone } from '@common/validator';
 import { Expose } from 'class-transformer';
-import { IsString } from 'class-validator';
+import { IsString, Validate } from 'class-validator';
 
-@Expose()
 export class LoginDto {
+	@Expose()
 	@IsString()
-	username: string;
+	@Validate(IsEmailOrPhone)
+	id: string;
 
+	@Expose()
 	@IsString()
 	password: string;
 }

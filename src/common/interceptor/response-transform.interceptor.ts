@@ -2,14 +2,12 @@ import {
 	IS_RES_TRANSFORM_KEY,
 	ResponseTransformOptions,
 } from '@common/decorators/response-transform.decorator';
-import { ResponseEntity } from '@common/types';
+import { ResponseEntity, PaginatedResponseEntity, PaginatedData } from '@common/types';
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request, Response } from 'express';
 import { catchError, map, Observable } from 'rxjs';
-import { PaginatedResponseEntity } from '@common/types';
 import { validateSync } from 'class-validator';
-import { PaginatedData } from '@common/types/paginated-data.type';
 
 @Injectable()
 export class ResponseTransformInterceptor implements NestInterceptor {
@@ -36,25 +34,12 @@ export class ResponseTransformInterceptor implements NestInterceptor {
 						'The `pagination` options only works with return type of PaginatedData<T>',
 					);
 				}
-				const paginatedData = data as PaginatedResponseEntity<T>;
-				return {
-					path: request.url,
-					statusCode,
-					success: true,
-					timestamp: Date.now(),
-					data: paginatedData.data,
-					page: paginatedData.page,
-					amount: paginatedData.amount,
-				};
+				const paginatedData = data as PaginatedData<T>;
+				return new PaginatedResponseEntity<T>(request.url, statusCode, paginatedData);
 			}
 
-			return {
-				path: request.url,
-				statusCode,
-				success: true,
-				timestamp: Date.now(),
-				data,
-			};
+			return new ResponseEntity<T>(request.url, statusCode, data);
+			return new ResponseEntity<T>(request.url, statusCode, data);
 		};
 
 		const ErrorTransformer = (err: Error) => {

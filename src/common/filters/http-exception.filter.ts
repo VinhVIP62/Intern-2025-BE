@@ -41,13 +41,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
 			args: { message: message },
 		});
 
-		return {
-			path: req.url,
-			statusCode: exception.getStatus() || HttpStatus.INTERNAL_SERVER_ERROR,
-			success: false,
-			timestamp: Date.now(),
-			error: translatedMessage,
-			data: null,
-		};
+		return new ResponseEntity<null>(
+			req.url,
+			exception.getStatus() || HttpStatus.INTERNAL_SERVER_ERROR,
+			null,
+			translatedMessage,
+		);
 	}
 }
