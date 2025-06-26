@@ -4,6 +4,7 @@ import { Level } from '@common/enum';
 import { Expose, Transform, Type } from 'class-transformer';
 import { IsArray, IsBoolean, IsEnum, IsOptional, IsString, ValidateNested } from 'class-validator';
 import { Location, Sport } from '../entities/user.schema';
+import { str2bool } from '@common/utils';
 
 export class LocationDto implements Location {
 	@Expose()
@@ -16,7 +17,7 @@ export class LocationDto implements Location {
 
 	@Expose()
 	@IsBoolean()
-	@Transform(({ value }) => value === 'true')
+	@Transform(({ value }) => (typeof value === 'string' ? str2bool(value) : (value as boolean)))
 	hidden: boolean;
 }
 
@@ -33,12 +34,14 @@ export class SportDto implements Sport {
 export class UpdateUserDto extends PartialType(CreateUserDto) {
 	@Expose()
 	@IsOptional()
+	@ValidateNested()
 	@Type(() => LocationDto)
 	location: LocationDto;
 
 	@Expose()
+	@IsOptional()
 	@IsArray()
 	@Type(() => SportDto)
-	@ValidateNested()
+	@ValidateNested({ each: true })
 	sports: SportDto[];
 }
