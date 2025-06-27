@@ -128,6 +128,450 @@
         ]
       }
     },
+    "/api/v1/user/change-password": {
+      "post": {
+        "operationId": "UserController_changePassword_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "Email của người dùng"
+                  },
+                  "oldPassword": {
+                    "type": "string",
+                    "description": "Mật khẩu cũ"
+                  },
+                  "newPassword": {
+                    "type": "string",
+                    "description": "Mật khẩu mới"
+                  }
+                },
+                "required": [
+                  "email",
+                  "oldPassword",
+                  "newPassword"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Đổi mật khẩu thành công"
+          },
+          "401": {
+            "description": "Mật khẩu cũ không đúng"
+          },
+          "404": {
+            "description": "Không tìm thấy người dùng"
+          }
+        },
+        "summary": "Đổi mật khẩu",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/v1/user/profile": {
+      "get": {
+        "operationId": "UserController_getCurrentUserProfile_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lấy thông tin profile thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy thông tin profile của người dùng hiện tại",
+        "tags": [
+          "User"
+        ]
+      },
+      "put": {
+        "operationId": "UserController_updateCurrentUserProfile_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cập nhật profile thành công"
+          }
+        },
+        "summary": "Cập nhật thông tin profile của người dùng hiện tại",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/v1/user/{userId}/profile": {
+      "get": {
+        "operationId": "UserController_getUserProfile_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "ID của người dùng",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy thông tin profile thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseProfileDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy thông tin profile của người dùng theo ID",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/v1/user/avatar-image": {
+      "post": {
+        "operationId": "UserController_uploadAvatarImage_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Avatar image upload",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Upload avatar image successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "success": true,
+                    "data": {
+                      "asset_id": "some-asset-id",
+                      "public_id": "some-public-id",
+                      "url": "https://res.cloudinary.com/..."
+                    },
+                    "message": "Tải lên tệp tin thành công"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Upload avatar image for current user",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/v1/user/cover-image": {
+      "post": {
+        "operationId": "UserController_uploadCoverImage_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Cover image upload",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Upload cover image successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "success": true,
+                    "data": {
+                      "asset_id": "some-asset-id",
+                      "public_id": "some-public-id",
+                      "url": "https://res.cloudinary.com/..."
+                    },
+                    "message": "Tải lên tệp tin thành công"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Upload cover image for current user",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/v1/user/all-sport": {
+      "get": {
+        "operationId": "UserController_getSports_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Danh sách tất cả các môn thể thao",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "football",
+                      "basketball",
+                      "tennis",
+                      "badminton",
+                      "volleyball",
+                      "table_tennis",
+                      "swimming",
+                      "running",
+                      "cycling",
+                      "yoga",
+                      "gym",
+                      "martial_arts",
+                      "boxing",
+                      "golf",
+                      "rock_climbing"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy danh sách tất cả các môn thể thao",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/v1/user/skills": {
+      "put": {
+        "operationId": "UserController_updateSkillLevels_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Skill levels",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "skillLevels": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string",
+                      "enum": [
+                        "beginner",
+                        "intermediate",
+                        "advanced",
+                        "professional"
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cập nhật skill levels thành công"
+          }
+        },
+        "summary": "Cập nhật trình độ kỹ năng cho từng môn thể thao",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/v1/user/favorite-sport/{sportType}": {
+      "delete": {
+        "operationId": "UserController_removeFavoriteSport_v1",
+        "parameters": [
+          {
+            "name": "sportType",
+            "required": true,
+            "in": "path",
+            "description": "Tên môn thể thao cần xóa",
+            "schema": {
+              "enum": [
+                "football",
+                "basketball",
+                "tennis",
+                "badminton",
+                "volleyball",
+                "table_tennis",
+                "swimming",
+                "running",
+                "cycling",
+                "yoga",
+                "gym",
+                "martial_arts",
+                "boxing",
+                "golf",
+                "rock_climbing"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Xóa môn thể thao yêu thích thành công"
+          }
+        },
+        "summary": "Xóa 1 môn thể thao khỏi danh sách yêu thích và skillLevels",
+        "tags": [
+          "User"
+        ]
+      }
+    },
+    "/api/v1/file/upload": {
+      "post": {
+        "operationId": "FileController_uploadFile_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "File upload",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Upload file successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "success": true,
+                    "data": {
+                      "asset_id": "some-asset-id",
+                      "public_id": "some-public-id",
+                      "url": "https://res.cloudinary.com/..."
+                    },
+                    "message": "File uploaded successfully"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Upload file",
+        "tags": [
+          "File"
+        ]
+      }
+    },
+    "/api/v1/file/upload-multiple": {
+      "post": {
+        "operationId": "FileController_uploadMultipleFiles_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Multiple file upload",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Upload multiple files successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "success": true,
+                    "data": [
+                      {
+                        "asset_id": "some-asset-id",
+                        "public_id": "some-public-id",
+                        "url": "https://res.cloudinary.com/..."
+                      }
+                    ],
+                    "message": "Files uploaded successfully"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Upload multiple files",
+        "tags": [
+          "File"
+        ]
+      }
+    },
     "/api/v1/email/send-otp": {
       "post": {
         "description": "Gửi mã OTP đến email người dùng",
@@ -454,6 +898,189 @@
           "email",
           "password"
         ]
+      },
+      "Map": {
+        "type": "object",
+        "properties": {}
+      },
+      "ResponseProfileDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "ID của người dùng"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email của người dùng"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "Tên"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Họ"
+          },
+          "fullName": {
+            "type": "string",
+            "description": "Tên đầy đủ"
+          },
+          "avatar": {
+            "type": "string",
+            "description": "Ảnh đại diện"
+          },
+          "coverImage": {
+            "type": "string",
+            "description": "Ảnh bìa"
+          },
+          "bio": {
+            "type": "string",
+            "description": "Tiểu sử"
+          },
+          "dateOfBirth": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Ngày sinh"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Số điện thoại"
+          },
+          "location": {
+            "type": "object",
+            "description": "Địa chỉ"
+          },
+          "favoritesSports": {
+            "description": "Các môn thể thao yêu thích",
+            "type": "array",
+            "items": {
+              "type": "array"
+            }
+          },
+          "skillLevels": {
+            "description": "Mức độ kỹ năng",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Map"
+              }
+            ]
+          },
+          "friendsCount": {
+            "type": "number",
+            "description": "Số lượng bạn bè"
+          },
+          "followingCount": {
+            "type": "number",
+            "description": "Số lượng đang theo dõi"
+          },
+          "followersCount": {
+            "type": "number",
+            "description": "Số lượng người theo dõi"
+          },
+          "joinedGroupsCount": {
+            "type": "number",
+            "description": "Số lượng nhóm đã tham gia"
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Trạng thái hoạt động"
+          },
+          "isVerified": {
+            "type": "boolean",
+            "description": "Trạng thái xác thực"
+          },
+          "roles": {
+            "description": "Vai trò",
+            "type": "array",
+            "items": {
+              "type": "array"
+            }
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Ngày tạo"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Ngày cập nhật"
+          }
+        },
+        "required": [
+          "_id",
+          "email",
+          "firstName",
+          "lastName",
+          "fullName",
+          "friendsCount",
+          "followingCount",
+          "followersCount",
+          "joinedGroupsCount",
+          "isActive",
+          "isVerified",
+          "roles",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "UpdateProfileDto": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string",
+            "description": "Tên"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Họ"
+          },
+          "avatar": {
+            "type": "string",
+            "description": "Ảnh đại diện"
+          },
+          "coverImage": {
+            "type": "string",
+            "description": "Ảnh bìa"
+          },
+          "bio": {
+            "type": "string",
+            "description": "Tiểu sử"
+          },
+          "dateOfBirth": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Ngày sinh"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Số điện thoại"
+          },
+          "location": {
+            "description": "Địa chỉ",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LocationDto"
+              }
+            ]
+          },
+          "favoritesSports": {
+            "description": "Các môn thể thao yêu thích",
+            "type": "array",
+            "items": {
+              "type": "array"
+            }
+          },
+          "skillLevels": {
+            "description": "Mức độ kỹ năng",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/Map"
+              }
+            ]
+          }
+        }
       },
       "ResponseEmailDto": {
         "type": "object",

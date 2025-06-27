@@ -5,6 +5,7 @@ import { ResponseEmailDto } from '../dto/response-email.dto';
 import { ResponseEntity } from '@common/types';
 import { ApiOperation, ApiResponse, ApiTags, ApiBody, ApiHeader } from '@nestjs/swagger';
 import { Public } from '@common/decorators';
+import { I18n, I18nContext } from 'nestjs-i18n';
 
 @ApiTags('Email')
 @Controller('email')
@@ -33,11 +34,15 @@ export class EmailController {
 	})
 	@Public()
 	@Version('1')
-	async sendOTP(@Body('to') to: string): Promise<ResponseEntity<ResponseEmailDto>> {
-		const result = await this.emailService.sendOTP(to);
+	async sendOTP(
+		@Body('to') to: string,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<ResponseEmailDto>> {
+		const result = await this.emailService.sendOTP(to, i18n);
 		return {
 			success: true,
 			data: result,
+			message: i18n.t('email.OTP_SENT_SUCCESS'),
 		};
 	}
 
@@ -67,8 +72,13 @@ export class EmailController {
 	async verifyOtp(
 		@Body('email') email: string,
 		@Body('otp') otp: string,
-	): Promise<ResponseEntity<boolean>> {
-		const result = await this.emailService.verifyOtp(email, otp);
-		return { success: true, data: result };
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<{ isValid: boolean; message?: string }>> {
+		const result = await this.emailService.verifyOtp(email, otp, i18n);
+		return {
+			success: true,
+			data: result,
+			message: result.isValid ? i18n.t('email.OTP_VERIFIED_SUCCESS') : result.message,
+		};
 	}
 }

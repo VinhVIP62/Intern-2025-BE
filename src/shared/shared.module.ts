@@ -10,6 +10,7 @@ import {
 	FriendRequestModule,
 	AchievementModule,
 	OtpModule,
+	FileModule,
 } from '@modules';
 import { EmailModule } from '@modules/email/email.module';
 @Module({
@@ -25,6 +26,7 @@ import { EmailModule } from '@modules/email/email.module';
 		FriendRequestModule,
 		AchievementModule,
 		OtpModule,
+		FileModule,
 	],
 	exports: [
 		AuthModule,
@@ -38,6 +40,7 @@ import { EmailModule } from '@modules/email/email.module';
 		FriendRequestModule,
 		AchievementModule,
 		OtpModule,
+		FileModule,
 	],
 })
 export class SharedModule {}

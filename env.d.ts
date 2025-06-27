@@ -29,5 +29,8 @@ declare namespace NodeJS {
 		readonly EMAIL_USER: string;
 		readonly EMAIL_PASS: string;
 		readonly EMAIL_FROM: string;
+		readonly CLOUDINARY_CLOUD_NAME: string;
+		readonly CLOUDINARY_API_KEY: string;
+		readonly CLOUDINARY_API_SECRET: string;
 	}
 }
