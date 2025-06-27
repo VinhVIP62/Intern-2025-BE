@@ -2,7 +2,15 @@ import { PartialType } from '@nestjs/mapped-types';
 import { CreateUserDto } from './create-user.dto';
 import { Level } from '@common/enum';
 import { Expose, Transform, Type } from 'class-transformer';
-import { IsArray, IsBoolean, IsEnum, IsOptional, IsString, ValidateNested } from 'class-validator';
+import {
+	ArrayUnique,
+	IsArray,
+	IsBoolean,
+	IsEnum,
+	IsOptional,
+	IsString,
+	ValidateNested,
+} from 'class-validator';
 import { Location, Sport } from '../entities/user.schema';
 import { str2bool } from '@common/utils';
 
@@ -41,6 +49,9 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
 	@Expose()
 	@IsOptional()
 	@IsArray()
+	@ArrayUnique((dto: SportDto) => dto.name, {
+		message: "sport's names must be unique",
+	})
 	@Type(() => SportDto)
 	@ValidateNested({ each: true })
 	sports: SportDto[];

@@ -3,6 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import MongooseDelete from 'mongoose-delete';
 import bcrypt from 'bcrypt';
 import { ObjectId } from 'mongoose';
+import { uniqueArrayFieldValidator } from '@common/validator';
 
 export class Location {
 	province: string | null = null;
@@ -45,7 +46,14 @@ export class User {
 	})
 	location: Location;
 
-	@Prop({ type: [Sport], default: [] })
+	@Prop({
+		type: [Sport],
+		default: [],
+		validate: {
+			validator: uniqueArrayFieldValidator<Sport>('name'),
+			message: 'Each sport element must have a unique name',
+		},
+	})
 	sports: Sport[] = [];
 
 	@Prop({ type: String, enum: Status, default: Status.OFFlINE })

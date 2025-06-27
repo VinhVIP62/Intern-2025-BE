@@ -10,20 +10,20 @@ export class MongooseRepositoryImpl<T> implements IBaseRepository<T> {
 	) {}
 
 	async create(data: Partial<T>): Promise<T> {
-		return (await this.entityModel.insertOne(data)).toObject();
+		return (await this.entityModel.insertOne(data, { validateBeforeSave: true })).toObject();
 	}
 
 	async update(id: string, data: Partial<T>): Promise<T> {
-		const updatedEntity = await this.entityModel.findByIdAndUpdate(id, data, { new: true }).exec();
-		if (updatedEntity === null) throw new EntityNotFound(this.entityClass);
+		const updatedEntity = await this.entityModel
+			.findByIdAndUpdate(id, data, { new: true, runValidators: true })
+			.exec();
+		if (!updatedEntity) throw new EntityNotFound(this.entityClass);
 		return updatedEntity.toObject();
 	}
 
 	async findOneById(id: string): Promise<T | null> {
-		return this.delete(id);
-
-		// const foundEntity = (await this.entityModel.findById(id).exec())?.toObject();
-		// return foundEntity ? foundEntity : null;
+		const foundEntity = (await this.entityModel.findById(id).exec())?.toObject();
+		return foundEntity ? foundEntity : null;
 	}
 
 	async findOneBy(where: Partial<T>): Promise<T | null> {
