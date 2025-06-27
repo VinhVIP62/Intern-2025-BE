@@ -23,5 +23,11 @@ declare namespace NodeJS {
 		readonly JWT_REFRESH_TOKEN_EXPIRATION: string | number;
 		readonly THROTTLE_TTL: number;
 		readonly THROTTLE_LIMIT: number;
+		readonly EMAIL_HOST: string;
+		readonly EMAIL_PORT: string;
+		readonly EMAIL_SECURE?: string;
+		readonly EMAIL_USER: string;
+		readonly EMAIL_PASS: string;
+		readonly EMAIL_FROM: string;
 	}
 }

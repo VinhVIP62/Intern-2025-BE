@@ -6,6 +6,6 @@ import { User } from '../entities/user.schema';
 export abstract class IUserRepository {
 	abstract create(data: Partial<User>): Promise<User>;
 	abstract update(id: string, data: Partial<User>): Promise<User>;
-	abstract findOneByUsername(username: string): Promise<User | null>;
+	abstract findOneByEmail(email: string): Promise<User | null>;
 	abstract findOneById(id: string): Promise<User | null>;
 }

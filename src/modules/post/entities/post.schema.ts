@@ -74,10 +74,8 @@ export class Post extends Document {
 	@Prop({ default: null })
 	rejectedAt: Date; // Thời gian từ chối
 
-	@Prop({ index: true })
+	// Remove duplicate index declarations since timestamps: true handles them
 	createdAt?: Date;
-
-	@Prop({ index: true })
 	updatedAt?: Date;
 }
 

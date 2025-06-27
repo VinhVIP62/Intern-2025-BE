@@ -53,10 +53,8 @@ export class Group extends Document {
 	@Prop({ default: true })
 	autoApproveAdminPosts: boolean;
 
-	@Prop({ index: true })
+	// Remove duplicate index declarations since timestamps: true handles them
 	createdAt?: Date;
-
-	@Prop({ index: true })
 	updatedAt?: Date;
 }
 

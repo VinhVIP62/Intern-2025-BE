@@ -41,10 +41,7 @@ export class Notification extends Document {
 	@Prop({ default: true, index: true })
 	isActive: boolean;
 
-	@Prop({ index: true })
 	createdAt?: Date;
-
-	@Prop({ index: true })
 	updatedAt?: Date;
 }
 

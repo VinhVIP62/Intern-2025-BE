@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { IUserRepository } from '../repositories/user.repository';
 import { User } from '../entities/user.schema';
 
@@ -7,7 +7,17 @@ export class UserService {
 	constructor(private readonly userRepository: IUserRepository) {}
 
 	async create(data: Partial<User>): Promise<User> {
-		const newUser = this.userRepository.create(data);
+		let userData = { ...data };
+		if (data.location) {
+			userData.location = {
+				city: data.location.city ?? '',
+				district: data.location.district ?? '',
+				address: data.location.address ?? '',
+			};
+		} else {
+			delete userData.location;
+		}
+		const newUser = this.userRepository.create(userData);
 		return newUser;
 	}
 
@@ -16,8 +26,17 @@ export class UserService {
 		return updatedUser;
 	}
 
-	async findOneByUsername(username: string): Promise<User | null> {
-		const foundUser = this.userRepository.findOneByUsername(username);
+	async findOneByEmail(email: string): Promise<User | null> {
+		const foundUser = this.userRepository.findOneByEmail(email);
 		return foundUser;
+	}
+
+	async updateNewPassword(email: string, newPassword: string): Promise<void> {
+		const user = await this.userRepository.findOneByEmail(email);
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		user.password = newPassword;
+		await user.save();
 	}
 }

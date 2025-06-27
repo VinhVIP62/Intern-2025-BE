@@ -25,12 +25,22 @@ interface ThrottlerVars {
 	limit: number;
 }
 
+interface EmailVars {
+	host: string;
+	port: number;
+	secure: boolean;
+	user: string;
+	pass: string;
+	from: string;
+}
+
 export interface IEnvVars {
 	readonly env: 'development' | 'production';
 	readonly port: number;
 	readonly database: DbVars;
 	readonly jwt: JwtVars;
 	readonly throttler: ThrottlerVars;
+	readonly email: EmailVars;
 }
 
 // env validation schema for Joi
@@ -58,6 +68,14 @@ const envFileSchema = Joi.object<IEnvVars, true>({
 	throttler: Joi.object<ThrottlerVars, true>({
 		ttl: Joi.number().default(60),
 		limit: Joi.number().default(10),
+	}).required(),
+	email: Joi.object<EmailVars, true>({
+		host: Joi.string().required(),
+		port: Joi.number().required(),
+		secure: Joi.boolean().default(false),
+		user: Joi.string().required(),
+		pass: Joi.string().required(),
+		from: Joi.string().required(),
 	}).required(),
 });
 
@@ -87,11 +105,26 @@ const loadEnv = () => ({
 		ttl: process.env.THROTTLE_TTL,
 		limit: process.env.THROTTLE_LIMIT,
 	},
+	email: {
+		host: process.env.EMAIL_HOST,
+		port: Number(process.env.EMAIL_PORT),
+		secure: process.env.EMAIL_SECURE === 'true',
+		user: process.env.EMAIL_USER,
+		pass: process.env.EMAIL_PASS,
+		from: process.env.EMAIL_FROM,
+	},
 });
 
 // validate and optionally transform your env variables here
 export default (): IEnvVars => {
 	const env = loadEnv();
+
+	// Debug: Log để kiểm tra file .env nào đang được sử dụng
+	console.log('🔍 Environment Debug:');
+	console.log('NODE_ENV:', process.env.NODE_ENV);
+	console.log('PORT:', process.env.PORT);
+	console.log('DATABASE_URI:', process.env.DATABASE_URI ? 'Set' : 'Not set');
+
 	const valResult = envFileSchema.validate(env, { abortEarly: false });
 
 	if (valResult.error) {

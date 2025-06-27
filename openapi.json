@@ -95,48 +95,139 @@
         ]
       }
     },
-    "/api/v1/user/admin-only": {
-      "get": {
-        "operationId": "UserController_adminOnlyRoute_v1",
+    "/api/v1/user/new-password": {
+      "post": {
+        "operationId": "UserController_updateNewPassword_v1",
         "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Truy cập thành công với quyền admin"
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "newPassword": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
           }
         },
-        "summary": "Chỉ Admin được phép truy cập",
+        "responses": {
+          "200": {
+            "description": "Tạo mật khẩu mới thành công"
+          }
+        },
+        "summary": "Tạo mật khẩu mới",
         "tags": [
           "User"
         ]
       }
     },
-    "/api/v1/user/moderator-and-admin": {
-      "get": {
-        "operationId": "UserController_moderatorAndAdminRoute_v1",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Truy cập thành công với quyền moderator hoặc admin"
+    "/api/v1/email/send-otp": {
+      "post": {
+        "description": "Gửi mã OTP đến email người dùng",
+        "operationId": "EmailController_sendOTP_v1",
+        "parameters": [
+          {
+            "name": "accept-language",
+            "in": "header",
+            "description": "Ngôn ngữ (en hoặc vi) - Có thể dùng header này hoặc query parameter ?lang=en",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "to": {
+                    "type": "string",
+                    "example": "user@example.com",
+                    "description": "Email nhận OTP"
+                  }
+                }
+              }
+            }
           }
         },
-        "summary": "Moderator hoặc Admin được phép truy cập",
+        "responses": {
+          "200": {
+            "description": "OTP đã được gửi thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseEmailDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Send OTP",
         "tags": [
-          "User"
+          "Email"
         ]
       }
     },
-    "/api/v1/user/all-users": {
-      "get": {
-        "operationId": "UserController_allUsersRoute_v1",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "Truy cập thành công với bất kỳ user nào"
+    "/api/v1/email/verify-otp": {
+      "post": {
+        "description": "Xác thực OTP",
+        "operationId": "EmailController_verifyOtp_v1",
+        "parameters": [
+          {
+            "name": "accept-language",
+            "in": "header",
+            "description": "Ngôn ngữ (en hoặc vi) - Có thể dùng header này hoặc query parameter ?lang=en",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "example": "user@example.com",
+                    "description": "Email nhận OTP"
+                  },
+                  "otp": {
+                    "type": "string",
+                    "example": "123456",
+                    "description": "OTP"
+                  }
+                }
+              }
+            }
           }
         },
-        "summary": "Tất cả user có thể truy cập",
+        "responses": {
+          "200": {
+            "description": "OTP đã được xác thực thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseEmailDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Verify OTP",
         "tags": [
-          "User"
+          "Email"
         ]
       }
     }
@@ -161,9 +252,9 @@
       "LoginDto": {
         "type": "object",
         "properties": {
-          "username": {
+          "email": {
             "type": "string",
-            "description": "Tên đăng nhập của người dùng"
+            "description": "Email của người dùng"
           },
           "password": {
             "type": "string",
@@ -171,7 +262,7 @@
           }
         },
         "required": [
-          "username",
+          "email",
           "password"
         ]
       },
@@ -188,18 +279,163 @@
           }
         }
       },
+      "LocationDto": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "example": "Hanoi"
+          },
+          "district": {
+            "type": "string",
+            "example": "Cau Giay"
+          },
+          "address": {
+            "type": "string",
+            "example": "123 Main St"
+          }
+        }
+      },
       "RegisterDto": {
         "type": "object",
         "properties": {
-          "username": {
+          "email": {
             "type": "string",
-            "description": "Tên đăng nhập",
-            "example": "johndoe"
+            "description": "Email của người dùng",
+            "example": "johndoe@example.com"
           },
           "password": {
             "type": "string",
             "description": "Mật khẩu mạnh (tối thiểu 8 ký tự, 1 số, 1 chữ in hoa, 1 ký tự đặc biệt)",
             "example": "StrongP@ssw0rd"
+          },
+          "refToken": {
+            "type": "string",
+            "description": "Refresh Token",
+            "example": "..."
+          },
+          "firstName": {
+            "type": "string",
+            "description": "Tên",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Họ",
+            "example": "Doe"
+          },
+          "avatar": {
+            "type": "string",
+            "description": "Avatar URL",
+            "example": "https://..."
+          },
+          "coverImage": {
+            "type": "string",
+            "description": "Cover Image URL",
+            "example": "https://..."
+          },
+          "bio": {
+            "type": "string",
+            "description": "Bio",
+            "example": "I love sports!"
+          },
+          "dateOfBirth": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Ngày sinh",
+            "example": "2000-01-01"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Số điện thoại",
+            "example": "+84987654321"
+          },
+          "location": {
+            "description": "Địa chỉ",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LocationDto"
+              }
+            ]
+          },
+          "favoritesSports": {
+            "type": "array",
+            "description": "Danh sách môn thể thao yêu thích",
+            "items": {
+              "type": "string",
+              "enum": [
+                "football",
+                "basketball",
+                "tennis",
+                "badminton",
+                "volleyball",
+                "table_tennis",
+                "swimming",
+                "running",
+                "cycling",
+                "yoga",
+                "gym",
+                "martial_arts",
+                "boxing",
+                "golf",
+                "rock_climbing"
+              ]
+            }
+          },
+          "skillLevels": {
+            "type": "object",
+            "description": "Trình độ kỹ năng theo môn thể thao",
+            "example": {
+              "football": "beginner",
+              "tennis": "advanced"
+            },
+            "additionalProperties": {
+              "type": "string",
+              "enum": [
+                "beginner",
+                "intermediate",
+                "advanced",
+                "professional"
+              ]
+            }
+          },
+          "friends": {
+            "description": "Danh sách bạn bè",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "following": {
+            "description": "Danh sách đang theo dõi",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "followers": {
+            "description": "Danh sách người theo dõi",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "joinedGroups": {
+            "description": "Danh sách nhóm đã tham gia",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Trạng thái hoạt động",
+            "example": true
+          },
+          "isVerified": {
+            "type": "boolean",
+            "description": "Đã xác thực email",
+            "example": false
           },
           "roles": {
             "type": "array",
@@ -215,8 +451,70 @@
           }
         },
         "required": [
-          "username",
+          "email",
           "password"
+        ]
+      },
+      "ResponseEmailDto": {
+        "type": "object",
+        "properties": {
+          "messageId": {
+            "type": "string",
+            "description": "ID của email đã gửi",
+            "example": "abc123"
+          },
+          "accepted": {
+            "description": "Danh sách email gửi thành công",
+            "example": [
+              "user@example.com"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "rejected": {
+            "description": "Danh sách email gửi thất bại",
+            "example": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "otp": {
+            "type": "string",
+            "description": "Mã OTP",
+            "example": "123456"
+          },
+          "otpExpired": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Thời hạn OTP (UTC)",
+            "example": "2021-01-01T00:00:00.000Z"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "Múi giờ được sử dụng (UTC cho en, GMT+7 cho vi)",
+            "example": "UTC",
+            "enum": [
+              "UTC",
+              "GMT+7"
+            ]
+          },
+          "formattedExpiredTime": {
+            "type": "string",
+            "description": "Thời gian hết hạn được format theo ngôn ngữ và múi giờ địa phương",
+            "example": "01/01/2021, 12:00:00 AM",
+            "examples": {
+              "en": "01/01/2021, 12:00:00 AM",
+              "vi": "01/01/2021, 07:00:00"
+            }
+          }
+        },
+        "required": [
+          "messageId",
+          "accepted",
+          "rejected"
         ]
       }
     }

@@ -4,9 +4,9 @@ import { IsString } from 'class-validator';
 
 @Expose()
 export class LoginDto {
-	@ApiProperty({ description: 'Tên đăng nhập của người dùng' })
+	@ApiProperty({ description: 'Email của người dùng' })
 	@IsString()
-	username: string;
+	email: string;
 
 	@ApiProperty({ description: 'Mật khẩu của người dùng' })
 	@IsString()

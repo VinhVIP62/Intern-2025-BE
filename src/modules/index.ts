@@ -7,3 +7,4 @@ export * from './group/group.module';
 export * from './comment/comment.module';
 export * from './friend-request/friend-request.module';
 export * from './achievement/achievement.module';
+export * from './otp/otp.module';

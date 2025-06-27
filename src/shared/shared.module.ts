@@ -9,11 +9,13 @@ import {
 	CommentModule,
 	FriendRequestModule,
 	AchievementModule,
+	OtpModule,
 } from '@modules';
-
+import { EmailModule } from '@modules/email/email.module';
 @Module({
 	imports: [
 		AuthModule,
+		EmailModule,
 		EventModule,
 		NotificationModule,
 		PostModule,
@@ -22,9 +24,11 @@ import {
 		CommentModule,
 		FriendRequestModule,
 		AchievementModule,
+		OtpModule,
 	],
 	exports: [
 		AuthModule,
+		EmailModule,
 		EventModule,
 		NotificationModule,
 		PostModule,
@@ -33,6 +37,7 @@ import {
 		CommentModule,
 		FriendRequestModule,
 		AchievementModule,
+		OtpModule,
 	],
 })
 export class SharedModule {}

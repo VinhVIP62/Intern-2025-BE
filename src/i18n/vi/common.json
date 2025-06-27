@@ -1,4 +1,14 @@
 {
 	"ERROR_MESSAGE": "Lỗi {message}",
-	"ROUTE_WARN": "Đường dẫn này chỉ dành cho {role}"
+	"ROUTE_WARN": "Đường dẫn này chỉ dành cho {role}",
+	"OTP_EXPIRES_IN": "Mã này sẽ hết hạn sau {minutes} phút",
+	"OTP_EXPIRES_AT": "Mã này sẽ hết hạn lúc {time}",
+	"TIME_ZONE": "GMT+7",
+	"EMAIL_SUBJECT": "[ALOBO Sport Hub] Mã Xác Thực",
+	"EMAIL_GREETING": "Xin chào,",
+	"EMAIL_VERIFICATION_CODE": "Mã xác thực của bạn là:",
+	"EMAIL_IGNORE_MESSAGE": "Nếu bạn không yêu cầu mã này, vui lòng bỏ qua email này.",
+	"OTP_INVALID_OR_EMAIL": "Mã OTP hoặc email không hợp lệ",
+	"OTP_EXPIRED": "Mã OTP đã hết hạn",
+	"OTP_INVALID": "Mã OTP không hợp lệ"
 }
