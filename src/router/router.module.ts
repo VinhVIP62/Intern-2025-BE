@@ -8,8 +8,8 @@ import {
 	NotificationModule,
 	PostModule,
 	UserModule,
+	DevModule,
 } from '@modules';
-import { DevModule } from '@modules/dev/dev.module';
 import { ConditionalModule } from '@nestjs/config';
 
 @Module({
