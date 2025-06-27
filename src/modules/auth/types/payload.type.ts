@@ -1,3 +1,4 @@
+import { Role } from '@common/enum';
 import { Expose } from 'class-transformer';
 
 export class Sub {
@@ -5,7 +6,7 @@ export class Sub {
 	id: string;
 
 	@Expose()
-	roles: string[];
+	roles: Role[];
 
 	@Expose()
 	hasFinishedSetup: boolean;

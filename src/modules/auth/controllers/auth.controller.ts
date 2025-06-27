@@ -3,8 +3,7 @@ import { AuthService } from '../providers/auth.service';
 import { Public } from '@common/decorators';
 import { LoginDto, RegisterDto, ResponseAuthDto } from '../dto';
 import { JwtRefreshAuthGuard } from '@common/guards';
-import { Request } from 'express';
-import { Sub } from '../types/payload.type';
+import { AuthenticatedRequest } from '@common/types';
 
 @Public()
 @Controller()
@@ -36,9 +35,9 @@ export class AuthController {
 	@Version('1')
 	@Post('refresh')
 	@UseGuards(JwtRefreshAuthGuard)
-	async refreshToken(@Req() req: Request): Promise<ResponseAuthDto> {
+	async refreshToken(@Req() req: AuthenticatedRequest): Promise<ResponseAuthDto> {
 		const tokens = await this.authService.refreshToken({
-			sub: req.user as Sub,
+			sub: req.user,
 		});
 		return tokens;
 	}
