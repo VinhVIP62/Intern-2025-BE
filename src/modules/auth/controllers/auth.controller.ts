@@ -60,7 +60,7 @@ export class AuthController {
 	})
 	async refreshToken(@Req() req: Request) {
 		const tokens = await this.authService.refreshToken({
-			sub: req.user as { id: string; roles: string[] },
+			sub: req.user as { id: number; roles: string[] },
 		});
 		return { success: true, data: tokens };
 	}

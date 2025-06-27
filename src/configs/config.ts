@@ -2,6 +2,15 @@ import Joi from 'joi';
 
 interface DbVars {
 	readonly uri: string;
+	readonly maxPoolSize?: number;
+	readonly minPoolSize?: number;
+	readonly maxIdleTimeMS?: number;
+	readonly waitQueueTimeoutMS?: number;
+	readonly maxConnecting?: number;
+	readonly serverSelectionTimeoutMS?: number;
+	readonly socketTimeoutMS?: number;
+	readonly connectTimeoutMS?: number;
+	readonly heartbeatFrequencyMS?: number;
 }
 
 interface JwtVars {
@@ -30,6 +39,15 @@ const envFileSchema = Joi.object<IEnvVars, true>({
 	port: Joi.number().default(3000),
 	database: Joi.object<DbVars, true>({
 		uri: Joi.string().uri().required(),
+		maxPoolSize: Joi.number().default(10),
+		minPoolSize: Joi.number().default(2),
+		maxIdleTimeMS: Joi.number().default(30000),
+		waitQueueTimeoutMS: Joi.number().default(2500),
+		maxConnecting: Joi.number().default(2),
+		serverSelectionTimeoutMS: Joi.number().default(5000),
+		socketTimeoutMS: Joi.number().default(45000),
+		connectTimeoutMS: Joi.number().default(10000),
+		heartbeatFrequencyMS: Joi.number().default(10000),
 	}).required(),
 	jwt: Joi.object<JwtVars, true>({
 		accessSecret: Joi.string().required(),
@@ -49,6 +67,15 @@ const loadEnv = () => ({
 	port: process.env.PORT,
 	database: {
 		uri: process.env.DATABASE_URI,
+		maxPoolSize: process.env.DB_MAX_POOL_SIZE,
+		minPoolSize: process.env.DB_MIN_POOL_SIZE,
+		maxIdleTimeMS: process.env.DB_MAX_IDLE_TIME_MS,
+		waitQueueTimeoutMS: process.env.DB_WAIT_QUEUE_TIMEOUT_MS,
+		maxConnecting: process.env.DB_MAX_CONNECTING,
+		serverSelectionTimeoutMS: process.env.DB_SERVER_SELECTION_TIMEOUT_MS,
+		socketTimeoutMS: process.env.DB_SOCKET_TIMEOUT_MS,
+		connectTimeoutMS: process.env.DB_CONNECT_TIMEOUT_MS,
+		heartbeatFrequencyMS: process.env.DB_HEARTBEAT_FREQUENCY_MS,
 	},
 	jwt: {
 		accessSecret: process.env.JWT_SECRET,

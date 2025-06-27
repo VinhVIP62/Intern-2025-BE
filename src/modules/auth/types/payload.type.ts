@@ -1,7 +1,7 @@
 export type Payload = {
-	username?: string;
+	email?: string;
 	sub: {
-		id: string;
+		id: number;
 		roles: string[];
 	};
 };
