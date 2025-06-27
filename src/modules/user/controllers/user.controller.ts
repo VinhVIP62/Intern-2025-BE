@@ -335,10 +335,22 @@ export class UserController {
 		@I18n() i18n: I18nContext,
 	): Promise<ResponseEntity<null>> {
 		const userId = req.user.id;
+
+		// Lấy các keys từ skillLevels để làm favoritesSports
+		const favoritesSports = Object.keys(skillLevels) as SportType[];
+
 		const skillLevelsMap = new Map(
 			Object.entries(skillLevels).map(([k, v]) => [k as SportType, v as ActivityLevel]),
 		);
-		await this.userService.updateProfile(userId, { skillLevels: skillLevelsMap }, i18n);
+
+		await this.userService.updateProfile(
+			userId,
+			{
+				skillLevels: skillLevelsMap,
+				favoritesSports: favoritesSports,
+			},
+			i18n,
+		);
 		return {
 			success: true,
 			message: i18n.t('user.SKILL_LEVELS_UPDATED_SUCCESS'),
