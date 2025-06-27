@@ -79,4 +79,12 @@ UserSchema.pre('save', function () {
 	}
 });
 
+UserSchema.pre(['updateOne', 'findOneAndUpdate', 'updateMany'], function () {
+	const password = this.get('password') as string | undefined;
+	if (password) {
+		const hashedPassword = bcrypt.hashSync(password, 10);
+		this.set('password', hashedPassword);
+	}
+});
+
 UserSchema.plugin(MongooseDelete, { deletedBy: true });

@@ -14,26 +14,26 @@ export class MongooseRepositoryImpl<T> implements IBaseRepository<T> {
 	}
 
 	async update(id: string, data: Partial<T>): Promise<T> {
-		const entity = await this.entityModel.findById(id);
-		if (!entity) throw new EntityNotFound(this.entityClass);
-		Object.assign(entity, data);
-		const updatedEntity = await entity.save({ validateBeforeSave: true });
-		return updatedEntity.toObject();
+		const updatedEntity = (
+			await this.entityModel.findByIdAndUpdate(id, data, { new: true, runValidators: true }).exec()
+		)?.toObject();
+		if (!updatedEntity) throw new EntityNotFound(this.entityClass);
+		return updatedEntity;
 	}
 
 	async findOneById(id: string): Promise<T | null> {
 		const foundEntity = (await this.entityModel.findById(id).exec())?.toObject();
-		return foundEntity ? foundEntity : null;
+		return foundEntity || null;
 	}
 
 	async findOneBy(where: Partial<T>): Promise<T | null> {
 		const foundEntity = (await this.entityModel.findOne(where).exec())?.toObject();
-		return foundEntity ? foundEntity : null;
+		return foundEntity || null;
 	}
 
 	async delete(id: string): Promise<T | null> {
 		const deletedEntity = (await this.entityModel.findByIdAndDelete(id).exec())?.toObject();
-		return deletedEntity ? deletedEntity : null;
+		return deletedEntity || null;
 	}
 	async find(where: Partial<T>): Promise<T[]> {
 		const foundEntities = (await this.entityModel.find(where).exec()).map(e => e.toObject());
