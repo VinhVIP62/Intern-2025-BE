@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { IUserRepository, IUserRepositoryToken } from '../repositories/user.repository';
 import { User } from '../entities/user.schema';
 import { FileHostService } from 'src/shared/modules/file-host/provider/file-host.service';
+import { Role } from '@common/enum';
 
 @Injectable()
 export class UserService {
@@ -17,8 +18,17 @@ export class UserService {
 
 	async update(id: string, data: Partial<User> & { avatar?: Express.Multer.File }): Promise<User> {
 		if (data.avatar) data.avatarUrl = await this.fileHostService.image2Url(data.avatar);
-		const updatedUser = this.userRepository.update(id, { ...data, hasFinishedSetup: true });
+		const updatedUser = this.userRepository.update(id, data);
 		return updatedUser;
+	}
+
+	async updateWithSetup(
+		id: string,
+		data: Partial<User> & { avatar?: Express.Multer.File },
+	): Promise<User> {
+		data.hasFinishedSetup = true;
+		data.roles = [Role.USER];
+		return this.update(id, data);
 	}
 
 	async findOneByUsername(username: string): Promise<User | null> {
