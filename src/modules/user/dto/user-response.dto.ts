@@ -1,5 +1,5 @@
 import { Exclude, Expose, Transform } from 'class-transformer';
-import { Location, Sport } from '../entities/user.schema';
+import { Location, Sport } from '../entities';
 import { Status } from '@common/enum';
 
 @Exclude()

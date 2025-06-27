@@ -14,7 +14,7 @@ import { ResponseProfileDto, SetupUserDto, UpdateUserDto } from '../dto';
 import { UserService } from '../providers/user.service';
 import { Sub } from '@modules/auth/types';
 import { EntityNotFound } from '@common/exceptions';
-import { User } from '../entities/user.schema';
+import { User } from '../entities';
 import { plainToInstance } from 'class-transformer';
 import { FileHostService } from 'src/shared/modules/file-host/provider/file-host.service';
 import { FileInterceptor } from '@nestjs/platform-express';

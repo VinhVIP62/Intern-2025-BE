@@ -1,4 +1,4 @@
-import { User } from '../entities/user.schema';
+import { User } from '../entities';
 import { IBaseRepository } from '@common/types';
 
 export interface IUserRepository extends IBaseRepository<User> {

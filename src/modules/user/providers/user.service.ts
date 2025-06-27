@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IUserRepository, IUserRepositoryToken } from '../repositories/user.repository';
-import { User } from '../entities/user.schema';
+import { User } from '../entities';
 import { FileHostService } from 'src/shared/modules/file-host/provider/file-host.service';
 import { Role } from '@common/enum';
 

@@ -1,25 +1,18 @@
-import { Level, Role, Status } from '@common/enum';
+import { Role, Status } from '@common/enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import MongooseDelete from 'mongoose-delete';
 import bcrypt from 'bcrypt';
 import { ObjectId } from 'mongoose';
 import { uniqueArrayFieldValidator } from '@common/validator';
+import { Location, Sport, User } from './user.entity';
 
-export class Location {
-	province: string | null = null;
-	city: string | null = null;
-	hidden: boolean = false;
-}
-
-export class Sport {
-	name: string;
-	level: Level;
-}
-
-export const LocationSchema = SchemaFactory.createForClass(Location);
-
+/*
+  Omit<User, 'deletedBy'> to get away with
+  typing of the deletedBy field
+  not being able to find a middleground for string and ObjectId
+ */
 @Schema({ timestamps: true })
-export class User {
+export class UserDocument implements Omit<User, 'deletedBy'> {
 	_id: string;
 
 	@Prop({ required: true, unique: true })
@@ -59,18 +52,16 @@ export class User {
 	@Prop({ type: String, enum: Status, default: Status.OFFlINE })
 	status: Status;
 
-	// after registration user has to finish setting up
 	@Prop({ default: false })
 	hasFinishedSetup: boolean = false;
 
-	// auto generated fields
 	createdAt: Date;
 	updatedAt: Date;
 	deleted: boolean;
 	deletedBy: ObjectId;
 }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+export const UserSchema = SchemaFactory.createForClass(UserDocument);
 
 UserSchema.pre('save', function () {
 	if (this.isModified('password')) {

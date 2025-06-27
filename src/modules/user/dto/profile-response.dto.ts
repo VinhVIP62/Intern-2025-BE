@@ -1,4 +1,4 @@
-import { Location } from '../entities/user.schema';
+import { Location } from '../entities';
 import { ResponseUserDto } from './user-response.dto';
 import { Exclude, Expose } from 'class-transformer';
 

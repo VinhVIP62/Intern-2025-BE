@@ -4,7 +4,7 @@ import { UserService } from './providers/user.service';
 import { UserRepositoryImpl } from './repositories/user.repository.impl';
 import { IUserRepositoryToken } from './repositories/user.repository';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from './entities/user.schema';
+import { UserDocument, UserSchema } from './entities';
 import { FileHostModule } from 'src/shared/modules';
 import { FileHostService } from 'src/shared/modules/file-host/provider/file-host.service';
 import { AuthModule } from '@modules/auth/auth.module';
@@ -13,7 +13,7 @@ import { AuthModule } from '@modules/auth/auth.module';
 	imports: [
 		MongooseModule.forFeature([
 			{
-				name: User.name,
+				name: UserDocument.name,
 				schema: UserSchema,
 			},
 		]),

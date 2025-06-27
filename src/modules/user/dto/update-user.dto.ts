@@ -11,7 +11,7 @@ import {
 	IsString,
 	ValidateNested,
 } from 'class-validator';
-import { Location, Sport } from '../entities/user.schema';
+import { Location, Sport } from '../entities';
 import { str2bool } from '@common/utils';
 
 export class LocationDto implements Location {
