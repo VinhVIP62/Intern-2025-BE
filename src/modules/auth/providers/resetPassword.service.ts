@@ -29,6 +29,7 @@ export class ResetPasswordService {
 			user.password = hashPassword;
 			await this.userService.update(user.id, user);
 			response.message = 'resetPassword.success';
+			await this.redis.del(`resetToken:${resetPasswordToken}`);
 			return response;
 		} catch (error) {
 			response.message = 'resetPassword.failed';

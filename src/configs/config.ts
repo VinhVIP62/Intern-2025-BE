@@ -21,6 +21,8 @@ export interface IEnvVars {
 	readonly throttle_limit?: number;
 	readonly redis_host?: string;
 	readonly redis_port?: number;
+	readonly redis_username?: string;
+	readonly redis_password?: string;
 	readonly mail_host?: string;
 	readonly mail_port?: number;
 	readonly mail_user?: string;
@@ -45,6 +47,8 @@ const envFileSchema = Joi.object<IEnvVars, true>({
 	throttle_limit: Joi.number().default(50),
 	redis_host: Joi.string().default('localhost'),
 	redis_port: Joi.number().default(6379),
+	redis_username: Joi.string().optional(),
+	redis_password: Joi.string().optional(),
 	mail_host: Joi.string().optional(),
 	mail_port: Joi.number().optional(),
 	mail_user: Joi.string().optional(),
@@ -69,6 +73,8 @@ const loadEnv = () => ({
 	throttle_limit: process.env.THROTTLE_LIMIT,
 	redis_host: process.env.REDIS_HOST,
 	redis_port: process.env.REDIS_PORT,
+	redis_username: process.env.REDIS_USERNAME,
+	redis_password: process.env.REDIS_PASSWORD,
 	mail_host: process.env.MAIL_HOST,
 	mail_port: process.env.MAIL_PORT,
 	mail_user: process.env.MAIL_USER,
