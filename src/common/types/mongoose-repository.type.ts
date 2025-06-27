@@ -14,10 +14,10 @@ export class MongooseRepositoryImpl<T> implements IBaseRepository<T> {
 	}
 
 	async update(id: string, data: Partial<T>): Promise<T> {
-		const updatedEntity = await (
-			await this.entityModel.findByIdAndUpdate(id, data, { new: true, runValidators: true }).exec()
-		)?.save();
-		if (!updatedEntity) throw new EntityNotFound(this.entityClass);
+		const entity = await this.entityModel.findById(id);
+		if (!entity) throw new EntityNotFound(this.entityClass);
+		Object.assign(entity, data);
+		const updatedEntity = await entity.save({ validateBeforeSave: true });
 		return updatedEntity.toObject();
 	}
 

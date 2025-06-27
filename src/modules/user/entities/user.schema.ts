@@ -73,8 +73,10 @@ export class User {
 export const UserSchema = SchemaFactory.createForClass(User);
 
 UserSchema.pre('save', function () {
-	const hashedPassword = bcrypt.hashSync(this.password, 10);
-	this.password = hashedPassword;
+	if (this.isModified('password')) {
+		const hashedPassword = bcrypt.hashSync(this.password, 10);
+		this.password = hashedPassword;
+	}
 });
 
 UserSchema.plugin(MongooseDelete, { deletedBy: true });
