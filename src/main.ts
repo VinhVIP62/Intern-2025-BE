@@ -21,11 +21,7 @@ async function bootstrap() {
 
 	// Enable CORS
 	app.enableCors({
-		origin: [
-			'http://localhost:3000', // Frontend development
-			'http://localhost:5173', // Vite default port
-			'https://alobo-sport-hub.com', // Production domain
-		],
+		origin: configService.get('corsOrigins', { infer: true })!,
 		methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
 		allowedHeaders: ['Content-Type', 'Accept', 'Authorization', 'X-Requested-With'],
 		exposedHeaders: ['Content-Range', 'X-Content-Range'],
@@ -60,6 +56,14 @@ async function bootstrap() {
 	SwaggerModule.setup('api-docs', app, document);
 
 	fs.writeFileSync('./openapi.json', JSON.stringify(document, null, 2));
+
+	// Redirect root path to API documentation
+	app.use('/', (req, res, next) => {
+		if (req.path === '/') {
+			return res.redirect('/api-docs');
+		}
+		next();
+	});
 
 	await app.listen(configService.get('port', { infer: true })!);
 }

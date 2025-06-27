@@ -48,6 +48,7 @@ export interface IEnvVars {
 	readonly throttler: ThrottlerVars;
 	readonly email: EmailVars;
 	readonly cloudinary: CloudinaryVars;
+	readonly corsOrigins: string[];
 }
 
 // env validation schema for Joi
@@ -89,6 +90,13 @@ const envFileSchema = Joi.object<IEnvVars, true>({
 		api_key: Joi.string().required(),
 		api_secret: Joi.string().required(),
 	}).required(),
+	corsOrigins: Joi.array()
+		.items(Joi.string())
+		.default([
+			'http://localhost:3000',
+			'http://localhost:5173',
+			'https://alobo-sport-hub.onrender.com',
+		]),
 });
 
 // map your env vars to ConfigService's properties
@@ -130,6 +138,7 @@ const loadEnv = () => ({
 		api_key: process.env.CLOUDINARY_API_KEY,
 		api_secret: process.env.CLOUDINARY_API_SECRET,
 	},
+	corsOrigins: process.env.CORS_ORIGINS ? process.env.CORS_ORIGINS.split(',') : [],
 });
 
 // validate and optionally transform your env variables here
