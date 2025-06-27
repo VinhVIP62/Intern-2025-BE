@@ -4,6 +4,7 @@ import {
 	Delete,
 	Get,
 	Post,
+	Put,
 	Req,
 	UploadedFile,
 	UseInterceptors,
@@ -33,7 +34,7 @@ export class UserController {
 	) {}
 
 	@Roles()
-	@Get('profile')
+	@Get('me')
 	@Version('1')
 	async profile(@Req() request: Request): Promise<ResponseProfileDto> {
 		const id = (request.user! as Sub).id;
@@ -67,7 +68,7 @@ export class UserController {
 		return { ...plainToInstance(ResponseProfileDto, finishedProfile), ...tokens };
 	}
 
-	@Post('update')
+	@Put('me')
 	@Version('1')
 	@UseInterceptors(FileInterceptor('avatar'))
 	async updateProfile(
