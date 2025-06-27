@@ -1,10 +1,17 @@
-export type Sub = {
-	id: string;
-	roles: string[];
-	hasFinishedSetup: boolean;
-};
+import { Expose } from 'class-transformer';
 
-export type Payload = {
+export class Sub {
+	@Expose()
+	id: string;
+
+	@Expose()
+	roles: string[];
+
+	@Expose()
+	hasFinishedSetup: boolean;
+}
+
+export class Payload {
 	username?: string;
 	sub: Sub;
-};
+}

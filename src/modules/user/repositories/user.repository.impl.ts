@@ -12,6 +12,7 @@ export class UserRepositoryImpl extends MongooseRepositoryImpl<User> implements 
 	}
 
 	async findOneByUsername(username: string): Promise<User | null> {
-		return await this.userModel.findOne({ username });
+		const foundUser = (await this.userModel.findOne({ username }).exec())?.toObject();
+		return foundUser ? foundUser : null;
 	}
 }

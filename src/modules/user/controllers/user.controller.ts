@@ -20,7 +20,10 @@ import { FileHostService } from 'src/shared/modules/file-host/provider/file-host
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ResponseAuthDto } from '@modules/auth/dto';
 import { TokenService } from '@modules/auth/providers/token.service';
+import { Roles } from '@common/decorators';
+import { Role } from '@common/enum';
 
+@Roles(Role.USER)
 @Controller()
 export class UserController {
 	constructor(
@@ -29,6 +32,7 @@ export class UserController {
 		private readonly fileHostService: FileHostService,
 	) {}
 
+	@Roles()
 	@Get('profile')
 	@Version('1')
 	async profile(@Req() request: Request): Promise<ResponseProfileDto> {
@@ -38,6 +42,7 @@ export class UserController {
 		return plainToInstance(ResponseProfileDto, profile);
 	}
 
+	@Roles()
 	@Post('setup')
 	@Version('1')
 	@UseInterceptors(FileInterceptor('avatar'))
@@ -48,8 +53,17 @@ export class UserController {
 	): Promise<ResponseProfileDto & ResponseAuthDto> {
 		const sub = request.user! as Sub;
 		const id = sub.id;
-		const finishedProfile = await this.userService.update(id, { ...body, avatar });
-		const tokens = await this.tokenService.generateTokens({ sub: { ...sub, ...finishedProfile } });
+		const finishedProfile = await this.userService.updateWithSetup(id, { ...body, avatar });
+		// extract values of fields defined in Sub class to generate new tokens
+		const newSub = plainToInstance(
+			Sub,
+			{ ...finishedProfile, id: finishedProfile._id.toString() },
+			{
+				excludeExtraneousValues: true,
+			},
+		);
+
+		const tokens = await this.tokenService.generateTokens({ sub: newSub });
 		return { ...plainToInstance(ResponseProfileDto, finishedProfile), ...tokens };
 	}
 
@@ -67,7 +81,15 @@ export class UserController {
 		// avatar (optional as I don't know how to use class-validator with)
 		if (avatar) updateData.avatarUrl = await this.fileHostService.image2Url(avatar);
 		const updatedProfile = await this.userService.update(id, { ...updateData, ...body });
-		const tokens = await this.tokenService.generateTokens({ sub: { ...sub, ...updatedProfile } });
+		const newSub = plainToInstance(
+			Sub,
+			{ ...updatedProfile, id: updatedProfile._id.toString() },
+			{
+				excludeExtraneousValues: true,
+			},
+		);
+
+		const tokens = await this.tokenService.generateTokens({ sub: newSub });
 		return { ...plainToInstance(ResponseProfileDto, updatedProfile), ...tokens };
 	}
 

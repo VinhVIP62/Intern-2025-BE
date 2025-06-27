@@ -14,7 +14,7 @@ import {
 	MongoExceptionFilter,
 	MongooseExceptionFilter,
 } from '@common/filters';
-import { JwtAuthGuard } from '@common/guards';
+import { JwtAuthGuard, RolesGuard } from '@common/guards';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { ResponseTransformInterceptor } from '@common/interceptor/response-transform.interceptor';
 
@@ -78,6 +78,10 @@ import { ResponseTransformInterceptor } from '@common/interceptor/response-trans
 		{
 			provide: APP_GUARD,
 			useClass: ThrottlerGuard,
+		},
+		{
+			provide: APP_GUARD,
+			useClass: RolesGuard,
 		},
 		{
 			provide: APP_INTERCEPTOR,
