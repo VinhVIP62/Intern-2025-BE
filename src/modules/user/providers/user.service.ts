@@ -1,10 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { IUserRepository } from '../repositories/user.repository';
 import { User } from '../entities/user.schema';
 import { ResponseProfileDto } from '../dto/response-profile.dto';
 import { UpdateProfileDto } from '../dto/update-profile.dto';
 import { plainToClass } from 'class-transformer';
 import { I18nContext } from 'nestjs-i18n';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -43,6 +44,26 @@ export class UserService {
 		}
 		user.password = newPassword;
 		await user.save();
+	}
+
+	async verifyOldPassword(
+		email: string,
+		oldPassword: string,
+		i18n?: I18nContext,
+	): Promise<boolean> {
+		const user = await this.userRepository.findOneByEmail(email);
+		if (!user) {
+			const message = i18n ? i18n.t('user.USER_NOT_FOUND') : 'User not found';
+			throw new NotFoundException(message);
+		}
+
+		const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
+		if (!isPasswordValid) {
+			const message = i18n ? i18n.t('user.INVALID_OLD_PASSWORD') : 'Invalid old password';
+			throw new UnauthorizedException(message);
+		}
+
+		return true;
 	}
 
 	async getProfile(userId: string, i18n?: I18nContext): Promise<ResponseProfileDto> {

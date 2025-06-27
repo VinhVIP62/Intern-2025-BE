@@ -15,6 +15,7 @@ import {
 	UseInterceptors,
 	BadRequestException,
 	Delete,
+	UnauthorizedException,
 } from '@nestjs/common';
 import {
 	ApiBody,
@@ -66,6 +67,45 @@ export class UserController {
 		return {
 			success: true,
 			message: i18n.t('user.PASSWORD_UPDATED_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Post('change-password')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Đổi mật khẩu' })
+	@ApiBody({
+		schema: {
+			type: 'object',
+			properties: {
+				email: { type: 'string', description: 'Email của người dùng' },
+				oldPassword: { type: 'string', description: 'Mật khẩu cũ' },
+				newPassword: { type: 'string', description: 'Mật khẩu mới' },
+			},
+			required: ['email', 'oldPassword', 'newPassword'],
+		},
+	})
+	@ApiResponse({ status: 200, description: 'Đổi mật khẩu thành công' })
+	@ApiResponse({ status: 401, description: 'Mật khẩu cũ không đúng' })
+	@ApiResponse({ status: 404, description: 'Không tìm thấy người dùng' })
+	async changePassword(
+		@Body() body: { email: string; oldPassword: string; newPassword: string },
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<null>> {
+		const { email, oldPassword, newPassword } = body;
+
+		// Verify old password
+		const isOldPasswordValid = await this.userService.verifyOldPassword(email, oldPassword, i18n);
+
+		// Update to new password
+		if (isOldPasswordValid) {
+			await this.userService.updateNewPassword(email, newPassword, i18n);
+		}
+
+		return {
+			success: true,
+			message: i18n.t('user.PASSWORD_CHANGED_SUCCESS'),
 		};
 	}
 

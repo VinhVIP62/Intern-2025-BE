@@ -5,5 +5,7 @@
 	"PROFILE_RETRIEVED_SUCCESS": "Lấy thông tin profile thành công",
 	"SPORTS_RETRIEVED_SUCCESS": "Lấy danh sách tất cả các môn thể thao thành công",
 	"SKILL_LEVELS_UPDATED_SUCCESS": "Cập nhật cấp độ kỹ năng thành công",
-	"FAVORITE_SPORT_REMOVED_SUCCESS": "Xóa môn thể thao yêu thích thành công"
+	"FAVORITE_SPORT_REMOVED_SUCCESS": "Xóa môn thể thao yêu thích thành công",
+	"PASSWORD_CHANGED_SUCCESS": "Đổi mật khẩu thành công",
+	"INVALID_OLD_PASSWORD": "Mật khẩu cũ không đúng"
 }

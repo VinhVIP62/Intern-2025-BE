@@ -128,6 +128,56 @@
         ]
       }
     },
+    "/api/v1/user/change-password": {
+      "post": {
+        "operationId": "UserController_changePassword_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "Email của người dùng"
+                  },
+                  "oldPassword": {
+                    "type": "string",
+                    "description": "Mật khẩu cũ"
+                  },
+                  "newPassword": {
+                    "type": "string",
+                    "description": "Mật khẩu mới"
+                  }
+                },
+                "required": [
+                  "email",
+                  "oldPassword",
+                  "newPassword"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Đổi mật khẩu thành công"
+          },
+          "401": {
+            "description": "Mật khẩu cũ không đúng"
+          },
+          "404": {
+            "description": "Không tìm thấy người dùng"
+          }
+        },
+        "summary": "Đổi mật khẩu",
+        "tags": [
+          "User"
+        ]
+      }
+    },
     "/api/v1/user/profile": {
       "get": {
         "operationId": "UserController_getCurrentUserProfile_v1",
