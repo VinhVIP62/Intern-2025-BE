@@ -37,7 +37,6 @@ export class ResponseTransformInterceptor implements NestInterceptor {
 			}
 
 			return new ResponseEntity<T>(request.url, statusCode, data);
-			return new ResponseEntity<T>(request.url, statusCode, data);
 		};
 
 		const ErrorTransformer = (err: Error) => {

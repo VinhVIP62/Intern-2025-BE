@@ -81,7 +81,7 @@ export class UserController {
 	async updateProfile(
 		@Req() request: AuthenticatedRequest,
 		@Body() body: UpdateUserDto,
-	): Promise<ResponseProfileDto> {
+	): Promise<ResponseProfileDto & ResponseAuthDto> {
 		const updatedProfile = await this.userService.update(request.user.id, body);
 		const tokens = await this.tokenService.generateTokens(createPayload(updatedProfile), true);
 		return {

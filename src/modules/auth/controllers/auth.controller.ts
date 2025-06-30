@@ -57,7 +57,7 @@ export class AuthController {
 	@Version('1')
 	@Get('google/callback')
 	@UseGuards(GoogleOAuth2Guard)
-	async googleCallback(@Req() request: Request) {
+	async googleCallback(@Req() request: Request): Promise<ResponseAuthDto> {
 		const user = request.user as User;
 		const tokens = await this.authService.loginWithGoogle(user);
 		return tokens;

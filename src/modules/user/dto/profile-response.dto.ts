@@ -1,6 +1,6 @@
 import { Exclude, Expose } from 'class-transformer';
 
-import { Location } from '../entities';
+import { GoogleLoginInfo, Location } from '../entities';
 import { ResponseUserDto } from './user-response.dto';
 
 // NOT THE SAME AS ResponseUserDto
@@ -32,4 +32,7 @@ export class ResponseProfileDto extends ResponseUserDto {
 
 	@Expose()
 	deletedBy!: string | null;
+
+	@Expose()
+	googleLoginInfo!: GoogleLoginInfo;
 }
