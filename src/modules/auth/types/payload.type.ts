@@ -1,18 +1,20 @@
-import { Role } from '@common/enum';
-import { Expose } from 'class-transformer';
+import { z } from 'zod/v4';
 
-export class Sub {
-	@Expose()
-	id: string;
+import { Role } from '@common/enums';
 
-	@Expose()
-	roles: Role[];
+export const subSchema = z.object({
+	id: z.string(),
+	roles: z.array(z.enum(Role)),
+	hasFinishedSetup: z.boolean(),
+});
 
-	@Expose()
-	hasFinishedSetup: boolean;
-}
+export type Sub = z.infer<typeof subSchema>;
 
-export class Payload {
+export interface Payload {
 	username?: string;
 	sub: Sub;
 }
+
+export const createPayload = ({ username, ...sub }: { username?: string } & Sub) => {
+	return { username, sub: subSchema.parse(sub) };
+};

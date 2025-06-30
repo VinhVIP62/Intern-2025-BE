@@ -1,9 +1,9 @@
 import {
-	isEmail,
-	isPhoneNumber,
 	ValidationArguments,
 	ValidatorConstraint,
 	ValidatorConstraintInterface,
+	isEmail,
+	isPhoneNumber,
 } from 'class-validator';
 
 @ValidatorConstraint({ name: 'IsEmailOrPhone', async: false })

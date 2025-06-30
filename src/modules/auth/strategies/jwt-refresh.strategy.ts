@@ -2,9 +2,12 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+
 import { IEnvVars } from '@configs/config';
+
+import { UserService } from '@modules/user';
+
 import { Payload } from '../types';
-import { UserService } from '@modules/user/providers/user.service';
 
 @Injectable()
 export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'refresh-jwt') {
@@ -20,7 +23,7 @@ export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'refresh-jwt'
 
 	async validate(payload: Payload) {
 		const user = await this.userService.findOneBy({
-			_id: payload.sub.id,
+			id: payload.sub.id,
 			roles: payload.sub.roles,
 		});
 		if (!user) throw new UnauthorizedException('Invalid or expired refresh token');

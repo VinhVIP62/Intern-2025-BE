@@ -3,96 +3,97 @@ import {
 	Controller,
 	Delete,
 	Get,
+	Inject,
 	Post,
 	Put,
 	Req,
-	UploadedFile,
-	UseInterceptors,
 	Version,
+	forwardRef,
 } from '@nestjs/common';
-import { ResponseProfileDto, SetupUserDto, UpdateUserDto } from '../dto';
-import { UserService } from '../providers/user.service';
-import { Sub } from '@modules/auth/types';
-import { EntityNotFound } from '@common/exceptions';
-import { User } from '../entities';
-import { plainToInstance } from 'class-transformer';
-import { FileHostService } from 'src/shared/modules/file-host/provider/file-host.service';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { ResponseAuthDto } from '@modules/auth/dto';
-import { TokenService } from '@modules/auth/providers/token.service';
+import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
+
 import { Roles } from '@common/decorators';
-import { Role } from '@common/enum';
-import { AuthenticatedRequest } from '@common/types';
+import { Role } from '@common/enums';
+import { EntityNotFound } from '@common/exceptions';
+import { AuthenticatedRequest } from '@common/types/data';
+import { plainToInstanceStrict } from '@common/utils';
+
+import { TokenService } from '@modules/auth';
+import { ResponseAuthDto } from '@modules/auth/dto';
+import { createPayload, tokensSchema } from '@modules/auth/types';
+
+import { ResponseProfileDto, SetupGoogleUserDto, SetupUserDto, UpdateUserDto } from '../dto';
+import { User } from '../entities';
+import { UserService } from '../providers';
 
 @Roles(Role.USER)
 @Controller()
 export class UserController {
 	constructor(
 		private readonly userService: UserService,
-		private readonly tokenService: TokenService,
-		private readonly fileHostService: FileHostService,
+		@Inject(forwardRef(() => TokenService)) private readonly tokenService: TokenService,
 	) {}
 
-	@Roles()
-	@Get('me')
 	@Version('1')
+	@Get('me')
+	@Roles()
 	async profile(@Req() request: AuthenticatedRequest): Promise<ResponseProfileDto> {
-		const id = request.user.id;
-		const profile = await this.userService.findOneById(id);
+		const profile = await this.userService.findOneById(request.user.id);
 		if (!profile) throw new EntityNotFound(User);
-		return plainToInstance(ResponseProfileDto, profile);
+		return plainToInstanceStrict(ResponseProfileDto, profile);
 	}
 
-	@Roles()
-	@Post('setup')
 	@Version('1')
-	@UseInterceptors(FileInterceptor('avatar'))
+	@Post('setup')
+	@FormDataRequest({ storage: MemoryStoredFile })
+	@Roles()
 	async setupProfile(
 		@Req() request: AuthenticatedRequest,
 		@Body() body: SetupUserDto,
-		@UploadedFile() avatar: Express.Multer.File,
 	): Promise<ResponseProfileDto & ResponseAuthDto> {
-		const id = request.user.id;
-		const finishedProfile = await this.userService.updateWithSetup(id, { ...body, avatar });
-		// extract values of fields defined in Sub class to generate new tokens
-		const newSub = plainToInstance(
-			Sub,
-			{ ...finishedProfile, id: finishedProfile._id.toString() },
-			{
-				excludeExtraneousValues: true,
-			},
-		);
-
-		const tokens = await this.tokenService.generateTokens({ sub: newSub }, true);
-		return { ...plainToInstance(ResponseProfileDto, finishedProfile), ...tokens };
+		const finishedProfile = await this.userService.updateWithSetup(request.user.id, body);
+		const tokens = await this.tokenService.generateTokens(createPayload(finishedProfile), true);
+		return {
+			...plainToInstanceStrict(ResponseProfileDto, finishedProfile),
+			...tokensSchema.parse(tokens),
+		};
 	}
 
-	@Put('me')
 	@Version('1')
-	@UseInterceptors(FileInterceptor('avatar'))
+	@Post('setup/google')
+	@FormDataRequest({ storage: MemoryStoredFile })
+	@Roles()
+	async setupProfileForGoogle(
+		@Req() request: AuthenticatedRequest,
+		@Body() body: SetupGoogleUserDto,
+	): Promise<ResponseProfileDto & ResponseAuthDto> {
+		const finishedProfile = await this.userService.updateWithSetup(request.user.id, body);
+		const tokens = await this.tokenService.generateTokens(createPayload(finishedProfile), true);
+		return {
+			...plainToInstanceStrict(ResponseProfileDto, finishedProfile),
+			...tokensSchema.parse(tokens),
+		};
+	}
+
+	@Version('1')
+	@Put('me')
+	@FormDataRequest({ storage: MemoryStoredFile })
 	async updateProfile(
 		@Req() request: AuthenticatedRequest,
 		@Body() body: UpdateUserDto,
-		@UploadedFile() avatar: Express.Multer.File,
 	): Promise<ResponseProfileDto> {
-		const id = request.user.id;
-		const updateData: Partial<User> = {};
-		// avatar (optional as I don't know how to use class-validator with)
-		if (avatar) updateData.avatarUrl = await this.fileHostService.image2Url(avatar);
-		const updatedProfile = await this.userService.update(id, { ...updateData, ...body });
-		const newSub = plainToInstance(
-			Sub,
-			{ ...updatedProfile, id: updatedProfile._id.toString() },
-			{
-				excludeExtraneousValues: true,
-			},
-		);
-
-		const tokens = await this.tokenService.generateTokens({ sub: newSub }, true);
-		return { ...plainToInstance(ResponseProfileDto, updatedProfile), ...tokens };
+		const updatedProfile = await this.userService.update(request.user.id, body);
+		const tokens = await this.tokenService.generateTokens(createPayload(updatedProfile), true);
+		return {
+			...plainToInstanceStrict(ResponseProfileDto, updatedProfile),
+			...tokensSchema.parse(tokens),
+		};
 	}
 
-	@Delete('deactivate')
 	@Version('1')
-	async deactivateProfile() {}
+	@Delete('deactivate')
+	async deactivateProfile(@Req() request: AuthenticatedRequest): Promise<ResponseProfileDto> {
+		const deletedProfile = await this.userService.softDelete(request.user.id, request.user.id);
+		return plainToInstanceStrict(ResponseProfileDto, deletedProfile);
+	}
 }

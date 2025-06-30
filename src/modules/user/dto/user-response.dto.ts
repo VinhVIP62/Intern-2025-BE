@@ -1,30 +1,32 @@
 import { Exclude, Expose, Transform } from 'class-transformer';
+
+import { Status } from '@common/enums';
+
 import { Location, Sport } from '../entities';
-import { Status } from '@common/enum';
 
 @Exclude()
 export class ResponseUserDto {
 	@Expose()
-	_id: string;
+	id!: string;
 
 	@Expose()
-	username: string;
+	username!: string;
 
 	@Expose()
-	roles: string[];
+	roles!: string[];
 
 	@Expose()
-	avatarUrl: string;
+	avatarUrl!: string | null;
 
 	@Expose()
 	@Transform(({ obj, value }) =>
 		obj instanceof ResponseUserDto && (value as Location).hidden ? undefined : (value as Location),
 	)
-	location: Location;
+	location!: Location;
 
 	@Expose()
-	status: Status;
+	status!: Status;
 
 	@Expose()
-	sports: Sport;
+	sports!: Sport[];
 }

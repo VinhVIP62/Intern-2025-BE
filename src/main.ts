@@ -1,15 +1,18 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { ConfigService } from '@nestjs/config';
-import { IEnvVars } from '@configs/config';
-import { NestExpressApplication } from '@nestjs/platform-express';
 import { VersioningType } from '@nestjs/common';
 import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
-import { AppLoggerService } from '@common/logger/logger.service';
-import * as swaggerUi from 'swagger-ui-express';
-import * as path from 'path';
-import * as fs from 'fs';
+import { ConfigService } from '@nestjs/config';
+import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 import { OpenAPIObject } from '@nestjs/swagger';
+import * as fs from 'fs';
+import * as path from 'path';
+import * as swaggerUi from 'swagger-ui-express';
+
+import { AppLoggerService } from '@common/logger';
+
+import { IEnvVars } from '@configs/config';
+
+import { AppModule } from './app.module';
 
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule, {

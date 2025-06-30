@@ -1,8 +1,8 @@
 import { PaginatedData } from './paginated-data.type';
 
-export type ErrorMessage = {
+export interface ErrorMessage {
 	[key: string]: string;
-};
+}
 
 export class ResponseEntity<T> {
 	constructor(path: string, statusCode: number, data: T, error?: string | ErrorMessage) {
@@ -12,6 +12,7 @@ export class ResponseEntity<T> {
 		if (error) {
 			this.success = false;
 			this.error = error;
+			this.data = null;
 		} else {
 			this.success = true;
 			this.data = data;
@@ -31,8 +32,8 @@ export class ResponseEntity<T> {
 	/** Error message if there's one */
 	error?: string | ErrorMessage;
 
-	/** Set as null if there's no error */
-	data: T;
+	/** Set as null if there's error */
+	data: T | null;
 }
 
 export class PaginatedResponseEntity<T> extends ResponseEntity<T[]> {

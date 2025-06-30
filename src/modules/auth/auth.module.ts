@@ -1,15 +1,17 @@
-import { Module, Global, forwardRef } from '@nestjs/common';
+import { Global, Module, forwardRef } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { ConfigService } from '@nestjs/config';
-import { JwtStrategy, JwtRefreshStrategy } from './strategies';
-import { JwtAuthGuard, RolesGuard } from '@common/guards';
-import { TokenService } from '@modules/auth/providers/token.service';
-import { AuthService } from './providers/auth.service';
-import { AuthController } from './controllers/auth.controller';
-import { IEnvVars } from '@configs/config';
-import { JwtAccessConfig, JwtRefreshConfig } from '@configs';
-import { UserModule } from '@modules/user/user.module';
+
+import { GoogleOAuth2Guard, JwtAuthGuard, RolesGuard } from '@common/guards';
+
+import { IEnvVars, JwtAccessConfig, JwtRefreshConfig } from '@configs';
+
+import { UserModule } from '@modules/user';
+
+import { AuthController } from './controllers';
+import { AuthService, TokenService } from './providers';
+import { GoogleOAuth2Strategy, JwtRefreshStrategy, JwtStrategy } from './strategies';
 
 @Global()
 @Module({
@@ -18,7 +20,9 @@ import { UserModule } from '@modules/user/user.module';
 	providers: [
 		JwtStrategy,
 		JwtRefreshStrategy,
+		GoogleOAuth2Strategy,
 		JwtAuthGuard,
+		GoogleOAuth2Guard,
 		RolesGuard,
 		TokenService,
 		AuthService,
@@ -39,6 +43,6 @@ import { UserModule } from '@modules/user/user.module';
 			},
 		},
 	],
-	exports: [JwtAuthGuard, RolesGuard, TokenService, AuthService],
+	exports: [JwtAuthGuard, RolesGuard, GoogleOAuth2Guard, TokenService, AuthService],
 })
 export class AuthModule {}

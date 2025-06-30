@@ -1,17 +1,15 @@
-import {
-	IS_RES_TRANSFORM_KEY,
-	ResponseTransformOptions,
-} from '@common/decorators/response-transform.decorator';
-import { ResponseEntity, PaginatedResponseEntity, PaginatedData } from '@common/types';
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Request, Response } from 'express';
-import { catchError, map, Observable } from 'rxjs';
 import { validateSync } from 'class-validator';
+import { Request, Response } from 'express';
+import { Observable, catchError, map } from 'rxjs';
+
+import { IS_RES_TRANSFORM_KEY, ResponseTransformOptions } from '@common/decorators';
+import { PaginatedData, PaginatedResponseEntity, ResponseEntity } from '@common/types/data';
 
 @Injectable()
 export class ResponseTransformInterceptor implements NestInterceptor {
-	constructor(private reflector: Reflector) {}
+	constructor(private readonly reflector: Reflector) {}
 
 	intercept(
 		context: ExecutionContext,

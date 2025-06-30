@@ -1,32 +1,40 @@
-import { Level, Role, Status } from '@common/enum';
+import { Level, Role, Status } from '@common/enums';
 
-export class Location {
-	province: string | null = null;
-	city: string | null = null;
-	hidden: boolean = false;
-}
+export type Location = {
+	province: string | null;
+	city: string | null;
+	hidden: boolean;
+};
 
-export class Sport {
+export type Sport = {
 	name: string;
 	level: Level;
-}
+};
+
+export type GoogleLoginInfo = {
+	id: string | null;
+};
 
 export class User {
-	_id: string;
-	username: string;
-	password: string;
-	roles: Role[];
-	mail: string;
-	phone: string;
-	avatarUrl: string | null = null;
-	location: Location;
-	sports: Sport[] = [];
-	status: Status;
+	id!: string;
+	username!: string;
+	// compromise mail, phone and password being null for google oauth2 login
+	password!: string | null;
+	roles!: Role[];
+	mail!: string | null;
+	phone!: string | null;
+	avatarUrl!: string | null;
+	location!: Location;
+	sports!: Sport[];
+	status!: Status;
 	// after registration user needs to setup (finish filling the other required field)
-	hasFinishedSetup: boolean = false;
+	hasFinishedSetup!: boolean;
 	// auto generated fields
-	createdAt: Date;
-	updatedAt: Date;
-	deleted: boolean;
-	deletedBy: string;
+	createdAt!: Date;
+	updatedAt!: Date;
+	deleted!: boolean;
+	deletedAt!: Date | null;
+	deletedBy!: string | null;
+	// social login info
+	googleLoginInfo?: GoogleLoginInfo;
 }

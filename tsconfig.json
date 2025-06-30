@@ -16,13 +16,13 @@
 			"@configs/*": ["src/configs/*"],
 			"@languages/*": ["src/languages/*"],
 			"@modules/*": ["src/modules/*"],
-			"@router/*": ["src/router/*"],
 			"@app": ["src/app"],
 			"@common": ["src/common"],
 			"@configs": ["src/configs"],
 			"@languages": ["src/languages"],
 			"@modules": ["src/modules"],
-			"@router": ["src/router"]
+			"@shared/*": ["src/shared/*"],
+			"@shared": ["src/shared"]
 		},
 		"incremental": true,
 		"skipLibCheck": true,
@@ -32,6 +32,7 @@
 		"strictBindCallApply": false,
 		"noFallthroughCasesInSwitch": false,
 		"esModuleInterop": true,
-		"resolveJsonModule": true
+		"resolveJsonModule": true,
+		"strict": true
 	}
 }

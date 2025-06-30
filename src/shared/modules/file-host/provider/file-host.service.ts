@@ -1,8 +1,10 @@
 import { HttpService } from '@nestjs/axios';
 import { Injectable, UnprocessableEntityException } from '@nestjs/common';
-import { firstValueFrom } from 'rxjs';
-import FormData from 'form-data';
 import { ConfigService } from '@nestjs/config';
+import FormData from 'form-data';
+import { MemoryStoredFile } from 'nestjs-form-data';
+import { firstValueFrom } from 'rxjs';
+
 import { IEnvVars } from '@configs/config';
 
 export interface FileUploadResponse {
@@ -48,20 +50,20 @@ export class FileHostService {
 	) {}
 
 	/** Returns URL to the image */
-	async image2Url(file: Express.Multer.File): Promise<string | null> {
+	async image2Url(file: MemoryStoredFile): Promise<string | null> {
 		const allowedMimeTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
 
-		if (!allowedMimeTypes.includes(file.mimetype)) {
+		if (!allowedMimeTypes.includes(file.mimeType)) {
 			throw new UnprocessableEntityException(`Allowed file types: ${allowedMimeTypes.join(', ')}`);
 		}
 
 		// init formdata
 		const formData = new FormData();
 		formData.append('file', file.buffer, {
-			filename: file.originalname,
+			filename: file.originalName,
 			contentType: file.mimetype,
 		});
-		formData.append('fileName', file.originalname);
+		formData.append('fileName', file.originalName);
 
 		// axios request
 		const { data } = await firstValueFrom(

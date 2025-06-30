@@ -1,20 +1,19 @@
 import { Module } from '@nestjs/common';
+import { ConditionalModule } from '@nestjs/config';
 import { RouterModule } from '@nestjs/core';
 
-import {
-	AuthModule,
-	AdminModule,
-	EventModule,
-	NotificationModule,
-	PostModule,
-	UserModule,
-	DevModule,
-} from '@modules';
-import { ConditionalModule } from '@nestjs/config';
+import { AdminModule } from '@modules/admin';
+import { AuthModule } from '@modules/auth';
+import { DevModule } from '@modules/dev';
+import { EventModule } from '@modules/event';
+import { NotificationModule } from '@modules/notification';
+import { PostModule } from '@modules/post';
+import { UserModule } from '@modules/user';
 
 @Module({
 	imports: [
 		RouterModule.register([
+			{ path: 'auth', module: AuthModule },
 			{
 				path: 'admin',
 				module: AdminModule,
@@ -22,7 +21,6 @@ import { ConditionalModule } from '@nestjs/config';
 			{
 				path: 'client',
 				children: [
-					{ path: 'auth', module: AuthModule },
 					{ path: 'events', module: EventModule },
 					{ path: 'notifications', module: NotificationModule },
 					{ path: 'posts', module: PostModule },

@@ -1,26 +1,35 @@
+import { Exclude, Expose } from 'class-transformer';
+
 import { Location } from '../entities';
 import { ResponseUserDto } from './user-response.dto';
-import { Exclude, Expose } from 'class-transformer';
 
 // NOT THE SAME AS ResponseUserDto
 @Exclude()
 export class ResponseProfileDto extends ResponseUserDto {
 	@Expose()
-	mail: string;
+	mail!: string;
 
 	@Expose()
-	phone: string;
+	phone!: string;
 
-	@Expose()
-	createdAt?: Date;
-
-	@Expose()
-	updatedAt?: Date;
-
-	// Override
 	@Expose()
 	declare location: Location;
 
 	@Expose()
-	hasFinishedSetup: boolean;
+	hasFinishedSetup!: boolean;
+
+	@Expose()
+	createdAt!: Date;
+
+	@Expose()
+	updatedAt!: Date;
+
+	@Expose()
+	deleted!: boolean;
+
+	@Expose()
+	deletedAt!: Date | null;
+
+	@Expose()
+	deletedBy!: string | null;
 }

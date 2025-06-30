@@ -1,7 +1,8 @@
-import { User } from '../entities';
-import { IBaseRepository } from '@common/types';
+import { ISoftDeleteBaseRepository } from '@common/types/repos';
 
-export interface IUserRepository extends IBaseRepository<User> {
+import { User } from '../entities';
+
+export interface IUserRepository extends ISoftDeleteBaseRepository<User> {
 	findOneByUsername(username: string): Promise<User | null>;
 }
 

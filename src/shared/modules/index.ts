@@ -1,1 +1,1 @@
-export * from './file-host/file-host.module';
+export * from './file-host';

@@ -1,8 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { IUserRepository, IUserRepositoryToken } from '../repositories/user.repository';
-import { User } from '../entities';
+import { MemoryStoredFile } from 'nestjs-form-data';
 import { FileHostService } from 'src/shared/modules/file-host/provider/file-host.service';
-import { Role } from '@common/enum';
+
+import { Role } from '@common/enums';
+
+import { User } from '../entities';
+import { IUserRepository, IUserRepositoryToken } from '../repositories/user.repository';
 
 @Injectable()
 export class UserService {
@@ -16,7 +19,7 @@ export class UserService {
 		return newUser;
 	}
 
-	async update(id: string, data: Partial<User> & { avatar?: Express.Multer.File }): Promise<User> {
+	async update(id: string, data: Partial<User> & { avatar?: MemoryStoredFile }): Promise<User> {
 		if (data.avatar) data.avatarUrl = await this.fileHostService.image2Url(data.avatar);
 		const updatedUser = this.userRepository.update(id, data);
 		return updatedUser;
@@ -24,7 +27,7 @@ export class UserService {
 
 	async updateWithSetup(
 		id: string,
-		data: Partial<User> & { avatar?: Express.Multer.File },
+		data: Partial<User> & { avatar: MemoryStoredFile },
 	): Promise<User> {
 		data.hasFinishedSetup = true;
 		data.roles = [Role.USER];
@@ -47,5 +50,9 @@ export class UserService {
 
 	async find(options: Partial<User>): Promise<User[]> {
 		return this.userRepository.find(options);
+	}
+
+	async softDelete(id: string, deletedBy: string | null = null): Promise<User> {
+		return this.userRepository.softDelete(id, deletedBy);
 	}
 }
