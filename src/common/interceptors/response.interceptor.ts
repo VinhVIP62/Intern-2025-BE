@@ -18,7 +18,6 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, any> {
 		return next.handle().pipe(
 			map(data => {
 				let messageKey = 'common.success';
-				console.log(data);
 				if (data?.data?.message) {
 					messageKey = data.data.message;
 					delete data.data.message;

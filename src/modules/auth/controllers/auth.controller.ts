@@ -54,7 +54,8 @@ export class AuthController {
 		type: LogoutResponse,
 	})
 	async logout(@Req() request: Request): Promise<ResponseEntity<LogoutResponse>> {
-		const invalidToken = request.headers['authorization'].replace(/^Bearer\s/, '');
+		const header = request.headers['authorization'] ? request.headers['authorization'] : '';
+		const invalidToken = header.replace(/^Bearer\s/, '');
 		const response = await this.authService.logout(invalidToken);
 		return {
 			success: true,

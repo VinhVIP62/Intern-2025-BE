@@ -37,7 +37,6 @@ export class ProfileController {
 	async createProfile(
 		@Body() createProfileDto: CreateProfileDto,
 	): Promise<ResponseEntity<ProfileResponseDto>> {
-		console.log('Creating profile');
 		const response = await this.profileService.createProfile(createProfileDto);
 		return {
 			success: true,
@@ -70,7 +69,7 @@ export class ProfileController {
 	async getCurrentUserProfile(
 		@Req() request: Request,
 	): Promise<ResponseEntity<ProfileResponseDto>> {
-		const user = request.user;
+		const user = request.user as { id: string };
 		const response = await this.profileService.findProfileById(user.id);
 		return {
 			success: true,
