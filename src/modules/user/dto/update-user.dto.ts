@@ -27,8 +27,8 @@ export class LocationDto implements Location {
 	city!: string;
 
 	@Expose()
-	@IsBoolean()
 	@Transform(({ value }) => (typeof value === 'string' ? str2bool(value) : (value as boolean)))
+	@IsBoolean()
 	hidden!: boolean;
 }
 
@@ -44,25 +44,26 @@ export class SportDto implements Sport {
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
 	@Expose()
-	@IsOptional()
-	@IsFile()
-	@HasMimeType(['image/png', 'image/jpeg', 'image/jpg', 'image/gif'], { each: true })
+	@Type(() => MemoryStoredFile)
 	@HasExtension(['png', 'jpg', 'jpeg', 'gif'], { each: true })
+	@HasMimeType(['image/png', 'image/jpeg', 'image/jpg', 'image/gif'], { each: true })
+	@IsFile()
+	@IsOptional()
 	avatar?: MemoryStoredFile;
 
 	@Expose()
+	@Type(() => LocationDto)
 	@IsOptional()
 	@ValidateNested()
-	@Type(() => LocationDto)
 	location?: LocationDto;
 
 	@Expose()
-	@IsOptional()
+	@Type(() => SportDto)
 	@IsArray()
+	@IsOptional()
+	@ValidateNested({ each: true })
 	@ArrayUnique((dto: SportDto) => dto.name, {
 		message: "sport's names must be unique",
 	})
-	@Type(() => SportDto)
-	@ValidateNested({ each: true })
 	sports?: SportDto[];
 }

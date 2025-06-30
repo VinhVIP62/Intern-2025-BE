@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 
-import { GoogleOAuth2Guard, JwtAuthGuard, RolesGuard } from '@common/guards';
+import { GoogleOAuth2Guard, JwtAuthGuard, JwtRefreshAuthGuard, RolesGuard } from '@common/guards';
 
 import { IEnvVars, JwtAccessConfig, JwtRefreshConfig } from '@configs';
 
@@ -22,6 +22,7 @@ import { GoogleOAuth2Strategy, JwtRefreshStrategy, JwtStrategy } from './strateg
 		JwtRefreshStrategy,
 		GoogleOAuth2Strategy,
 		JwtAuthGuard,
+		JwtRefreshAuthGuard,
 		GoogleOAuth2Guard,
 		RolesGuard,
 		TokenService,
@@ -43,6 +44,13 @@ import { GoogleOAuth2Strategy, JwtRefreshStrategy, JwtStrategy } from './strateg
 			},
 		},
 	],
-	exports: [JwtAuthGuard, RolesGuard, GoogleOAuth2Guard, TokenService, AuthService],
+	exports: [
+		JwtAuthGuard,
+		JwtRefreshAuthGuard,
+		RolesGuard,
+		GoogleOAuth2Guard,
+		TokenService,
+		AuthService,
+	],
 })
 export class AuthModule {}

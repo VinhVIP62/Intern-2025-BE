@@ -4,7 +4,7 @@ import { NestjsFormDataModule } from 'nestjs-form-data';
 
 import { AuthModule } from '@modules/auth';
 
-import { FileHostModule, FileHostService } from '@shared/modules/file-host';
+import { FileHostModule } from '@shared/modules/file-host';
 
 import { UserController } from './controllers';
 import { User, UserSchema } from './entities';
@@ -27,7 +27,6 @@ import { UserRepositoryImpl } from './repositories/user.repository.impl';
 	controllers: [UserController],
 	providers: [
 		UserService,
-		FileHostService,
 		{
 			provide: IUserRepositoryToken,
 			useClass: UserRepositoryImpl,

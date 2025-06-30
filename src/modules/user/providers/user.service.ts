@@ -27,7 +27,7 @@ export class UserService {
 
 	async updateWithSetup(
 		id: string,
-		data: Partial<User> & { avatar: MemoryStoredFile },
+		data: Partial<User> & { avatar?: MemoryStoredFile },
 	): Promise<User> {
 		data.hasFinishedSetup = true;
 		data.roles = [Role.USER];

@@ -7,6 +7,8 @@ export class PaginatedData<T> {
 	@IsNumber()
 	limit: number = 10;
 
+	// eslint-disable-next-line @darraghor/nestjs-typed/validated-non-primitive-property-needs-type-decorator
 	@IsArray()
+	/** Generic array's type can't be inferred unfortunately */
 	data: T[] = [];
 }
