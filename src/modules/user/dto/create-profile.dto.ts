@@ -1,6 +1,7 @@
 import { IsString, IsOptional, IsDateString, IsEnum, IsArray, IsUUID } from 'class-validator';
 import { Sports } from '@common/enum/sports.enum';
 import { SportLevel } from '@common/enum/sport-level.enum';
+import { AddressDto } from './address.dto';
 
 export class CreateProfileDto {
 	@IsUUID()
@@ -11,6 +12,10 @@ export class CreateProfileDto {
 
 	@IsString()
 	lastName: string;
+
+	@IsOptional()
+	@IsString()
+	nickname?: string;
 
 	@IsOptional()
 	@IsString()
@@ -31,8 +36,7 @@ export class CreateProfileDto {
 	gender: string;
 
 	@IsOptional()
-	@IsString()
-	address?: string;
+	address?: AddressDto;
 
 	@IsArray()
 	@IsEnum(Sports, { each: true })

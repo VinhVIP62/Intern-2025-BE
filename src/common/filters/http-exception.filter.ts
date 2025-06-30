@@ -10,7 +10,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
 	private getMessageKey(exception: HttpException): string {
 		const res = exception.getResponse();
-		console.log(res);
 		// Trường hợp getResponse() là string
 		if (typeof res === 'string') return res;
 

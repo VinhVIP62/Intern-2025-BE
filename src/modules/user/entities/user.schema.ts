@@ -15,7 +15,7 @@ export class User {
 	})
 	id: string; // UUID dùng để public
 
-	@Prop({ required: false })
+	@Prop({ required: false, unique: true, sparse: true })
 	email: string;
 
 	@Prop({ required: false, unique: true, sparse: true })
@@ -27,7 +27,7 @@ export class User {
 	@Prop({ required: true })
 	password: string;
 
-	@Prop({ default: [Role.USER] })
+	@Prop({ type: [String], enum: Role, default: [Role.USER] })
 	roles: string[];
 
 	@Prop({ default: false })
