@@ -2,6 +2,7 @@ import { IsString, IsOptional, IsDateString, IsEnum, IsArray } from 'class-valid
 import { Sports } from '@common/enum/sports.enum';
 import { SportLevel } from '@common/enum/sport-level.enum';
 import { ApiPropertyOptional } from '@nestjs/swagger/dist/decorators/api-property.decorator';
+import { AddressDto } from './address.dto';
 
 export class ProfileResponseDto {
 	@ApiPropertyOptional({ description: 'Thông điệp trả về' })
@@ -33,8 +34,7 @@ export class ProfileResponseDto {
 	gender: string;
 
 	@IsOptional()
-	@IsString()
-	address?: string | null;
+	address?: AddressDto;
 
 	@IsArray()
 	@IsEnum(Sports, { each: true })

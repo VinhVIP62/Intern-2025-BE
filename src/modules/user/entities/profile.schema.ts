@@ -22,6 +22,8 @@ export class Profile {
 	@Prop({ required: true })
 	lastName: string;
 	@Prop({ required: false })
+	nickname: string;
+	@Prop({ required: false })
 	bio: string;
 
 	// Hình ảnh đại diện
@@ -37,8 +39,23 @@ export class Profile {
 	@Prop({ required: true, enum: Gender })
 	gender: string;
 	// Địa chỉ
-	@Prop({ required: false })
-	address: string;
+	@Prop({
+		type: {
+			country: { type: String },
+			province: { type: String },
+			district: { type: String },
+			ward: { type: String },
+			street: { type: String },
+		},
+		required: false,
+	})
+	address?: {
+		country?: string;
+		province?: string;
+		district?: string;
+		ward?: string;
+		street?: string;
+	};
 
 	@Prop({
 		type: [String],
