@@ -48,7 +48,7 @@ async function bootstrap() {
 	app.enableCors();
 
 	// serve my own doc in a separate file without auto genning
-	const openApiSpecPath = path.join(__dirname, '../openapi.json');
+	const openApiSpecPath = path.join(__dirname, '../docs/openapi.json');
 	const openApiDocument = JSON.parse(fs.readFileSync(openApiSpecPath, 'utf8')) as OpenAPIObject;
 	app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiDocument));
 
