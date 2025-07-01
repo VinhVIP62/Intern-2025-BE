@@ -9,6 +9,7 @@ export class ProfileMapper {
 			message: message,
 			firstName: profile.firstName,
 			lastName: profile.lastName,
+			nickname: profile.nickname,
 			avatarUrl: profile.avatarUrl ? profile.avatarUrl : null,
 			coverUrl: profile.coverUrl ? profile.coverUrl : null,
 			bio: profile.bio ? profile.bio : null,
