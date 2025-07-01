@@ -25,9 +25,6 @@ export interface IBaseRepository<T extends object> {
 	): Promise<T | null>;
 	findOneByAndDelete(where: Partial<T>, queryOptions?: queryOptions<T>): Promise<T | null>;
 	find(where: Partial<T>, queryOptions?: queryOptions<T>): Promise<T[]>;
-	// these methods are for orm/odm specific implementation
-	findByRawFilter(filter: unknown, queryOptions?: queryOptions<T>): Promise<T[]>;
-	findOneByRawFilter(filter: unknown, queryOptions?: queryOptions<T>): Promise<T | null>;
 }
 
 export interface ISoftDeleteBaseRepository<

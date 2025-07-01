@@ -1,4 +1,4 @@
-import { FilterQuery, Model } from 'mongoose';
+import { Model } from 'mongoose';
 
 import { EntityNotFound } from '@common/exceptions';
 
@@ -106,23 +106,6 @@ export class MongooseRepositoryImpl<T extends object> implements IBaseRepository
 			await this.entityModel.find(this.transformQuery(where, queryOptions)).exec()
 		).map(e => e.toObject());
 		return foundEntities;
-	}
-
-	async findByRawFilter(filter: FilterQuery<T>, queryOptions?: queryOptions<T>): Promise<T[]> {
-		const foundEntities = (
-			await this.entityModel.find(this.transformQuery(filter, queryOptions)).exec()
-		).map(e => e.toObject());
-		return foundEntities;
-	}
-
-	async findOneByRawFilter(
-		filter: FilterQuery<T>,
-		queryOptions?: queryOptions<T>,
-	): Promise<T | null> {
-		const foundEntity = (
-			await this.entityModel.findOne(this.transformQuery(filter, queryOptions)).exec()
-		)?.toObject();
-		return foundEntity || null;
 	}
 }
 

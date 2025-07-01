@@ -22,17 +22,27 @@ export class UserRepositoryImpl
 		return foundUser ? foundUser : null;
 	}
 
-	findOneLoginable(where: Partial<User>): Promise<User | null> {
-		return this.findOneByRawFilter({
-			...where,
-			deleted: undefined,
-			$or: [
-				{ deleted: false },
-				{
-					$expr: { $eq: ['$deletedBy', { $toString: '$_id' }] },
-					deletedAt: { $gte: new Date(Date.now() - GRACE_PERIOD * 24 * 60 * 60 * 1000) },
-				},
-			],
-		});
+	async findOneLoginable(where: Partial<User>): Promise<User | null> {
+		return (
+			(
+				await this.entityModel
+					.findOne(
+						this.transformQuery(
+							{
+								...where,
+								$or: [
+									{ deleted: false },
+									{
+										$expr: { $eq: ['$deletedBy', { $toString: '$_id' }] },
+										deletedAt: { $gte: new Date(Date.now() - GRACE_PERIOD * 24 * 60 * 60 * 1000) },
+									},
+								],
+							},
+							{ doNotUseRepoOptions: true },
+						),
+					)
+					.exec()
+			)?.toObject() || null
+		);
 	}
 }

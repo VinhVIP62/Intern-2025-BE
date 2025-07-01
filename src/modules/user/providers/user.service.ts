@@ -70,6 +70,6 @@ export class UserService {
 	}
 
 	async findAny(options: Partial<User>): Promise<User[]> {
-		return this.userRepository.findByRawFilter(options, { doNotUseRepoOptions: true });
+		return this.userRepository.find(options, { doNotUseRepoOptions: true });
 	}
 }
