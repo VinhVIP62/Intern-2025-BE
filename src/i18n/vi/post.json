@@ -45,5 +45,6 @@
 	"TOO_MANY_FILES": "Quá nhiều tệp tin được tải lên. Tối đa cho phép là 10",
 	"ONLY_ONE_VIDEO_ALLOWED": "Chỉ được phép một video cho mỗi bài đăng",
 	"TRENDING_HASHTAGS_RETRIEVED_SUCCESS": "Lấy danh sách hashtag trending thành công",
-	"HASHTAG_POSTS_RETRIEVED_SUCCESS": "Lấy danh sách bài đăng theo hashtag thành công"
+	"HASHTAG_POSTS_RETRIEVED_SUCCESS": "Lấy danh sách bài đăng theo hashtag thành công",
+	"TAG_FRIEND_SUCCESS": "Đã tag bạn bè thành công"
 }

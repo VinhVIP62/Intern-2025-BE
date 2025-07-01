@@ -16,12 +16,15 @@ import {
 } from '../dto/post.dto';
 import { FileService } from '../../file/providers/file.service';
 import { PostType } from '../entities/post.enum';
+import { NotificationService } from '../../notification/providers/notification.service';
+import { NotificationType, ReferenceModel } from '../../notification/entities/notification.enum';
 
 @Injectable()
 export class PostService {
 	constructor(
 		private readonly postRepository: IPostRepository,
 		private readonly fileService: FileService,
+		private readonly notificationService: NotificationService,
 	) {}
 
 	async getNewsfeed(
@@ -346,5 +349,41 @@ export class PostService {
 			hasNextPage,
 			hasPrevPage,
 		};
+	}
+
+	async replaceTaggedFriends(
+		postId: string,
+		userId: string,
+		friendIds: string[],
+		i18n: I18nContext,
+	): Promise<PostResponseDto> {
+		const isOwner = await this.postRepository.checkOwnership(postId, userId);
+		if (!isOwner) {
+			throw new ForbiddenException(i18n.t('post.UNAUTHORIZED_TO_MODIFY'));
+		}
+
+		// Lấy danh sách taggedUsers cũ để chỉ gửi notification cho user mới
+		const postBefore = await this.postRepository.findById(postId);
+		const oldTagged = (postBefore.taggedUsers || []).map(id => id.toString());
+
+		const post = await this.postRepository.replaceTaggedUsers(postId, friendIds);
+
+		// Gửi notification cho các user mới được tag
+		const newTagged = friendIds.filter(id => !oldTagged.includes(id) && id !== userId);
+		await Promise.all(
+			newTagged.map(friendId =>
+				this.notificationService.createNotification({
+					recipient: friendId,
+					sender: userId,
+					type: NotificationType.MENTION,
+					title: 'You have been tagged in a post',
+					message: 'You have been tagged in a post',
+					referenceId: postId,
+					referenceModel: ReferenceModel.POST,
+				}),
+			),
+		);
+
+		return post as PostResponseDto;
 	}
 }

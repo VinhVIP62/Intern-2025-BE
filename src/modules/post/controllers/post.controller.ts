@@ -558,4 +558,43 @@ export class PostController {
 			message: i18n.t('post.HASHTAG_POSTS_RETRIEVED_SUCCESS'),
 		};
 	}
+
+	@Version('1')
+	@Put(':postId/tag-friends')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Tag bạn bè vào bài đăng (thay thế toàn bộ danh sách)' })
+	@ApiParam({ name: 'postId', description: 'ID của bài đăng', example: '507f1f77bcf86cd799439011' })
+	@ApiBody({
+		description: 'Tag bạn bè (thay thế toàn bộ danh sách)',
+		schema: {
+			type: 'object',
+			properties: {
+				friendIds: {
+					type: 'array',
+					items: { type: 'string' },
+					description: 'Danh sách ID người dùng được tag',
+					example: ['507f1f77bcf86cd799439011', '507f1f77bcf86cd799439012'],
+				},
+			},
+			required: ['friendIds'],
+		},
+	})
+	@ApiResponse({ status: 200, description: 'Tag bạn bè thành công', type: PostResponseDto })
+	@ApiResponse({ status: 400, description: 'Dữ liệu không hợp lệ' })
+	@ApiResponse({ status: 401, description: 'Không có quyền truy cập' })
+	@ApiResponse({ status: 403, description: 'Không có quyền chỉnh sửa bài đăng này' })
+	async tagFriend(
+		@Request() req,
+		@Param('postId') postId: string,
+		@Body('friendIds') friendIds: string[],
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<PostResponseDto>> {
+		const post = await this.postService.replaceTaggedFriends(postId, req.user.id, friendIds, i18n);
+		return {
+			success: true,
+			data: post,
+			message: i18n.t('post.TAG_FRIEND_SUCCESS'),
+		};
+	}
 }

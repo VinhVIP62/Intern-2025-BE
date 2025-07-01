@@ -45,5 +45,6 @@
 	"TOO_MANY_FILES": "Too many files uploaded. Maximum allowed is 10",
 	"ONLY_ONE_VIDEO_ALLOWED": "Only one video is allowed per post",
 	"TRENDING_HASHTAGS_RETRIEVED_SUCCESS": "Trending hashtags retrieved successfully",
-	"HASHTAG_POSTS_RETRIEVED_SUCCESS": "Posts by hashtag retrieved successfully"
+	"HASHTAG_POSTS_RETRIEVED_SUCCESS": "Posts by hashtag retrieved successfully",
+	"TAG_FRIEND_SUCCESS": "Tagged friends successfully"
 }

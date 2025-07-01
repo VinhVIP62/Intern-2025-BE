@@ -1288,6 +1288,75 @@
           "Post"
         ]
       }
+    },
+    "/api/v1/posts/{postId}/tag-friends": {
+      "put": {
+        "operationId": "PostController_tagFriend_v1",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "description": "ID của bài đăng",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Tag bạn bè (thay thế toàn bộ danh sách)",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "friendIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Danh sách ID người dùng được tag",
+                    "example": [
+                      "507f1f77bcf86cd799439011",
+                      "507f1f77bcf86cd799439012"
+                    ]
+                  }
+                },
+                "required": [
+                  "friendIds"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tag bạn bè thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền chỉnh sửa bài đăng này"
+          }
+        },
+        "summary": "Tag bạn bè vào bài đăng (thay thế toàn bộ danh sách)",
+        "tags": [
+          "Post"
+        ]
+      }
     }
   },
   "info": {

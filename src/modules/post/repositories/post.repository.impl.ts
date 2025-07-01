@@ -295,4 +295,14 @@ export class PostRepositoryImpl implements IPostRepository {
 
 		return { posts: posts as unknown as Post[], total };
 	}
+
+	async replaceTaggedUsers(postId: string, userIds: string[]): Promise<Post> {
+		const post = await this.postModel.findByIdAndUpdate(
+			postId,
+			{ $set: { taggedUsers: userIds } },
+			{ new: true },
+		);
+		if (!post) throw new Error('Post not found');
+		return post;
+	}
 }

@@ -56,6 +56,8 @@ export interface IPostRepository {
 		page: number,
 		limit: number,
 	): Promise<{ posts: Post[]; total: number }>;
+
+	replaceTaggedUsers(postId: string, userIds: string[]): Promise<Post>;
 }
 
 export const IPostRepository = Symbol('IPostRepository');
