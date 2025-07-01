@@ -95,3 +95,17 @@ export class ResponseProfileDto {
 	@Expose()
 	updatedAt: Date;
 }
+
+export class FriendSimpleDto {
+	@ApiProperty({ description: 'ID của người dùng' })
+	@Expose()
+	_id: string;
+
+	@ApiProperty({ description: 'Tên đầy đủ' })
+	@Expose()
+	fullName: string;
+
+	@ApiProperty({ description: 'Ảnh đại diện', required: false })
+	@Expose()
+	avatar?: string;
+}

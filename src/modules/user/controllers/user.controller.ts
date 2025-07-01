@@ -16,6 +16,7 @@ import {
 	BadRequestException,
 	Delete,
 	UnauthorizedException,
+	Query,
 } from '@nestjs/common';
 import {
 	ApiBody,
@@ -28,12 +29,13 @@ import {
 } from '@nestjs/swagger';
 import { UserService } from '../providers/user.service';
 import { ResponseEntity } from '@common/types';
-import { ResponseProfileDto, UpdateProfileDto } from '../dto';
+import { ResponseProfileDto, UpdateProfileDto, FriendSimpleDto } from '../dto';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { FileService } from '../../file/providers/file.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadApiResponse } from 'cloudinary';
 import { SportType, ActivityLevel } from '../enums/user.enum';
+import { plainToInstance } from 'class-transformer';
 
 @ApiTags('User')
 @Controller('user')
@@ -404,6 +406,44 @@ export class UserController {
 		return {
 			success: true,
 			message: i18n.t('user.FAVORITE_SPORT_REMOVED_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Get('friends/search')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({
+		summary: 'Tìm kiếm bạn bè theo tên (fullname, không phân biệt hoa thường, có phân trang)',
+	})
+	@ApiOkResponse({
+		description: 'Danh sách bạn bè phù hợp',
+		schema: {
+			type: 'object',
+			properties: {
+				success: { type: 'boolean' },
+				data: {
+					type: 'array',
+					items: { $ref: '#/components/schemas/FriendSimpleDto' },
+				},
+				message: { type: 'string' },
+			},
+		},
+	})
+	async getFriendsByName(
+		@Request() req,
+		@I18n() i18n: I18nContext,
+		@Query('key') key: string,
+		@Query('page') page: number = 1,
+		@Query('limit') limit: number = 10,
+	): Promise<ResponseEntity<FriendSimpleDto[]>> {
+		const userId = req.user.id;
+		const friends = await this.userService.getFriendsByFullName(userId, key, page, limit);
+		const data = plainToInstance(FriendSimpleDto, friends, { excludeExtraneousValues: true });
+		return {
+			success: true,
+			data,
+			message: i18n.t('user.FRIENDS_RETRIEVED_SUCCESS'),
 		};
 	}
 }
