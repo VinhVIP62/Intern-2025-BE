@@ -36,9 +36,11 @@ export class AuthService {
 		if (isEmpty(password)) throw new UnauthorizedException(`Please provide non-empty password.`);
 		const isLoggedInViaPhone = isPhoneNumber(id);
 		const findOptions = isPhoneNumber(id) ? { phone: id } : { mail: id };
-		const user = await this.userService.findOneBy(findOptions);
+		const user = await this.userService.findLoginableAndRestore(findOptions);
 		if (!user) {
-			throw new UnauthorizedException(`${isLoggedInViaPhone ? 'Phone number' : 'Email'} not found`);
+			throw new UnauthorizedException(
+				`${isLoggedInViaPhone ? 'Phone number' : 'Email'} not found or your account has been deactivated`,
+			);
 		}
 		const isPasswordValid =
 			user.password !== null && (await bcrypt.compare(password, user.password));

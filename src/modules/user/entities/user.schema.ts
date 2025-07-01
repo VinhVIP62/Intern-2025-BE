@@ -4,7 +4,7 @@ import mongoose, { HydratedDocument, ValidatorProps } from 'mongoose';
 
 import { Level, Role, Status } from '@common/enums';
 import { Complete } from '@common/types/utils';
-import { nonNullAfterCreate, uniqueArrayFieldValidator } from '@common/validators';
+import { nonEmptyAfterCreate, uniqueArrayFieldValidator } from '@common/validators';
 
 import { GoogleLoginInfo, Location, Sport, User } from './user.entity';
 
@@ -57,8 +57,8 @@ export class UserSchemaDef implements Complete<User> {
 	@Prop({
 		type: String,
 		validate: {
-			validator: nonNullAfterCreate,
-			message: (props: ValidatorProps) => `${props.path} must be updated with a non-null value`,
+			validator: nonEmptyAfterCreate,
+			message: (props: ValidatorProps) => `${props.path} must be updated with a non-empty value`,
 		},
 	})
 	password!: string | null;
@@ -71,8 +71,8 @@ export class UserSchemaDef implements Complete<User> {
 		unique: true,
 		sparse: true,
 		validate: {
-			validator: nonNullAfterCreate,
-			message: (props: ValidatorProps) => `${props.path} must be updated with a non-null value`,
+			validator: nonEmptyAfterCreate,
+			message: (props: ValidatorProps) => `${props.path} must be updated with a non-empty value`,
 		},
 		default: null,
 	})
@@ -85,8 +85,8 @@ export class UserSchemaDef implements Complete<User> {
 			partialFilterExpression: { phone: { $type: 'string' } },
 		},
 		validate: {
-			validator: nonNullAfterCreate,
-			message: (props: ValidatorProps) => `${props.path} must be updated with a non-null value`,
+			validator: nonEmptyAfterCreate,
+			message: (props: ValidatorProps) => `${props.path} must be updated with a non-empty value`,
 		},
 		default: null,
 	})
@@ -120,8 +120,8 @@ export class UserSchemaDef implements Complete<User> {
 	@Prop({ default: false, index: true })
 	hasFinishedSetup: boolean = false;
 
-	@Prop({ type: GoogleLoginInfoSubDoc, default: undefined })
-	googleLoginInfo: GoogleLoginInfo | undefined;
+	@Prop({ type: GoogleLoginInfoSubDoc, default: null })
+	googleLoginInfo!: GoogleLoginInfo | null;
 
 	createdAt!: Date;
 	updatedAt!: Date;

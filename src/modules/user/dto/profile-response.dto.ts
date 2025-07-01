@@ -34,5 +34,5 @@ export class ResponseProfileDto extends ResponseUserDto {
 	deletedBy!: string | null;
 
 	@Expose()
-	googleLoginInfo!: GoogleLoginInfo;
+	googleLoginInfo!: GoogleLoginInfo | null;
 }

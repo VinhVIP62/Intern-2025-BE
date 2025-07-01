@@ -1,6 +1,6 @@
 import { Document } from 'mongoose';
 
-export function nonNullAfterCreate(this: Document, val: string | null) {
+export function nonEmptyAfterCreate(this: Document, val: string | null) {
 	if (this.isNew) {
 		return true;
 	}

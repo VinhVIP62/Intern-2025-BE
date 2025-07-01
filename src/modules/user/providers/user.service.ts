@@ -55,4 +55,21 @@ export class UserService {
 	async softDelete(id: string, deletedBy: string | null = null): Promise<User> {
 		return this.userRepository.softDelete(id, deletedBy);
 	}
+
+	async restore(id: string): Promise<User> {
+		return this.userRepository.restore(id);
+	}
+
+	async findLoginable(options: Partial<User>): Promise<User | null> {
+		return this.userRepository.findOneLoginable(options);
+	}
+
+	async findLoginableAndRestore(options: Partial<User>): Promise<User | null> {
+		const user = await this.userRepository.findOneLoginable(options);
+		return user ? this.userRepository.restore(user.id) : null;
+	}
+
+	async findAny(options: Partial<User>): Promise<User[]> {
+		return this.userRepository.findByRawFilter(options, { doNotUseRepoOptions: true });
+	}
 }

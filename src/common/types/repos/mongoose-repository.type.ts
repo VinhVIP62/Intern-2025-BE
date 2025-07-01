@@ -1,20 +1,50 @@
-import { Model } from 'mongoose';
+import { FilterQuery, Model } from 'mongoose';
 
 import { EntityNotFound } from '@common/exceptions';
 
 import { Class } from '../utils/class.type.js';
-import { IBaseRepository, ISoftDeletable, ISoftDeleteBaseRepository } from './base-repository.type';
+import {
+	IBaseRepository,
+	ISoftDeletable,
+	ISoftDeleteBaseRepository,
+	queryOptions,
+	repoOptions,
+} from './base-repository.type';
 
-export class MongooseRepositoryImpl<T extends { id: string }> implements IBaseRepository<T> {
+export class MongooseRepositoryImpl<T extends object> implements IBaseRepository<T> {
 	constructor(
 		protected readonly entityModel: Model<T>,
 		protected readonly entityClass: Class<T>,
+		readonly repoOptions: repoOptions<T> = {},
 	) {}
 
-	protected transformFindQueryId(where: Partial<T>): Partial<T> & { _id?: string } {
+	/** To apply middleware transformation for all class methods */
+	protected transformQuery<TWhere>(
+		where: { id?: string } & TWhere,
+		queryOptions?: queryOptions<T>,
+	): { _id?: string } & Omit<TWhere, 'id'> {
+		const repoOptions = !queryOptions?.doNotUseRepoOptions ? this.repoOptions : {};
+		const queryRepoOptions = { ...repoOptions, ...queryOptions?.customRepoOptions };
+		// shallow copy cuz we have to delete key later
+		const whereCopy = { ...where };
+
+		// since the fields cannot be undefined
+		// we can safely use undefined as an overwrite to find all regardless of the value of the field
+		const cleanedFindOptions: Partial<{ id?: string } & TWhere> = {};
+		if (queryRepoOptions.defaultFindOptions)
+			for (const key of Object.keys(queryRepoOptions.defaultFindOptions || {})) {
+				if (key in whereCopy) {
+					delete whereCopy[key];
+					continue;
+				}
+				// do not delete queryRepoOptions.defaultFindOptions[key] as it could delete the referenced value in repoOptions too
+				cleanedFindOptions[key] = queryRepoOptions.defaultFindOptions[key] as Partial<T>;
+			}
+
 		const transformed = {
-			...where,
-			...(where.id && { _id: where.id }),
+			...cleanedFindOptions,
+			...whereCopy,
+			...(whereCopy.id && { _id: whereCopy.id }),
 		};
 		delete transformed.id;
 		return transformed;
@@ -24,36 +54,75 @@ export class MongooseRepositoryImpl<T extends { id: string }> implements IBaseRe
 		return (await this.entityModel.insertOne(data, { validateBeforeSave: true })).toObject();
 	}
 
-	async update(id: string, data: Partial<T>): Promise<T> {
+	async update(id: string, data: Partial<T>, queryOptions?: queryOptions<T>): Promise<T> {
+		return this.findOneByAndUpdate({ id } as unknown as Partial<T>, data, queryOptions);
+	}
+
+	async delete(id: string, queryOptions?: queryOptions<T>): Promise<T> {
+		return this.findOneByAndDelete({ id } as unknown as Partial<T>, queryOptions);
+	}
+
+	async findOneById(id: string, queryOptions?: queryOptions<T>): Promise<T | null> {
+		const foundEntity = (
+			await this.entityModel.findOne(this.transformQuery({ id }, queryOptions)).exec()
+		)?.toObject();
+		return foundEntity || null;
+	}
+
+	async findOneBy(where: Partial<T>, queryOptions?: queryOptions<T>): Promise<T | null> {
+		const foundEntity = (
+			await this.entityModel.findOne(this.transformQuery(where, queryOptions)).exec()
+		)?.toObject();
+		return foundEntity || null;
+	}
+
+	async findOneByAndUpdate(
+		where: Partial<T>,
+		data: Partial<T>,
+		queryOptions?: queryOptions<T>,
+	): Promise<T> {
 		const updatedEntity = (
-			await this.entityModel.findByIdAndUpdate(id, data, { new: true, runValidators: true }).exec()
+			await this.entityModel
+				.findOneAndUpdate(this.transformQuery(where, queryOptions), data, {
+					new: true,
+					runValidators: true,
+				})
+				.exec()
 		)?.toObject();
 		if (!updatedEntity) throw new EntityNotFound(this.entityClass);
 		return updatedEntity;
 	}
 
-	async findOneById(id: string): Promise<T | null> {
-		const foundEntity = (await this.entityModel.findById(id).exec())?.toObject();
-		return foundEntity || null;
-	}
-
-	async findOneBy(where: Partial<T>): Promise<T | null> {
-		const foundEntity = (
-			await this.entityModel.findOne(this.transformFindQueryId(where)).exec()
+	async findOneByAndDelete(where: Partial<T>, queryOptions?: queryOptions<T>): Promise<T> {
+		const deletedEntity = (
+			await this.entityModel.findOneAndDelete(this.transformQuery(where, queryOptions)).exec()
 		)?.toObject();
-		return foundEntity || null;
+		if (!deletedEntity) throw new EntityNotFound(this.entityClass);
+		return deletedEntity;
 	}
 
-	async delete(id: string): Promise<T | null> {
-		const deletedEntity = (await this.entityModel.findByIdAndDelete(id).exec())?.toObject();
-		return deletedEntity || null;
-	}
-
-	async find(where: Partial<T>): Promise<T[]> {
+	async find(where: Partial<T>, queryOptions?: queryOptions<T>): Promise<T[]> {
 		const foundEntities = (
-			await this.entityModel.find(this.transformFindQueryId(where)).exec()
+			await this.entityModel.find(this.transformQuery(where, queryOptions)).exec()
 		).map(e => e.toObject());
 		return foundEntities;
+	}
+
+	async findByRawFilter(filter: FilterQuery<T>, queryOptions?: queryOptions<T>): Promise<T[]> {
+		const foundEntities = (
+			await this.entityModel.find(this.transformQuery(filter, queryOptions)).exec()
+		).map(e => e.toObject());
+		return foundEntities;
+	}
+
+	async findOneByRawFilter(
+		filter: FilterQuery<T>,
+		queryOptions?: queryOptions<T>,
+	): Promise<T | null> {
+		const foundEntity = (
+			await this.entityModel.findOne(this.transformQuery(filter, queryOptions)).exec()
+		)?.toObject();
+		return foundEntity || null;
 	}
 }
 
@@ -65,7 +134,7 @@ export class MongooseRepositoryImpl<T extends { id: string }> implements IBaseRe
  * so feel free to use type assertion inside the methods.
  * */
 export class MongooseSoftDeleteRepositoryImpl<
-		T extends { id: string } & {
+		T extends {
 			[K in keyof ISoftDeletable]: ISoftDeletable[K] extends T[K] ? unknown : never;
 		},
 	>
@@ -76,23 +145,7 @@ export class MongooseSoftDeleteRepositoryImpl<
 		protected readonly entityModel: Model<T>,
 		protected readonly entityClass: Class<T>,
 	) {
-		super(entityModel, entityClass);
-	}
-
-	/** Slightly modified update method of `MongooseRepositoryImpl<T>`.
-	 * Now also checks if `deleted` was set to `true`.
-	 */
-	async update(id: string, data: Partial<T>): Promise<T> {
-		const updatedEntity = (
-			await this.entityModel
-				.findOneAndUpdate(this.transformFindQueryId({ id, deleted: false } as Partial<T>), data, {
-					new: true,
-					runValidators: true,
-				})
-				.exec()
-		)?.toObject();
-		if (!updatedEntity) throw new EntityNotFound(this.entityClass);
-		return updatedEntity;
+		super(entityModel, entityClass, { defaultFindOptions: { deleted: false } as Partial<T> });
 	}
 
 	async softDelete(id: string, deletedBy: string | null = null): Promise<T> {
@@ -103,5 +156,11 @@ export class MongooseSoftDeleteRepositoryImpl<
 			deletedAt: new Date(),
 		} as Partial<T>;
 		return this.update(id, updatedData);
+	}
+
+	async restore(id: string): Promise<T> {
+		return this.update(id, { deleted: false, deletedBy: null, deletedAt: null } as Partial<T>, {
+			doNotUseRepoOptions: true,
+		});
 	}
 }

@@ -25,9 +25,18 @@ export class GoogleOAuth2Strategy extends PassportStrategy(Strategy, 'google') {
 		});
 	}
 
-	async validate(accessToken: string, refreshToken: string, profile: Profile): Promise<User> {
-		const foundUser = await this.userService.findOneBy({ googleLoginInfo: { id: profile.id } });
-		if (!foundUser) {
+	async validate(
+		accessToken: string,
+		refreshToken: string,
+		profile: Profile,
+	): Promise<User | null> {
+		const foundUsers = await this.userService.findAny({
+			googleLoginInfo: { id: profile.id },
+		});
+		const foundLoginableUser = await this.userService.findLoginableAndRestore({
+			googleLoginInfo: { id: profile.id },
+		});
+		if (!foundUsers.length) {
 			const createdUser = await this.userService.create({
 				avatarUrl: profile.photos?.[0]?.value || null,
 				googleLoginInfo: { id: profile.id },
@@ -38,6 +47,6 @@ export class GoogleOAuth2Strategy extends PassportStrategy(Strategy, 'google') {
 			});
 			return createdUser;
 		}
-		return foundUser;
+		return foundLoginableUser;
 	}
 }

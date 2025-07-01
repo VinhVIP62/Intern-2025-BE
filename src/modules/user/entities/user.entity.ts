@@ -36,5 +36,5 @@ export class User {
 	deletedAt!: Date | null;
 	deletedBy!: string | null;
 	// social login info
-	googleLoginInfo?: GoogleLoginInfo;
+	googleLoginInfo!: GoogleLoginInfo | null;
 }
