@@ -1826,12 +1826,11 @@
             }
           },
           "hashtags": {
-            "description": "Hashtags và số lượng sử dụng",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/Map"
-              }
-            ]
+            "description": "Danh sách hashtags",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "taggedUsers": {
             "description": "Danh sách ID người dùng được tag",

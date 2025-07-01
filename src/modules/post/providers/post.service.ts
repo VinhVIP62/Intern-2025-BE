@@ -137,7 +137,7 @@ export class PostService {
 		// Create post with hashtags
 		const postData = {
 			...createPostDto,
-			hashtags: this.createHashtagsMap(hashtags),
+			hashtags: hashtags,
 		};
 
 		const post = await this.postRepository.create(postData, authorId, images, video);
@@ -186,7 +186,7 @@ export class PostService {
 		let updateData: any = { ...updatePostDto };
 		if (updatePostDto.content) {
 			const hashtags = this.extractHashtags(updatePostDto.content);
-			updateData.hashtags = this.createHashtagsMap(hashtags);
+			updateData.hashtags = hashtags;
 		}
 
 		try {
@@ -285,14 +285,6 @@ export class PostService {
 		const hashtagRegex = /#[\w\u0590-\u05ff]+/g;
 		const hashtags = content.match(hashtagRegex) || [];
 		return hashtags.map(tag => tag.toLowerCase());
-	}
-
-	private createHashtagsMap(hashtags: string[]): Map<string, number> {
-		const hashtagsMap = new Map<string, number>();
-		hashtags.forEach(tag => {
-			hashtagsMap.set(tag, (hashtagsMap.get(tag) || 0) + 1);
-		});
-		return hashtagsMap;
 	}
 
 	private isVideoFile(filename: string): boolean {

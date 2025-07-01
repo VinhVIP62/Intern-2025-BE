@@ -40,8 +40,8 @@ export class PostResponseDto {
 	@ApiProperty({ type: [Types.ObjectId], description: 'Danh sách ID người dùng đã like' })
 	likes: Types.ObjectId[];
 
-	@ApiProperty({ description: 'Hashtags và số lượng sử dụng' })
-	hashtags: Map<string, number>;
+	@ApiProperty({ type: [String], description: 'Danh sách hashtags' })
+	hashtags: string[];
 
 	@ApiProperty({ type: [Types.ObjectId], description: 'Danh sách ID người dùng được tag' })
 	taggedUsers: Types.ObjectId[];

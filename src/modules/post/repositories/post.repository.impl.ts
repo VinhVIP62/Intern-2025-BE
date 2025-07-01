@@ -275,7 +275,7 @@ export class PostRepositoryImpl implements IPostRepository {
 
 		const filter = {
 			approvalStatus: PostStatus.APPROVED,
-			[`hashtags.${hashtag}`]: { $exists: true },
+			hashtags: hashtag,
 		};
 
 		const [posts, total] = await Promise.all([
