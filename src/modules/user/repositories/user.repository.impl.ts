@@ -26,6 +26,12 @@ export class UserRepositoryImpl implements IUserRepository {
 		return await this.userModel.findOne({ username });
 	}
 
+	async findOneByUsernameOrEmail(username: string, email: string) {
+		return await this.userModel.findOne({
+			$or: [{ username: username }, { email: email }],
+		});
+	}
+
 	async findOneById(id: string): Promise<User | null> {
 		return await this.userModel.findById(id);
 	}

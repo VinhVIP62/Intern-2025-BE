@@ -38,10 +38,12 @@ export class CreateProfileDto {
 	@IsOptional()
 	address?: AddressDto;
 
+	@IsOptional()
 	@IsArray()
 	@IsEnum(Sports, { each: true })
 	sportInterests: Sports[];
 
+	@IsOptional()
 	@IsArray()
 	@IsEnum(SportLevel, { each: true })
 	sportLevel: SportLevel[];
