@@ -110,4 +110,13 @@ export class UserService {
 		// Return updated profile
 		return this.getProfile(userId, i18n);
 	}
+
+	async getFriendsByFullName(
+		userId: string,
+		fullName: string,
+		page: number,
+		limit: number,
+	): Promise<User[]> {
+		return this.userRepository.findFriendsByFullName(userId, fullName, page, limit);
+	}
 }

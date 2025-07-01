@@ -27,4 +27,27 @@ export class UserRepositoryImpl implements IUserRepository {
 	async findOneById(id: string): Promise<User | null> {
 		return await this.userModel.findById(id);
 	}
+
+	async findFriendsByFullName(
+		userId: string,
+		fullName: string,
+		page: number,
+		limit: number,
+	): Promise<User[]> {
+		// Lấy user để lấy danh sách bạn bè
+		const user = await this.userModel.findById(userId).populate('friends');
+		if (!user) return [];
+		const friendIds = user.friends.map((f: any) => (f._id ? f._id : f));
+
+		// Tìm bạn bè theo fullname (không phân biệt hoa thường)
+		const regex = new RegExp(fullName, 'i');
+		return this.userModel
+			.find({
+				_id: { $in: friendIds },
+				$or: [{ fullName: regex }, { firstName: regex }, { lastName: regex }],
+			})
+			.skip((page - 1) * limit)
+			.limit(limit)
+			.exec();
+	}
 }

@@ -473,6 +473,67 @@
         ]
       }
     },
+    "/api/v1/user/friends/search": {
+      "get": {
+        "operationId": "UserController_getFriendsByName_v1",
+        "parameters": [
+          {
+            "name": "key",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Danh sách bạn bè phù hợp",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/FriendSimpleDto"
+                      }
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Tìm kiếm bạn bè theo tên (fullname, không phân biệt hoa thường, có phân trang)",
+        "tags": [
+          "User"
+        ]
+      }
+    },
     "/api/v1/file/upload": {
       "post": {
         "operationId": "FileController_uploadFile_v1",
