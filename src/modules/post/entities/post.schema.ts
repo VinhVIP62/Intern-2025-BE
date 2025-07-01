@@ -30,12 +30,8 @@ export class Post extends Document {
 	@Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
 	likes: Types.ObjectId[];
 
-	@Prop({
-		type: Map,
-		of: Number,
-		default: new Map(),
-	})
-	hashtags: Map<string, number>; // number is the count of pages use this hashtag
+	@Prop({ type: [String], default: [] })
+	hashtags: string[];
 
 	@Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
 	taggedUsers: Types.ObjectId[];
