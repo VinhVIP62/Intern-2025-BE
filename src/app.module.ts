@@ -1,16 +1,25 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
-import { DatabaseConfig, Config } from '@configs';
-import { LoggerModule } from '@common/logger/logger.module';
-import { RouteModule } from '@router/router.module';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 import path from 'path';
-import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { GlobalExceptionFilter, CustomExceptionFilter, HttpExceptionFilter } from '@common/filters';
-import { JwtAuthGuard } from '@common/guards';
-import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
-import { ResponseTransformInterceptor } from '@common/interceptor/response-transform.interceptor';
+
+import {
+	CustomExceptionFilter,
+	GlobalExceptionFilter,
+	HttpExceptionFilter,
+	MongoExceptionFilter,
+	MongooseExceptionFilter,
+} from '@common/filters';
+import { JwtAuthGuard, RolesGuard } from '@common/guards';
+import { ResponseTransformInterceptor } from '@common/interceptors';
+import { LoggerModule } from '@common/logger';
+
+import { Config, DatabaseConfig } from '@configs';
+
+import { RouteModule } from '@modules/router';
 
 @Module({
 	imports: [
@@ -58,12 +67,24 @@ import { ResponseTransformInterceptor } from '@common/interceptor/response-trans
 			useClass: HttpExceptionFilter,
 		},
 		{
+			provide: APP_FILTER,
+			useClass: MongoExceptionFilter,
+		},
+		{
+			provide: APP_FILTER,
+			useClass: MongooseExceptionFilter,
+		},
+		{
 			provide: APP_GUARD,
 			useClass: JwtAuthGuard,
 		},
 		{
 			provide: APP_GUARD,
 			useClass: ThrottlerGuard,
+		},
+		{
+			provide: APP_GUARD,
+			useClass: RolesGuard,
 		},
 		{
 			provide: APP_INTERCEPTOR,

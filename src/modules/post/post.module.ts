@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+
 import { PostController } from './controllers/post.controller';
 import { PostService } from './providers/post.service';
 

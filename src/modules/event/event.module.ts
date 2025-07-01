@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+
 import { EventController } from './controllers/event.controller';
 import { EventService } from './providers/event.service';
 

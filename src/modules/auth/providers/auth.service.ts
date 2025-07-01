@@ -1,56 +1,53 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { TokenService } from './token.service';
-import { UserService } from '@modules/user/providers/user.service';
 import * as bcrypt from 'bcrypt';
-import { Payload, Tokens } from '../types';
+import { isEmpty, isPhoneNumber } from 'class-validator';
+
+import { UserService } from '@modules/user';
+import { User } from '@modules/user/entities';
+
+import { Payload, Tokens, createPayload } from '../types';
+import { TokenService } from './token.service';
 
 @Injectable()
 export class AuthService {
 	constructor(
-		private readonly userService: UserService,
 		private readonly tokenService: TokenService,
+		private readonly userService: UserService,
 	) {}
 
-	async login(username: string, password: string): Promise<Tokens> {
-		const user = await this.userService.findOneByUsername(username);
-		if (!user) {
-			throw new UnauthorizedException('Username not found');
-		}
-
-		const isPasswordValid = await bcrypt.compare(password, user.password);
-		if (!isPasswordValid) {
-			throw new UnauthorizedException('Invalid password');
-		}
-
-		const tokens = await this.tokenService.generateTokens(
-			{
-				username: user.username,
-				sub: {
-					id: user._id,
-					roles: user.roles,
-				},
-			},
-			true,
-		);
-
+	async login(id: string, password: string): Promise<Tokens> {
+		const user = await this.validateWithPhoneOrMail(id, password);
+		const tokens = await this.tokenService.generateTokens(createPayload(user), true);
 		return tokens;
 	}
 
-	async register(username: string, password: string): Promise<Tokens> {
-		const user = await this.userService.create({ username, password });
-
-		const tokens = await this.tokenService.generateTokens(
-			{
-				username: user.username,
-				sub: {
-					id: user._id,
-					roles: user.roles,
-				},
-			},
-			true,
-		);
-
+	async register(username: string, password: string, mail: string, phone: string): Promise<Tokens> {
+		const user = await this.userService.create({ username, password, mail, phone });
+		const tokens = await this.tokenService.generateTokens(createPayload(user), true);
 		return tokens;
+	}
+
+	async loginWithGoogle(user: User) {
+		const tokens = await this.tokenService.generateTokens(createPayload(user), true);
+		return tokens;
+	}
+
+	async validateWithPhoneOrMail(id: string, password: string): Promise<User> {
+		if (isEmpty(password)) throw new UnauthorizedException(`Please provide non-empty password.`);
+		const isLoggedInViaPhone = isPhoneNumber(id);
+		const findOptions = isPhoneNumber(id) ? { phone: id } : { mail: id };
+		const user = await this.userService.findLoginableAndRestore(findOptions);
+		if (!user) {
+			throw new UnauthorizedException(
+				`${isLoggedInViaPhone ? 'Phone number' : 'Email'} not found or your account has been deactivated`,
+			);
+		}
+		const isPasswordValid =
+			user.password !== null && (await bcrypt.compare(password, user.password));
+		if (!isPasswordValid) {
+			throw new UnauthorizedException('Invalid password');
+		}
+		return user;
 	}
 
 	async refreshToken(payload: Payload): Promise<Tokens> {

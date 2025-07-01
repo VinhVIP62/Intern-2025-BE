@@ -1,9 +1,9 @@
-import { Roles } from '@common/decorators';
-import { Role } from '@common/enum';
-import { RolesGuard } from '@common/guards';
 import { Controller, Get, UseGuards, Version } from '@nestjs/common';
 
-@UseGuards(RolesGuard)
+import { Roles } from '@common/decorators';
+import { Role } from '@common/enums';
+import { RolesGuard } from '@common/guards';
+
 @Roles(Role.ADMIN, Role.MODERATOR)
 @Controller()
 export class DevController {
@@ -14,18 +14,19 @@ export class DevController {
 
 	// New protected routes to test RBAC
 	// These routes' return values do not follow the ResponseEntity interface
-	@UseGuards(RolesGuard)
-	@Roles(Role.ADMIN)
+
 	@Version('1')
 	@Get('admin-only')
+	@UseGuards(RolesGuard)
+	@Roles(Role.ADMIN)
 	adminOnlyRoute() {
 		return { message: 'This route is accessible to admin' };
 	}
 
-	@UseGuards(RolesGuard)
-	@Roles(Role.MODERATOR, Role.ADMIN)
 	@Version('1')
 	@Get('moderator-and-admin')
+	@UseGuards(RolesGuard)
+	@Roles(Role.MODERATOR, Role.ADMIN)
 	moderatorAndAdminRoute() {
 		return { message: 'This route is accessible to moderators and admin' };
 	}

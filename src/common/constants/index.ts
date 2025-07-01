@@ -1,1 +1,1 @@
-export * from './roles.constants';
+export * from './account-deactivation.const';

@@ -1,10 +1,16 @@
-import { Module } from '@nestjs/common';
-import { UserController } from './controllers/user.controller';
-import { UserService } from './providers/user.service';
-import { UserRepositoryImpl } from './repositories/user.repository.impl';
-import { IUserRepository } from './repositories/user.repository';
+import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from './entities/user.schema';
+import { NestjsFormDataModule } from 'nestjs-form-data';
+
+import { AuthModule } from '@modules/auth';
+
+import { FileHostModule } from '@shared/modules/file-host';
+
+import { UserController } from './controllers';
+import { User, UserSchema } from './entities';
+import { UserService } from './providers';
+import { IUserRepositoryToken } from './repositories/user.repository';
+import { UserRepositoryImpl } from './repositories/user.repository.impl';
 
 @Module({
 	imports: [
@@ -14,12 +20,15 @@ import { User, UserSchema } from './entities/user.schema';
 				schema: UserSchema,
 			},
 		]),
+		NestjsFormDataModule,
+		FileHostModule,
+		forwardRef(() => AuthModule),
 	],
 	controllers: [UserController],
 	providers: [
 		UserService,
 		{
-			provide: IUserRepository,
+			provide: IUserRepositoryToken,
 			useClass: UserRepositoryImpl,
 		},
 	],

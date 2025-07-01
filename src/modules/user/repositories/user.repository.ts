@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { User } from '../entities/user.schema';
+import { ISoftDeleteBaseRepository } from '@common/types/repos';
 
-@Injectable()
-export abstract class IUserRepository {
-	abstract create(data: Partial<User>): Promise<User>;
-	abstract update(id: string, data: Partial<User>): Promise<User>;
-	abstract findOneByUsername(username: string): Promise<User | null>;
-	abstract findOneById(id: string): Promise<User | null>;
+import { User } from '../entities';
+
+export interface IUserRepository extends ISoftDeleteBaseRepository<User> {
+	findOneByUsername(username: string): Promise<User | null>;
+
+	/** Find a user matching the where options & match criterias to still be able to login */
+	findOneLoginable(where: Partial<User>): Promise<User | null>;
 }
+
+export const IUserRepositoryToken = Symbol('IUserRepository');

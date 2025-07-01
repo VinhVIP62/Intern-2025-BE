@@ -1,7 +1,8 @@
-import { AppLoggerService } from '@common/logger/logger.service';
-import { ResponseEntity } from '@common/types';
-import { ExceptionFilter, Catch, ArgumentsHost, HttpStatus } from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from '@nestjs/common';
 import { Request, Response } from 'express';
+
+import { AppLoggerService } from '@common/logger';
+import { ResponseEntity } from '@common/types/data';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -23,13 +24,11 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 	}
 
 	private resolve(exception: unknown, req: Request): ResponseEntity<null> {
-		return {
-			path: req.url,
-			statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-			success: false,
-			timestamp: Date.now(),
-			error: 'Internal server error',
-			data: null,
-		};
+		return new ResponseEntity<null>(
+			req.url,
+			HttpStatus.INTERNAL_SERVER_ERROR,
+			null,
+			'Internal server error',
+		);
 	}
 }
