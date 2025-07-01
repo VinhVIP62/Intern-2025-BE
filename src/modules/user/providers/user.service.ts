@@ -21,6 +21,11 @@ export class UserService {
 		return foundUser;
 	}
 
+	async findOneByUsernameOrEmail(username: string, email: string) {
+		const foundUser = this.userRepository.findOneByUsernameOrEmail(username, email);
+		return foundUser;
+	}
+
 	async findOneByEmail(email: string): Promise<User | null> {
 		const foundUser = this.userRepository.findOneByEmail(email);
 		return foundUser;

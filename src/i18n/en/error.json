@@ -5,7 +5,7 @@
 	"requiredField": "This field is required.",
 	"invalidCredentials": "Invalid username or password.",
 	"accountLocked": "Your account has been locked due to multiple failed login attempts. Please try again later.",
-	"existingUsername": "Username already exists. Please choose a different username.",
+	"existingUsername": "Username already exists. Please choose a different username/email.",
 	"existingEmail": "Email already exists. Please use a different email address.",
 	"profileExists": "Profile already exists.",
 	"userNotFound": "User not found.",

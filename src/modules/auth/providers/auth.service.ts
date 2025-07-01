@@ -46,13 +46,13 @@ export class AuthService {
 		return response;
 	}
 
-	async register(username: string, password: string): Promise<Tokens> {
-		const existingUser = await this.userService.findOneByUsername(username);
+	async register(username: string, password: string, email: string): Promise<Tokens> {
+		const existingUser = await this.userService.findOneByUsernameOrEmail(username, email);
 		if (existingUser) {
 			throw new ConflictException('error.existingUsername');
 		}
 
-		const user = await this.userService.create({ username, password });
+		const user = await this.userService.create({ username, password, email });
 
 		const tokens = await this.tokenService.generateTokens(
 			{
