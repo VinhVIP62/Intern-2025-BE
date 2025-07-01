@@ -21,6 +21,7 @@ export interface IPostRepository {
 	findApprovedPosts(
 		page: number,
 		limit: number,
+		userId: string,
 		sport?: string,
 	): Promise<{ posts: Post[]; total: number }>;
 
@@ -58,6 +59,10 @@ export interface IPostRepository {
 	): Promise<{ posts: Post[]; total: number }>;
 
 	replaceTaggedUsers(postId: string, userIds: string[]): Promise<Post>;
+
+	likePost(postId: string, userId: string): Promise<Post>;
+	unlikePost(postId: string, userId: string): Promise<Post>;
+	getPostLikes(postId: string): Promise<{ likes: string[]; likeCount: number }>;
 }
 
 export const IPostRepository = Symbol('IPostRepository');

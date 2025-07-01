@@ -18,6 +18,9 @@ import { FileService } from '../../file/providers/file.service';
 import { PostType } from '../entities/post.enum';
 import { NotificationService } from '../../notification/providers/notification.service';
 import { NotificationType, ReferenceModel } from '../../notification/entities/notification.enum';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { User } from '../../user/entities/user.schema';
 
 @Injectable()
 export class PostService {
@@ -25,15 +28,22 @@ export class PostService {
 		private readonly postRepository: IPostRepository,
 		private readonly fileService: FileService,
 		private readonly notificationService: NotificationService,
+		@InjectModel('User') private readonly userModel: Model<User>,
 	) {}
 
 	async getNewsfeed(
 		i18n: I18nContext,
 		page: number = 1,
 		limit: number = 10,
+		userId: string,
 		sport?: string,
 	): Promise<PaginatedPostsResponseDto> {
-		const { posts, total } = await this.postRepository.findApprovedPosts(page, limit, sport);
+		const { posts, total } = await this.postRepository.findApprovedPosts(
+			page,
+			limit,
+			userId,
+			sport,
+		);
 
 		const totalPages = Math.ceil(total / limit);
 		const hasNextPage = page < totalPages;
@@ -385,5 +395,60 @@ export class PostService {
 		);
 
 		return post as PostResponseDto;
+	}
+
+	async likePost(postId: string, userId: string, i18n: I18nContext): Promise<PostResponseDto> {
+		try {
+			const post = await this.postRepository.likePost(postId, userId);
+			return post as PostResponseDto;
+		} catch (error) {
+			if (error.message === 'Already liked or post not found') {
+				throw new BadRequestException(i18n.t('post.ALREADY_LIKED'));
+			}
+			if (error.message === 'Post not found') {
+				throw new NotFoundException(i18n.t('post.POST_NOT_FOUND'));
+			}
+			throw error;
+		}
+	}
+
+	async unlikePost(postId: string, userId: string, i18n: I18nContext): Promise<PostResponseDto> {
+		try {
+			const post = await this.postRepository.unlikePost(postId, userId);
+			return post as PostResponseDto;
+		} catch (error) {
+			if (error.message === 'Not liked or post not found') {
+				throw new BadRequestException(i18n.t('post.NOT_LIKED'));
+			}
+			if (error.message === 'Post not found') {
+				throw new NotFoundException(i18n.t('post.POST_NOT_FOUND'));
+			}
+			throw error;
+		}
+	}
+
+	async getPostLikesWithUserInfo(
+		postId: string,
+		i18n: I18nContext,
+	): Promise<{ likes: { userId: string; fullName: string; avatar: string }[]; likeCount: number }> {
+		try {
+			const { likes, likeCount } = await this.postRepository.getPostLikes(postId);
+			if (!likes.length) return { likes: [], likeCount };
+			const users = await this.userModel
+				.find({ _id: { $in: likes } })
+				.select('avatar firstName lastName _id')
+				.lean();
+			const likeUsers = users.map(u => ({
+				userId: u._id.toString(),
+				fullName: `${u.firstName || ''} ${u.lastName || ''}`.trim(),
+				avatar: u.avatar,
+			}));
+			return { likes: likeUsers, likeCount };
+		} catch (error) {
+			if (error.message === 'Post not found') {
+				throw new NotFoundException(i18n.t('post.POST_NOT_FOUND'));
+			}
+			throw error;
+		}
 	}
 }

@@ -91,10 +91,15 @@ export class PostRepositoryImpl implements IPostRepository {
 	async findApprovedPosts(
 		page: number,
 		limit: number,
+		userId: string,
 		sport?: string,
 	): Promise<{ posts: Post[]; total: number }> {
 		const skip = (page - 1) * limit;
 		const filter: any = { approvalStatus: PostStatus.APPROVED };
+
+		if (userId) {
+			filter.author = new Types.ObjectId(userId);
+		}
 
 		if (sport) {
 			filter.sport = sport;
@@ -304,5 +309,35 @@ export class PostRepositoryImpl implements IPostRepository {
 		);
 		if (!post) throw new Error('Post not found');
 		return post;
+	}
+
+	async likePost(postId: string, userId: string): Promise<Post> {
+		const post = await this.postModel
+			.findOneAndUpdate(
+				{ _id: postId, likes: { $ne: userId } },
+				{ $addToSet: { likes: userId }, $inc: { likeCount: 1 } },
+				{ new: true },
+			)
+			.populate('authorUser', 'username email avatar');
+		if (!post) throw new Error('Already liked or post not found');
+		return post;
+	}
+
+	async unlikePost(postId: string, userId: string): Promise<Post> {
+		const post = await this.postModel
+			.findOneAndUpdate(
+				{ _id: postId, likes: userId },
+				{ $pull: { likes: userId }, $inc: { likeCount: -1 } },
+				{ new: true },
+			)
+			.populate('authorUser', 'username email avatar');
+		if (!post) throw new Error('Not liked or post not found');
+		return post;
+	}
+
+	async getPostLikes(postId: string): Promise<{ likes: string[]; likeCount: number }> {
+		const post = await this.postModel.findById(postId).select('likes likeCount');
+		if (!post) throw new Error('Post not found');
+		return { likes: post.likes.map((id: any) => id.toString()), likeCount: post.likeCount };
 	}
 }

@@ -7,10 +7,13 @@ import { IPostRepository } from './repositories/post.repository';
 import { PostRepositoryImpl } from './repositories/post.repository.impl';
 import { FileModule } from '../file/file.module';
 import { NotificationModule } from '../notification/notification.module';
+import { UserSchema } from '@modules/user/entities/user.schema';
+import { User } from '@modules/user/entities/user.schema';
 
 @Module({
 	imports: [
 		MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
+		MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
 		FileModule,
 		NotificationModule,
 	],
