@@ -2,6 +2,15 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { PostType, PostStatus } from '../entities/post.enum';
 import { SportType } from '@modules/user/enums/user.enum';
+import {
+	IsString,
+	IsOptional,
+	IsEnum,
+	IsArray,
+	IsMongoId,
+	MinLength,
+	MaxLength,
+} from 'class-validator';
 
 export class PostResponseDto {
 	@ApiProperty({ description: 'ID của bài đăng' })
@@ -114,4 +123,134 @@ export class PaginatedPostsResponseDto {
 
 	@ApiProperty({ description: 'Có trang trước không' })
 	hasPrevPage: boolean;
+}
+
+export class CreatePostDto {
+	@ApiProperty({
+		description: 'Nội dung bài đăng',
+		minLength: 1,
+		maxLength: 2000,
+		example: 'Hôm nay tôi đã có một buổi tập tuyệt vời! #fitness #health',
+	})
+	@IsString()
+	@MinLength(1, { message: 'Nội dung không được để trống' })
+	@MaxLength(2000, { message: 'Nội dung không được vượt quá 2000 ký tự' })
+	content: string;
+
+	@ApiProperty({
+		enum: PostType,
+		description: 'Loại bài đăng',
+		default: PostType.TEXT,
+		example: [PostType.TEXT, PostType.IMAGE, PostType.VIDEO, PostType.EVENT],
+	})
+	@IsEnum(PostType)
+	type: PostType = PostType.TEXT;
+
+	@ApiProperty({
+		enum: SportType,
+		description: 'Môn thể thao liên quan',
+		example: SportType.FOOTBALL,
+	})
+	@IsEnum(SportType)
+	sport: SportType;
+
+	@ApiProperty({
+		enum: PostStatus,
+		description: 'Trạng thái duyệt bài',
+		example: PostStatus.APPROVED,
+	})
+	@IsEnum(PostStatus)
+	approvalStatus: PostStatus = PostStatus.APPROVED;
+
+	@ApiProperty({
+		description: 'ID sự kiện liên quan',
+		required: false,
+		example: '507f1f77bcf86cd799439011',
+	})
+	@IsOptional()
+	@IsMongoId()
+	eventId?: string;
+
+	@ApiProperty({
+		description: 'ID nhóm liên quan',
+		required: false,
+		example: '507f1f77bcf86cd799439011',
+	})
+	@IsOptional()
+	@IsMongoId()
+	groupId?: string;
+
+	@ApiProperty({
+		type: [String],
+		description: 'Danh sách ID người dùng được tag',
+		required: false,
+		example: ['507f1f77bcf86cd799439011'],
+	})
+	@IsOptional()
+	@IsArray()
+	@IsMongoId({ each: true })
+	taggedUsers?: string[];
+
+	@ApiProperty({
+		description: 'ID bài đăng được share từ',
+		required: false,
+		example: '507f1f77bcf86cd799439011',
+	})
+	@IsOptional()
+	@IsMongoId()
+	sharedFrom?: string;
+}
+
+export class UpdatePostDto {
+	@ApiProperty({
+		description: 'Nội dung bài đăng',
+		minLength: 1,
+		maxLength: 2000,
+		required: false,
+		example: 'Hôm nay tôi đã có một buổi tập tuyệt vời! #fitness #health',
+	})
+	@IsOptional()
+	@IsString()
+	@MinLength(1, { message: 'Nội dung không được để trống' })
+	@MaxLength(2000, { message: 'Nội dung không được vượt quá 2000 ký tự' })
+	content?: string;
+
+	@ApiProperty({
+		enum: SportType,
+		description: 'Môn thể thao liên quan',
+		required: false,
+		example: SportType.FOOTBALL,
+	})
+	@IsOptional()
+	@IsEnum(SportType)
+	sport?: SportType;
+
+	@ApiProperty({
+		description: 'ID sự kiện liên quan',
+		required: false,
+		example: '507f1f77bcf86cd799439011',
+	})
+	@IsOptional()
+	@IsMongoId()
+	eventId?: string;
+
+	@ApiProperty({
+		description: 'ID nhóm liên quan',
+		required: false,
+		example: '507f1f77bcf86cd799439011',
+	})
+	@IsOptional()
+	@IsMongoId()
+	groupId?: string;
+
+	@ApiProperty({
+		type: [String],
+		description: 'Danh sách ID người dùng được tag',
+		required: false,
+		example: ['507f1f77bcf86cd799439011'],
+	})
+	@IsOptional()
+	@IsArray()
+	@IsMongoId({ each: true })
+	taggedUsers?: string[];
 }

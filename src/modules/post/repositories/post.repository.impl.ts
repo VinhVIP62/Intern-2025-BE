@@ -4,6 +4,7 @@ import { Model, Types } from 'mongoose';
 import { Post } from '../entities/post.schema';
 import { IPostRepository } from './post.repository';
 import { PostStatus } from '../entities/post.enum';
+import { CreatePostDto } from '../dto/post.dto';
 
 @Injectable()
 export class PostRepositoryImpl implements IPostRepository {
@@ -115,5 +116,21 @@ export class PostRepositoryImpl implements IPostRepository {
 		]);
 
 		return { posts: posts as unknown as Post[], total };
+	}
+
+	async create(
+		postData: CreatePostDto,
+		authorId: string,
+		images: string[] = [],
+		video?: string,
+	): Promise<Post> {
+		const post = new this.postModel({
+			...postData,
+			author: new Types.ObjectId(authorId),
+			images,
+			video,
+		});
+
+		return await post.save();
 	}
 }

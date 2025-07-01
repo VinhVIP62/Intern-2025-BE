@@ -676,6 +676,131 @@
       }
     },
     "/api/v1/posts": {
+      "post": {
+        "operationId": "PostController_createPost_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Tạo bài đăng với media files",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "description": "Nội dung bài đăng",
+                    "example": "Hôm nay tôi đã có một buổi tập tuyệt vời! #fitness #health"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "text",
+                      "image",
+                      "video",
+                      "event"
+                    ],
+                    "description": "Loại bài đăng",
+                    "example": "text"
+                  },
+                  "sport": {
+                    "type": "string",
+                    "enum": [
+                      "football",
+                      "basketball",
+                      "tennis",
+                      "badminton",
+                      "volleyball",
+                      "table_tennis",
+                      "swimming",
+                      "running",
+                      "cycling",
+                      "yoga",
+                      "gym",
+                      "martial_arts",
+                      "boxing",
+                      "golf",
+                      "rock_climbing"
+                    ],
+                    "description": "Môn thể thao liên quan",
+                    "example": "football"
+                  },
+                  "approvalStatus": {
+                    "type": "string",
+                    "enum": [
+                      "pending",
+                      "approved",
+                      "rejected"
+                    ],
+                    "description": "Trạng thái duyệt bài",
+                    "example": "approved"
+                  },
+                  "eventId": {
+                    "type": "string",
+                    "description": "ID sự kiện liên quan (chỉ cần cho event post)",
+                    "example": "507f1f77bcf86cd799439011"
+                  },
+                  "groupId": {
+                    "type": "string",
+                    "description": "ID nhóm liên quan",
+                    "example": "507f1f77bcf86cd799439011"
+                  },
+                  "taggedUsers": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Danh sách ID người dùng được tag",
+                    "example": [
+                      "507f1f77bcf86cd799439011"
+                    ]
+                  },
+                  "sharedFrom": {
+                    "type": "string",
+                    "description": "ID bài đăng được share từ",
+                    "example": "507f1f77bcf86cd799439011"
+                  },
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    },
+                    "description": "Media files (images/videos)"
+                  }
+                },
+                "required": [
+                  "content",
+                  "sport",
+                  "approvalStatus"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tạo bài đăng thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          }
+        },
+        "summary": "Tạo bài đăng mới",
+        "tags": [
+          "Post"
+        ]
+      },
       "get": {
         "operationId": "PostController_getNewsfeed_v1",
         "parameters": [
@@ -739,6 +864,84 @@
           }
         },
         "summary": "Lấy danh sách bài đăng (newsfeed)",
+        "tags": [
+          "Post"
+        ]
+      }
+    },
+    "/api/v1/posts/all": {
+      "get": {
+        "operationId": "PostController_getAllPosts_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng bài đăng trên mỗi trang (mặc định: 10)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sport",
+            "required": false,
+            "in": "query",
+            "description": "Lọc theo môn thể thao",
+            "schema": {
+              "enum": [
+                "football",
+                "basketball",
+                "tennis",
+                "badminton",
+                "volleyball",
+                "table_tennis",
+                "swimming",
+                "running",
+                "cycling",
+                "yoga",
+                "gym",
+                "martial_arts",
+                "boxing",
+                "golf",
+                "rock_climbing"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "description": "Lọc theo ID người dùng",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy tất cả bài đăng thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedPostsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy tất cả bài đăng",
         "tags": [
           "Post"
         ]
@@ -828,84 +1031,6 @@
           }
         },
         "summary": "Lấy danh sách bài đăng của người dùng theo ID",
-        "tags": [
-          "Post"
-        ]
-      }
-    },
-    "/api/v1/posts/all": {
-      "get": {
-        "operationId": "PostController_getAllPosts_v1",
-        "parameters": [
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Số trang (mặc định: 1)",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Số lượng bài đăng trên mỗi trang (mặc định: 10)",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          },
-          {
-            "name": "sport",
-            "required": false,
-            "in": "query",
-            "description": "Lọc theo môn thể thao",
-            "schema": {
-              "enum": [
-                "football",
-                "basketball",
-                "tennis",
-                "badminton",
-                "volleyball",
-                "table_tennis",
-                "swimming",
-                "running",
-                "cycling",
-                "yoga",
-                "gym",
-                "martial_arts",
-                "boxing",
-                "golf",
-                "rock_climbing"
-              ],
-              "type": "string"
-            }
-          },
-          {
-            "name": "userId",
-            "required": false,
-            "in": "query",
-            "description": "Lọc theo ID người dùng",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Lấy tất cả bài đăng thành công",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedPostsResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Lấy tất cả bài đăng",
         "tags": [
           "Post"
         ]

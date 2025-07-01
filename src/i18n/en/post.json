@@ -34,5 +34,12 @@
 	"COMMENT_DELETED_SUCCESS": "Comment deleted successfully",
 	"COMMENT_NOT_FOUND": "Comment not found",
 	"UNAUTHORIZED_TO_MODIFY_COMMENT": "You are not authorized to modify this comment",
-	"UNAUTHORIZED_TO_DELETE_COMMENT": "You are not authorized to delete this comment"
+	"UNAUTHORIZED_TO_DELETE_COMMENT": "You are not authorized to delete this comment",
+	"POST_CREATION_FAILED": "Failed to create post",
+	"TEXT_POST_NO_MEDIA": "Text posts cannot contain media files",
+	"IMAGE_POST_REQUIRES_IMAGES": "Image posts must contain at least one image",
+	"VIDEO_POST_REQUIRES_VIDEO": "Video posts must contain at least one video",
+	"EVENT_POST_REQUIRES_EVENT_ID": "Event posts must have an associated event ID",
+	"TOO_MANY_FILES": "Too many files uploaded. Maximum allowed is 10",
+	"ONLY_ONE_VIDEO_ALLOWED": "Only one video is allowed per post"
 }

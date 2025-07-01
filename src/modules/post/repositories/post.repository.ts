@@ -1,5 +1,6 @@
 import { Post } from '../entities/post.schema';
 import { Types } from 'mongoose';
+import { CreatePostDto } from '../dto/post.dto';
 
 export interface IPostRepository {
 	findAll(
@@ -22,6 +23,13 @@ export interface IPostRepository {
 		limit: number,
 		sport?: string,
 	): Promise<{ posts: Post[]; total: number }>;
+
+	create(
+		postData: CreatePostDto,
+		authorId: string,
+		images?: string[],
+		video?: string,
+	): Promise<Post>;
 }
 
 export const IPostRepository = Symbol('IPostRepository');
