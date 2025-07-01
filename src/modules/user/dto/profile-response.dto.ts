@@ -17,6 +17,10 @@ export class ProfileResponseDto {
 
 	@IsOptional()
 	@IsString()
+	nickname: string;
+
+	@IsOptional()
+	@IsString()
 	bio?: string | null;
 
 	@IsOptional()
