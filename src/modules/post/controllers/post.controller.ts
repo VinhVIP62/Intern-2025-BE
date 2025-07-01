@@ -11,6 +11,9 @@ import {
 	UseInterceptors,
 	UploadedFiles,
 	BadRequestException,
+	ForbiddenException,
+	Delete,
+	Put,
 } from '@nestjs/common';
 import {
 	ApiTags,
@@ -23,7 +26,12 @@ import {
 } from '@nestjs/swagger';
 import { PostService } from '../providers/post.service';
 import { ResponseEntity } from '@common/types';
-import { PostResponseDto, PaginatedPostsResponseDto, CreatePostDto } from '../dto/post.dto';
+import {
+	PostResponseDto,
+	PaginatedPostsResponseDto,
+	CreatePostDto,
+	UpdatePostDto,
+} from '../dto/post.dto';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { SportType } from '@modules/user/enums/user.enum';
 import { Public } from '@common/decorators';
@@ -305,5 +313,156 @@ export class PostController {
 			data: result,
 			message: i18n.t('post.USER_POSTS_RETRIEVED_SUCCESS'),
 		};
+	}
+
+	@Version('1')
+	@Put(':postId')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@UseInterceptors(FilesInterceptor('files', 10))
+	@ApiOperation({ summary: 'Cập nhật bài đăng' })
+	@ApiConsumes('multipart/form-data')
+	@ApiParam({
+		name: 'postId',
+		description: 'ID của bài đăng',
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiBody({
+		description: 'Cập nhật bài đăng',
+		schema: {
+			type: 'object',
+			properties: {
+				content: {
+					type: 'string',
+					description: 'Nội dung bài đăng',
+					example: 'Cập nhật nội dung bài đăng! #updated #fitness',
+				},
+				sport: {
+					type: 'string',
+					enum: Object.values(SportType),
+					description: 'Môn thể thao liên quan',
+					example: 'football',
+				},
+				eventId: {
+					type: 'string',
+					description: 'ID sự kiện liên quan',
+					example: '507f1f77bcf86cd799439011',
+				},
+				groupId: {
+					type: 'string',
+					description: 'ID nhóm liên quan',
+					example: '507f1f77bcf86cd799439011',
+				},
+				taggedUsers: {
+					type: 'array',
+					items: { type: 'string' },
+					description: 'Danh sách ID người dùng được tag',
+					example: ['507f1f77bcf86cd799439011'],
+				},
+				files: {
+					type: 'array',
+					items: {
+						type: 'string',
+						format: 'binary',
+					},
+					description: 'Media files (images/videos)',
+				},
+			},
+		},
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Cập nhật bài đăng thành công',
+		type: PostResponseDto,
+	})
+	@ApiResponse({
+		status: 400,
+		description: 'Dữ liệu không hợp lệ',
+	})
+	@ApiResponse({
+		status: 401,
+		description: 'Không có quyền truy cập',
+	})
+	@ApiResponse({
+		status: 403,
+		description: 'Không có quyền chỉnh sửa bài đăng này',
+	})
+	@ApiResponse({
+		status: 404,
+		description: 'Không tìm thấy bài đăng',
+	})
+	async updatePost(
+		@Request() req,
+		@Param('postId') postId: string,
+		@Body() updatePostDto: UpdatePostDto,
+		@UploadedFiles() files: Express.Multer.File[],
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<PostResponseDto>> {
+		try {
+			const post = await this.postService.updatePost(
+				postId,
+				updatePostDto,
+				req.user.id,
+				files || [],
+				i18n,
+			);
+
+			return {
+				success: true,
+				data: post,
+				message: i18n.t('post.POST_UPDATED_SUCCESS'),
+			};
+		} catch (error) {
+			if (error instanceof BadRequestException || error instanceof ForbiddenException) {
+				throw error;
+			}
+			throw new BadRequestException(i18n.t('post.POST_UPDATE_FAILED'));
+		}
+	}
+
+	@Version('1')
+	@Delete(':postId')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Xóa bài đăng' })
+	@ApiParam({
+		name: 'postId',
+		description: 'ID của bài đăng',
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Xóa bài đăng thành công',
+	})
+	@ApiResponse({
+		status: 401,
+		description: 'Không có quyền truy cập',
+	})
+	@ApiResponse({
+		status: 403,
+		description: 'Không có quyền xóa bài đăng này',
+	})
+	@ApiResponse({
+		status: 404,
+		description: 'Không tìm thấy bài đăng',
+	})
+	async deletePost(
+		@Request() req,
+		@Param('postId') postId: string,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<null>> {
+		try {
+			await this.postService.deletePost(postId, req.user.id, i18n);
+
+			return {
+				success: true,
+				message: i18n.t('post.POST_DELETED_SUCCESS'),
+			};
+		} catch (error) {
+			if (error instanceof BadRequestException || error instanceof ForbiddenException) {
+				throw error;
+			}
+			throw new BadRequestException(i18n.t('post.POST_DELETE_FAILED'));
+		}
 	}
 }

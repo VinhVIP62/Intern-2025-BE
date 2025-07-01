@@ -1,8 +1,18 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+	Injectable,
+	NotFoundException,
+	BadRequestException,
+	ForbiddenException,
+} from '@nestjs/common';
 import { IPostRepository } from '../repositories/post.repository';
 import { Post } from '../entities/post.schema';
 import { I18nContext } from 'nestjs-i18n';
-import { PaginatedPostsResponseDto, PostResponseDto, CreatePostDto } from '../dto/post.dto';
+import {
+	PaginatedPostsResponseDto,
+	PostResponseDto,
+	CreatePostDto,
+	UpdatePostDto,
+} from '../dto/post.dto';
 import { FileService } from '../../file/providers/file.service';
 import { PostType } from '../entities/post.enum';
 
@@ -134,6 +144,78 @@ export class PostService {
 		return post as PostResponseDto;
 	}
 
+	async updatePost(
+		postId: string,
+		updatePostDto: UpdatePostDto,
+		userId: string,
+		files: Express.Multer.File[] = [],
+		i18n: I18nContext,
+	): Promise<PostResponseDto> {
+		// Check ownership
+		const isOwner = await this.postRepository.checkOwnership(postId, userId);
+		if (!isOwner) {
+			throw new ForbiddenException(i18n.t('post.UNAUTHORIZED_TO_MODIFY'));
+		}
+
+		// Validate content if provided
+		if (updatePostDto.content) {
+			this.validateUpdateContent(updatePostDto, files, i18n);
+		}
+
+		// Upload new media files if provided
+		const images: string[] = [];
+		let video: string | undefined;
+
+		if (files && files.length > 0) {
+			const uploadResults = await this.fileService.uploadFiles(files);
+
+			for (const result of uploadResults) {
+				if (this.isVideoFile(result.original_filename || '')) {
+					if (video) {
+						throw new BadRequestException(i18n.t('post.ONLY_ONE_VIDEO_ALLOWED'));
+					}
+					video = result.secure_url;
+				} else {
+					images.push(result.secure_url);
+				}
+			}
+		}
+
+		// Extract hashtags if content is updated
+		let updateData: any = { ...updatePostDto };
+		if (updatePostDto.content) {
+			const hashtags = this.extractHashtags(updatePostDto.content);
+			updateData.hashtags = this.createHashtagsMap(hashtags);
+		}
+
+		try {
+			const post = await this.postRepository.update(postId, updateData, images, video);
+			return post as PostResponseDto;
+		} catch (error) {
+			if (error.message === 'Post not found') {
+				throw new NotFoundException(i18n.t('post.POST_NOT_FOUND'));
+			}
+			throw error;
+		}
+	}
+
+	async deletePost(postId: string, userId: string, i18n: I18nContext): Promise<void> {
+		// Check ownership
+		const isOwner = await this.postRepository.checkOwnership(postId, userId);
+		if (!isOwner) {
+			throw new ForbiddenException(i18n.t('post.UNAUTHORIZED_TO_DELETE'));
+		}
+
+		try {
+			await this.postRepository.delete(postId);
+		} catch (error) {
+			if (error.message === 'Post not found') {
+				throw new NotFoundException(i18n.t('post.POST_NOT_FOUND'));
+			}
+			throw error;
+		}
+	}
+
 	private validatePostContent(
 		createPostDto: CreatePostDto,
 		files: Express.Multer.File[],
@@ -174,6 +256,22 @@ export class PostService {
 					throw new BadRequestException(i18n.t('post.EVENT_POST_REQUIRES_EVENT_ID'));
 				}
 				break;
+		}
+
+		// Validate file count
+		if (files.length > 10) {
+			throw new BadRequestException(i18n.t('post.TOO_MANY_FILES'));
+		}
+	}
+
+	private validateUpdateContent(
+		updatePostDto: UpdatePostDto,
+		files: Express.Multer.File[],
+		i18n: I18nContext,
+	): void {
+		// Validate content length
+		if (updatePostDto.content && updatePostDto.content.trim().length === 0) {
+			throw new BadRequestException(i18n.t('post.CONTENT_REQUIRED'));
 		}
 
 		// Validate file count

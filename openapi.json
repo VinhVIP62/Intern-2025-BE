@@ -981,6 +981,150 @@
         "tags": [
           "Post"
         ]
+      },
+      "put": {
+        "operationId": "PostController_updatePost_v1",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "description": "ID của bài đăng",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Cập nhật bài đăng",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "description": "Nội dung bài đăng",
+                    "example": "Cập nhật nội dung bài đăng! #updated #fitness"
+                  },
+                  "sport": {
+                    "type": "string",
+                    "enum": [
+                      "football",
+                      "basketball",
+                      "tennis",
+                      "badminton",
+                      "volleyball",
+                      "table_tennis",
+                      "swimming",
+                      "running",
+                      "cycling",
+                      "yoga",
+                      "gym",
+                      "martial_arts",
+                      "boxing",
+                      "golf",
+                      "rock_climbing"
+                    ],
+                    "description": "Môn thể thao liên quan",
+                    "example": "football"
+                  },
+                  "eventId": {
+                    "type": "string",
+                    "description": "ID sự kiện liên quan",
+                    "example": "507f1f77bcf86cd799439011"
+                  },
+                  "groupId": {
+                    "type": "string",
+                    "description": "ID nhóm liên quan",
+                    "example": "507f1f77bcf86cd799439011"
+                  },
+                  "taggedUsers": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Danh sách ID người dùng được tag",
+                    "example": [
+                      "507f1f77bcf86cd799439011"
+                    ]
+                  },
+                  "files": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "binary"
+                    },
+                    "description": "Media files (images/videos)"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cập nhật bài đăng thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền chỉnh sửa bài đăng này"
+          },
+          "404": {
+            "description": "Không tìm thấy bài đăng"
+          }
+        },
+        "summary": "Cập nhật bài đăng",
+        "tags": [
+          "Post"
+        ]
+      },
+      "delete": {
+        "operationId": "PostController_deletePost_v1",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "description": "ID của bài đăng",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Xóa bài đăng thành công"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền xóa bài đăng này"
+          },
+          "404": {
+            "description": "Không tìm thấy bài đăng"
+          }
+        },
+        "summary": "Xóa bài đăng",
+        "tags": [
+          "Post"
+        ]
       }
     },
     "/api/v1/posts/user/{userId}": {

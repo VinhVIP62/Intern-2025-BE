@@ -1,6 +1,6 @@
 import { Post } from '../entities/post.schema';
 import { Types } from 'mongoose';
-import { CreatePostDto } from '../dto/post.dto';
+import { CreatePostDto, UpdatePostDto } from '../dto/post.dto';
 
 export interface IPostRepository {
 	findAll(
@@ -30,6 +30,17 @@ export interface IPostRepository {
 		images?: string[],
 		video?: string,
 	): Promise<Post>;
+
+	update(
+		postId: string,
+		updateData: UpdatePostDto,
+		images?: string[],
+		video?: string,
+	): Promise<Post>;
+
+	delete(postId: string): Promise<void>;
+
+	checkOwnership(postId: string, userId: string): Promise<boolean>;
 }
 
 export const IPostRepository = Symbol('IPostRepository');

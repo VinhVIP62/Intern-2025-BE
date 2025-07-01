@@ -36,6 +36,8 @@
 	"UNAUTHORIZED_TO_MODIFY_COMMENT": "Bạn không có quyền chỉnh sửa bình luận này",
 	"UNAUTHORIZED_TO_DELETE_COMMENT": "Bạn không có quyền xóa bình luận này",
 	"POST_CREATION_FAILED": "Tạo bài đăng thất bại",
+	"POST_UPDATE_FAILED": "Cập nhật bài đăng thất bại",
+	"POST_DELETE_FAILED": "Xóa bài đăng thất bại",
 	"TEXT_POST_NO_MEDIA": "Bài đăng văn bản không được chứa tệp tin media",
 	"IMAGE_POST_REQUIRES_IMAGES": "Bài đăng hình ảnh phải chứa ít nhất một hình ảnh",
 	"VIDEO_POST_REQUIRES_VIDEO": "Bài đăng video phải chứa ít nhất một video",

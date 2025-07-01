@@ -4,7 +4,7 @@ import { Model, Types } from 'mongoose';
 import { Post } from '../entities/post.schema';
 import { IPostRepository } from './post.repository';
 import { PostStatus } from '../entities/post.enum';
-import { CreatePostDto } from '../dto/post.dto';
+import { CreatePostDto, UpdatePostDto } from '../dto/post.dto';
 
 @Injectable()
 export class PostRepositoryImpl implements IPostRepository {
@@ -132,5 +132,51 @@ export class PostRepositoryImpl implements IPostRepository {
 		});
 
 		return await post.save();
+	}
+
+	async update(
+		postId: string,
+		updateData: UpdatePostDto,
+		images: string[] = [],
+		video?: string,
+	): Promise<Post> {
+		const updateFields: any = { ...updateData };
+
+		// Only update images/video if provided
+		if (images.length > 0) {
+			updateFields.images = images;
+		}
+		if (video !== undefined) {
+			updateFields.video = video;
+		}
+
+		const post = await this.postModel
+			.findByIdAndUpdate(postId, updateFields, { new: true, runValidators: true })
+			.populate('authorUser', 'username email avatar')
+			.populate('event', 'title description')
+			.populate('group', 'name description')
+			.populate('sharedFromPost', 'content author')
+			.populate('comments');
+
+		if (!post) {
+			throw new Error('Post not found');
+		}
+
+		return post;
+	}
+
+	async delete(postId: string): Promise<void> {
+		const result = await this.postModel.findByIdAndDelete(postId);
+		if (!result) {
+			throw new Error('Post not found');
+		}
+	}
+
+	async checkOwnership(postId: string, userId: string): Promise<boolean> {
+		const post = await this.postModel.findById(postId).select('author');
+		if (!post) {
+			throw new Error('Post not found');
+		}
+		return post.author.toString() === userId;
 	}
 }
