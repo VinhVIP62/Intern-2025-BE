@@ -9,6 +9,7 @@ import {
 	PostModule,
 	UserModule,
 } from '../modules';
+import { FriendModule } from '@modules/friend/friend.module';
 
 @Module({
 	imports: [
@@ -34,6 +35,7 @@ import {
 		NotificationModule,
 		PostModule,
 		UserModule,
+		FriendModule,
 	],
 })
 export class RouteModule {}

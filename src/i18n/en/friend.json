@@ -1,0 +1,9 @@
+{
+  "SELF_REQUEST": "You cannot send a friend request to yourself.",
+  "REQUEST_EXISTS": "Friend request already exists.",
+  "REQUEST_NOT_FOUND": "Friend request not found.",
+  "REQUEST_SENT": "Friend request sent.",
+  "REQUEST_REJECTED": "Friend request was rejected.",
+  "REQUEST_ACCEPTED": "Friend request was accepted.",
+  "FRIEND_LIST": "Friend list retrieved successfully."
+}
