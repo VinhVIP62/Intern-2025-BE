@@ -31,6 +31,7 @@ import {
 	PaginatedPostsResponseDto,
 	CreatePostDto,
 	UpdatePostDto,
+	TrendingHashtagsResponseDto,
 } from '../dto/post.dto';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { SportType } from '@modules/user/enums/user.enum';
@@ -464,5 +465,97 @@ export class PostController {
 			}
 			throw new BadRequestException(i18n.t('post.POST_DELETE_FAILED'));
 		}
+	}
+
+	@Version('1')
+	@Get('hashtags/trending')
+	@Public()
+	@ApiOperation({ summary: 'Lấy danh sách hashtag trending' })
+	@ApiQuery({
+		name: 'page',
+		required: false,
+		type: Number,
+		description: 'Số trang (mặc định: 1)',
+		example: 1,
+	})
+	@ApiQuery({
+		name: 'limit',
+		required: false,
+		type: Number,
+		description: 'Số lượng hashtag trên mỗi trang (mặc định: 10)',
+		example: 10,
+	})
+	@ApiQuery({
+		name: 'timeRange',
+		required: false,
+		type: String,
+		description: 'Khoảng thời gian (7d, 30d, 90d, all)',
+		example: '7d',
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Lấy danh sách hashtag trending thành công',
+		type: TrendingHashtagsResponseDto,
+	})
+	async getTrendingHashtags(
+		@I18n() i18n: I18nContext,
+		@Query('page') page: number = 1,
+		@Query('limit') limit: number = 10,
+		@Query('timeRange') timeRange?: string,
+	): Promise<ResponseEntity<TrendingHashtagsResponseDto>> {
+		const result = await this.postService.getTrendingHashtags(i18n, page, limit, timeRange);
+
+		return {
+			success: true,
+			data: result,
+			message: i18n.t('post.TRENDING_HASHTAGS_RETRIEVED_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Get('hashtags/:hashtag/posts')
+	@Public()
+	@ApiOperation({ summary: 'Lấy danh sách bài đăng theo hashtag' })
+	@ApiParam({
+		name: 'hashtag',
+		description: 'Tên hashtag (có thể có hoặc không có dấu #)',
+		example: 'fitness',
+	})
+	@ApiQuery({
+		name: 'page',
+		required: false,
+		type: Number,
+		description: 'Số trang (mặc định: 1)',
+		example: 1,
+	})
+	@ApiQuery({
+		name: 'limit',
+		required: false,
+		type: Number,
+		description: 'Số lượng bài đăng trên mỗi trang (mặc định: 10)',
+		example: 10,
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Lấy danh sách bài đăng theo hashtag thành công',
+		type: PaginatedPostsResponseDto,
+	})
+	@ApiResponse({
+		status: 404,
+		description: 'Không tìm thấy bài đăng với hashtag này',
+	})
+	async getPostsByHashtag(
+		@Param('hashtag') hashtag: string,
+		@I18n() i18n: I18nContext,
+		@Query('page') page: number = 1,
+		@Query('limit') limit: number = 10,
+	): Promise<ResponseEntity<PaginatedPostsResponseDto>> {
+		const result = await this.postService.getPostsByHashtag(hashtag, i18n, page, limit);
+
+		return {
+			success: true,
+			data: result,
+			message: i18n.t('post.HASHTAG_POSTS_RETRIEVED_SUCCESS'),
+		};
 	}
 }

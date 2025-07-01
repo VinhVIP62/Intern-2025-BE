@@ -41,6 +41,21 @@ export interface IPostRepository {
 	delete(postId: string): Promise<void>;
 
 	checkOwnership(postId: string, userId: string): Promise<boolean>;
+
+	findTrendingHashtags(
+		page: number,
+		limit: number,
+		timeRange?: string,
+	): Promise<{
+		hashtags: Array<{ hashtag: string; postCount: number; usageCount: number }>;
+		total: number;
+	}>;
+
+	findPostsByHashtag(
+		hashtag: string,
+		page: number,
+		limit: number,
+	): Promise<{ posts: Post[]; total: number }>;
 }
 
 export const IPostRepository = Symbol('IPostRepository');

@@ -12,6 +12,7 @@ import {
 	PostResponseDto,
 	CreatePostDto,
 	UpdatePostDto,
+	TrendingHashtagsResponseDto,
 } from '../dto/post.dto';
 import { FileService } from '../../file/providers/file.service';
 import { PostType } from '../entities/post.enum';
@@ -298,5 +299,60 @@ export class PostService {
 		const videoExtensions = ['.mp4', '.avi', '.mov', '.wmv', '.flv', '.webm', '.mkv'];
 		const extension = filename.toLowerCase().substring(filename.lastIndexOf('.'));
 		return videoExtensions.includes(extension);
+	}
+
+	async getTrendingHashtags(
+		i18n: I18nContext,
+		page: number = 1,
+		limit: number = 10,
+		timeRange?: string,
+	): Promise<TrendingHashtagsResponseDto> {
+		const { hashtags, total } = await this.postRepository.findTrendingHashtags(
+			page,
+			limit,
+			timeRange,
+		);
+
+		const totalPages = Math.ceil(total / limit);
+		const hasNextPage = page < totalPages;
+		const hasPrevPage = page > 1;
+
+		return {
+			hashtags,
+			total,
+			page,
+			limit,
+			totalPages,
+			hasNextPage,
+			hasPrevPage,
+		};
+	}
+
+	async getPostsByHashtag(
+		hashtag: string,
+		i18n: I18nContext,
+		page: number = 1,
+		limit: number = 10,
+	): Promise<PaginatedPostsResponseDto> {
+		// Validate hashtag format
+		if (!hashtag.startsWith('#')) {
+			hashtag = `#${hashtag}`;
+		}
+
+		const { posts, total } = await this.postRepository.findPostsByHashtag(hashtag, page, limit);
+
+		const totalPages = Math.ceil(total / limit);
+		const hasNextPage = page < totalPages;
+		const hasPrevPage = page > 1;
+
+		return {
+			posts: posts as PostResponseDto[],
+			total,
+			page,
+			limit,
+			totalPages,
+			hasNextPage,
+			hasPrevPage,
+		};
 	}
 }

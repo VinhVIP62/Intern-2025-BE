@@ -179,4 +179,120 @@ export class PostRepositoryImpl implements IPostRepository {
 		}
 		return post.author.toString() === userId;
 	}
+
+	async findTrendingHashtags(
+		page: number,
+		limit: number,
+		timeRange?: string,
+	): Promise<{
+		hashtags: Array<{ hashtag: string; postCount: number; usageCount: number }>;
+		total: number;
+	}> {
+		const skip = (page - 1) * limit;
+
+		// Build date filter based on timeRange
+		let dateFilter: any = {};
+		if (timeRange && timeRange !== 'all') {
+			const now = new Date();
+			let daysAgo: number;
+
+			switch (timeRange) {
+				case '7d':
+					daysAgo = 7;
+					break;
+				case '30d':
+					daysAgo = 30;
+					break;
+				case '90d':
+					daysAgo = 90;
+					break;
+				default:
+					daysAgo = 7; // Default to 7 days
+			}
+
+			const startDate = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+			dateFilter = { createdAt: { $gte: startDate } };
+		}
+
+		// Aggregate to get trending hashtags
+		const pipeline: any[] = [
+			{ $match: { approvalStatus: PostStatus.APPROVED, ...dateFilter } },
+			{ $unwind: '$hashtags' },
+			{
+				$group: {
+					_id: '$hashtags',
+					postCount: { $addToSet: '$_id' },
+					usageCount: { $sum: 1 },
+				},
+			},
+			{
+				$project: {
+					hashtag: '$_id',
+					postCount: { $size: '$postCount' },
+					usageCount: 1,
+				},
+			},
+			{ $sort: { usageCount: -1, postCount: -1 } },
+			{ $skip: skip },
+			{ $limit: limit },
+		];
+
+		const countPipeline: any[] = [
+			{ $match: { approvalStatus: PostStatus.APPROVED, ...dateFilter } },
+			{ $unwind: '$hashtags' },
+			{ $group: { _id: '$hashtags' } },
+			{ $count: 'total' },
+		];
+
+		const [hashtags, totalResult] = await Promise.all([
+			this.postModel.aggregate(pipeline),
+			this.postModel.aggregate(countPipeline),
+		]);
+
+		const total = totalResult.length > 0 ? totalResult[0].total : 0;
+
+		return {
+			hashtags: hashtags.map(item => ({
+				hashtag: item.hashtag,
+				postCount: item.postCount,
+				usageCount: item.usageCount,
+			})),
+			total,
+		};
+	}
+
+	async findPostsByHashtag(
+		hashtag: string,
+		page: number,
+		limit: number,
+	): Promise<{ posts: Post[]; total: number }> {
+		const skip = (page - 1) * limit;
+
+		// Ensure hashtag starts with #
+		if (!hashtag.startsWith('#')) {
+			hashtag = `#${hashtag}`;
+		}
+
+		const filter = {
+			approvalStatus: PostStatus.APPROVED,
+			[`hashtags.${hashtag}`]: { $exists: true },
+		};
+
+		const [posts, total] = await Promise.all([
+			this.postModel
+				.find(filter)
+				.populate('authorUser', 'username email avatar')
+				.populate('event', 'title description')
+				.populate('group', 'name description')
+				.populate('sharedFromPost', 'content author')
+				.populate('comments')
+				.sort({ createdAt: -1 })
+				.skip(skip)
+				.limit(limit)
+				.lean(),
+			this.postModel.countDocuments(filter),
+		]);
+
+		return { posts: posts as unknown as Post[], total };
+	}
 }

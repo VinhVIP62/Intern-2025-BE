@@ -43,5 +43,7 @@
 	"VIDEO_POST_REQUIRES_VIDEO": "Bài đăng video phải chứa ít nhất một video",
 	"EVENT_POST_REQUIRES_EVENT_ID": "Bài đăng sự kiện phải có ID sự kiện liên quan",
 	"TOO_MANY_FILES": "Quá nhiều tệp tin được tải lên. Tối đa cho phép là 10",
-	"ONLY_ONE_VIDEO_ALLOWED": "Chỉ được phép một video cho mỗi bài đăng"
+	"ONLY_ONE_VIDEO_ALLOWED": "Chỉ được phép một video cho mỗi bài đăng",
+	"TRENDING_HASHTAGS_RETRIEVED_SUCCESS": "Lấy danh sách hashtag trending thành công",
+	"HASHTAG_POSTS_RETRIEVED_SUCCESS": "Lấy danh sách bài đăng theo hashtag thành công"
 }

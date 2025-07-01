@@ -43,5 +43,7 @@
 	"VIDEO_POST_REQUIRES_VIDEO": "Video posts must contain at least one video",
 	"EVENT_POST_REQUIRES_EVENT_ID": "Event posts must have an associated event ID",
 	"TOO_MANY_FILES": "Too many files uploaded. Maximum allowed is 10",
-	"ONLY_ONE_VIDEO_ALLOWED": "Only one video is allowed per post"
+	"ONLY_ONE_VIDEO_ALLOWED": "Only one video is allowed per post",
+	"TRENDING_HASHTAGS_RETRIEVED_SUCCESS": "Trending hashtags retrieved successfully",
+	"HASHTAG_POSTS_RETRIEVED_SUCCESS": "Posts by hashtag retrieved successfully"
 }

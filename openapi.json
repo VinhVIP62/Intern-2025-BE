@@ -1179,6 +1179,115 @@
           "Post"
         ]
       }
+    },
+    "/api/v1/posts/hashtags/trending": {
+      "get": {
+        "operationId": "PostController_getTrendingHashtags_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng hashtag trên mỗi trang (mặc định: 10)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "timeRange",
+            "required": false,
+            "in": "query",
+            "description": "Khoảng thời gian (7d, 30d, 90d, all)",
+            "schema": {
+              "example": "7d",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách hashtag trending thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrendingHashtagsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy danh sách hashtag trending",
+        "tags": [
+          "Post"
+        ]
+      }
+    },
+    "/api/v1/posts/hashtags/{hashtag}/posts": {
+      "get": {
+        "operationId": "PostController_getPostsByHashtag_v1",
+        "parameters": [
+          {
+            "name": "hashtag",
+            "required": true,
+            "in": "path",
+            "description": "Tên hashtag (có thể có hoặc không có dấu #)",
+            "schema": {
+              "example": "fitness",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng bài đăng trên mỗi trang (mặc định: 10)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách bài đăng theo hashtag thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedPostsResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Không tìm thấy bài đăng với hashtag này"
+          }
+        },
+        "summary": "Lấy danh sách bài đăng theo hashtag",
+        "tags": [
+          "Post"
+        ]
+      }
     }
   },
   "info": {
@@ -1900,6 +2009,73 @@
         },
         "required": [
           "posts",
+          "total",
+          "page",
+          "limit",
+          "totalPages",
+          "hasNextPage",
+          "hasPrevPage"
+        ]
+      },
+      "HashtagTrendingDto": {
+        "type": "object",
+        "properties": {
+          "hashtag": {
+            "type": "string",
+            "description": "Tên hashtag"
+          },
+          "postCount": {
+            "type": "number",
+            "description": "Số lượng bài đăng sử dụng hashtag này"
+          },
+          "usageCount": {
+            "type": "number",
+            "description": "Tổng số lượt sử dụng hashtag này"
+          }
+        },
+        "required": [
+          "hashtag",
+          "postCount",
+          "usageCount"
+        ]
+      },
+      "TrendingHashtagsResponseDto": {
+        "type": "object",
+        "properties": {
+          "hashtags": {
+            "description": "Danh sách hashtag trending",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HashtagTrendingDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "description": "Tổng số hashtag"
+          },
+          "page": {
+            "type": "number",
+            "description": "Trang hiện tại"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Số lượng hashtag trên mỗi trang"
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Tổng số trang"
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Có trang tiếp theo không"
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Có trang trước không"
+          }
+        },
+        "required": [
+          "hashtags",
           "total",
           "page",
           "limit",

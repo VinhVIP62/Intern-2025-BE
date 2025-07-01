@@ -254,3 +254,37 @@ export class UpdatePostDto {
 	@IsMongoId({ each: true })
 	taggedUsers?: string[];
 }
+
+export class HashtagTrendingDto {
+	@ApiProperty({ description: 'Tên hashtag' })
+	hashtag: string;
+
+	@ApiProperty({ description: 'Số lượng bài đăng sử dụng hashtag này' })
+	postCount: number;
+
+	@ApiProperty({ description: 'Tổng số lượt sử dụng hashtag này' })
+	usageCount: number;
+}
+
+export class TrendingHashtagsResponseDto {
+	@ApiProperty({ type: [HashtagTrendingDto], description: 'Danh sách hashtag trending' })
+	hashtags: HashtagTrendingDto[];
+
+	@ApiProperty({ description: 'Tổng số hashtag' })
+	total: number;
+
+	@ApiProperty({ description: 'Trang hiện tại' })
+	page: number;
+
+	@ApiProperty({ description: 'Số lượng hashtag trên mỗi trang' })
+	limit: number;
+
+	@ApiProperty({ description: 'Tổng số trang' })
+	totalPages: number;
+
+	@ApiProperty({ description: 'Có trang tiếp theo không' })
+	hasNextPage: boolean;
+
+	@ApiProperty({ description: 'Có trang trước không' })
+	hasPrevPage: boolean;
+}
