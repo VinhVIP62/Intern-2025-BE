@@ -70,15 +70,6 @@ export class Profile {
 		default: [],
 	})
 	sportLevel: SportLevel[];
-
-	@Prop({ default: [] })
-	friendIds: string[];
-
-	@Prop({ default: [] })
-	friendRequestsFrom: string[];
-
-	@Prop({ default: [] })
-	friendRequestsTo: string[];
 }
 
 export const ProfileSchema = SchemaFactory.createForClass(Profile);
