@@ -54,73 +54,7 @@ export class PostController {
 	@UseInterceptors(FilesInterceptor('files', 10))
 	@ApiOperation({ summary: 'Tạo bài đăng mới' })
 	@ApiConsumes('multipart/form-data')
-	@ApiBody({
-		description: 'Tạo bài đăng với media files',
-		schema: {
-			type: 'object',
-			properties: {
-				content: {
-					type: 'string',
-					description: 'Nội dung bài đăng',
-					example: 'Hôm nay tôi đã có một buổi tập tuyệt vời! #fitness #health',
-				},
-				type: {
-					type: 'string',
-					enum: ['text', 'image', 'video', 'event'],
-					description: 'Loại bài đăng',
-					example: 'text',
-				},
-				sport: {
-					type: 'string',
-					enum: Object.values(SportType),
-					description: 'Môn thể thao liên quan',
-					example: 'football',
-				},
-				approvalStatus: {
-					type: 'string',
-					enum: Object.values(PostStatus),
-					description: 'Trạng thái duyệt bài',
-					example: 'approved',
-				},
-				eventId: {
-					type: 'string',
-					description: 'ID sự kiện liên quan (chỉ cần cho event post)',
-					example: '507f1f77bcf86cd799439011',
-				},
-				groupId: {
-					type: 'string',
-					description: 'ID nhóm liên quan',
-					example: '507f1f77bcf86cd799439011',
-				},
-				taggedUsers: {
-					type: 'array',
-					items: { type: 'string' },
-					description: 'Danh sách ID người dùng được tag',
-					example: ['507f1f77bcf86cd799439011'],
-				},
-				sharedFrom: {
-					type: 'string',
-					description: 'ID bài đăng được share từ',
-					example: '507f1f77bcf86cd799439011',
-				},
-				files: {
-					type: 'array',
-					items: {
-						type: 'string',
-						format: 'binary',
-					},
-					description: 'Media files (images/videos)',
-				},
-				accessLevel: {
-					type: 'string',
-					enum: Object.values(PostAccessLevel),
-					description: 'Mức truy cập bài đăng',
-					example: 'public',
-				},
-			},
-			required: ['content', 'sport', 'approvalStatus'],
-		},
-	})
+	@ApiBody({ type: CreatePostDto })
 	@ApiResponse({
 		status: 201,
 		description: 'Tạo bài đăng thành công',
@@ -339,49 +273,7 @@ export class PostController {
 		description: 'ID của bài đăng',
 		example: '507f1f77bcf86cd799439011',
 	})
-	@ApiBody({
-		description: 'Cập nhật bài đăng',
-		schema: {
-			type: 'object',
-			properties: {
-				content: {
-					type: 'string',
-					description: 'Nội dung bài đăng',
-					example: 'Cập nhật nội dung bài đăng! #updated #fitness',
-				},
-				sport: {
-					type: 'string',
-					enum: Object.values(SportType),
-					description: 'Môn thể thao liên quan',
-					example: 'football',
-				},
-				eventId: {
-					type: 'string',
-					description: 'ID sự kiện liên quan',
-					example: '507f1f77bcf86cd799439011',
-				},
-				groupId: {
-					type: 'string',
-					description: 'ID nhóm liên quan',
-					example: '507f1f77bcf86cd799439011',
-				},
-				taggedUsers: {
-					type: 'array',
-					items: { type: 'string' },
-					description: 'Danh sách ID người dùng được tag',
-					example: ['507f1f77bcf86cd799439011'],
-				},
-				files: {
-					type: 'array',
-					items: {
-						type: 'string',
-						format: 'binary',
-					},
-					description: 'Media files (images/videos)',
-				},
-			},
-		},
-	})
+	@ApiBody({ type: UpdatePostDto })
 	@ApiResponse({
 		status: 200,
 		description: 'Cập nhật bài đăng thành công',
