@@ -92,6 +92,7 @@ export class UserController {
 
 	@Version('1')
 	@Delete('deactivate')
+	@Roles()
 	async deactivateProfile(@Req() request: AuthenticatedRequest): Promise<ResponseProfileDto> {
 		const deletedProfile = await this.userService.softDelete(request.user.id, request.user.id);
 		return plainToInstanceStrict(ResponseProfileDto, deletedProfile);
