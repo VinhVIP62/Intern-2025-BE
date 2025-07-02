@@ -40,7 +40,7 @@ import { RolesGuard } from '@common/guards';
 import { Roles } from '@common/decorators';
 import { Role } from '@common/enum';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { PostStatus } from '../entities/post.enum';
+import { PostAccessLevel, PostStatus } from '../entities/post.enum';
 
 @ApiTags('Post')
 @Controller('posts')
@@ -110,6 +110,12 @@ export class PostController {
 						format: 'binary',
 					},
 					description: 'Media files (images/videos)',
+				},
+				accessLevel: {
+					type: 'string',
+					enum: Object.values(PostAccessLevel),
+					description: 'Mức truy cập bài đăng',
+					example: 'public',
 				},
 			},
 			required: ['content', 'sport', 'approvalStatus'],
