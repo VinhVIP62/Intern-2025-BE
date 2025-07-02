@@ -51,5 +51,6 @@
 	"UNLIKE_SUCCESS": "Post unliked successfully",
 	"LIKES_RETRIEVED_SUCCESS": "Likes retrieved successfully",
 	"ALREADY_LIKED": "You have already liked this post",
-	"NOT_LIKED": "You have not liked this post"
+	"NOT_LIKED": "You have not liked this post",
+	"TRENDING_POSTS_RETRIEVED_SUCCESS": "Trending posts retrieved successfully"
 }

@@ -502,4 +502,41 @@ export class PostService {
 			throw error;
 		}
 	}
+
+	async getTrendingPosts(
+		i18n: I18nContext,
+		page: number = 1,
+		limit: number = 10,
+		sport?: string,
+		userId?: string,
+		currentUserId?: string,
+		timeRange?: string,
+	): Promise<PaginatedPostsResponseDto> {
+		let accessLevels = [PostAccessLevel.PUBLIC];
+		if (userId && currentUserId && (await this.userService.isFriend(currentUserId, userId))) {
+			accessLevels = [PostAccessLevel.PUBLIC, PostAccessLevel.PROTECTED];
+		}
+		const { posts, total } = await this.postRepository.findTrendingPosts(
+			page,
+			limit,
+			sport,
+			userId,
+			accessLevels,
+			timeRange,
+		);
+
+		const totalPages = Math.ceil(total / limit);
+		const hasNextPage = page < totalPages;
+		const hasPrevPage = page > 1;
+
+		return {
+			posts: posts as PostResponseDto[],
+			total,
+			page,
+			limit,
+			totalPages,
+			hasNextPage,
+			hasPrevPage,
+		};
+	}
 }

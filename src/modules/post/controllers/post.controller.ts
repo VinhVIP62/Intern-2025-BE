@@ -701,4 +701,43 @@ export class PostController {
 			message: i18n.t('post.LIKES_RETRIEVED_SUCCESS'),
 		};
 	}
+
+	@Version('1')
+	@Get('all/trending')
+	@Public()
+	@ApiOperation({ summary: 'Lấy danh sách bài đăng trending (nhiều like/comment)' })
+	@ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+	@ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+	@ApiQuery({ name: 'sport', required: false, enum: Object.values(SportType) })
+	@ApiQuery({ name: 'userId', required: false, type: String })
+	@ApiQuery({ name: 'timeRange', required: false, type: String, example: '7d' })
+	@ApiResponse({
+		status: 200,
+		description: 'Lấy danh sách bài đăng trending thành công',
+		type: PaginatedPostsResponseDto,
+	})
+	async getTrendingPosts(
+		@I18n() i18n: I18nContext,
+		@Query('page') page: number = 1,
+		@Query('limit') limit: number = 10,
+		@Query('sport') sport?: string,
+		@Query('userId') userId?: string,
+		@Query('timeRange') timeRange?: string,
+		@Request() req?: any,
+	): Promise<ResponseEntity<PaginatedPostsResponseDto>> {
+		const result = await this.postService.getTrendingPosts(
+			i18n,
+			page,
+			limit,
+			sport,
+			userId,
+			req?.user?.id,
+			timeRange,
+		);
+		return {
+			success: true,
+			data: result,
+			message: i18n.t('post.TRENDING_POSTS_RETRIEVED_SUCCESS'),
+		};
+	}
 }

@@ -83,6 +83,15 @@ export interface IPostRepository {
 		userId?: string,
 		accessLevels?: PostAccessLevel[],
 	): Promise<{ posts: Post[]; total: number }>;
+
+	findTrendingPosts(
+		page: number,
+		limit: number,
+		sport?: string,
+		userId?: string,
+		accessLevels?: PostAccessLevel[],
+		timeRange?: string,
+	): Promise<{ posts: Post[]; total: number }>;
 }
 
 export const IPostRepository = Symbol('IPostRepository');
