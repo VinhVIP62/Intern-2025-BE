@@ -1,6 +1,12 @@
 import { IsArray, IsNumber } from 'class-validator';
 
 export class PaginatedData<T> {
+	constructor(page: number, limit: number, data: T[]) {
+		this.page = page;
+		this.data = data;
+		this.limit = limit;
+	}
+
 	@IsNumber()
 	page: number = 1;
 

@@ -20,7 +20,7 @@ export class UserService {
 	}
 
 	async update(id: string, data: Partial<User> & { avatar?: MemoryStoredFile }): Promise<User> {
-		if (data.avatar) data.avatarUrl = await this.fileHostService.image2Url(data.avatar);
+		if (data.avatar) data.avatarUrl = await this.fileHostService.file2Url(data.avatar);
 		const updatedUser = this.userRepository.update(id, data);
 		return updatedUser;
 	}

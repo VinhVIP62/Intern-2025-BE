@@ -4,11 +4,13 @@ import {
 	Delete,
 	Get,
 	Inject,
+	Param,
 	Patch,
 	Req,
 	Version,
 	forwardRef,
 } from '@nestjs/common';
+import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 
 import { Roles } from '@common/decorators';
@@ -21,7 +23,13 @@ import { TokenService } from '@modules/auth';
 import { ResponseAuthDto } from '@modules/auth/dto';
 import { createPayload, tokensSchema } from '@modules/auth/types';
 
-import { ResponseProfileDto, SetupGoogleUserDto, SetupUserDto, UpdateUserDto } from '../dto';
+import {
+	LimitedUserResponseDto,
+	ResponseProfileDto,
+	SetupGoogleUserDto,
+	SetupUserDto,
+	UpdateUserDto,
+} from '../dto';
 import { User } from '../entities';
 import { UserService } from '../providers';
 
@@ -95,5 +103,16 @@ export class UserController {
 	async deactivateProfile(@Req() request: AuthenticatedRequest): Promise<ResponseProfileDto> {
 		const deletedProfile = await this.userService.softDelete(request.user.id, request.user.id);
 		return plainToInstanceStrict(ResponseProfileDto, deletedProfile);
+	}
+
+	@Version('1')
+	@Get(':id')
+	@Roles()
+	async getProfileById(
+		@Param('id', ParseObjectIdPipe) id: string,
+	): Promise<LimitedUserResponseDto> {
+		const foundUser = await this.userService.findOneById(id);
+		if (!foundUser) throw new EntityNotFound(User);
+		return plainToInstanceStrict(LimitedUserResponseDto, foundUser);
 	}
 }

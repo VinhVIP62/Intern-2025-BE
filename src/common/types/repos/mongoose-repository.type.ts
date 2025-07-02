@@ -40,8 +40,8 @@ export class MongooseRepositoryImpl<T extends object> implements IBaseRepository
 			}
 
 		const transformed = {
-			...cleanedFindOptions,
 			...defaultFindOptions,
+			...cleanedFindOptions,
 			...(where.id && { _id: where.id }),
 		};
 		delete transformed.id;
