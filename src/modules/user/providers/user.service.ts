@@ -126,4 +126,25 @@ export class UserService {
 		if (!user) return false;
 		return user.friends.map(f => f.toString()).includes(otherUserId);
 	}
+
+	async getBasicInfo(
+		userId: string,
+		i18n?: I18nContext,
+	): Promise<{
+		userId: string;
+		fullName: string;
+		avatar: string | null;
+	}> {
+		const user = await this.userRepository.findOneById(userId);
+		if (!user) {
+			const message = i18n ? i18n.t('user.USER_NOT_FOUND') : 'User not found';
+			throw new NotFoundException(message);
+		}
+
+		return {
+			userId: (user._id as any).toString(),
+			fullName: user.fullName,
+			avatar: user.avatar,
+		};
+	}
 }

@@ -534,6 +534,41 @@
         ]
       }
     },
+    "/api/v1/user/{userId}/basic-info": {
+      "get": {
+        "operationId": "UserController_getUserBasicInfo_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "ID của người dùng",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy thông tin cơ bản thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserBasicInfoDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Không tìm thấy người dùng"
+          }
+        },
+        "summary": "Lấy thông tin cơ bản của người dùng theo ID",
+        "tags": [
+          "User"
+        ]
+      }
+    },
     "/api/v1/file/upload": {
       "post": {
         "operationId": "FileController_uploadFile_v1",
@@ -2330,6 +2365,32 @@
             ]
           }
         }
+      },
+      "UserBasicInfoDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "ID của người dùng",
+            "example": "685a2443342f516009019c71"
+          },
+          "fullName": {
+            "type": "string",
+            "description": "Họ và tên đầy đủ",
+            "example": "John Doe"
+          },
+          "avatar": {
+            "type": "object",
+            "description": "URL avatar của người dùng",
+            "example": "https://example.com/avatar.jpg",
+            "nullable": true
+          }
+        },
+        "required": [
+          "userId",
+          "fullName",
+          "avatar"
+        ]
       },
       "ResponseEmailDto": {
         "type": "object",

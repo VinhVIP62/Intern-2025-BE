@@ -29,7 +29,7 @@ import {
 } from '@nestjs/swagger';
 import { UserService } from '../providers/user.service';
 import { ResponseEntity } from '@common/types';
-import { ResponseProfileDto, UpdateProfileDto, FriendSimpleDto } from '../dto';
+import { ResponseProfileDto, UpdateProfileDto, FriendSimpleDto, UserBasicInfoDto } from '../dto';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { FileService } from '../../file/providers/file.service';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -444,6 +444,34 @@ export class UserController {
 			success: true,
 			data,
 			message: i18n.t('user.FRIENDS_RETRIEVED_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Get(':userId/basic-info')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Lấy thông tin cơ bản của người dùng theo ID' })
+	@ApiParam({ name: 'userId', description: 'ID của người dùng' })
+	@ApiResponse({
+		status: 200,
+		description: 'Lấy thông tin cơ bản thành công',
+		type: UserBasicInfoDto,
+	})
+	@ApiResponse({
+		status: 404,
+		description: 'Không tìm thấy người dùng',
+	})
+	async getUserBasicInfo(
+		@Param('userId') userId: string,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<UserBasicInfoDto>> {
+		const basicInfo = await this.userService.getBasicInfo(userId, i18n);
+
+		return {
+			success: true,
+			data: basicInfo,
+			message: i18n.t('user.BASIC_INFO_RETRIEVED_SUCCESS'),
 		};
 	}
 }

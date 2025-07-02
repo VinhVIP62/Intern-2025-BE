@@ -8,5 +8,6 @@
 	"FAVORITE_SPORT_REMOVED_SUCCESS": "Favorite sport removed successfully",
 	"PASSWORD_CHANGED_SUCCESS": "Password changed successfully",
 	"INVALID_OLD_PASSWORD": "Invalid old password",
-	"FRIENDS_RETRIEVED_SUCCESS": "Friends retrieved successfully"
+	"FRIENDS_RETRIEVED_SUCCESS": "Friends retrieved successfully",
+	"BASIC_INFO_RETRIEVED_SUCCESS": "Basic info retrieved successfully"
 }
