@@ -1,3 +1,5 @@
+import { ISoftDeletable } from '../entities';
+
 export type repoOptions<T> = {
 	defaultFindOptions?: Partial<T>;
 };
@@ -37,10 +39,4 @@ export interface ISoftDeleteBaseRepository<
 > extends IBaseRepository<T> {
 	softDelete(id: string, deletedBy: string | null, queryOptions?: queryOptions<T>): Promise<T>;
 	restore(id: string, queryOptions?: queryOptions<T>): Promise<T>;
-}
-
-export interface ISoftDeletable {
-	deleted: boolean;
-	deletedBy: string | null;
-	deletedAt: Date | null;
 }

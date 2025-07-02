@@ -260,7 +260,7 @@
 			}
 		},
 		"/api/v1/client/users/setup": {
-			"post": {
+			"patch": {
 				"description": "Setup thông tin còn lại cho người dùng",
 				"summary": "Setup own profile",
 				"requestBody": {
@@ -309,7 +309,7 @@
 			}
 		},
 		"/api/v1/client/users/setup/google": {
-			"post": {
+			"patch": {
 				"description": "Setup cho người dùng sử dụng Google. Để biết người nào sử dụng google, tham chiếu đến giá trị của googleLoginInfo",
 				"summary": "Setup profile for Google",
 				"requestBody": {
@@ -397,7 +397,7 @@
 	"info": {
 		"title": "ASOCIO☄ API Documentation",
 		"description": "Swagger docs for ASOCIO endpoints.",
-		"version": "0.1",
+		"version": "0.1.1",
 		"contact": {
 			"email": "dang.nguyen106@hcmut.edu.vn",
 			"url": "https://github.com/D-ng7721",
