@@ -106,4 +106,10 @@ GroupSchema.virtual('events', {
 });
 
 // Ensure virtual fields are included when converting to JSON
-GroupSchema.set('toJSON', { virtuals: true });
+GroupSchema.set('toJSON', {
+	virtuals: true,
+	transform: function (doc, ret) {
+		delete ret.id;
+		return ret;
+	},
+});

@@ -534,6 +534,41 @@
         ]
       }
     },
+    "/api/v1/user/{userId}/basic-info": {
+      "get": {
+        "operationId": "UserController_getUserBasicInfo_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "ID của người dùng",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy thông tin cơ bản thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserBasicInfoDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Không tìm thấy người dùng"
+          }
+        },
+        "summary": "Lấy thông tin cơ bản của người dùng theo ID",
+        "tags": [
+          "User"
+        ]
+      }
+    },
     "/api/v1/file/upload": {
       "post": {
         "operationId": "FileController_uploadFile_v1",
@@ -828,6 +863,16 @@
                       "format": "binary"
                     },
                     "description": "Media files (images/videos)"
+                  },
+                  "accessLevel": {
+                    "type": "string",
+                    "enum": [
+                      "public",
+                      "private",
+                      "protected"
+                    ],
+                    "description": "Mức truy cập bài đăng",
+                    "example": "public"
                   }
                 },
                 "required": [
@@ -1548,6 +1593,371 @@
           "Post"
         ]
       }
+    },
+    "/api/v1/comments/posts/{postId}/comments": {
+      "post": {
+        "operationId": "CommentController_createComment_v1",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "description": "ID của bài đăng",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Tạo comment mới",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "description": "Nội dung comment",
+                    "example": "Bài viết rất hay! Cảm ơn bạn đã chia sẻ."
+                  },
+                  "parentId": {
+                    "type": "string",
+                    "description": "ID comment cha (cho reply)",
+                    "example": "507f1f77bcf86cd799439011"
+                  }
+                },
+                "required": [
+                  "content"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tạo comment thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "404": {
+            "description": "Không tìm thấy bài đăng hoặc comment cha"
+          }
+        },
+        "summary": "Tạo comment mới cho bài đăng",
+        "tags": [
+          "Comment"
+        ]
+      },
+      "get": {
+        "operationId": "CommentController_getCommentsByPostId_v1",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "description": "ID của bài đăng",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng comment trên mỗi trang (mặc định: 10)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách comment thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedCommentsResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Không tìm thấy bài đăng"
+          }
+        },
+        "summary": "Lấy danh sách comment của bài đăng",
+        "tags": [
+          "Comment"
+        ]
+      }
+    },
+    "/api/v1/comments/{commentId}": {
+      "put": {
+        "operationId": "CommentController_updateComment_v1",
+        "parameters": [
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "description": "ID của comment",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Cập nhật comment",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "description": "Nội dung comment",
+                    "example": "Cập nhật nội dung comment!"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cập nhật comment thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền chỉnh sửa comment này"
+          },
+          "404": {
+            "description": "Không tìm thấy comment"
+          }
+        },
+        "summary": "Cập nhật comment",
+        "tags": [
+          "Comment"
+        ]
+      },
+      "delete": {
+        "operationId": "CommentController_deleteComment_v1",
+        "parameters": [
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "description": "ID của comment",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Xóa comment thành công"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền xóa comment này"
+          },
+          "404": {
+            "description": "Không tìm thấy comment"
+          }
+        },
+        "summary": "Xóa comment",
+        "tags": [
+          "Comment"
+        ]
+      }
+    },
+    "/api/v1/comments/{commentId}/reply": {
+      "post": {
+        "operationId": "CommentController_createReply_v1",
+        "parameters": [
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "description": "ID của comment cha",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Tạo reply",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "description": "Nội dung reply",
+                    "example": "Tôi đồng ý với bạn!"
+                  }
+                },
+                "required": [
+                  "content"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tạo reply thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "404": {
+            "description": "Không tìm thấy comment cha"
+          }
+        },
+        "summary": "Tạo reply cho comment",
+        "tags": [
+          "Comment"
+        ]
+      }
+    },
+    "/api/v1/comments/{commentId}/hidden": {
+      "put": {
+        "operationId": "CommentController_hideComment_v1",
+        "parameters": [
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "description": "ID của comment",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ẩn comment thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền chỉnh sửa comment này"
+          },
+          "404": {
+            "description": "Không tìm thấy comment"
+          }
+        },
+        "summary": "Ẩn comment",
+        "tags": [
+          "Comment"
+        ]
+      }
+    },
+    "/api/v1/comments/{commentId}/show": {
+      "put": {
+        "operationId": "CommentController_showComment_v1",
+        "parameters": [
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "description": "ID của comment",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hiện comment thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền chỉnh sửa comment này"
+          },
+          "404": {
+            "description": "Không tìm thấy comment"
+          }
+        },
+        "summary": "Hiện comment",
+        "tags": [
+          "Comment"
+        ]
+      }
     }
   },
   "info": {
@@ -1956,6 +2366,32 @@
           }
         }
       },
+      "UserBasicInfoDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "ID của người dùng",
+            "example": "685a2443342f516009019c71"
+          },
+          "fullName": {
+            "type": "string",
+            "description": "Họ và tên đầy đủ",
+            "example": "John Doe"
+          },
+          "avatar": {
+            "type": "object",
+            "description": "URL avatar của người dùng",
+            "example": "https://example.com/avatar.jpg",
+            "nullable": true
+          }
+        },
+        "required": [
+          "userId",
+          "fullName",
+          "avatar"
+        ]
+      },
       "ResponseEmailDto": {
         "type": "object",
         "properties": {
@@ -2189,29 +2625,6 @@
             "type": "string",
             "description": "Thời gian cập nhật"
           },
-          "authorUser": {
-            "type": "object",
-            "description": "Thông tin tác giả"
-          },
-          "event": {
-            "type": "object",
-            "description": "Thông tin sự kiện"
-          },
-          "group": {
-            "type": "object",
-            "description": "Thông tin nhóm"
-          },
-          "sharedFromPost": {
-            "type": "object",
-            "description": "Thông tin bài đăng được share từ"
-          },
-          "comments": {
-            "description": "Danh sách comment",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
           "accessLevel": {
             "type": "string",
             "enum": [
@@ -2344,6 +2757,169 @@
         },
         "required": [
           "hashtags",
+          "total",
+          "page",
+          "limit",
+          "totalPages",
+          "hasNextPage",
+          "hasPrevPage"
+        ]
+      },
+      "CommentResponseDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "ID của comment"
+          },
+          "postId": {
+            "description": "ID của bài đăng",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ObjectId"
+              }
+            ]
+          },
+          "author": {
+            "description": "ID của tác giả",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ObjectId"
+              }
+            ]
+          },
+          "content": {
+            "type": "string",
+            "description": "Nội dung comment"
+          },
+          "parentId": {
+            "description": "ID comment cha (cho reply)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ObjectId"
+              }
+            ]
+          },
+          "likes": {
+            "description": "Danh sách ID người dùng đã like",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ObjectId"
+            }
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Trạng thái hoạt động"
+          },
+          "isHidden": {
+            "type": "boolean",
+            "description": "Trạng thái ẩn"
+          },
+          "likeCount": {
+            "type": "number",
+            "description": "Số lượng like"
+          },
+          "replyCount": {
+            "type": "number",
+            "description": "Số lượng reply"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Thời gian tạo"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Thời gian cập nhật"
+          },
+          "authorUser": {
+            "type": "object",
+            "description": "Thông tin tác giả",
+            "example": {
+              "_id": "685a2443342f516009019c71",
+              "firstName": "John",
+              "lastName": "Doe",
+              "avatar": "https://example.com/avatar.jpg",
+              "fullName": "John Doe"
+            }
+          },
+          "post": {
+            "type": "object",
+            "description": "Thông tin bài đăng",
+            "example": {
+              "_id": "6864972223c53bb8ca77e453",
+              "content": "bạn bè của 123 và tôi đã có một buổi tập tuyệt vời! #fitness #health"
+            }
+          },
+          "parentComment": {
+            "type": "object",
+            "description": "Thông tin comment cha",
+            "example": {
+              "_id": "507f1f77bcf86cd799439011",
+              "content": "Comment cha",
+              "author": "507f1f77bcf86cd799439013"
+            }
+          },
+          "replies": {
+            "description": "Danh sách reply",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommentResponseDto"
+            }
+          }
+        },
+        "required": [
+          "_id",
+          "postId",
+          "author",
+          "content",
+          "likes",
+          "isActive",
+          "isHidden",
+          "likeCount",
+          "replyCount",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PaginatedCommentsResponseDto": {
+        "type": "object",
+        "properties": {
+          "comments": {
+            "description": "Danh sách comment",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommentResponseDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "description": "Tổng số comment"
+          },
+          "page": {
+            "type": "number",
+            "description": "Trang hiện tại"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Số lượng comment trên mỗi trang"
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Tổng số trang"
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Có trang tiếp theo không"
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Có trang trước không"
+          }
+        },
+        "required": [
+          "comments",
           "total",
           "page",
           "limit",

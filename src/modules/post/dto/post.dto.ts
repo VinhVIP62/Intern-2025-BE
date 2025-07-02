@@ -85,24 +85,24 @@ export class PostResponseDto {
 	@ApiProperty({ description: 'Thời gian cập nhật' })
 	updatedAt: Date;
 
-	// Virtual fields
-	@ApiProperty({ description: 'Thông tin tác giả', required: false })
-	authorUser?: any;
-
-	@ApiProperty({ description: 'Thông tin sự kiện', required: false })
-	event?: any;
-
-	@ApiProperty({ description: 'Thông tin nhóm', required: false })
-	group?: any;
-
-	@ApiProperty({ description: 'Thông tin bài đăng được share từ', required: false })
-	sharedFromPost?: any;
-
-	@ApiProperty({ description: 'Danh sách comment', required: false })
-	comments?: any[];
-
 	@ApiProperty({ enum: PostAccessLevel, description: 'Quyền truy cập bài đăng', required: false })
 	accessLevel?: PostAccessLevel;
+
+	// Virtual fields
+	// @ApiProperty({ description: 'Thông tin tác giả', required: false })
+	// authorUser?: any;
+
+	// @ApiProperty({ description: 'Thông tin sự kiện', required: false })
+	// event?: any;
+
+	// @ApiProperty({ description: 'Thông tin nhóm', required: false })
+	// group?: any;
+
+	// @ApiProperty({ description: 'Thông tin bài đăng được share từ', required: false })
+	// sharedFromPost?: any;
+
+	// @ApiProperty({ description: 'Danh sách comment', required: false })
+	// comments?: any[];
 }
 
 export class PaginatedPostsResponseDto {

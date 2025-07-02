@@ -36,5 +36,17 @@ AchievementSchema.virtual('userAchievements', {
 });
 
 // Ensure virtual fields are included when converting to JSON
-AchievementSchema.set('toJSON', { virtuals: true });
-AchievementSchema.set('toObject', { virtuals: true });
+AchievementSchema.set('toJSON', {
+	virtuals: true,
+	transform: function (doc, ret) {
+		delete ret.id;
+		return ret;
+	},
+});
+AchievementSchema.set('toObject', {
+	virtuals: true,
+	transform: function (doc, ret) {
+		delete ret.id;
+		return ret;
+	},
+});

@@ -113,5 +113,17 @@ NotificationSchema.virtual('referencedComment', {
 });
 
 // Ensure virtual fields are included when converting to JSON
-NotificationSchema.set('toJSON', { virtuals: true });
-NotificationSchema.set('toObject', { virtuals: true });
+NotificationSchema.set('toJSON', {
+	virtuals: true,
+	transform: function (doc, ret) {
+		delete ret.id;
+		return ret;
+	},
+});
+NotificationSchema.set('toObject', {
+	virtuals: true,
+	transform: function (doc, ret) {
+		delete ret.id;
+		return ret;
+	},
+});

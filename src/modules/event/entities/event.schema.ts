@@ -82,4 +82,10 @@ EventSchema.virtual('organizerUser', {
 });
 
 // Ensure virtual fields are included when converting to JSON
-EventSchema.set('toJSON', { virtuals: true });
+EventSchema.set('toJSON', {
+	virtuals: true,
+	transform: function (doc, ret) {
+		delete ret.id;
+		return ret;
+	},
+});

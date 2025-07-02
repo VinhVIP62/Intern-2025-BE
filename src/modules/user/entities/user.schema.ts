@@ -4,6 +4,7 @@ import { Document, Types } from 'mongoose';
 import bcrypt from 'bcrypt';
 import { ActivityLevel, SportType } from '../enums/user.enum';
 import { Role } from '@common/enum';
+import mongooseLeanVirtuals from 'mongoose-lean-virtuals';
 
 @Schema({ timestamps: true, autoIndex: true })
 export class User extends Document {
@@ -107,8 +108,20 @@ UserSchema.virtual('fullName')
 	});
 
 // Ensure virtual fields are included when converting to JSON
-UserSchema.set('toJSON', { virtuals: true });
-UserSchema.set('toObject', { virtuals: true });
+UserSchema.set('toJSON', {
+	virtuals: true,
+	transform: function (doc, ret) {
+		delete ret.id;
+		return ret;
+	},
+});
+UserSchema.set('toObject', {
+	virtuals: true,
+	transform: function (doc, ret) {
+		delete ret.id;
+		return ret;
+	},
+});
 
 // Virtual populate for friends
 UserSchema.virtual('friendUsers', {
@@ -154,3 +167,5 @@ UserSchema.index({ isActive: 1, isVerified: 1 });
 
 // Text index cho search functionality
 UserSchema.index({ firstName: 'text', lastName: 'text', email: 'text', bio: 'text' });
+
+UserSchema.plugin(mongooseLeanVirtuals);
