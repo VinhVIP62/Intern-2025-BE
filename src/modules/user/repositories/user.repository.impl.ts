@@ -33,7 +33,7 @@ export class UserRepositoryImpl
 								$or: [
 									{ deleted: false },
 									{
-										$expr: { $eq: ['$deletedBy', { $toString: '$_id' }] },
+										$expr: { $eq: ['$deletedBy', '$_id'] },
 										deletedAt: { $gte: new Date(Date.now() - GRACE_PERIOD * 24 * 60 * 60 * 1000) },
 									},
 								],

@@ -133,15 +133,8 @@ export class UserSchemaDef implements Complete<User> {
 	deletedAt!: Date | null;
 
 	/** references user id */
-	@Prop({ type: String, default: null, index: true })
+	@Prop({ type: mongoose.Schema.Types.ObjectId, default: null, index: true, ref: User.name })
 	deletedBy!: string | null;
-
-	@Virtual({
-		get: function (this: UserSchemaDef) {
-			return this.deletedBy ? mongoose.Types.ObjectId.createFromHexString(this.deletedBy) : null;
-		},
-	})
-	deletedByOID!: mongoose.Types.ObjectId | null;
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserSchemaDef);
