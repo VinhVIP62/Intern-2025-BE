@@ -26,25 +26,23 @@ export class MongooseRepositoryImpl<T extends object> implements IBaseRepository
 		const repoOptions = !queryOptions?.doNotUseRepoOptions ? this.repoOptions : {};
 		const queryRepoOptions = { ...repoOptions, ...queryOptions?.customRepoOptions };
 		// shallow copy cuz we have to delete key later
-		const whereCopy = { ...where };
+		const defaultFindOptions = { ...queryRepoOptions.defaultFindOptions };
 
 		// since the fields cannot be undefined
 		// we can safely use undefined as an overwrite to find all regardless of the value of the field
-		const cleanedFindOptions: Partial<{ id?: string } & TWhere> = {};
+		const cleanedFindOptions = { ...where };
 		if (queryRepoOptions.defaultFindOptions)
-			for (const key of Object.keys(queryRepoOptions.defaultFindOptions || {})) {
-				if (key in whereCopy) {
-					delete whereCopy[key];
-					continue;
+			for (const key of Object.keys(where)) {
+				if (where[key] === undefined) {
+					delete defaultFindOptions[key];
+					delete cleanedFindOptions[key];
 				}
-				// do not delete queryRepoOptions.defaultFindOptions[key] as it could delete the referenced value in repoOptions too
-				cleanedFindOptions[key] = queryRepoOptions.defaultFindOptions[key] as Partial<T>;
 			}
 
 		const transformed = {
 			...cleanedFindOptions,
-			...whereCopy,
-			...(whereCopy.id && { _id: whereCopy.id }),
+			...defaultFindOptions,
+			...(where.id && { _id: where.id }),
 		};
 		delete transformed.id;
 		return transformed;
