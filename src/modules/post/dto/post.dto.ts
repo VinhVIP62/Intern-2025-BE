@@ -11,6 +11,7 @@ import {
 	MinLength,
 	MaxLength,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class PostResponseDto {
 	@ApiProperty({ description: 'ID của bài đăng' })
@@ -277,6 +278,17 @@ export class UpdatePostDto {
 	@IsOptional()
 	@IsEnum(PostAccessLevel)
 	accessLevel?: PostAccessLevel;
+
+	@ApiProperty({ description: 'Các url cũ', required: false })
+	@IsOptional()
+	@IsArray()
+	@IsString({ each: true })
+	@Transform(({ value }) =>
+		Array.isArray(value) ? value
+		: value ? [value]
+		: [],
+	)
+	oldUrls?: string[];
 }
 
 export class HashtagTrendingDto {

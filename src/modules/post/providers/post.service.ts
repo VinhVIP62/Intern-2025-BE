@@ -220,7 +220,7 @@ export class PostService {
 		}
 
 		// Upload new media files if provided
-		const images: string[] = [];
+		const images: string[] = updatePostDto.oldUrls || [];
 		let video: string | undefined;
 
 		if (files && files.length > 0) {
