@@ -4,6 +4,7 @@ import { Document, Types } from 'mongoose';
 import bcrypt from 'bcrypt';
 import { ActivityLevel, SportType } from '../enums/user.enum';
 import { Role } from '@common/enum';
+import mongooseLeanVirtuals from 'mongoose-lean-virtuals';
 
 @Schema({ timestamps: true, autoIndex: true })
 export class User extends Document {
@@ -166,3 +167,5 @@ UserSchema.index({ isActive: 1, isVerified: 1 });
 
 // Text index cho search functionality
 UserSchema.index({ firstName: 'text', lastName: 'text', email: 'text', bio: 'text' });
+
+UserSchema.plugin(mongooseLeanVirtuals);

@@ -35,7 +35,7 @@ export class PostRepositoryImpl implements IPostRepository {
 		const [posts, total] = await Promise.all([
 			this.postModel
 				.find(filter)
-				.populate('authorUser', 'username email avatar')
+				.populate('authorUser', 'firstName lastName avatar fullName')
 				.populate('event', 'title description')
 				.populate('group', 'name description')
 				.populate('sharedFromPost', 'content author')
@@ -43,7 +43,7 @@ export class PostRepositoryImpl implements IPostRepository {
 				.sort({ createdAt: -1 })
 				.skip(skip)
 				.limit(limit)
-				.lean(),
+				.lean({ virtuals: true }),
 			this.postModel.countDocuments(filter),
 		]);
 
@@ -53,12 +53,12 @@ export class PostRepositoryImpl implements IPostRepository {
 	async findById(postId: string): Promise<Post> {
 		const post = await this.postModel
 			.findById(postId)
-			.populate('authorUser', 'username email avatar')
+			.populate('authorUser', 'firstName lastName avatar fullName')
 			.populate('event', 'title description')
 			.populate('group', 'name description')
 			.populate('sharedFromPost', 'content author')
 			.populate('comments')
-			.lean();
+			.lean({ virtuals: true });
 
 		if (!post) {
 			throw new Error('Post not found');
@@ -82,7 +82,7 @@ export class PostRepositoryImpl implements IPostRepository {
 		const [posts, total] = await Promise.all([
 			this.postModel
 				.find(filter)
-				.populate('authorUser', 'username email avatar')
+				.populate('authorUser', 'firstName lastName avatar fullName')
 				.populate('event', 'title description')
 				.populate('group', 'name description')
 				.populate('sharedFromPost', 'content author')
@@ -90,7 +90,7 @@ export class PostRepositoryImpl implements IPostRepository {
 				.sort({ createdAt: -1 })
 				.skip(skip)
 				.limit(limit)
-				.lean(),
+				.lean({ virtuals: true }),
 			this.postModel.countDocuments(filter),
 		]);
 
@@ -122,7 +122,7 @@ export class PostRepositoryImpl implements IPostRepository {
 		const [posts, total] = await Promise.all([
 			this.postModel
 				.find(filter)
-				.populate('authorUser', 'username email avatar')
+				.populate('authorUser', 'firstName lastName avatar fullName')
 				.populate('event', 'title description')
 				.populate('group', 'name description')
 				.populate('sharedFromPost', 'content author')
@@ -130,7 +130,7 @@ export class PostRepositoryImpl implements IPostRepository {
 				.sort({ createdAt: -1 })
 				.skip(skip)
 				.limit(limit)
-				.lean(),
+				.lean({ virtuals: true }),
 			this.postModel.countDocuments(filter),
 		]);
 
@@ -171,11 +171,12 @@ export class PostRepositoryImpl implements IPostRepository {
 
 		const post = await this.postModel
 			.findByIdAndUpdate(postId, updateFields, { new: true, runValidators: true })
-			.populate('authorUser', 'username email avatar')
+			.populate('authorUser', 'firstName lastName avatar fullName')
 			.populate('event', 'title description')
 			.populate('group', 'name description')
 			.populate('sharedFromPost', 'content author')
-			.populate('comments');
+			.populate('comments')
+			.lean({ virtuals: true });
 
 		if (!post) {
 			throw new Error('Post not found');
@@ -302,7 +303,7 @@ export class PostRepositoryImpl implements IPostRepository {
 		const [posts, total] = await Promise.all([
 			this.postModel
 				.find(filter)
-				.populate('authorUser', 'username email avatar')
+				.populate('authorUser', 'firstName lastName avatar fullName')
 				.populate('event', 'title description')
 				.populate('group', 'name description')
 				.populate('sharedFromPost', 'content author')
@@ -310,7 +311,7 @@ export class PostRepositoryImpl implements IPostRepository {
 				.sort({ createdAt: -1 })
 				.skip(skip)
 				.limit(limit)
-				.lean(),
+				.lean({ virtuals: true }),
 			this.postModel.countDocuments(filter),
 		]);
 
@@ -318,11 +319,9 @@ export class PostRepositoryImpl implements IPostRepository {
 	}
 
 	async replaceTaggedUsers(postId: string, userIds: string[]): Promise<Post> {
-		const post = await this.postModel.findByIdAndUpdate(
-			postId,
-			{ $set: { taggedUsers: userIds } },
-			{ new: true },
-		);
+		const post = await this.postModel
+			.findByIdAndUpdate(postId, { $set: { taggedUsers: userIds } }, { new: true })
+			.lean({ virtuals: true });
 		if (!post) throw new Error('Post not found');
 		return post;
 	}
@@ -334,7 +333,8 @@ export class PostRepositoryImpl implements IPostRepository {
 				{ $addToSet: { likes: userId }, $inc: { likeCount: 1 } },
 				{ new: true },
 			)
-			.populate('authorUser', 'username email avatar');
+			.populate('authorUser', 'firstName lastName avatar fullName')
+			.lean({ virtuals: true });
 		if (!post) throw new Error('Already liked or post not found');
 		return post;
 	}
@@ -346,7 +346,8 @@ export class PostRepositoryImpl implements IPostRepository {
 				{ $pull: { likes: userId }, $inc: { likeCount: -1 } },
 				{ new: true },
 			)
-			.populate('authorUser', 'username email avatar');
+			.populate('authorUser', 'firstName lastName avatar fullName')
+			.lean({ virtuals: true });
 		if (!post) throw new Error('Not liked or post not found');
 		return post;
 	}
@@ -377,7 +378,7 @@ export class PostRepositoryImpl implements IPostRepository {
 		const [posts, total] = await Promise.all([
 			this.postModel
 				.find(filter)
-				.populate('authorUser', 'username email avatar')
+				.populate('authorUser', 'firstName lastName avatar fullName')
 				.populate('event', 'title description')
 				.populate('group', 'name description')
 				.populate('sharedFromPost', 'content author')
@@ -385,7 +386,7 @@ export class PostRepositoryImpl implements IPostRepository {
 				.sort({ createdAt: -1 })
 				.skip(skip)
 				.limit(limit)
-				.lean(),
+				.lean({ virtuals: true }),
 			this.postModel.countDocuments(filter),
 		]);
 
@@ -417,7 +418,7 @@ export class PostRepositoryImpl implements IPostRepository {
 		const [posts, total] = await Promise.all([
 			this.postModel
 				.find(filter)
-				.populate('authorUser', 'username email avatar')
+				.populate('authorUser', 'firstName lastName avatar fullName')
 				.populate('event', 'title description')
 				.populate('group', 'name description')
 				.populate('sharedFromPost', 'content author')
@@ -425,7 +426,7 @@ export class PostRepositoryImpl implements IPostRepository {
 				.sort({ createdAt: -1 })
 				.skip(skip)
 				.limit(limit)
-				.lean(),
+				.lean({ virtuals: true }),
 			this.postModel.countDocuments(filter),
 		]);
 

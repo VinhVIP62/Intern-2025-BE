@@ -36,6 +36,7 @@
 		"cloudinary": "^2.7.0",
 		"dayjs": "^1.11.13",
 		"joi": "^17.13.3",
+		"mongoose-lean-virtuals": "^2.0.0",
 		"multer": "^2.0.1",
 		"nest-winston": "^1.10.2",
 		"nestjs-i18n": "^10.5.1",
