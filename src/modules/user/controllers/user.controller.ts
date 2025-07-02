@@ -4,8 +4,7 @@ import {
 	Delete,
 	Get,
 	Inject,
-	Post,
-	Put,
+	Patch,
 	Req,
 	Version,
 	forwardRef,
@@ -44,7 +43,7 @@ export class UserController {
 	}
 
 	@Version('1')
-	@Post('setup')
+	@Patch('setup')
 	@FormDataRequest({ storage: MemoryStoredFile })
 	@Roles()
 	async setupProfile(
@@ -60,7 +59,7 @@ export class UserController {
 	}
 
 	@Version('1')
-	@Post('setup/google')
+	@Patch('setup/google')
 	@FormDataRequest({ storage: MemoryStoredFile })
 	@Roles()
 	async setupProfileForGoogle(
@@ -76,7 +75,7 @@ export class UserController {
 	}
 
 	@Version('1')
-	@Put('me')
+	@Patch('me')
 	@FormDataRequest({ storage: MemoryStoredFile })
 	async updateProfile(
 		@Req() request: AuthenticatedRequest,

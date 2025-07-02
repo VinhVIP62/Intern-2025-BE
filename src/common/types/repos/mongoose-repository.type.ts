@@ -2,10 +2,10 @@ import { Model } from 'mongoose';
 
 import { EntityNotFound } from '@common/exceptions';
 
+import { ISoftDeletable } from '../entities/ISoftDeletable.type.js';
 import { Class } from '../utils/class.type.js';
 import {
 	IBaseRepository,
-	ISoftDeletable,
 	ISoftDeleteBaseRepository,
 	queryOptions,
 	repoOptions,
