@@ -11,4 +11,6 @@ export enum Sports {
 	GOLF = 'golf',
 	BOXING = 'boxing',
 	ESPORTS = 'esports',
+	BADMINTON = 'badminton',
+	SWIMMING = 'swimming',
 }
