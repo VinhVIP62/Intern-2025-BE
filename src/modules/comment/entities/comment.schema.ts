@@ -22,6 +22,9 @@ export class Comment extends Document {
 	@Prop({ default: true, index: true })
 	isActive: boolean;
 
+	@Prop({ default: false, index: true })
+	isHidden: boolean;
+
 	@Prop({ default: 0, index: true })
 	likeCount: number;
 
@@ -48,7 +51,7 @@ CommentSchema.virtual('replies', {
 	ref: 'Comment',
 	localField: '_id',
 	foreignField: 'parentId',
-	match: { isActive: true },
+	match: { isActive: true, isHidden: false },
 });
 
 // Virtual populate for author
