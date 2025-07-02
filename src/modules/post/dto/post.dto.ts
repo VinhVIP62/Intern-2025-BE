@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Types } from 'mongoose';
-import { PostType, PostStatus } from '../entities/post.enum';
+import { PostType, PostStatus, PostAccessLevel } from '../entities/post.enum';
 import { SportType } from '@modules/user/enums/user.enum';
 import {
 	IsString,
@@ -100,6 +100,9 @@ export class PostResponseDto {
 
 	@ApiProperty({ description: 'Danh sách comment', required: false })
 	comments?: any[];
+
+	@ApiProperty({ enum: PostAccessLevel, description: 'Quyền truy cập bài đăng', required: false })
+	accessLevel?: PostAccessLevel;
 }
 
 export class PaginatedPostsResponseDto {
@@ -199,6 +202,17 @@ export class CreatePostDto {
 	@IsOptional()
 	@IsMongoId()
 	sharedFrom?: string;
+
+	@ApiProperty({
+		enum: PostAccessLevel,
+		description: 'Quyền truy cập bài đăng',
+		default: PostAccessLevel.PUBLIC,
+		example: [PostAccessLevel.PUBLIC, PostAccessLevel.PRIVATE, PostAccessLevel.PROTECTED],
+		required: false,
+	})
+	@IsOptional()
+	@IsEnum(PostAccessLevel)
+	accessLevel?: PostAccessLevel = PostAccessLevel.PUBLIC;
 }
 
 export class UpdatePostDto {
@@ -253,6 +267,16 @@ export class UpdatePostDto {
 	@IsArray()
 	@IsMongoId({ each: true })
 	taggedUsers?: string[];
+
+	@ApiProperty({
+		enum: PostAccessLevel,
+		description: 'Quyền truy cập bài đăng',
+		default: PostAccessLevel.PUBLIC,
+		required: false,
+	})
+	@IsOptional()
+	@IsEnum(PostAccessLevel)
+	accessLevel?: PostAccessLevel;
 }
 
 export class HashtagTrendingDto {

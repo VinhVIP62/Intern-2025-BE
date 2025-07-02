@@ -152,6 +152,7 @@ export class PostController {
 
 	@Version('1')
 	@Get('all')
+	@Public()
 	@ApiOperation({ summary: 'Lấy tất cả bài đăng' })
 	@ApiQuery({
 		name: 'page',
@@ -201,9 +202,10 @@ export class PostController {
 	}
 
 	@Version('1')
-	@Public()
 	@Get()
-	@ApiOperation({ summary: 'Lấy danh sách bài đăng (newsfeed)' })
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Lấy danh sách bài đăng (newsfeed) của user hiện tại' })
 	@ApiQuery({
 		name: 'page',
 		required: false,
@@ -230,12 +232,13 @@ export class PostController {
 		type: PaginatedPostsResponseDto,
 	})
 	async getNewsfeed(
+		@Request() req,
 		@I18n() i18n: I18nContext,
 		@Query('page') page: number = 1,
 		@Query('limit') limit: number = 10,
 		@Query('sport') sport?: string,
 	): Promise<ResponseEntity<PaginatedPostsResponseDto>> {
-		const result = await this.postService.getNewsfeed(i18n, page, limit, sport);
+		const result = await this.postService.getNewsfeed(i18n, page, limit, req.user.id, sport);
 
 		return {
 			success: true,
@@ -262,10 +265,11 @@ export class PostController {
 		description: 'Không tìm thấy bài đăng',
 	})
 	async getPostById(
+		@Request() req,
 		@Param('postId') postId: string,
 		@I18n() i18n: I18nContext,
 	): Promise<ResponseEntity<PostResponseDto>> {
-		const post = await this.postService.getPostById(postId, i18n);
+		const post = await this.postService.getPostById(postId, i18n, req.user?.id);
 
 		return {
 			success: true,
@@ -302,12 +306,13 @@ export class PostController {
 		type: PaginatedPostsResponseDto,
 	})
 	async getPostsByUserId(
+		@Request() req,
 		@Param('userId') userId: string,
 		@I18n() i18n: I18nContext,
 		@Query('page') page: number = 1,
 		@Query('limit') limit: number = 10,
 	): Promise<ResponseEntity<PaginatedPostsResponseDto>> {
-		const result = await this.postService.getPostsByUserId(userId, i18n, page, limit);
+		const result = await this.postService.getPostsByUserId(userId, i18n, page, limit, req.user?.id);
 
 		return {
 			success: true,
@@ -545,12 +550,19 @@ export class PostController {
 		description: 'Không tìm thấy bài đăng với hashtag này',
 	})
 	async getPostsByHashtag(
+		@Request() req,
 		@Param('hashtag') hashtag: string,
 		@I18n() i18n: I18nContext,
 		@Query('page') page: number = 1,
 		@Query('limit') limit: number = 10,
 	): Promise<ResponseEntity<PaginatedPostsResponseDto>> {
-		const result = await this.postService.getPostsByHashtag(hashtag, i18n, page, limit);
+		const result = await this.postService.getPostsByHashtag(
+			hashtag,
+			i18n,
+			page,
+			limit,
+			req.user?.id,
+		);
 
 		return {
 			success: true,
@@ -595,6 +607,92 @@ export class PostController {
 			success: true,
 			data: post,
 			message: i18n.t('post.TAG_FRIEND_SUCCESS'),
+		};
+	}
+
+	// ====== LIKE/UNLIKE/GET LIKES API ======
+
+	@Version('1')
+	@Post(':postId/like')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Like một bài đăng' })
+	@ApiParam({ name: 'postId', description: 'ID của bài đăng', example: '507f1f77bcf86cd799439011' })
+	@ApiResponse({ status: 200, description: 'Like thành công', type: PostResponseDto })
+	@ApiResponse({ status: 400, description: 'Đã like hoặc dữ liệu không hợp lệ' })
+	@ApiResponse({ status: 404, description: 'Không tìm thấy bài đăng' })
+	async likePost(
+		@Request() req,
+		@Param('postId') postId: string,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<PostResponseDto>> {
+		const post = await this.postService.likePost(postId, req.user.id, i18n);
+		return {
+			success: true,
+			data: post,
+			message: i18n.t('post.LIKE_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Delete(':postId/like')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Bỏ like một bài đăng' })
+	@ApiParam({ name: 'postId', description: 'ID của bài đăng', example: '507f1f77bcf86cd799439011' })
+	@ApiResponse({ status: 200, description: 'Bỏ like thành công', type: PostResponseDto })
+	@ApiResponse({ status: 400, description: 'Chưa like hoặc dữ liệu không hợp lệ' })
+	@ApiResponse({ status: 404, description: 'Không tìm thấy bài đăng' })
+	async unlikePost(
+		@Request() req,
+		@Param('postId') postId: string,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<PostResponseDto>> {
+		const post = await this.postService.unlikePost(postId, req.user.id, i18n);
+		return {
+			success: true,
+			data: post,
+			message: i18n.t('post.UNLIKE_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Get(':postId/likes')
+	@Public()
+	@ApiOperation({ summary: 'Lấy danh sách user đã like bài đăng' })
+	@ApiParam({ name: 'postId', description: 'ID của bài đăng', example: '507f1f77bcf86cd799439011' })
+	@ApiResponse({
+		status: 200,
+		description: 'Lấy danh sách like thành công',
+		schema: {
+			example: {
+				success: true,
+				data: {
+					likes: [
+						{ userId: '507f1f77bcf86cd799439011', fullName: 'Nguyen Van A', avatar: 'https://...' },
+						{ userId: '507f1f77bcf86cd799439012', fullName: 'Tran Thi B', avatar: 'https://...' },
+					],
+					likeCount: 2,
+				},
+				message: '...',
+			},
+		},
+	})
+	@ApiResponse({ status: 404, description: 'Không tìm thấy bài đăng' })
+	async getPostLikes(
+		@Param('postId') postId: string,
+		@I18n() i18n: I18nContext,
+	): Promise<
+		ResponseEntity<{
+			likes: { userId: string; fullName: string; avatar: string }[];
+			likeCount: number;
+		}>
+	> {
+		const data = await this.postService.getPostLikesWithUserInfo(postId, i18n);
+		return {
+			success: true,
+			data,
+			message: i18n.t('post.LIKES_RETRIEVED_SUCCESS'),
 		};
 	}
 }

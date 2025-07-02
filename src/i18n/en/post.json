@@ -46,5 +46,10 @@
 	"ONLY_ONE_VIDEO_ALLOWED": "Only one video is allowed per post",
 	"TRENDING_HASHTAGS_RETRIEVED_SUCCESS": "Trending hashtags retrieved successfully",
 	"HASHTAG_POSTS_RETRIEVED_SUCCESS": "Posts by hashtag retrieved successfully",
-	"TAG_FRIEND_SUCCESS": "Tagged friends successfully"
+	"TAG_FRIEND_SUCCESS": "Tagged friends successfully",
+	"LIKE_SUCCESS": "Post liked successfully",
+	"UNLIKE_SUCCESS": "Post unliked successfully",
+	"LIKES_RETRIEVED_SUCCESS": "Likes retrieved successfully",
+	"ALREADY_LIKED": "You have already liked this post",
+	"NOT_LIKED": "You have not liked this post"
 }

@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { PostType, PostStatus } from './post.enum';
+import { PostType, PostStatus, PostAccessLevel } from './post.enum';
 import { SportType } from '@modules/user/enums/user.enum';
 
 // Post Schema
@@ -69,6 +69,9 @@ export class Post extends Document {
 
 	@Prop({ default: null })
 	rejectedAt: Date; // Thời gian từ chối
+
+	@Prop({ type: String, enum: PostAccessLevel, default: PostAccessLevel.PUBLIC, index: true })
+	accessLevel: PostAccessLevel;
 
 	// Remove duplicate index declarations since timestamps: true handles them
 	createdAt?: Date;

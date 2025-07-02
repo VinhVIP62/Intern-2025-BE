@@ -15,9 +15,13 @@ import {
 	TrendingHashtagsResponseDto,
 } from '../dto/post.dto';
 import { FileService } from '../../file/providers/file.service';
-import { PostType } from '../entities/post.enum';
+import { PostAccessLevel, PostType } from '../entities/post.enum';
 import { NotificationService } from '../../notification/providers/notification.service';
 import { NotificationType, ReferenceModel } from '../../notification/entities/notification.enum';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { User } from '../../user/entities/user.schema';
+import { UserService } from '../../user/providers/user.service';
 
 @Injectable()
 export class PostService {
@@ -25,15 +29,25 @@ export class PostService {
 		private readonly postRepository: IPostRepository,
 		private readonly fileService: FileService,
 		private readonly notificationService: NotificationService,
+		@InjectModel('User') private readonly userModel: Model<User>,
+		private readonly userService: UserService,
 	) {}
 
 	async getNewsfeed(
 		i18n: I18nContext,
 		page: number = 1,
 		limit: number = 10,
+		userId: string,
 		sport?: string,
 	): Promise<PaginatedPostsResponseDto> {
-		const { posts, total } = await this.postRepository.findApprovedPosts(page, limit, sport);
+		let accessLevels = [PostAccessLevel.PUBLIC, PostAccessLevel.PROTECTED, PostAccessLevel.PRIVATE];
+		const { posts, total } = await this.postRepository.findNewsfeedByAccessLevels(
+			page,
+			limit,
+			userId,
+			accessLevels,
+			sport,
+		);
 
 		const totalPages = Math.ceil(total / limit);
 		const hasNextPage = page < totalPages;
@@ -50,10 +64,26 @@ export class PostService {
 		};
 	}
 
-	async getPostById(postId: string, i18n: I18nContext): Promise<PostResponseDto> {
+	async getPostById(
+		postId: string,
+		i18n: I18nContext,
+		currentUserId?: string,
+	): Promise<PostResponseDto> {
 		try {
 			const post = await this.postRepository.findById(postId);
-			return post as PostResponseDto;
+			if (!post) {
+				throw new NotFoundException(i18n.t('post.POST_NOT_FOUND'));
+			}
+			if (post.accessLevel === PostAccessLevel.PUBLIC) {
+				return post as PostResponseDto;
+			}
+			if (
+				currentUserId &&
+				(await this.userService.isFriend(currentUserId, post.author.toString()))
+			) {
+				return post as PostResponseDto;
+			}
+			throw new NotFoundException(i18n.t('post.POST_NOT_FOUND'));
 		} catch (error) {
 			throw new NotFoundException(i18n.t('post.POST_NOT_FOUND'));
 		}
@@ -64,8 +94,19 @@ export class PostService {
 		i18n: I18nContext,
 		page: number = 1,
 		limit: number = 10,
+		currentUserId?: string,
 	): Promise<PaginatedPostsResponseDto> {
-		const { posts, total } = await this.postRepository.findByUserId(userId, page, limit);
+		let accessLevels = [PostAccessLevel.PUBLIC];
+		console.log(currentUserId, userId);
+		if (currentUserId && (await this.userService.isFriend(currentUserId, userId))) {
+			accessLevels = [PostAccessLevel.PUBLIC, PostAccessLevel.PROTECTED];
+		}
+		const { posts, total } = await this.postRepository.findByUserIdAndAccessLevels(
+			userId,
+			page,
+			limit,
+			accessLevels,
+		);
 
 		const totalPages = Math.ceil(total / limit);
 		const hasNextPage = page < totalPages;
@@ -88,8 +129,20 @@ export class PostService {
 		limit: number = 10,
 		sport?: string,
 		userId?: string,
+		currentUserId?: string,
 	): Promise<PaginatedPostsResponseDto> {
-		const { posts, total } = await this.postRepository.findAll(page, limit, sport, userId);
+		// protected level can not working because @Public() decorator cannot call jwtstrategy -> not generate req.user.id
+		let accessLevels = [PostAccessLevel.PUBLIC];
+		if (userId && currentUserId && (await this.userService.isFriend(currentUserId, userId))) {
+			accessLevels = [PostAccessLevel.PUBLIC, PostAccessLevel.PROTECTED];
+		}
+		const { posts, total } = await this.postRepository.findAllByAccessLevels(
+			page,
+			limit,
+			sport,
+			userId,
+			accessLevels,
+		);
 
 		const totalPages = Math.ceil(total / limit);
 		const hasNextPage = page < totalPages;
@@ -328,13 +381,21 @@ export class PostService {
 		i18n: I18nContext,
 		page: number = 1,
 		limit: number = 10,
+		currentUserId?: string,
 	): Promise<PaginatedPostsResponseDto> {
 		// Validate hashtag format
 		if (!hashtag.startsWith('#')) {
 			hashtag = `#${hashtag}`;
 		}
 
-		const { posts, total } = await this.postRepository.findPostsByHashtag(hashtag, page, limit);
+		let accessLevels = [PostAccessLevel.PUBLIC];
+
+		const { posts, total } = await this.postRepository.findPostsByHashtag(
+			hashtag,
+			page,
+			limit,
+			accessLevels,
+		);
 
 		const totalPages = Math.ceil(total / limit);
 		const hasNextPage = page < totalPages;
@@ -385,5 +446,60 @@ export class PostService {
 		);
 
 		return post as PostResponseDto;
+	}
+
+	async likePost(postId: string, userId: string, i18n: I18nContext): Promise<PostResponseDto> {
+		try {
+			const post = await this.postRepository.likePost(postId, userId);
+			return post as PostResponseDto;
+		} catch (error) {
+			if (error.message === 'Already liked or post not found') {
+				throw new BadRequestException(i18n.t('post.ALREADY_LIKED'));
+			}
+			if (error.message === 'Post not found') {
+				throw new NotFoundException(i18n.t('post.POST_NOT_FOUND'));
+			}
+			throw error;
+		}
+	}
+
+	async unlikePost(postId: string, userId: string, i18n: I18nContext): Promise<PostResponseDto> {
+		try {
+			const post = await this.postRepository.unlikePost(postId, userId);
+			return post as PostResponseDto;
+		} catch (error) {
+			if (error.message === 'Not liked or post not found') {
+				throw new BadRequestException(i18n.t('post.NOT_LIKED'));
+			}
+			if (error.message === 'Post not found') {
+				throw new NotFoundException(i18n.t('post.POST_NOT_FOUND'));
+			}
+			throw error;
+		}
+	}
+
+	async getPostLikesWithUserInfo(
+		postId: string,
+		i18n: I18nContext,
+	): Promise<{ likes: { userId: string; fullName: string; avatar: string }[]; likeCount: number }> {
+		try {
+			const { likes, likeCount } = await this.postRepository.getPostLikes(postId);
+			if (!likes.length) return { likes: [], likeCount };
+			const users = await this.userModel
+				.find({ _id: { $in: likes } })
+				.select('avatar firstName lastName _id')
+				.lean();
+			const likeUsers = users.map(u => ({
+				userId: u._id.toString(),
+				fullName: `${u.firstName || ''} ${u.lastName || ''}`.trim(),
+				avatar: u.avatar,
+			}));
+			return { likes: likeUsers, likeCount };
+		} catch (error) {
+			if (error.message === 'Post not found') {
+				throw new NotFoundException(i18n.t('post.POST_NOT_FOUND'));
+			}
+			throw error;
+		}
 	}
 }

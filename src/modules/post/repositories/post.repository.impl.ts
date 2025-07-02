@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Post } from '../entities/post.schema';
 import { IPostRepository } from './post.repository';
-import { PostStatus } from '../entities/post.enum';
+import { PostAccessLevel, PostStatus } from '../entities/post.enum';
 import { CreatePostDto, UpdatePostDto } from '../dto/post.dto';
 
 @Injectable()
@@ -15,6 +15,7 @@ export class PostRepositoryImpl implements IPostRepository {
 		limit: number,
 		sport?: string,
 		userId?: string,
+		accessLevel?: PostAccessLevel,
 	): Promise<{ posts: Post[]; total: number }> {
 		const skip = (page - 1) * limit;
 		const filter: any = {};
@@ -25,6 +26,10 @@ export class PostRepositoryImpl implements IPostRepository {
 
 		if (userId) {
 			filter.author = new Types.ObjectId(userId);
+		}
+
+		if (accessLevel) {
+			filter.accessLevel = accessLevel;
 		}
 
 		const [posts, total] = await Promise.all([
@@ -62,13 +67,17 @@ export class PostRepositoryImpl implements IPostRepository {
 		return post as unknown as Post;
 	}
 
-	async findByUserId(
+	async findByUserIdAndAccessLevels(
 		userId: string,
 		page: number,
 		limit: number,
+		accessLevels: PostAccessLevel[],
 	): Promise<{ posts: Post[]; total: number }> {
 		const skip = (page - 1) * limit;
-		const filter = { author: new Types.ObjectId(userId) };
+		const filter = {
+			author: new Types.ObjectId(userId),
+			accessLevel: { $in: accessLevels },
+		};
 
 		const [posts, total] = await Promise.all([
 			this.postModel
@@ -91,10 +100,20 @@ export class PostRepositoryImpl implements IPostRepository {
 	async findApprovedPosts(
 		page: number,
 		limit: number,
+		userId: string,
+		accessLevel?: PostAccessLevel,
 		sport?: string,
 	): Promise<{ posts: Post[]; total: number }> {
 		const skip = (page - 1) * limit;
 		const filter: any = { approvalStatus: PostStatus.APPROVED };
+
+		if (userId) {
+			filter.author = new Types.ObjectId(userId);
+		}
+
+		if (accessLevel) {
+			filter.accessLevel = accessLevel;
+		}
 
 		if (sport) {
 			filter.sport = sport;
@@ -265,6 +284,7 @@ export class PostRepositoryImpl implements IPostRepository {
 		hashtag: string,
 		page: number,
 		limit: number,
+		accessLevels: PostAccessLevel[],
 	): Promise<{ posts: Post[]; total: number }> {
 		const skip = (page - 1) * limit;
 
@@ -276,6 +296,7 @@ export class PostRepositoryImpl implements IPostRepository {
 		const filter = {
 			approvalStatus: PostStatus.APPROVED,
 			hashtags: hashtag,
+			accessLevel: { $in: accessLevels },
 		};
 
 		const [posts, total] = await Promise.all([
@@ -304,5 +325,110 @@ export class PostRepositoryImpl implements IPostRepository {
 		);
 		if (!post) throw new Error('Post not found');
 		return post;
+	}
+
+	async likePost(postId: string, userId: string): Promise<Post> {
+		const post = await this.postModel
+			.findOneAndUpdate(
+				{ _id: postId, likes: { $ne: userId } },
+				{ $addToSet: { likes: userId }, $inc: { likeCount: 1 } },
+				{ new: true },
+			)
+			.populate('authorUser', 'username email avatar');
+		if (!post) throw new Error('Already liked or post not found');
+		return post;
+	}
+
+	async unlikePost(postId: string, userId: string): Promise<Post> {
+		const post = await this.postModel
+			.findOneAndUpdate(
+				{ _id: postId, likes: userId },
+				{ $pull: { likes: userId }, $inc: { likeCount: -1 } },
+				{ new: true },
+			)
+			.populate('authorUser', 'username email avatar');
+		if (!post) throw new Error('Not liked or post not found');
+		return post;
+	}
+
+	async getPostLikes(postId: string): Promise<{ likes: string[]; likeCount: number }> {
+		const post = await this.postModel.findById(postId).select('likes likeCount');
+		if (!post) throw new Error('Post not found');
+		return { likes: post.likes.map((id: any) => id.toString()), likeCount: post.likeCount };
+	}
+
+	async findNewsfeedByAccessLevels(
+		page: number,
+		limit: number,
+		userId: string,
+		accessLevels: PostAccessLevel[],
+		sport?: string,
+	): Promise<{ posts: Post[]; total: number }> {
+		const skip = (page - 1) * limit;
+		const filter: any = {
+			accessLevel: { $in: accessLevels },
+		};
+		if (sport) {
+			filter.sport = sport;
+		}
+		// Newsfeed: show posts from self and friends (for now, just self)
+		filter.author = new Types.ObjectId(userId);
+
+		const [posts, total] = await Promise.all([
+			this.postModel
+				.find(filter)
+				.populate('authorUser', 'username email avatar')
+				.populate('event', 'title description')
+				.populate('group', 'name description')
+				.populate('sharedFromPost', 'content author')
+				.populate('comments')
+				.sort({ createdAt: -1 })
+				.skip(skip)
+				.limit(limit)
+				.lean(),
+			this.postModel.countDocuments(filter),
+		]);
+
+		return { posts: posts as unknown as Post[], total };
+	}
+
+	async findAllByAccessLevels(
+		page: number,
+		limit: number,
+		sport?: string,
+		userId?: string,
+		accessLevels: PostAccessLevel[] = [PostAccessLevel.PUBLIC],
+	): Promise<{ posts: Post[]; total: number }> {
+		const skip = (page - 1) * limit;
+		const filter: any = {};
+
+		if (sport) {
+			filter.sport = sport;
+		}
+
+		if (userId) {
+			filter.author = new Types.ObjectId(userId);
+		}
+
+		if (accessLevels && accessLevels.length > 0) {
+			filter.accessLevel = { $in: accessLevels };
+		}
+
+		const [posts, total] = await Promise.all([
+			this.postModel
+				.find(filter)
+				.populate('authorUser', 'username email avatar')
+				.populate('event', 'title description')
+				.populate('group', 'name description')
+				.populate('sharedFromPost', 'content author')
+				.populate('comments')
+				.sort({ createdAt: -1 })
+				.skip(skip)
+				.limit(limit)
+				.lean(),
+			this.postModel.countDocuments(filter),
+		]);
+
+		return { posts: posts as unknown as Post[], total };
 	}
 }

@@ -924,7 +924,7 @@
             }
           }
         },
-        "summary": "Lấy danh sách bài đăng (newsfeed)",
+        "summary": "Lấy danh sách bài đăng (newsfeed) của user hiện tại",
         "tags": [
           "Post"
         ]
@@ -1414,6 +1414,136 @@
           }
         },
         "summary": "Tag bạn bè vào bài đăng (thay thế toàn bộ danh sách)",
+        "tags": [
+          "Post"
+        ]
+      }
+    },
+    "/api/v1/posts/{postId}/like": {
+      "post": {
+        "operationId": "PostController_likePost_v1",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "description": "ID của bài đăng",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Like thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Đã like hoặc dữ liệu không hợp lệ"
+          },
+          "404": {
+            "description": "Không tìm thấy bài đăng"
+          }
+        },
+        "summary": "Like một bài đăng",
+        "tags": [
+          "Post"
+        ]
+      },
+      "delete": {
+        "operationId": "PostController_unlikePost_v1",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "description": "ID của bài đăng",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bỏ like thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Chưa like hoặc dữ liệu không hợp lệ"
+          },
+          "404": {
+            "description": "Không tìm thấy bài đăng"
+          }
+        },
+        "summary": "Bỏ like một bài đăng",
+        "tags": [
+          "Post"
+        ]
+      }
+    },
+    "/api/v1/posts/{postId}/likes": {
+      "get": {
+        "operationId": "PostController_getPostLikes_v1",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "description": "ID của bài đăng",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách like thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "success": true,
+                    "data": {
+                      "likes": [
+                        {
+                          "userId": "507f1f77bcf86cd799439011",
+                          "fullName": "Nguyen Van A",
+                          "avatar": "https://..."
+                        },
+                        {
+                          "userId": "507f1f77bcf86cd799439012",
+                          "fullName": "Tran Thi B",
+                          "avatar": "https://..."
+                        }
+                      ],
+                      "likeCount": 2
+                    },
+                    "message": "..."
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Không tìm thấy bài đăng"
+          }
+        },
+        "summary": "Lấy danh sách user đã like bài đăng",
         "tags": [
           "Post"
         ]
@@ -2081,6 +2211,15 @@
             "items": {
               "type": "string"
             }
+          },
+          "accessLevel": {
+            "type": "string",
+            "enum": [
+              "public",
+              "private",
+              "protected"
+            ],
+            "description": "Quyền truy cập bài đăng"
           }
         },
         "required": [
