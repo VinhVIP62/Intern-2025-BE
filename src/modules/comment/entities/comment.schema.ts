@@ -79,4 +79,10 @@ CommentSchema.virtual('parentComment', {
 });
 
 // Ensure virtual fields are included when converting to JSON
-CommentSchema.set('toJSON', { virtuals: true });
+CommentSchema.set('toJSON', {
+	virtuals: true,
+	transform: function (doc, ret) {
+		delete ret.id;
+		return ret;
+	},
+});

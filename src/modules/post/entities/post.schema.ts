@@ -133,4 +133,10 @@ PostSchema.virtual('sharedFromPost', {
 });
 
 // Ensure virtual fields are included when converting to JSON
-PostSchema.set('toJSON', { virtuals: true });
+PostSchema.set('toJSON', {
+	virtuals: true,
+	transform: function (doc, ret) {
+		delete ret.id;
+		return ret;
+	},
+});

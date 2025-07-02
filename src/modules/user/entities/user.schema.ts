@@ -107,8 +107,20 @@ UserSchema.virtual('fullName')
 	});
 
 // Ensure virtual fields are included when converting to JSON
-UserSchema.set('toJSON', { virtuals: true });
-UserSchema.set('toObject', { virtuals: true });
+UserSchema.set('toJSON', {
+	virtuals: true,
+	transform: function (doc, ret) {
+		delete ret.id;
+		return ret;
+	},
+});
+UserSchema.set('toObject', {
+	virtuals: true,
+	transform: function (doc, ret) {
+		delete ret.id;
+		return ret;
+	},
+});
 
 // Virtual populate for friends
 UserSchema.virtual('friendUsers', {

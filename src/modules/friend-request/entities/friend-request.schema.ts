@@ -52,5 +52,17 @@ FriendRequestSchema.virtual('recipientUser', {
 });
 
 // Ensure virtual fields are included when converting to JSON
-FriendRequestSchema.set('toJSON', { virtuals: true });
-FriendRequestSchema.set('toObject', { virtuals: true });
+FriendRequestSchema.set('toJSON', {
+	virtuals: true,
+	transform: function (doc, ret) {
+		delete ret.id;
+		return ret;
+	},
+});
+FriendRequestSchema.set('toObject', {
+	virtuals: true,
+	transform: function (doc, ret) {
+		delete ret.id;
+		return ret;
+	},
+});
