@@ -119,4 +119,11 @@ export class UserService {
 	): Promise<User[]> {
 		return this.userRepository.findFriendsByFullName(userId, fullName, page, limit);
 	}
+
+	async isFriend(userId: string, otherUserId: string): Promise<boolean> {
+		if (userId === otherUserId) return true;
+		const user = await this.userRepository.findOneById(userId);
+		if (!user) return false;
+		return user.friends.map(f => f.toString()).includes(otherUserId);
+	}
 }

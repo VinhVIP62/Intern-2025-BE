@@ -1,27 +1,30 @@
 import { Post } from '../entities/post.schema';
 import { Types } from 'mongoose';
 import { CreatePostDto, UpdatePostDto } from '../dto/post.dto';
-
+import { PostAccessLevel } from '../entities/post.enum';
 export interface IPostRepository {
 	findAll(
 		page: number,
 		limit: number,
 		sport?: string,
 		userId?: string,
+		accessLevel?: PostAccessLevel,
 	): Promise<{ posts: Post[]; total: number }>;
 
 	findById(postId: string): Promise<Post>;
 
-	findByUserId(
+	findByUserIdAndAccessLevels(
 		userId: string,
 		page: number,
 		limit: number,
+		accessLevels: PostAccessLevel[],
 	): Promise<{ posts: Post[]; total: number }>;
 
 	findApprovedPosts(
 		page: number,
 		limit: number,
 		userId: string,
+		accessLevel?: PostAccessLevel,
 		sport?: string,
 	): Promise<{ posts: Post[]; total: number }>;
 
@@ -56,6 +59,7 @@ export interface IPostRepository {
 		hashtag: string,
 		page: number,
 		limit: number,
+		accessLevels: PostAccessLevel[],
 	): Promise<{ posts: Post[]; total: number }>;
 
 	replaceTaggedUsers(postId: string, userIds: string[]): Promise<Post>;
@@ -63,6 +67,22 @@ export interface IPostRepository {
 	likePost(postId: string, userId: string): Promise<Post>;
 	unlikePost(postId: string, userId: string): Promise<Post>;
 	getPostLikes(postId: string): Promise<{ likes: string[]; likeCount: number }>;
+
+	findNewsfeedByAccessLevels(
+		page: number,
+		limit: number,
+		userId: string,
+		accessLevels: PostAccessLevel[],
+		sport?: string,
+	): Promise<{ posts: Post[]; total: number }>;
+
+	findAllByAccessLevels(
+		page: number,
+		limit: number,
+		sport?: string,
+		userId?: string,
+		accessLevels?: PostAccessLevel[],
+	): Promise<{ posts: Post[]; total: number }>;
 }
 
 export const IPostRepository = Symbol('IPostRepository');

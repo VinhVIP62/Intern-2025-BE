@@ -2211,6 +2211,15 @@
             "items": {
               "type": "string"
             }
+          },
+          "accessLevel": {
+            "type": "string",
+            "enum": [
+              "public",
+              "private",
+              "protected"
+            ],
+            "description": "Quyền truy cập bài đăng"
           }
         },
         "required": [

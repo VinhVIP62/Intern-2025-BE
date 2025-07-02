@@ -203,6 +203,8 @@ export class PostController {
 
 	@Version('1')
 	@Get()
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Lấy danh sách bài đăng (newsfeed) của user hiện tại' })
 	@ApiQuery({
 		name: 'page',
@@ -263,10 +265,11 @@ export class PostController {
 		description: 'Không tìm thấy bài đăng',
 	})
 	async getPostById(
+		@Request() req,
 		@Param('postId') postId: string,
 		@I18n() i18n: I18nContext,
 	): Promise<ResponseEntity<PostResponseDto>> {
-		const post = await this.postService.getPostById(postId, i18n);
+		const post = await this.postService.getPostById(postId, i18n, req.user?.id);
 
 		return {
 			success: true,
@@ -303,12 +306,13 @@ export class PostController {
 		type: PaginatedPostsResponseDto,
 	})
 	async getPostsByUserId(
+		@Request() req,
 		@Param('userId') userId: string,
 		@I18n() i18n: I18nContext,
 		@Query('page') page: number = 1,
 		@Query('limit') limit: number = 10,
 	): Promise<ResponseEntity<PaginatedPostsResponseDto>> {
-		const result = await this.postService.getPostsByUserId(userId, i18n, page, limit);
+		const result = await this.postService.getPostsByUserId(userId, i18n, page, limit, req.user?.id);
 
 		return {
 			success: true,
@@ -546,12 +550,19 @@ export class PostController {
 		description: 'Không tìm thấy bài đăng với hashtag này',
 	})
 	async getPostsByHashtag(
+		@Request() req,
 		@Param('hashtag') hashtag: string,
 		@I18n() i18n: I18nContext,
 		@Query('page') page: number = 1,
 		@Query('limit') limit: number = 10,
 	): Promise<ResponseEntity<PaginatedPostsResponseDto>> {
-		const result = await this.postService.getPostsByHashtag(hashtag, i18n, page, limit);
+		const result = await this.postService.getPostsByHashtag(
+			hashtag,
+			i18n,
+			page,
+			limit,
+			req.user?.id,
+		);
 
 		return {
 			success: true,
