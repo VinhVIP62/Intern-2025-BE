@@ -432,4 +432,52 @@ export class PostRepositoryImpl implements IPostRepository {
 
 		return { posts: posts as unknown as Post[], total };
 	}
+
+	async findTrendingPosts(
+		page: number,
+		limit: number,
+		sport?: string,
+		userId?: string,
+		accessLevels: PostAccessLevel[] = [PostAccessLevel.PUBLIC],
+		timeRange?: string,
+	): Promise<{ posts: Post[]; total: number }> {
+		const skip = (page - 1) * limit;
+		const filter: any = { approvalStatus: PostStatus.APPROVED };
+
+		if (sport) filter.sport = sport;
+		if (userId) filter.author = new Types.ObjectId(userId);
+		if (accessLevels && accessLevels.length > 0) filter.accessLevel = { $in: accessLevels };
+
+		// Lọc theo thời gian nếu có
+		if (timeRange && timeRange !== 'all') {
+			const now = new Date();
+			let daysAgo = 7;
+			if (timeRange === '30d') daysAgo = 30;
+			else if (timeRange === '90d') daysAgo = 90;
+			const startDate = new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000);
+			filter.createdAt = { $gte: startDate };
+		}
+
+		const [posts, total] = await Promise.all([
+			this.postModel
+				.find(filter)
+				.populate('authorUser', 'firstName lastName avatar fullName')
+				.populate('event', 'title description')
+				.populate('group', 'name description')
+				.populate('sharedFromPost', 'content author')
+				.populate('comments')
+				.sort({
+					likeCount: -1,
+					commentCount: -1,
+					shareCount: -1,
+					createdAt: -1,
+				})
+				.skip(skip)
+				.limit(limit)
+				.lean({ virtuals: true }),
+			this.postModel.countDocuments(filter),
+		]);
+
+		return { posts: posts as unknown as Post[], total };
+	}
 }
