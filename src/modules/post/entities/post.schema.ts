@@ -48,7 +48,7 @@ export class Post extends Document {
 	@Prop({ default: 0, index: true })
 	shareCount: number;
 
-	@Prop({ type: String, enum: SportType, required: true, index: true })
+	@Prop({ type: String, enum: SportType, default: null, index: true })
 	sport: SportType;
 
 	// Thêm các biến để quản lý trạng thái duyệt bài

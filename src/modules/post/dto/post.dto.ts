@@ -155,8 +155,9 @@ export class CreatePostDto {
 		description: 'Môn thể thao liên quan',
 		example: SportType.FOOTBALL,
 	})
+	@IsOptional()
 	@IsEnum(SportType)
-	sport: SportType;
+	sport?: SportType;
 
 	@ApiProperty({
 		enum: PostStatus,
