@@ -1980,6 +1980,103 @@
           "Comment"
         ]
       }
+    },
+    "/api/v1/search/all": {
+      "get": {
+        "operationId": "SearchController_searchAll_v1",
+        "parameters": [
+          {
+            "name": "key",
+            "required": false,
+            "in": "query",
+            "description": "Từ khóa tìm kiếm",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Trang",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng trên mỗi trang",
+            "schema": {
+              "default": 10,
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "timeRange",
+            "required": false,
+            "in": "query",
+            "description": "Khoảng thời gian (7d, 30d, 90d, all)",
+            "schema": {
+              "example": "7d",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Kết quả tìm kiếm",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedSearchResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Tìm kiếm tất cả các loại (user, post, event, ...)",
+        "tags": [
+          "Search"
+        ]
+      }
+    },
+    "/api/v1/search": {
+      "post": {
+        "operationId": "SearchController_search_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Body chứa các tham số tìm kiếm",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SearchQueryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Kết quả tìm kiếm",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedSearchResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Tìm kiếm theo loại (user, post, event, ...)",
+        "tags": [
+          "Search"
+        ]
+      }
     }
   },
   "info": {
@@ -3183,6 +3280,151 @@
           "totalPages",
           "hasNextPage",
           "hasPrevPage"
+        ]
+      },
+      "SearchResultDto": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Loại kết quả",
+            "enum": [
+              "user",
+              "post",
+              "event",
+              "group",
+              "hashtags",
+              "location"
+            ]
+          },
+          "results": {
+            "description": "Kết quả",
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "total": {
+            "type": "number",
+            "description": "Tổng số kết quả"
+          }
+        },
+        "required": [
+          "type",
+          "results",
+          "total"
+        ]
+      },
+      "PaginatedSearchResultDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "description": "Danh sách kết quả theo loại",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchResultDto"
+            }
+          },
+          "page": {
+            "type": "number",
+            "description": "Trang hiện tại"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Số lượng trên mỗi trang"
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Tổng số trang"
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Có trang tiếp theo không"
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Có trang trước không"
+          }
+        },
+        "required": [
+          "data",
+          "page",
+          "limit",
+          "totalPages",
+          "hasNextPage",
+          "hasPrevPage"
+        ]
+      },
+      "SearchQueryDto": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "Từ khóa tìm kiếm"
+          },
+          "filter": {
+            "type": "array",
+            "description": "Danh sách filter",
+            "items": {
+              "type": "string",
+              "enum": [
+                "user",
+                "post",
+                "event",
+                "group",
+                "hashtags",
+                "location"
+              ]
+            }
+          },
+          "sportType": {
+            "type": "string",
+            "enum": [
+              "football",
+              "basketball",
+              "tennis",
+              "badminton",
+              "volleyball",
+              "table_tennis",
+              "swimming",
+              "running",
+              "cycling",
+              "yoga",
+              "gym",
+              "martial_arts",
+              "boxing",
+              "golf",
+              "rock_climbing"
+            ],
+            "description": "Môn thể thao"
+          },
+          "level": {
+            "type": "string",
+            "enum": [
+              "beginner",
+              "intermediate",
+              "advanced",
+              "professional"
+            ],
+            "description": "Trình độ"
+          },
+          "page": {
+            "type": "number",
+            "description": "Trang",
+            "default": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Số lượng trên mỗi trang",
+            "default": 10
+          },
+          "timeRange": {
+            "type": "string",
+            "description": "Khoảng thời gian (7d, 30d, 90d, all)"
+          }
+        },
+        "required": [
+          "filter"
         ]
       }
     }

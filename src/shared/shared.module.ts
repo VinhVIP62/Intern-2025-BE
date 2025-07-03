@@ -11,6 +11,7 @@ import {
 	AchievementModule,
 	OtpModule,
 	FileModule,
+	SearchModule,
 } from '@modules';
 import { EmailModule } from '@modules/email/email.module';
 @Module({
@@ -27,6 +28,7 @@ import { EmailModule } from '@modules/email/email.module';
 		AchievementModule,
 		OtpModule,
 		FileModule,
+		SearchModule,
 	],
 	exports: [
 		AuthModule,
@@ -41,6 +43,7 @@ import { EmailModule } from '@modules/email/email.module';
 		AchievementModule,
 		OtpModule,
 		FileModule,
+		SearchModule,
 	],
 })
 export class SharedModule {}
