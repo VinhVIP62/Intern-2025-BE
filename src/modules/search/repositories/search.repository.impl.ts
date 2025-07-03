@@ -26,14 +26,7 @@ export class SearchRepositoryImpl implements ISearchRepository {
 		const filter: any = {};
 		if (key) {
 			const regex = new RegExp(key, 'i');
-			const orConditions: any[] = [
-				{ fullName: regex },
-				{ firstName: regex },
-				{ lastName: regex },
-				{ 'location.city': regex },
-				{ 'location.district': regex },
-				{ 'location.address': regex },
-			];
+			const orConditions: any[] = [{ fullName: regex }, { firstName: regex }, { lastName: regex }];
 
 			// Check if key is a valid email
 			const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
@@ -134,7 +127,20 @@ export class SearchRepositoryImpl implements ISearchRepository {
 		page: number = 1,
 		limit: number = 10,
 	): Promise<{ locations: any[]; total: number }> {
-		// TODO: Implement location search logic
-		return { locations: [], total: 0 };
+		const skip = (page - 1) * limit;
+		const filter: any = {};
+		if (key) {
+			const regex = new RegExp(key, 'i');
+			filter.$or = [
+				{ 'location.city': regex },
+				{ 'location.district': regex },
+				{ 'location.address': regex },
+			];
+		}
+		const [locations, total] = await Promise.all([
+			this.userModel.find(filter).skip(skip).limit(limit).lean({ virtuals: true }),
+			this.userModel.countDocuments(filter),
+		]);
+		return { locations, total };
 	}
 }
