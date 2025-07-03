@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { v2 as cloudinary, UploadApiResponse } from 'cloudinary';
+import { v2 as cloudinary, UploadApiResponse, DeleteApiResponse } from 'cloudinary';
 import { ConfigService } from '@nestjs/config';
 import { IEnvVars } from '@configs/config';
 
@@ -52,5 +52,62 @@ export class FileService {
 
 	async uploadFiles(files: Express.Multer.File[]): Promise<UploadApiResponse[]> {
 		return Promise.all(files.map(file => this.uploadFile(file)));
+	}
+
+	async deleteFiles(urls: string[]): Promise<DeleteApiResponse[]> {
+		const deletePromises = urls.map(url => this.deleteFile(url));
+		return Promise.all(deletePromises);
+	}
+
+	private async deleteFile(url: string): Promise<DeleteApiResponse> {
+		return new Promise((resolve, reject) => {
+			// Extract public_id from URL
+			const publicId = this.extractPublicIdFromUrl(url);
+
+			if (!publicId) {
+				return reject(new Error(`Invalid Cloudinary URL: ${url}`));
+			}
+
+			// Determine resource type from URL
+			let resourceType: 'image' | 'video' | 'raw' = 'image';
+			if (url.includes('/video/')) {
+				resourceType = 'video';
+			} else if (url.includes('/raw/')) {
+				resourceType = 'raw';
+			}
+
+			cloudinary.uploader.destroy(publicId, { resource_type: resourceType }, (error, result) => {
+				if (error) {
+					return reject(error);
+				}
+				resolve(result as DeleteApiResponse);
+			});
+		});
+	}
+
+	private extractPublicIdFromUrl(url: string): string | null {
+		try {
+			const urlParts = url.split('/');
+			const uploadIndex = urlParts.findIndex(part => part === 'upload');
+
+			if (uploadIndex === -1) {
+				return null;
+			}
+
+			const pathAfterUpload = urlParts.slice(uploadIndex + 1).join('/');
+			const pathWithoutVersion = pathAfterUpload.replace(/^v\d+\//, '');
+
+			let publicId = pathWithoutVersion;
+			publicId = publicId.replace(/\.[^/.]+$/, '');
+			publicId = publicId.replace(/_[^_]+$/, '');
+			publicId = publicId.replace(/\/$/, '');
+
+			// Giải mã URL encoding
+			publicId = decodeURIComponent(publicId);
+
+			return publicId;
+		} catch (error) {
+			return null;
+		}
 	}
 }

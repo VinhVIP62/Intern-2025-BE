@@ -2,5 +2,8 @@
 	"ERROR_MESSAGE": "Lỗi {message}",
 	"ROUTE_WARN": "Đường dẫn này chỉ dành cho {role}",
 	"FILE_UPLOAD_SUCCESS": "Tải lên tệp tin thành công",
-	"FILE_UPLOAD_ERROR": "Tải lên tệp tin thất bại"
+	"FILE_UPLOAD_ERROR": "Tải lên tệp tin thất bại",
+	"FILE_DELETE_SUCCESS": "Xóa tệp tin thành công",
+	"FILE_DELETE_ERROR": "Xóa tệp tin thất bại",
+	"NO_URLS_PROVIDED": "Không có URL nào được cung cấp để xóa"
 }

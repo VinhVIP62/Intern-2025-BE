@@ -668,6 +668,50 @@
         ]
       }
     },
+    "/api/v1/file/delete-multiple": {
+      "delete": {
+        "operationId": "FileController_deleteMultipleFiles_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Delete multiple files by URLs",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteFilesDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Delete multiple files successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "success": true,
+                    "data": [
+                      {
+                        "result": "ok",
+                        "deleted": {
+                          "folder/filename": "deleted"
+                        }
+                      }
+                    ],
+                    "message": "Files deleted successfully"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Delete multiple files by file URLs",
+        "tags": [
+          "File"
+        ]
+      }
+    },
     "/api/v1/email/send-otp": {
       "post": {
         "description": "Gửi mã OTP đến email người dùng",
@@ -2316,6 +2360,25 @@
           "userId",
           "fullName",
           "avatar"
+        ]
+      },
+      "DeleteFilesDto": {
+        "type": "object",
+        "properties": {
+          "urls": {
+            "description": "Array of Cloudinary URLs to delete",
+            "example": [
+              "https://res.cloudinary.com/cloud_name/image/upload/v1234567890/folder/filename.jpg",
+              "https://res.cloudinary.com/cloud_name/video/upload/v1234567890/folder/video.mp4"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "urls"
         ]
       },
       "ResponseEmailDto": {

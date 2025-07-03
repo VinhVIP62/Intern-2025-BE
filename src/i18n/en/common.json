@@ -2,5 +2,8 @@
 	"ERROR_MESSAGE": "Error {message}",
 	"ROUTE_WARN": "This route is only allowed for {role}",
 	"FILE_UPLOAD_SUCCESS": "File uploaded successfully",
-	"FILE_UPLOAD_ERROR": "File upload failed"
+	"FILE_UPLOAD_ERROR": "File upload failed",
+	"FILE_DELETE_SUCCESS": "Files deleted successfully",
+	"FILE_DELETE_ERROR": "File deletion failed",
+	"NO_URLS_PROVIDED": "No URLs provided for deletion"
 }
