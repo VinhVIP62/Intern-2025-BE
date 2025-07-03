@@ -11,6 +11,7 @@ import {
 	MinLength,
 	MaxLength,
 } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class PostResponseDto {
 	@ApiProperty({ description: 'ID của bài đăng' })
@@ -89,20 +90,20 @@ export class PostResponseDto {
 	accessLevel?: PostAccessLevel;
 
 	// Virtual fields
-	// @ApiProperty({ description: 'Thông tin tác giả', required: false })
-	// authorUser?: any;
+	@ApiProperty({ description: 'Thông tin tác giả', required: false })
+	authorUser?: any;
 
-	// @ApiProperty({ description: 'Thông tin sự kiện', required: false })
-	// event?: any;
+	@ApiProperty({ description: 'Thông tin sự kiện', required: false })
+	event?: any;
 
-	// @ApiProperty({ description: 'Thông tin nhóm', required: false })
-	// group?: any;
+	@ApiProperty({ description: 'Thông tin nhóm', required: false })
+	group?: any;
 
-	// @ApiProperty({ description: 'Thông tin bài đăng được share từ', required: false })
-	// sharedFromPost?: any;
+	@ApiProperty({ description: 'Thông tin bài đăng được share từ', required: false })
+	sharedFromPost?: any;
 
-	// @ApiProperty({ description: 'Danh sách comment', required: false })
-	// comments?: any[];
+	@ApiProperty({ description: 'Danh sách comment', required: false })
+	comments?: any[];
 }
 
 export class PaginatedPostsResponseDto {
@@ -136,9 +137,9 @@ export class CreatePostDto {
 		example: 'Hôm nay tôi đã có một buổi tập tuyệt vời! #fitness #health',
 	})
 	@IsString()
-	@MinLength(1, { message: 'Nội dung không được để trống' })
 	@MaxLength(2000, { message: 'Nội dung không được vượt quá 2000 ký tự' })
-	content: string;
+	@IsOptional()
+	content?: string;
 
 	@ApiProperty({
 		enum: PostType,
@@ -147,15 +148,17 @@ export class CreatePostDto {
 		example: [PostType.TEXT, PostType.IMAGE, PostType.VIDEO, PostType.EVENT],
 	})
 	@IsEnum(PostType)
-	type: PostType = PostType.TEXT;
+	@IsOptional()
+	type?: PostType = PostType.TEXT;
 
 	@ApiProperty({
 		enum: SportType,
 		description: 'Môn thể thao liên quan',
 		example: SportType.FOOTBALL,
 	})
+	@IsOptional()
 	@IsEnum(SportType)
-	sport: SportType;
+	sport?: SportType;
 
 	@ApiProperty({
 		enum: PostStatus,
@@ -163,7 +166,8 @@ export class CreatePostDto {
 		example: PostStatus.APPROVED,
 	})
 	@IsEnum(PostStatus)
-	approvalStatus: PostStatus = PostStatus.APPROVED;
+	@IsOptional()
+	approvalStatus?: PostStatus = PostStatus.APPROVED;
 
 	@ApiProperty({
 		description: 'ID sự kiện liên quan',
@@ -277,6 +281,17 @@ export class UpdatePostDto {
 	@IsOptional()
 	@IsEnum(PostAccessLevel)
 	accessLevel?: PostAccessLevel;
+
+	@ApiProperty({ description: 'Các url cũ', required: false })
+	@IsOptional()
+	@IsArray()
+	@IsString({ each: true })
+	@Transform(({ value }) =>
+		Array.isArray(value) ? value
+		: value ? [value]
+		: [],
+	)
+	oldUrls?: string[];
 }
 
 export class HashtagTrendingDto {

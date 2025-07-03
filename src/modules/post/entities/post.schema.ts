@@ -9,10 +9,10 @@ export class Post extends Document {
 	@Prop({ type: Types.ObjectId, ref: 'User', required: true, index: true })
 	author: Types.ObjectId;
 
-	@Prop({ required: true })
-	content: string;
+	@Prop({ required: false, default: null })
+	content?: string;
 
-	@Prop({ type: String, enum: PostType, default: PostType.TEXT, index: true })
+	@Prop({ type: String, enum: PostType, default: null, index: true })
 	type: PostType;
 
 	@Prop({ type: [String], default: [] })
@@ -48,7 +48,7 @@ export class Post extends Document {
 	@Prop({ default: 0, index: true })
 	shareCount: number;
 
-	@Prop({ type: String, enum: SportType, required: true, index: true })
+	@Prop({ type: String, enum: SportType, default: null, index: true })
 	sport: SportType;
 
 	// Thêm các biến để quản lý trạng thái duyệt bài

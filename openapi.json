@@ -777,109 +777,10 @@
         "parameters": [],
         "requestBody": {
           "required": true,
-          "description": "Tạo bài đăng với media files",
           "content": {
             "multipart/form-data": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "content": {
-                    "type": "string",
-                    "description": "Nội dung bài đăng",
-                    "example": "Hôm nay tôi đã có một buổi tập tuyệt vời! #fitness #health"
-                  },
-                  "type": {
-                    "type": "string",
-                    "enum": [
-                      "text",
-                      "image",
-                      "video",
-                      "event"
-                    ],
-                    "description": "Loại bài đăng",
-                    "example": "text"
-                  },
-                  "sport": {
-                    "type": "string",
-                    "enum": [
-                      "football",
-                      "basketball",
-                      "tennis",
-                      "badminton",
-                      "volleyball",
-                      "table_tennis",
-                      "swimming",
-                      "running",
-                      "cycling",
-                      "yoga",
-                      "gym",
-                      "martial_arts",
-                      "boxing",
-                      "golf",
-                      "rock_climbing"
-                    ],
-                    "description": "Môn thể thao liên quan",
-                    "example": "football"
-                  },
-                  "approvalStatus": {
-                    "type": "string",
-                    "enum": [
-                      "pending",
-                      "approved",
-                      "rejected"
-                    ],
-                    "description": "Trạng thái duyệt bài",
-                    "example": "approved"
-                  },
-                  "eventId": {
-                    "type": "string",
-                    "description": "ID sự kiện liên quan (chỉ cần cho event post)",
-                    "example": "507f1f77bcf86cd799439011"
-                  },
-                  "groupId": {
-                    "type": "string",
-                    "description": "ID nhóm liên quan",
-                    "example": "507f1f77bcf86cd799439011"
-                  },
-                  "taggedUsers": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "description": "Danh sách ID người dùng được tag",
-                    "example": [
-                      "507f1f77bcf86cd799439011"
-                    ]
-                  },
-                  "sharedFrom": {
-                    "type": "string",
-                    "description": "ID bài đăng được share từ",
-                    "example": "507f1f77bcf86cd799439011"
-                  },
-                  "files": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "format": "binary"
-                    },
-                    "description": "Media files (images/videos)"
-                  },
-                  "accessLevel": {
-                    "type": "string",
-                    "enum": [
-                      "public",
-                      "private",
-                      "protected"
-                    ],
-                    "description": "Mức truy cập bài đăng",
-                    "example": "public"
-                  }
-                },
-                "required": [
-                  "content",
-                  "sport",
-                  "approvalStatus"
-                ]
+                "$ref": "#/components/schemas/CreatePostDto"
               }
             }
           }
@@ -1104,68 +1005,10 @@
         ],
         "requestBody": {
           "required": true,
-          "description": "Cập nhật bài đăng",
           "content": {
             "multipart/form-data": {
               "schema": {
-                "type": "object",
-                "properties": {
-                  "content": {
-                    "type": "string",
-                    "description": "Nội dung bài đăng",
-                    "example": "Cập nhật nội dung bài đăng! #updated #fitness"
-                  },
-                  "sport": {
-                    "type": "string",
-                    "enum": [
-                      "football",
-                      "basketball",
-                      "tennis",
-                      "badminton",
-                      "volleyball",
-                      "table_tennis",
-                      "swimming",
-                      "running",
-                      "cycling",
-                      "yoga",
-                      "gym",
-                      "martial_arts",
-                      "boxing",
-                      "golf",
-                      "rock_climbing"
-                    ],
-                    "description": "Môn thể thao liên quan",
-                    "example": "football"
-                  },
-                  "eventId": {
-                    "type": "string",
-                    "description": "ID sự kiện liên quan",
-                    "example": "507f1f77bcf86cd799439011"
-                  },
-                  "groupId": {
-                    "type": "string",
-                    "description": "ID nhóm liên quan",
-                    "example": "507f1f77bcf86cd799439011"
-                  },
-                  "taggedUsers": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "description": "Danh sách ID người dùng được tag",
-                    "example": [
-                      "507f1f77bcf86cd799439011"
-                    ]
-                  },
-                  "files": {
-                    "type": "array",
-                    "items": {
-                      "type": "string",
-                      "format": "binary"
-                    },
-                    "description": "Media files (images/videos)"
-                  }
-                }
+                "$ref": "#/components/schemas/UpdatePostDto"
               }
             }
           }
@@ -1589,6 +1432,89 @@
           }
         },
         "summary": "Lấy danh sách user đã like bài đăng",
+        "tags": [
+          "Post"
+        ]
+      }
+    },
+    "/api/v1/posts/all/trending": {
+      "get": {
+        "operationId": "PostController_getTrendingPosts_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sport",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "football",
+                "basketball",
+                "tennis",
+                "badminton",
+                "volleyball",
+                "table_tennis",
+                "swimming",
+                "running",
+                "cycling",
+                "yoga",
+                "gym",
+                "martial_arts",
+                "boxing",
+                "golf",
+                "rock_climbing"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "timeRange",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "7d",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách bài đăng trending thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedPostsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy danh sách bài đăng trending (nhiều like/comment)",
         "tags": [
           "Post"
         ]
@@ -2454,6 +2380,113 @@
           "rejected"
         ]
       },
+      "CreatePostDto": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Nội dung bài đăng",
+            "minLength": 1,
+            "maxLength": 2000,
+            "example": "Hôm nay tôi đã có một buổi tập tuyệt vời! #fitness #health"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "text",
+              "image",
+              "video",
+              "event"
+            ],
+            "description": "Loại bài đăng",
+            "default": "text",
+            "example": [
+              "text",
+              "image",
+              "video",
+              "event"
+            ]
+          },
+          "sport": {
+            "type": "string",
+            "enum": [
+              "football",
+              "basketball",
+              "tennis",
+              "badminton",
+              "volleyball",
+              "table_tennis",
+              "swimming",
+              "running",
+              "cycling",
+              "yoga",
+              "gym",
+              "martial_arts",
+              "boxing",
+              "golf",
+              "rock_climbing"
+            ],
+            "description": "Môn thể thao liên quan",
+            "example": "football"
+          },
+          "approvalStatus": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "approved",
+              "rejected"
+            ],
+            "description": "Trạng thái duyệt bài",
+            "example": "approved"
+          },
+          "eventId": {
+            "type": "string",
+            "description": "ID sự kiện liên quan",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "groupId": {
+            "type": "string",
+            "description": "ID nhóm liên quan",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "taggedUsers": {
+            "description": "Danh sách ID người dùng được tag",
+            "example": [
+              "507f1f77bcf86cd799439011"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sharedFrom": {
+            "type": "string",
+            "description": "ID bài đăng được share từ",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "accessLevel": {
+            "type": "string",
+            "enum": [
+              "public",
+              "private",
+              "protected"
+            ],
+            "description": "Quyền truy cập bài đăng",
+            "default": "public",
+            "example": [
+              "public",
+              "private",
+              "protected"
+            ]
+          }
+        },
+        "required": [
+          "content",
+          "type",
+          "sport",
+          "approvalStatus"
+        ]
+      },
       "ObjectId": {
         "type": "object",
         "properties": {}
@@ -2633,6 +2666,29 @@
               "protected"
             ],
             "description": "Quyền truy cập bài đăng"
+          },
+          "authorUser": {
+            "type": "object",
+            "description": "Thông tin tác giả"
+          },
+          "event": {
+            "type": "object",
+            "description": "Thông tin sự kiện"
+          },
+          "group": {
+            "type": "object",
+            "description": "Thông tin nhóm"
+          },
+          "sharedFromPost": {
+            "type": "object",
+            "description": "Thông tin bài đăng được share từ"
+          },
+          "comments": {
+            "description": "Danh sách comment",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "required": [
@@ -2697,6 +2753,77 @@
           "hasNextPage",
           "hasPrevPage"
         ]
+      },
+      "UpdatePostDto": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Nội dung bài đăng",
+            "minLength": 1,
+            "maxLength": 2000,
+            "example": "Hôm nay tôi đã có một buổi tập tuyệt vời! #fitness #health"
+          },
+          "sport": {
+            "type": "string",
+            "enum": [
+              "football",
+              "basketball",
+              "tennis",
+              "badminton",
+              "volleyball",
+              "table_tennis",
+              "swimming",
+              "running",
+              "cycling",
+              "yoga",
+              "gym",
+              "martial_arts",
+              "boxing",
+              "golf",
+              "rock_climbing"
+            ],
+            "description": "Môn thể thao liên quan",
+            "example": "football"
+          },
+          "eventId": {
+            "type": "string",
+            "description": "ID sự kiện liên quan",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "groupId": {
+            "type": "string",
+            "description": "ID nhóm liên quan",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "taggedUsers": {
+            "description": "Danh sách ID người dùng được tag",
+            "example": [
+              "507f1f77bcf86cd799439011"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "accessLevel": {
+            "type": "string",
+            "enum": [
+              "public",
+              "private",
+              "protected"
+            ],
+            "description": "Quyền truy cập bài đăng",
+            "default": "public"
+          },
+          "oldUrls": {
+            "description": "Các url cũ",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
       },
       "HashtagTrendingDto": {
         "type": "object",

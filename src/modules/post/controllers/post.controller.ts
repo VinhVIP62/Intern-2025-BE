@@ -54,73 +54,7 @@ export class PostController {
 	@UseInterceptors(FilesInterceptor('files', 10))
 	@ApiOperation({ summary: 'Tạo bài đăng mới' })
 	@ApiConsumes('multipart/form-data')
-	@ApiBody({
-		description: 'Tạo bài đăng với media files',
-		schema: {
-			type: 'object',
-			properties: {
-				content: {
-					type: 'string',
-					description: 'Nội dung bài đăng',
-					example: 'Hôm nay tôi đã có một buổi tập tuyệt vời! #fitness #health',
-				},
-				type: {
-					type: 'string',
-					enum: ['text', 'image', 'video', 'event'],
-					description: 'Loại bài đăng',
-					example: 'text',
-				},
-				sport: {
-					type: 'string',
-					enum: Object.values(SportType),
-					description: 'Môn thể thao liên quan',
-					example: 'football',
-				},
-				approvalStatus: {
-					type: 'string',
-					enum: Object.values(PostStatus),
-					description: 'Trạng thái duyệt bài',
-					example: 'approved',
-				},
-				eventId: {
-					type: 'string',
-					description: 'ID sự kiện liên quan (chỉ cần cho event post)',
-					example: '507f1f77bcf86cd799439011',
-				},
-				groupId: {
-					type: 'string',
-					description: 'ID nhóm liên quan',
-					example: '507f1f77bcf86cd799439011',
-				},
-				taggedUsers: {
-					type: 'array',
-					items: { type: 'string' },
-					description: 'Danh sách ID người dùng được tag',
-					example: ['507f1f77bcf86cd799439011'],
-				},
-				sharedFrom: {
-					type: 'string',
-					description: 'ID bài đăng được share từ',
-					example: '507f1f77bcf86cd799439011',
-				},
-				files: {
-					type: 'array',
-					items: {
-						type: 'string',
-						format: 'binary',
-					},
-					description: 'Media files (images/videos)',
-				},
-				accessLevel: {
-					type: 'string',
-					enum: Object.values(PostAccessLevel),
-					description: 'Mức truy cập bài đăng',
-					example: 'public',
-				},
-			},
-			required: ['content', 'sport', 'approvalStatus'],
-		},
-	})
+	@ApiBody({ type: CreatePostDto })
 	@ApiResponse({
 		status: 201,
 		description: 'Tạo bài đăng thành công',
@@ -339,49 +273,7 @@ export class PostController {
 		description: 'ID của bài đăng',
 		example: '507f1f77bcf86cd799439011',
 	})
-	@ApiBody({
-		description: 'Cập nhật bài đăng',
-		schema: {
-			type: 'object',
-			properties: {
-				content: {
-					type: 'string',
-					description: 'Nội dung bài đăng',
-					example: 'Cập nhật nội dung bài đăng! #updated #fitness',
-				},
-				sport: {
-					type: 'string',
-					enum: Object.values(SportType),
-					description: 'Môn thể thao liên quan',
-					example: 'football',
-				},
-				eventId: {
-					type: 'string',
-					description: 'ID sự kiện liên quan',
-					example: '507f1f77bcf86cd799439011',
-				},
-				groupId: {
-					type: 'string',
-					description: 'ID nhóm liên quan',
-					example: '507f1f77bcf86cd799439011',
-				},
-				taggedUsers: {
-					type: 'array',
-					items: { type: 'string' },
-					description: 'Danh sách ID người dùng được tag',
-					example: ['507f1f77bcf86cd799439011'],
-				},
-				files: {
-					type: 'array',
-					items: {
-						type: 'string',
-						format: 'binary',
-					},
-					description: 'Media files (images/videos)',
-				},
-			},
-		},
-	})
+	@ApiBody({ type: UpdatePostDto })
 	@ApiResponse({
 		status: 200,
 		description: 'Cập nhật bài đăng thành công',
@@ -699,6 +591,45 @@ export class PostController {
 			success: true,
 			data,
 			message: i18n.t('post.LIKES_RETRIEVED_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Get('all/trending')
+	@Public()
+	@ApiOperation({ summary: 'Lấy danh sách bài đăng trending (nhiều like/comment)' })
+	@ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+	@ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+	@ApiQuery({ name: 'sport', required: false, enum: Object.values(SportType) })
+	@ApiQuery({ name: 'userId', required: false, type: String })
+	@ApiQuery({ name: 'timeRange', required: false, type: String, example: '7d' })
+	@ApiResponse({
+		status: 200,
+		description: 'Lấy danh sách bài đăng trending thành công',
+		type: PaginatedPostsResponseDto,
+	})
+	async getTrendingPosts(
+		@I18n() i18n: I18nContext,
+		@Query('page') page: number = 1,
+		@Query('limit') limit: number = 10,
+		@Query('sport') sport?: string,
+		@Query('userId') userId?: string,
+		@Query('timeRange') timeRange?: string,
+		@Request() req?: any,
+	): Promise<ResponseEntity<PaginatedPostsResponseDto>> {
+		const result = await this.postService.getTrendingPosts(
+			i18n,
+			page,
+			limit,
+			sport,
+			userId,
+			req?.user?.id,
+			timeRange,
+		);
+		return {
+			success: true,
+			data: result,
+			message: i18n.t('post.TRENDING_POSTS_RETRIEVED_SUCCESS'),
 		};
 	}
 }

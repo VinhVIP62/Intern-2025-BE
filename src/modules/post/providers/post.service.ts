@@ -169,7 +169,10 @@ export class PostService {
 		this.validatePostContent(createPostDto, files, i18n);
 
 		// Extract hashtags from content
-		const hashtags = this.extractHashtags(createPostDto.content);
+		let hashtags: string[] = [];
+		if (createPostDto.content) {
+			hashtags = this.extractHashtags(createPostDto.content);
+		}
 
 		// Upload media files
 		const images: string[] = [];
@@ -220,7 +223,7 @@ export class PostService {
 		}
 
 		// Upload new media files if provided
-		const images: string[] = [];
+		const images: string[] = updatePostDto.oldUrls || [];
 		let video: string | undefined;
 
 		if (files && files.length > 0) {
@@ -240,7 +243,7 @@ export class PostService {
 
 		// Extract hashtags if content is updated
 		let updateData: any = { ...updatePostDto };
-		if (updatePostDto.content) {
+		if (updatePostDto.content !== undefined && updatePostDto.content !== null) {
 			const hashtags = this.extractHashtags(updatePostDto.content);
 			updateData.hashtags = hashtags;
 		}
@@ -278,18 +281,8 @@ export class PostService {
 		files: Express.Multer.File[],
 		i18n: I18nContext,
 	): void {
-		// Validate content length
-		if (!createPostDto.content || createPostDto.content.trim().length === 0) {
-			throw new BadRequestException(i18n.t('post.CONTENT_REQUIRED'));
-		}
-
 		// Validate post type and media
 		switch (createPostDto.type) {
-			case PostType.TEXT:
-				if (files.length > 0) {
-					throw new BadRequestException(i18n.t('post.TEXT_POST_NO_MEDIA'));
-				}
-				break;
 			case PostType.IMAGE:
 				if (files.length === 0) {
 					throw new BadRequestException(i18n.t('post.IMAGE_POST_REQUIRES_IMAGES'));
@@ -337,7 +330,8 @@ export class PostService {
 		}
 	}
 
-	private extractHashtags(content: string): string[] {
+	private extractHashtags(content?: string): string[] {
+		if (!content) return [];
 		const hashtagRegex = /#[\w\u0590-\u05ff]+/g;
 		const hashtags = content.match(hashtagRegex) || [];
 		return hashtags.map(tag => tag.toLowerCase());
@@ -501,5 +495,42 @@ export class PostService {
 			}
 			throw error;
 		}
+	}
+
+	async getTrendingPosts(
+		i18n: I18nContext,
+		page: number = 1,
+		limit: number = 10,
+		sport?: string,
+		userId?: string,
+		currentUserId?: string,
+		timeRange?: string,
+	): Promise<PaginatedPostsResponseDto> {
+		let accessLevels = [PostAccessLevel.PUBLIC];
+		if (userId && currentUserId && (await this.userService.isFriend(currentUserId, userId))) {
+			accessLevels = [PostAccessLevel.PUBLIC, PostAccessLevel.PROTECTED];
+		}
+		const { posts, total } = await this.postRepository.findTrendingPosts(
+			page,
+			limit,
+			sport,
+			userId,
+			accessLevels,
+			timeRange,
+		);
+
+		const totalPages = Math.ceil(total / limit);
+		const hasNextPage = page < totalPages;
+		const hasPrevPage = page > 1;
+
+		return {
+			posts: posts as PostResponseDto[],
+			total,
+			page,
+			limit,
+			totalPages,
+			hasNextPage,
+			hasPrevPage,
+		};
 	}
 }
