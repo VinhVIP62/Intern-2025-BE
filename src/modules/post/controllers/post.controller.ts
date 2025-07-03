@@ -32,6 +32,7 @@ import {
 	CreatePostDto,
 	UpdatePostDto,
 	TrendingHashtagsResponseDto,
+	ClearUrlDto,
 } from '../dto/post.dto';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { SportType } from '@modules/user/enums/user.enum';
@@ -667,6 +668,36 @@ export class PostController {
 			success: true,
 			data: result,
 			message: i18n.t('post.TRENDING_POSTS_RETRIEVED_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Delete(':postId/clear-url')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Xóa images và video của bài đăng (clearUrl)' })
+	@ApiParam({ name: 'postId', description: 'ID của bài đăng', example: '507f1f77bcf86cd799439011' })
+	@ApiBody({ type: ClearUrlDto })
+	@ApiResponse({ status: 200, description: 'Xóa thành công', type: PostResponseDto })
+	@ApiResponse({ status: 400, description: 'Dữ liệu không hợp lệ' })
+	@ApiResponse({ status: 401, description: 'Không có quyền truy cập' })
+	@ApiResponse({ status: 403, description: 'Không có quyền chỉnh sửa bài đăng này' })
+	async clearUrl(
+		@Request() req,
+		@Param('postId') postId: string,
+		@Body() clearUrlDto: ClearUrlDto,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<null>> {
+		await this.postService.clearUrl(
+			postId,
+			req.user.id,
+			clearUrlDto.isClearImage ?? false,
+			clearUrlDto.isClearVideo ?? false,
+			i18n,
+		);
+		return {
+			success: true,
+			message: i18n.t('post.CLEAR_URL_SUCCESS'),
 		};
 	}
 }

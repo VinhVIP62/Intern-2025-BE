@@ -480,4 +480,15 @@ export class PostRepositoryImpl implements IPostRepository {
 
 		return { posts: posts as unknown as Post[], total };
 	}
+
+	async clearUrl(postId: string, isClearImage: boolean, isClearVideo: boolean): Promise<void> {
+		const updateFields: any = {};
+		if (isClearImage) updateFields.images = [];
+		if (isClearVideo) updateFields.video = null;
+		const post = await this.postModel.findByIdAndUpdate(postId, updateFields, {
+			new: true,
+			runValidators: true,
+		});
+		if (!post) throw new Error('Post not found');
+	}
 }

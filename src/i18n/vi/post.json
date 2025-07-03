@@ -54,5 +54,6 @@
 	"LIKES_RETRIEVED_SUCCESS": "Lấy danh sách like thành công",
 	"ALREADY_LIKED": "Bạn đã thích bài đăng này rồi",
 	"NOT_LIKED": "Bạn chưa thích bài đăng này",
-	"TRENDING_POSTS_RETRIEVED_SUCCESS": "Lấy danh sách bài đăng trending thành công"
+	"TRENDING_POSTS_RETRIEVED_SUCCESS": "Lấy danh sách bài đăng trending thành công",
+	"CLEAR_URL_SUCCESS": "Xóa hình ảnh/video thành công"
 }

@@ -1564,6 +1564,58 @@
         ]
       }
     },
+    "/api/v1/posts/{postId}/clear-url": {
+      "delete": {
+        "operationId": "PostController_clearUrl_v1",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "description": "ID của bài đăng",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClearUrlDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Xóa thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PostResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền chỉnh sửa bài đăng này"
+          }
+        },
+        "summary": "Xóa images và video của bài đăng (clearUrl)",
+        "tags": [
+          "Post"
+        ]
+      }
+    },
     "/api/v1/comments/posts/{postId}/comments": {
       "post": {
         "operationId": "CommentController_createComment_v1",
@@ -2954,6 +3006,21 @@
           "hasNextPage",
           "hasPrevPage"
         ]
+      },
+      "ClearUrlDto": {
+        "type": "object",
+        "properties": {
+          "isClearImage": {
+            "type": "boolean",
+            "description": "Xóa images",
+            "default": false
+          },
+          "isClearVideo": {
+            "type": "boolean",
+            "description": "Xóa video",
+            "default": false
+          }
+        }
       },
       "CommentResponseDto": {
         "type": "object",

@@ -327,3 +327,13 @@ export class TrendingHashtagsResponseDto {
 	@ApiProperty({ description: 'Có trang trước không' })
 	hasPrevPage: boolean;
 }
+
+export class ClearUrlDto {
+	@ApiProperty({ description: 'Xóa images', required: false, default: false })
+	@IsOptional()
+	isClearImage?: boolean = false;
+
+	@ApiProperty({ description: 'Xóa video', required: false, default: false })
+	@IsOptional()
+	isClearVideo?: boolean = false;
+}

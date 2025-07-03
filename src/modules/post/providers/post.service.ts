@@ -636,4 +636,18 @@ export class PostService {
 			hasPrevPage,
 		};
 	}
+
+	async clearUrl(
+		postId: string,
+		userId: string,
+		isClearImage: boolean,
+		isClearVideo: boolean,
+		i18n: I18nContext,
+	): Promise<void> {
+		const isOwner = await this.postRepository.checkOwnership(postId, userId);
+		if (!isOwner) {
+			throw new ForbiddenException(i18n.t('post.UNAUTHORIZED_TO_MODIFY'));
+		}
+		await this.postRepository.clearUrl(postId, isClearImage, isClearVideo);
+	}
 }

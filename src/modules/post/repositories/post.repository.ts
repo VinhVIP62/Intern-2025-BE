@@ -92,6 +92,8 @@ export interface IPostRepository {
 		accessLevels?: PostAccessLevel[],
 		timeRange?: string,
 	): Promise<{ posts: Post[]; total: number }>;
+
+	clearUrl(postId: string, isClearImage: boolean, isClearVideo: boolean): Promise<void>;
 }
 
 export const IPostRepository = Symbol('IPostRepository');
