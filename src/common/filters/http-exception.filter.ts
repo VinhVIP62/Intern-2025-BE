@@ -10,8 +10,9 @@ import { Request, Response } from 'express';
 import { I18nService } from 'nestjs-i18n';
 
 import { ResponseTransform } from '@common/decorators';
-import { AppLoggerService } from '@common/logger';
 import { ResponseEntity } from '@common/types/data';
+
+import { AppLoggerService } from '@modules/logger';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {

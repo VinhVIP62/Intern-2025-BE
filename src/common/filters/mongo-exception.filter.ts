@@ -3,8 +3,9 @@ import { Request, Response } from 'express';
 import { MongoError } from 'mongodb';
 
 import { DuplicateKeyError } from '@common/exceptions';
-import { AppLoggerService } from '@common/logger';
 import { ErrorMessage, ResponseEntity } from '@common/types/data';
+
+import { AppLoggerService } from '@modules/logger';
 
 @Catch(MongoError)
 export class MongoExceptionFilter implements ExceptionFilter {

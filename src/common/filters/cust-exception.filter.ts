@@ -4,8 +4,9 @@ import { I18nService } from 'nestjs-i18n';
 
 import { ResponseTransform } from '@common/decorators';
 import { CustomError, EntityNotFound } from '@common/exceptions';
-import { AppLoggerService } from '@common/logger';
 import { ResponseEntity } from '@common/types/data';
+
+import { AppLoggerService } from '@modules/logger';
 
 @Catch(CustomError)
 export class CustomExceptionFilter implements ExceptionFilter {

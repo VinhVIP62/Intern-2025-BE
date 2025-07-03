@@ -2,8 +2,9 @@ import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from '@nestjs/commo
 import { Request, Response } from 'express';
 import { Error, MongooseError } from 'mongoose';
 
-import { AppLoggerService } from '@common/logger';
 import { ErrorMessage, ResponseEntity } from '@common/types/data';
+
+import { AppLoggerService } from '@modules/logger';
 
 @Catch(MongooseError)
 export class MongooseExceptionFilter implements ExceptionFilter {

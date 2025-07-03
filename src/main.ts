@@ -8,9 +8,9 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as swaggerUi from 'swagger-ui-express';
 
-import { AppLoggerService } from '@common/logger';
-
 import { IEnvVars } from '@configs/config';
+
+import { AppLoggerService } from '@modules/logger';
 
 import { AppModule } from './app.module';
 
