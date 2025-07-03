@@ -29,6 +29,8 @@
 	"MAX_IMAGES_EXCEEDED": "Số lượng hình ảnh vượt quá giới hạn",
 	"MAX_VIDEO_SIZE_EXCEEDED": "Kích thước video vượt quá giới hạn",
 	"INVALID_FILE_TYPE": "Loại tệp tin không được hỗ trợ",
+	"FILE_TOO_LARGE": "Kích thước tệp tin quá lớn. Tối đa cho phép là 10MB",
+	"INVALID_FILE_FORMAT": "Định dạng tệp tin không hợp lệ. Vui lòng kiểm tra lại",
 	"COMMENT_ADDED_SUCCESS": "Thêm bình luận thành công",
 	"COMMENT_UPDATED_SUCCESS": "Cập nhật bình luận thành công",
 	"COMMENT_DELETED_SUCCESS": "Xóa bình luận thành công",
