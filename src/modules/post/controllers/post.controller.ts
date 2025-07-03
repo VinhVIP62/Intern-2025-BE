@@ -51,7 +51,21 @@ export class PostController {
 	@Post()
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
-	@UseInterceptors(FilesInterceptor('files', 10))
+	@UseInterceptors(
+		FilesInterceptor('files', 10, {
+			limits: {
+				fileSize: 15 * 1024 * 1024, // 15MB limit (higher than Cloudinary's 10MB)
+			},
+			fileFilter: (req, file, cb) => {
+				// Check file size before processing
+				if (file.size > 10 * 1024 * 1024) {
+					// 10MB for Cloudinary
+					return cb(new BadRequestException('File size too large. Maximum is 10MB.'), false);
+				}
+				cb(null, true);
+			},
+		}),
+	)
 	@ApiOperation({ summary: 'Tạo bài đăng mới' })
 	@ApiConsumes('multipart/form-data')
 	@ApiBody({ type: CreatePostDto })
@@ -83,6 +97,15 @@ export class PostController {
 				message: i18n.t('post.POST_CREATED_SUCCESS'),
 			};
 		} catch (error) {
+			// Handle specific Cloudinary errors
+			if (error.message?.includes('Invalid image file')) {
+				throw new BadRequestException(i18n.t('post.INVALID_FILE_FORMAT'));
+			}
+
+			if (error.message?.includes('File size too large')) {
+				throw new BadRequestException(i18n.t('post.FILE_TOO_LARGE'));
+			}
+
 			if (error instanceof BadRequestException) {
 				throw error;
 			}
@@ -265,7 +288,21 @@ export class PostController {
 	@Put(':postId')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
-	@UseInterceptors(FilesInterceptor('files', 10))
+	@UseInterceptors(
+		FilesInterceptor('files', 10, {
+			limits: {
+				fileSize: 15 * 1024 * 1024, // 15MB limit (higher than Cloudinary's 10MB)
+			},
+			fileFilter: (req, file, cb) => {
+				// Check file size before processing
+				if (file.size > 10 * 1024 * 1024) {
+					// 10MB for Cloudinary
+					return cb(new BadRequestException('File size too large. Maximum is 10MB.'), false);
+				}
+				cb(null, true);
+			},
+		}),
+	)
 	@ApiOperation({ summary: 'Cập nhật bài đăng' })
 	@ApiConsumes('multipart/form-data')
 	@ApiParam({

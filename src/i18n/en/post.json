@@ -29,6 +29,8 @@
 	"MAX_IMAGES_EXCEEDED": "Maximum number of images exceeded",
 	"MAX_VIDEO_SIZE_EXCEEDED": "Maximum video size exceeded",
 	"INVALID_FILE_TYPE": "Invalid file type",
+	"FILE_TOO_LARGE": "File too large. Maximum allowed is 10MB",
+	"INVALID_FILE_FORMAT": "Invalid file format",
 	"COMMENT_ADDED_SUCCESS": "Comment added successfully",
 	"COMMENT_UPDATED_SUCCESS": "Comment updated successfully",
 	"COMMENT_DELETED_SUCCESS": "Comment deleted successfully",

@@ -179,10 +179,16 @@ export class PostService {
 		let video: string | undefined;
 
 		if (files && files.length > 0) {
+			// Store original filenames before upload to maintain consistency
+			const fileNames = files.map(file => file.originalname);
+
 			const uploadResults = await this.fileService.uploadFiles(files);
 
-			for (const result of uploadResults) {
-				if (this.isVideoFile(result.original_filename || '')) {
+			for (let i = 0; i < uploadResults.length; i++) {
+				const result = uploadResults[i];
+				const originalName = fileNames[i];
+
+				if (this.isVideoFile(originalName)) {
 					if (video) {
 						throw new BadRequestException(i18n.t('post.ONLY_ONE_VIDEO_ALLOWED'));
 					}
@@ -222,15 +228,27 @@ export class PostService {
 			this.validateUpdateContent(updatePostDto, files, i18n);
 		}
 
+		// Validate file size if files are provided
+		if (files && files.length > 0) {
+			this.validateFileSize(files, i18n);
+			this.validateFileType(files, i18n);
+		}
+
 		// Upload new media files if provided
 		const images: string[] = updatePostDto.oldUrls || [];
 		let video: string | undefined;
 
 		if (files && files.length > 0) {
+			// Store original filenames before upload to maintain consistency
+			const fileNames = files.map(file => file.originalname);
+
 			const uploadResults = await this.fileService.uploadFiles(files);
 
-			for (const result of uploadResults) {
-				if (this.isVideoFile(result.original_filename || '')) {
+			for (let i = 0; i < uploadResults.length; i++) {
+				const result = uploadResults[i];
+				const originalName = fileNames[i];
+
+				if (this.isVideoFile(originalName)) {
 					if (video) {
 						throw new BadRequestException(i18n.t('post.ONLY_ONE_VIDEO_ALLOWED'));
 					}
@@ -287,7 +305,11 @@ export class PostService {
 				if (files.length === 0) {
 					throw new BadRequestException(i18n.t('post.IMAGE_POST_REQUIRES_IMAGES'));
 				}
-				const hasImages = files.some(file => !this.isVideoFile(file.originalname));
+				const hasImages: boolean = files.some(file => {
+					const isVideoByExtension: boolean = this.isVideoFile(file.originalname);
+					const isVideoByMime: boolean = this.isVideoFileByMimeType(file);
+					return !isVideoByExtension && !isVideoByMime;
+				});
 				if (!hasImages) {
 					throw new BadRequestException(i18n.t('post.IMAGE_POST_REQUIRES_IMAGES'));
 				}
@@ -296,7 +318,11 @@ export class PostService {
 				if (files.length === 0) {
 					throw new BadRequestException(i18n.t('post.VIDEO_POST_REQUIRES_VIDEO'));
 				}
-				const hasVideo = files.some(file => this.isVideoFile(file.originalname));
+				const hasVideo: boolean = files.some(file => {
+					const isVideoByExtension: boolean = this.isVideoFile(file.originalname);
+					const isVideoByMime: boolean = this.isVideoFileByMimeType(file);
+					return isVideoByExtension || isVideoByMime;
+				});
 				if (!hasVideo) {
 					throw new BadRequestException(i18n.t('post.VIDEO_POST_REQUIRES_VIDEO'));
 				}
@@ -312,6 +338,12 @@ export class PostService {
 		if (files.length > 10) {
 			throw new BadRequestException(i18n.t('post.TOO_MANY_FILES'));
 		}
+
+		// Validate file size (Cloudinary limit: 10MB = 10 * 1024 * 1024 bytes)
+		this.validateFileSize(files, i18n);
+
+		// Validate file types
+		this.validateFileType(files, i18n);
 	}
 
 	private validateUpdateContent(
@@ -338,9 +370,80 @@ export class PostService {
 	}
 
 	private isVideoFile(filename: string): boolean {
-		const videoExtensions = ['.mp4', '.avi', '.mov', '.wmv', '.flv', '.webm', '.mkv'];
+		if (!filename || typeof filename !== 'string') {
+			return false;
+		}
+
+		const videoExtensions = [
+			'.mp4',
+			'.avi',
+			'.mov',
+			'.wmv',
+			'.flv',
+			'.webm',
+			'.mkv',
+			'.m4v',
+			'.3gp',
+			'.ogv',
+		];
 		const extension = filename.toLowerCase().substring(filename.lastIndexOf('.'));
 		return videoExtensions.includes(extension);
+	}
+
+	private isVideoFileByMimeType(file: Express.Multer.File): boolean {
+		return Boolean(file.mimetype && file.mimetype.startsWith('video/'));
+	}
+
+	private validateFileSize(files: Express.Multer.File[], i18n: I18nContext): void {
+		const maxFileSize = 10 * 1024 * 1024; // 10MB for Cloudinary
+		for (const file of files) {
+			if (file.size > maxFileSize) {
+				const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
+				throw new BadRequestException(
+					`${i18n.t('post.FILE_TOO_LARGE')} File "${file.originalname}", size: ${fileSizeMB}MB`,
+				);
+			}
+		}
+	}
+
+	private validateFileType(files: Express.Multer.File[], i18n: I18nContext): void {
+		const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+		const allowedVideoTypes = [
+			'video/mp4',
+			'video/avi',
+			'video/mov',
+			'video/wmv',
+			'video/flv',
+			'video/webm',
+			'video/mkv',
+		];
+
+		for (const file of files) {
+			const isImage = allowedImageTypes.includes(file.mimetype);
+			const isVideo = allowedVideoTypes.includes(file.mimetype);
+			const isValidExtension =
+				this.isVideoFile(file.originalname) || this.isImageFile(file.originalname);
+
+			if (!isImage && !isVideo) {
+				throw new BadRequestException(
+					`File "${file.originalname}" has unsupported MIME type: ${file.mimetype}`,
+				);
+			}
+
+			if (!isValidExtension) {
+				throw new BadRequestException(`File "${file.originalname}" has unsupported file extension`);
+			}
+		}
+	}
+
+	private isImageFile(filename: string): boolean {
+		if (!filename || typeof filename !== 'string') {
+			return false;
+		}
+
+		const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg'];
+		const extension = filename.toLowerCase().substring(filename.lastIndexOf('.'));
+		return imageExtensions.includes(extension);
 	}
 
 	async getTrendingHashtags(
