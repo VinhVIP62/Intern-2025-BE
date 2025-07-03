@@ -137,9 +137,9 @@ export class CreatePostDto {
 		example: 'Hôm nay tôi đã có một buổi tập tuyệt vời! #fitness #health',
 	})
 	@IsString()
-	@MinLength(1, { message: 'Nội dung không được để trống' })
 	@MaxLength(2000, { message: 'Nội dung không được vượt quá 2000 ký tự' })
-	content: string;
+	@IsOptional()
+	content?: string;
 
 	@ApiProperty({
 		enum: PostType,
@@ -148,7 +148,8 @@ export class CreatePostDto {
 		example: [PostType.TEXT, PostType.IMAGE, PostType.VIDEO, PostType.EVENT],
 	})
 	@IsEnum(PostType)
-	type: PostType = PostType.TEXT;
+	@IsOptional()
+	type?: PostType = PostType.TEXT;
 
 	@ApiProperty({
 		enum: SportType,
@@ -165,7 +166,8 @@ export class CreatePostDto {
 		example: PostStatus.APPROVED,
 	})
 	@IsEnum(PostStatus)
-	approvalStatus: PostStatus = PostStatus.APPROVED;
+	@IsOptional()
+	approvalStatus?: PostStatus = PostStatus.APPROVED;
 
 	@ApiProperty({
 		description: 'ID sự kiện liên quan',

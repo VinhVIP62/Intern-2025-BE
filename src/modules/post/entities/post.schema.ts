@@ -9,10 +9,10 @@ export class Post extends Document {
 	@Prop({ type: Types.ObjectId, ref: 'User', required: true, index: true })
 	author: Types.ObjectId;
 
-	@Prop({ required: true })
-	content: string;
+	@Prop({ required: false, default: null })
+	content?: string;
 
-	@Prop({ type: String, enum: PostType, default: PostType.TEXT, index: true })
+	@Prop({ type: String, enum: PostType, default: null, index: true })
 	type: PostType;
 
 	@Prop({ type: [String], default: [] })
