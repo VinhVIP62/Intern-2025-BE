@@ -1,5 +1,5 @@
+import { ISoftDeletable } from '@common/crud/entities';
 import { Level, Role, Status } from '@common/enums';
-import { ISoftDeletable } from '@common/types/entities';
 
 export type Location = {
 	province: string | null;

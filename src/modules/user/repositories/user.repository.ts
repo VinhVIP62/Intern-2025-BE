@@ -1,4 +1,4 @@
-import { ISoftDeleteBaseRepository } from '@common/types/repos';
+import { ISoftDeleteBaseRepository } from '@common/crud/repos';
 
 import { User } from '../entities';
 

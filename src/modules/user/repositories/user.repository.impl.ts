@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import { GRACE_PERIOD } from '@common/constants';
-import { MongooseSoftDeleteRepositoryImpl } from '@common/types/repos';
+import { MongooseSoftDeleteRepositoryImpl } from '@common/crud/repos';
 
 import { User } from '../entities';
 import { IUserRepository } from './user.repository';

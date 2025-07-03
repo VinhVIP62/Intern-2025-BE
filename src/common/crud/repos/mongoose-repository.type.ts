@@ -2,14 +2,14 @@ import { Model } from 'mongoose';
 
 import { EntityNotFound } from '@common/exceptions';
 
+import { Class } from '../../types/utils/class.type.js';
 import { ISoftDeletable } from '../entities/ISoftDeletable.type.js';
-import { Class } from '../utils/class.type.js';
 import {
 	IBaseRepository,
 	ISoftDeleteBaseRepository,
 	queryOptions,
 	repoOptions,
-} from './base-repository.type';
+} from './base-repository.type.js';
 
 export class MongooseRepositoryImpl<T extends object> implements IBaseRepository<T> {
 	constructor(
