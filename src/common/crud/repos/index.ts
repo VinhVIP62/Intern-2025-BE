@@ -1,2 +1,2 @@
-export * from './base-repository.type';
-export * from './mongoose-repository.type';
+export * from './base-repository.interface';
+export * from './mongoose-repository.interface';

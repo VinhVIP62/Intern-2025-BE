@@ -1,0 +1,62 @@
+import { SORT } from '@common/enums/sort.enum';
+
+import { IBaseEntity, ISoftDeletableEntity, WithPopulated } from '../entities';
+
+export type SortOptions<T> = Partial<Record<keyof WithPopulated<T>, SORT>>;
+
+/** will be appended to each repo methods */
+export type RepoOptions<T> = {
+	filter?: Partial<T>;
+	/** array of path */
+	populate?: string[];
+	sort?: SortOptions<T>;
+};
+
+export type QueryOptions<T> = {
+	/** Whether to skip the default repoOptions
+	 * Default value is false | undefined
+	 */
+	doNotUseRepoOptions?: boolean | (keyof RepoOptions<T>)[];
+	/** Set your own options for this query only */
+	customRepoOptions?: Partial<RepoOptions<T>>;
+	limit?: number;
+	skip?: number;
+};
+
+export interface IBaseRepository<T extends IBaseEntity> {
+	repoOptions: RepoOptions<T>;
+	create(data: Partial<T>, queryOptions?: QueryOptions<T>): Promise<WithPopulated<T>>;
+	update(id: string, data: Partial<T>, queryOptions?: QueryOptions<T>): Promise<WithPopulated<T>>;
+	delete(id: string, queryOptions?: QueryOptions<T>): Promise<WithPopulated<T>>;
+	findOneBy(where: Partial<T>, queryOptions?: QueryOptions<T>): Promise<WithPopulated<T> | null>;
+	findOneByOrFail(where: Partial<T>, queryOptions?: QueryOptions<T>): Promise<WithPopulated<T>>;
+	findOneById(id: string, queryOptions?: QueryOptions<T>): Promise<WithPopulated<T> | null>;
+	findOneByIdOrFail(id: string, queryOptions?: QueryOptions<T>): Promise<WithPopulated<T>>;
+	find(where: Partial<T>, queryOptions?: QueryOptions<T>): Promise<WithPopulated<T>[]>;
+	findOneByAndUpdate(
+		where: Partial<T>,
+		data: Partial<T>,
+		queryOptions?: QueryOptions<T>,
+	): Promise<WithPopulated<T> | null>;
+	findOneByAndDelete(
+		where: Partial<T>,
+		queryOptions?: QueryOptions<T>,
+	): Promise<WithPopulated<T> | null>;
+	count(where: Partial<T>, queryOptions?: QueryOptions<T>): Promise<number>;
+}
+
+export interface ISoftDeleteBaseRepository<
+	// diabolical typing :smug:
+	// basically whatever type of the fields of ISoftDeletable will need to be exact
+	// eg. deleted is boolean, not true, nor boolean | null
+	T extends ISoftDeletableEntity & {
+		[K in keyof ISoftDeletableEntity]: ISoftDeletableEntity[K] extends T[K] ? unknown : never;
+	},
+> extends IBaseRepository<T> {
+	softDelete(
+		id: string,
+		deletedBy: string | null,
+		queryOptions?: QueryOptions<T>,
+	): Promise<WithPopulated<T>>;
+	restore(id: string, queryOptions?: QueryOptions<T>): Promise<WithPopulated<T>>;
+}

@@ -1,4 +1,4 @@
-import { ISoftDeletable } from '@common/crud/entities';
+import { ISoftDeletableEntity } from '@common/crud/entities';
 import { Level, Role, Status } from '@common/enums';
 
 export type Location = {
@@ -16,7 +16,7 @@ export type GoogleLoginInfo = {
 	id: string | null;
 };
 
-export class User implements ISoftDeletable {
+export class User implements ISoftDeletableEntity {
 	id!: string;
 	username!: string;
 	// compromise mail, phone and password being null for google oauth2 login

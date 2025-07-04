@@ -4,13 +4,11 @@ import {
 	Delete,
 	Get,
 	Inject,
-	Param,
 	Patch,
 	Req,
 	Version,
 	forwardRef,
 } from '@nestjs/common';
-import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 
 import { Roles } from '@common/decorators';
@@ -106,12 +104,10 @@ export class UserController {
 	}
 
 	@Version('1')
-	@Get(':id')
+	@Get()
 	@Roles()
-	async getProfileById(
-		@Param('id', ParseObjectIdPipe) id: string,
-	): Promise<LimitedUserResponseDto> {
-		const foundUser = await this.userService.findOneById(id);
+	async getProfiles(): Promise<LimitedUserResponseDto[]> {
+		const foundUser = await this.userService.findAny({});
 		if (!foundUser) throw new EntityNotFound(User);
 		return plainToInstanceStrict(LimitedUserResponseDto, foundUser);
 	}

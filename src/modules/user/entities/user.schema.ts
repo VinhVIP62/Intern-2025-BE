@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory, Virtual } from '@nestjs/mongoose';
 import bcrypt from 'bcrypt';
 import mongoose, { HydratedDocument, ValidatorProps } from 'mongoose';
 
+import { WithPopulated } from '@common/crud/entities';
 import { Level, Role, Status } from '@common/enums';
 import { Complete } from '@common/types/utils';
 import { nonEmptyAfterCreate, uniqueArrayFieldValidator } from '@common/validators';
@@ -41,7 +42,7 @@ export class GoogleLoginInfoSubDoc implements GoogleLoginInfo {
 		virtuals: true,
 	},
 })
-export class UserSchemaDef implements Complete<User> {
+export class UserSchemaDef implements WithPopulated<Complete<User>> {
 	_id!: mongoose.Types.ObjectId;
 
 	@Virtual({
@@ -135,6 +136,16 @@ export class UserSchemaDef implements Complete<User> {
 	/** references user id */
 	@Prop({ type: mongoose.Schema.Types.ObjectId, default: null, index: true, ref: User.name })
 	deletedBy!: string | null;
+
+	@Virtual({
+		options: {
+			ref: User.name,
+			localField: 'deletedBy',
+			foreignField: '_id',
+			justOne: true,
+		},
+	})
+	deletedByPopulated!: User;
 }
 
 export const UserSchema = SchemaFactory.createForClass(UserSchemaDef);

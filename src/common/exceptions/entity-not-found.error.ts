@@ -1,6 +1,6 @@
 import { Class } from '@common/types/utils';
 
-import { CustomError } from './CustomError.error';
+import { CustomError } from './custom.error';
 
 export class EntityNotFound<T> extends CustomError {
 	constructor(clazz: Class<T> | string) {
