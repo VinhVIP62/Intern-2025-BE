@@ -3,7 +3,8 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 import { GRACE_PERIOD } from '@common/constants';
-import { MongooseSoftDeleteRepositoryImpl } from '@common/types/repos';
+import { WithPopulated } from '@common/crud/entities';
+import { MongooseSoftDeleteRepositoryImpl } from '@common/crud/repos';
 
 import { User } from '../entities';
 import { IUserRepository } from './user.repository';
@@ -14,33 +15,43 @@ export class UserRepositoryImpl
 	implements IUserRepository
 {
 	constructor(@InjectModel(User.name) private readonly userModel: Model<User>) {
-		super(userModel, User);
+		super(userModel, User, {
+			populate: ['deletedBy'],
+		});
 	}
 
-	async findOneByUsername(username: string): Promise<User | null> {
-		const foundUser = (await this.userModel.findOne({ username }).exec())?.toObject();
+	async findOneByUsername(username: string): Promise<WithPopulated<User> | null> {
+		const foundUser = (
+			await this.userModel
+				.findOne(this.transformFilter({ username }))
+				.populate(this.transformPopulate())
+				.exec()
+		)?.toObject();
 		return foundUser ? foundUser : null;
 	}
 
-	async findOneLoginable(where: Partial<User>): Promise<User | null> {
+	async findOneLoginable(where: Partial<User>): Promise<WithPopulated<User> | null> {
 		return (
 			(
 				await this.entityModel
 					.findOne(
-						this.transformQuery(
+						this.transformFilter(
 							{
 								...where,
 								$or: [
 									{ deleted: false },
 									{
-										$expr: { $eq: ['$deletedBy', { $toString: '$_id' }] },
+										$expr: { $eq: ['$deletedBy', '$_id'] },
 										deletedAt: { $gte: new Date(Date.now() - GRACE_PERIOD * 24 * 60 * 60 * 1000) },
 									},
 								],
 							},
-							{ doNotUseRepoOptions: true },
+							{
+								doNotUseRepoOptions: ['filter'],
+							},
 						),
 					)
+					.populate(this.transformPopulate())
 					.exec()
 			)?.toObject() || null
 		);

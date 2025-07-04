@@ -1,3 +1,4 @@
+import { OmitType } from '@nestjs/mapped-types';
 import { Exclude, Expose, Transform } from 'class-transformer';
 
 import { Status } from '@common/enums';
@@ -30,3 +31,10 @@ export class ResponseUserDto {
 	@Expose()
 	sports!: Sport[];
 }
+
+@Exclude()
+export class LimitedUserResponseDto extends OmitType(ResponseUserDto, [
+	'id',
+	'location',
+	'roles',
+]) {}

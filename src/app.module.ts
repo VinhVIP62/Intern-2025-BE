@@ -15,10 +15,10 @@ import {
 } from '@common/filters';
 import { JwtAuthGuard, RolesGuard } from '@common/guards';
 import { ResponseTransformInterceptor } from '@common/interceptors';
-import { LoggerModule } from '@common/logger';
 
 import { Config, DatabaseConfig } from '@configs';
 
+import { LoggerModule } from '@modules/logger';
 import { RouteModule } from '@modules/router';
 
 @Module({

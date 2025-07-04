@@ -1,5 +1,5 @@
 import { HttpService } from '@nestjs/axios';
-import { Injectable, UnprocessableEntityException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import FormData from 'form-data';
 import { MemoryStoredFile } from 'nestjs-form-data';
@@ -50,13 +50,7 @@ export class FileHostService {
 	) {}
 
 	/** Returns URL to the image */
-	async image2Url(file: MemoryStoredFile): Promise<string | null> {
-		const allowedMimeTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif'];
-
-		if (!allowedMimeTypes.includes(file.mimeType)) {
-			throw new UnprocessableEntityException(`Allowed file types: ${allowedMimeTypes.join(', ')}`);
-		}
-
+	async file2Url(file: MemoryStoredFile): Promise<string> {
 		// init formdata
 		const formData = new FormData();
 		formData.append('file', file.buffer, {

@@ -21,7 +21,13 @@ import { TokenService } from '@modules/auth';
 import { ResponseAuthDto } from '@modules/auth/dto';
 import { createPayload, tokensSchema } from '@modules/auth/types';
 
-import { ResponseProfileDto, SetupGoogleUserDto, SetupUserDto, UpdateUserDto } from '../dto';
+import {
+	LimitedUserResponseDto,
+	ResponseProfileDto,
+	SetupGoogleUserDto,
+	SetupUserDto,
+	UpdateUserDto,
+} from '../dto';
 import { User } from '../entities';
 import { UserService } from '../providers';
 
@@ -95,5 +101,14 @@ export class UserController {
 	async deactivateProfile(@Req() request: AuthenticatedRequest): Promise<ResponseProfileDto> {
 		const deletedProfile = await this.userService.softDelete(request.user.id, request.user.id);
 		return plainToInstanceStrict(ResponseProfileDto, deletedProfile);
+	}
+
+	@Version('1')
+	@Get()
+	@Roles()
+	async getProfiles(): Promise<LimitedUserResponseDto[]> {
+		const foundUser = await this.userService.findAny({});
+		if (!foundUser) throw new EntityNotFound(User);
+		return plainToInstanceStrict(LimitedUserResponseDto, foundUser);
 	}
 }

@@ -40,7 +40,7 @@ export class PaginatedResponseEntity<T> extends ResponseEntity<T[]> {
 	constructor(path: string, statusCode: number, paginatedData: PaginatedData<T>, error?: string) {
 		super(path, statusCode, paginatedData.data, error);
 		this.page = paginatedData.page;
-		this.amount = paginatedData.limit;
+		this.amount = paginatedData.data.length;
 	}
 
 	page: number;

@@ -1,11 +1,18 @@
-import { ArgumentsHost, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
+import {
+	ArgumentsHost,
+	BadRequestException,
+	ExceptionFilter,
+	HttpException,
+	HttpStatus,
+} from '@nestjs/common';
 import { Catch } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { I18nService } from 'nestjs-i18n';
 
 import { ResponseTransform } from '@common/decorators';
-import { AppLoggerService } from '@common/logger';
 import { ResponseEntity } from '@common/types/data';
+
+import { AppLoggerService } from '@modules/logger';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -32,10 +39,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
 	private resolve(exception: HttpException, req: Request): ResponseEntity<null> {
 		const excRes = exception.getResponse();
-		const message =
+		let message =
 			typeof excRes === 'string' ? excRes
 			: 'message' in excRes ? (excRes.message as string)
 			: 'Unable to parse HttpException message';
+
+		if (exception instanceof BadRequestException && message.includes('Invalid ObjectId')) {
+			message = 'Invalid id format, id is a 24 character hexadecimal string';
+		}
 
 		const translatedMessage = this.i18n.translate('common.ERROR_MESSAGE', {
 			lang: req.headers['accept-language'] || 'en',

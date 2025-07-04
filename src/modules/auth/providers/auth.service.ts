@@ -1,11 +1,13 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { isEmpty, isPhoneNumber } from 'class-validator';
+import { randomUUID } from 'crypto';
+import { Profile } from 'passport-google-oauth20';
 
 import { UserService } from '@modules/user';
 import { User } from '@modules/user/entities';
 
-import { Payload, Tokens, createPayload } from '../types';
+import { Payload, Sub, Tokens, createPayload } from '../types';
 import { TokenService } from './token.service';
 
 @Injectable()
@@ -48,6 +50,36 @@ export class AuthService {
 			throw new UnauthorizedException('Invalid password');
 		}
 		return user;
+	}
+
+	async validateWithGoogle(profile: Profile): Promise<User | null> {
+		const foundUsers = await this.userService.findAny({
+			googleLoginInfo: { id: profile.id },
+		});
+		const foundLoginableUser = await this.userService.findLoginableAndRestore({
+			googleLoginInfo: { id: profile.id },
+		});
+		if (!foundUsers.length) {
+			const createdUser = await this.userService.create({
+				avatarUrl: profile.photos?.[0]?.value || null,
+				googleLoginInfo: { id: profile.id },
+				hasFinishedSetup: false,
+				mail: profile.emails?.[0]?.value || null,
+				username: profile.username || profile.displayName.replace(/\s+/g, '') + randomUUID(),
+				password: null,
+			});
+			return createdUser;
+		}
+		return foundLoginableUser;
+	}
+
+	async validatePayload(payload: Payload): Promise<Sub | null> {
+		const user = await this.userService.findOneBy({
+			id: payload.sub.id,
+			roles: payload.sub.roles,
+		});
+		if (!user) throw new UnauthorizedException('Invalid or expired refresh token');
+		return payload.sub;
 	}
 
 	async refreshToken(payload: Payload): Promise<Tokens> {
