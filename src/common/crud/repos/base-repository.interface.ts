@@ -1,4 +1,5 @@
-import { SORT } from '@common/enums/sort.enum';
+import { SORT } from '@common/enums';
+import { LowerBound } from '@common/types/utils';
 
 import { IBaseEntity, ISoftDeletableEntity, WithPopulated } from '../entities';
 
@@ -49,12 +50,15 @@ export interface ISoftDeleteBaseRepository<
 	// diabolical typing :smug:
 	// basically whatever type of the fields of ISoftDeletable will need to be exact
 	// eg. deleted is boolean, not true, nor boolean | null
-	T extends ISoftDeletableEntity & {
-		[K in keyof ISoftDeletableEntity]: ISoftDeletableEntity[K] extends T[K] ? unknown : never;
-	},
+	T extends ISoftDeletableEntity & LowerBound<T, ISoftDeletableEntity>,
 > extends IBaseRepository<T> {
 	softDelete(
 		id: string,
+		deletedBy: string | null,
+		queryOptions?: QueryOptions<T>,
+	): Promise<WithPopulated<T>>;
+	findOneByAndSoftDelete(
+		where: Partial<T>,
 		deletedBy: string | null,
 		queryOptions?: QueryOptions<T>,
 	): Promise<WithPopulated<T>>;

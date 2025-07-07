@@ -1,9 +1,9 @@
 import { Model, PopulateOptions, SortOrder } from 'mongoose';
 
-import { SORT } from '@common/enums/sort.enum.js';
+import { SORT } from '@common/enums';
 import { EntityNotFound } from '@common/exceptions';
+import { Class, LowerBound } from '@common/types/utils/';
 
-import { Class } from '../../types/utils/class.type.js';
 import { IBaseEntity } from '../entities/base-entity.interface.js';
 import { ISoftDeletableEntity } from '../entities/softdeletable-entity.interface.js';
 import { WithPopulated } from '../entities/type-with-populated.type.js';
@@ -263,9 +263,7 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
  * so feel free to use type assertion inside the methods.
  * */
 export class MongooseSoftDeleteRepositoryImpl<
-		T extends ISoftDeletableEntity & {
-			[K in keyof ISoftDeletableEntity]: ISoftDeletableEntity[K] extends T[K] ? unknown : never;
-		},
+		T extends ISoftDeletableEntity & LowerBound<T, ISoftDeletableEntity>,
 	>
 	extends MongooseRepositoryImpl<T>
 	implements ISoftDeleteBaseRepository<T>
@@ -299,19 +297,28 @@ export class MongooseSoftDeleteRepositoryImpl<
 	async softDelete(
 		id: string,
 		deletedBy: string | null = null,
-		queryOptions: QueryOptions<T>,
+		queryOptions?: QueryOptions<T>,
 	): Promise<WithPopulated<T>> {
 		// Still have to assert type, but dw we already have a check above
+		return this.findOneByAndSoftDelete({ id } as unknown as Partial<T>, deletedBy, queryOptions);
+	}
+
+	/** [PLA] not finished as this does not soft delete related entities */
+	async findOneByAndSoftDelete(
+		where: Partial<T>,
+		deletedBy: string | null = null,
+		queryOptions?: QueryOptions<T>,
+	): Promise<WithPopulated<T>> {
 		const updatedData = {
 			deleted: true,
 			deletedBy,
 			deletedAt: new Date(),
 		} as Partial<T>;
-		return this.update(id, updatedData, queryOptions);
+		return this.findOneByAndUpdate(where, updatedData, queryOptions);
 	}
 
 	/** [PLA] not finished as this does not recover related entities */
-	async restore(id: string, queryOptions: QueryOptions<T>): Promise<T> {
+	async restore(id: string, queryOptions?: QueryOptions<T>): Promise<T> {
 		return this.update(
 			id,
 			{ deleted: false, deletedBy: null, deletedAt: null } as Partial<WithPopulated<T>>,
