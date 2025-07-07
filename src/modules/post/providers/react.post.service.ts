@@ -1,4 +1,4 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { IReactRepository } from '../repositories/react.repository';
 import { IPostRepository } from '../repositories/post.repository';
 import { ReactType } from '@common/enum/react.type.enum';
@@ -13,7 +13,10 @@ export class ReactService {
 	async reactPost(userId: string, postId: string, type: ReactType) {
 		const already = await this.reactRepo.isReacted(userId, postId);
 		if (already) throw new ConflictException('react.FAILED');
-
+		const existedPost = await this.postRepo.findById(postId);
+		if (!existedPost) {
+			throw new NotFoundException('post.NOT_FOUND');
+		}
 		await this.reactRepo.reactPost(userId, postId, type);
 		await this.postRepo.updateReactCount(postId, type, 1);
 
@@ -24,6 +27,10 @@ export class ReactService {
 		const result = await this.reactRepo.unReactPost(userId, postId);
 		if (!result) {
 			return { message: 'react.FAILED' };
+		}
+		const existedPost = await this.postRepo.findById(postId);
+		if (!existedPost) {
+			throw new NotFoundException('post.NOT_FOUND');
 		}
 		const type = result.type;
 		await this.postRepo.updateReactCount(postId, type, -1);
