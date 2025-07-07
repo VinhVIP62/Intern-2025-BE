@@ -45,8 +45,8 @@ export class SportDto implements Sport {
 export class UpdateUserDto extends PartialType(CreateUserDto) {
 	@Expose()
 	@Type(() => MemoryStoredFile)
-	@HasExtension(['png', 'jpg', 'jpeg', 'gif'], { each: true })
-	@HasMimeType(['image/png', 'image/jpeg', 'image/jpg', 'image/gif'], { each: true })
+	@HasExtension(['png', 'jpg', 'jpeg', 'gif'])
+	@HasMimeType(['image/png', 'image/jpeg', 'image/jpg', 'image/gif'])
 	@IsFile()
 	@IsOptional()
 	avatar?: MemoryStoredFile;

@@ -7,8 +7,8 @@ import { LocationDto, SportDto } from './update-user.dto';
 export class SetupUserDto {
 	@Expose()
 	@Type(() => MemoryStoredFile)
-	@HasExtension(['png', 'jpg', 'jpeg', 'gif'], { each: true })
-	@HasMimeType(['image/png', 'image/jpeg', 'image/jpg', 'image/gif'], { each: true })
+	@HasExtension(['png', 'jpg', 'jpeg', 'gif'])
+	@HasMimeType(['image/png', 'image/jpeg', 'image/jpg', 'image/gif'])
 	@IsDefined()
 	@IsFile()
 	declare avatar: MemoryStoredFile;
