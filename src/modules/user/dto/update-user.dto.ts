@@ -5,6 +5,7 @@ import {
 	IsArray,
 	IsBoolean,
 	IsEnum,
+	IsNotEmpty,
 	IsOptional,
 	IsString,
 	ValidateNested,
@@ -38,6 +39,7 @@ export class SportDto implements Sport {
 	level!: Level;
 
 	@Expose()
+	@IsNotEmpty()
 	@IsString()
 	name!: string;
 }
