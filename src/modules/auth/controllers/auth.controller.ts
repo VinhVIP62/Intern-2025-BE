@@ -2,12 +2,12 @@ import { Body, Controller, Get, Post, Req, UseGuards, Version } from '@nestjs/co
 import { Request } from 'express';
 
 import { Public } from '@common/decorators';
-import { GoogleOAuth2Guard, JwtRefreshAuthGuard } from '@common/guards';
 import { AuthenticatedRequest } from '@common/types/data';
 
 import { User } from '@modules/user/entities';
 
 import { LoginDto, RegisterDto, ResponseAuthDto } from '../dto';
+import { GoogleOAuth2Guard, JwtRefreshAuthGuard } from '../guards';
 import { AuthService } from '../providers';
 
 @Public()
