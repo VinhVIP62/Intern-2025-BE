@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ForbiddenException, Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { isEmpty, isPhoneNumber } from 'class-validator';
 import { randomUUID } from 'crypto';
@@ -40,14 +40,14 @@ export class AuthService {
 		const findOptions = isPhoneNumber(id) ? { phone: id } : { mail: id };
 		const user = await this.userService.findLoginableAndRestore(findOptions);
 		if (!user) {
-			throw new UnauthorizedException(
+			throw new ForbiddenException(
 				`${isLoggedInViaPhone ? 'Phone number' : 'Email'} not found or your account has been deactivated`,
 			);
 		}
 		const isPasswordValid =
 			user.password !== null && (await bcrypt.compare(password, user.password));
 		if (!isPasswordValid) {
-			throw new UnauthorizedException('Invalid password');
+			throw new ForbiddenException('Invalid password');
 		}
 		return user;
 	}
@@ -78,7 +78,7 @@ export class AuthService {
 			id: payload.sub.id,
 			roles: payload.sub.roles,
 		});
-		if (!user) throw new UnauthorizedException('Invalid or expired refresh token');
+		if (!user) throw new ForbiddenException('Invalid or expired refresh token');
 		return payload.sub;
 	}
 
