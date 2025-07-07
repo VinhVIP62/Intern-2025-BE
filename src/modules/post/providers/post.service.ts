@@ -207,6 +207,14 @@ export class PostService {
 
 		const post = await this.postRepository.create(postData, authorId, images, video);
 
+		// Nếu là bài share, cập nhật sharedPosts cho post gốc
+		if (createPostDto.sharedFrom) {
+			await this.postRepository.addSharedPost(
+				createPostDto.sharedFrom,
+				(post as any)._id.toString(),
+			);
+		}
+
 		return post as PostResponseDto;
 	}
 

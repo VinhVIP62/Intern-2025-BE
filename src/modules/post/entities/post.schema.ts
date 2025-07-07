@@ -39,6 +39,9 @@ export class Post extends Document {
 	@Prop({ type: Types.ObjectId, ref: 'Post', default: null, index: true })
 	sharedFrom: Types.ObjectId;
 
+	@Prop({ type: [{ type: Types.ObjectId, ref: 'Post' }], default: [] })
+	sharedPosts: Types.ObjectId[]; // Danh sách các bài post đã share bài này
+
 	@Prop({ default: 0, index: true })
 	likeCount: number;
 
@@ -130,6 +133,13 @@ PostSchema.virtual('sharedFromPost', {
 	localField: 'sharedFrom',
 	foreignField: '_id',
 	justOne: true,
+});
+
+// Virtual populate for shared posts
+PostSchema.virtual('sharedPostsList', {
+	ref: 'Post',
+	localField: 'sharedPosts',
+	foreignField: '_id',
 });
 
 // Ensure virtual fields are included when converting to JSON

@@ -42,6 +42,8 @@ export interface IPostRepository {
 		video?: string,
 	): Promise<Post>;
 
+	addSharedPost(originalPostId: string, sharedPostId: string): Promise<void>;
+
 	delete(postId: string): Promise<void>;
 
 	checkOwnership(postId: string, userId: string): Promise<boolean>;

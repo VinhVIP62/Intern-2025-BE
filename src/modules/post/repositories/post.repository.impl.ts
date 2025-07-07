@@ -39,6 +39,14 @@ export class PostRepositoryImpl implements IPostRepository {
 				.populate('event', 'title description')
 				.populate('group', 'name description')
 				.populate('sharedFromPost')
+				.populate({
+					path: 'sharedPostsList',
+					select: 'author',
+					populate: {
+						path: 'authorUser',
+						select: 'firstName lastName avatar fullName',
+					},
+				})
 				.populate('comments')
 				.sort({ createdAt: -1 })
 				.skip(skip)
@@ -57,6 +65,14 @@ export class PostRepositoryImpl implements IPostRepository {
 			.populate('event', 'title description')
 			.populate('group', 'name description')
 			.populate('sharedFromPost')
+			.populate({
+				path: 'sharedPostsList',
+				select: 'author',
+				populate: {
+					path: 'authorUser',
+					select: 'firstName lastName avatar fullName',
+				},
+			})
 			.populate('comments')
 			.lean({ virtuals: true });
 
@@ -86,6 +102,14 @@ export class PostRepositoryImpl implements IPostRepository {
 				.populate('event', 'title description')
 				.populate('group', 'name description')
 				.populate('sharedFromPost')
+				.populate({
+					path: 'sharedPostsList',
+					select: 'author',
+					populate: {
+						path: 'authorUser',
+						select: 'firstName lastName avatar fullName',
+					},
+				})
 				.populate('comments')
 				.sort({ createdAt: -1 })
 				.skip(skip)
@@ -126,6 +150,14 @@ export class PostRepositoryImpl implements IPostRepository {
 				.populate('event', 'title description')
 				.populate('group', 'name description')
 				.populate('sharedFromPost')
+				.populate({
+					path: 'sharedPostsList',
+					select: 'author',
+					populate: {
+						path: 'authorUser',
+						select: 'firstName lastName avatar fullName',
+					},
+				})
 				.populate('comments')
 				.sort({ createdAt: -1 })
 				.skip(skip)
@@ -175,6 +207,14 @@ export class PostRepositoryImpl implements IPostRepository {
 			.populate('event', 'title description')
 			.populate('group', 'name description')
 			.populate('sharedFromPost')
+			.populate({
+				path: 'sharedPostsList',
+				select: 'author',
+				populate: {
+					path: 'authorUser',
+					select: 'firstName lastName avatar fullName',
+				},
+			})
 			.populate('comments')
 			.lean({ virtuals: true });
 
@@ -307,6 +347,14 @@ export class PostRepositoryImpl implements IPostRepository {
 				.populate('event', 'title description')
 				.populate('group', 'name description')
 				.populate('sharedFromPost')
+				.populate({
+					path: 'sharedPostsList',
+					select: 'author',
+					populate: {
+						path: 'authorUser',
+						select: 'firstName lastName avatar fullName',
+					},
+				})
 				.populate('comments')
 				.sort({ createdAt: -1 })
 				.skip(skip)
@@ -382,6 +430,14 @@ export class PostRepositoryImpl implements IPostRepository {
 				.populate('event', 'title description')
 				.populate('group', 'name description')
 				.populate('sharedFromPost')
+				.populate({
+					path: 'sharedPostsList',
+					select: 'author',
+					populate: {
+						path: 'authorUser',
+						select: 'firstName lastName avatar fullName',
+					},
+				})
 				.populate('comments')
 				.sort({ createdAt: -1 })
 				.skip(skip)
@@ -422,6 +478,14 @@ export class PostRepositoryImpl implements IPostRepository {
 				.populate('event', 'title description')
 				.populate('group', 'name description')
 				.populate('sharedFromPost')
+				.populate({
+					path: 'sharedPostsList',
+					select: 'author',
+					populate: {
+						path: 'authorUser',
+						select: 'firstName lastName avatar fullName',
+					},
+				})
 				.populate('comments')
 				.sort({ createdAt: -1 })
 				.skip(skip)
@@ -465,6 +529,14 @@ export class PostRepositoryImpl implements IPostRepository {
 				.populate('event', 'title description')
 				.populate('group', 'name description')
 				.populate('sharedFromPost')
+				.populate({
+					path: 'sharedPostsList',
+					select: 'author',
+					populate: {
+						path: 'authorUser',
+						select: 'firstName lastName avatar fullName',
+					},
+				})
 				.populate('comments')
 				.sort({
 					likeCount: -1,
@@ -490,5 +562,13 @@ export class PostRepositoryImpl implements IPostRepository {
 			runValidators: true,
 		});
 		if (!post) throw new Error('Post not found');
+	}
+
+	async addSharedPost(originalPostId: string, sharedPostId: string): Promise<void> {
+		await this.postModel.findByIdAndUpdate(
+			originalPostId,
+			{ $addToSet: { sharedPosts: sharedPostId } },
+			{ new: true },
+		);
 	}
 }
