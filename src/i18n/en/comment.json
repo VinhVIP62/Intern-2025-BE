@@ -19,5 +19,11 @@
 	"PARENT_COMMENT_IS_INACTIVE": "Parent comment is inactive",
 	"COMMENT_IS_INACTIVE": "Comment is inactive",
 	"NOT_AUTHORIZED_TO_UPDATE": "You are not authorized to update this comment",
-	"NOT_AUTHORIZED_TO_DELETE": "You are not authorized to delete this comment"
+	"NOT_AUTHORIZED_TO_DELETE": "You are not authorized to delete this comment",
+	"LIKE_SUCCESS": "Comment liked successfully",
+	"LIKE_FAILED": "Failed to like comment",
+	"UNLIKE_SUCCESS": "Comment unliked successfully",
+	"UNLIKE_FAILED": "Failed to unlike comment",
+	"ALREADY_LIKED": "You have already liked this comment",
+	"NOT_LIKED": "You have not liked this comment yet"
 }

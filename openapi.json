@@ -1981,6 +1981,90 @@
         ]
       }
     },
+    "/api/v1/comments/{commentId}/like": {
+      "post": {
+        "operationId": "CommentController_likeComment_v1",
+        "parameters": [
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "description": "ID của comment",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Like comment thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "404": {
+            "description": "Không tìm thấy comment"
+          }
+        },
+        "summary": "Like comment",
+        "tags": [
+          "Comment"
+        ]
+      }
+    },
+    "/api/v1/comments/{commentId}/unlike": {
+      "post": {
+        "operationId": "CommentController_unlikeComment_v1",
+        "parameters": [
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "description": "ID của comment",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Unlike comment thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "404": {
+            "description": "Không tìm thấy comment"
+          }
+        },
+        "summary": "Unlike comment",
+        "tags": [
+          "Comment"
+        ]
+      }
+    },
     "/api/v1/search/all": {
       "get": {
         "operationId": "SearchController_searchAll_v1",

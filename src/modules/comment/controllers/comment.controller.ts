@@ -450,4 +450,80 @@ export class CommentController {
 			throw new BadRequestException(i18n.t('comment.COMMENT_SHOW_FAILED'));
 		}
 	}
+
+	@Version('1')
+	@Post(':commentId/like')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Like comment' })
+	@ApiParam({
+		name: 'commentId',
+		description: 'ID của comment',
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Like comment thành công',
+		type: CommentResponseDto,
+	})
+	@ApiResponse({ status: 400, description: 'Dữ liệu không hợp lệ' })
+	@ApiResponse({ status: 401, description: 'Không có quyền truy cập' })
+	@ApiResponse({ status: 404, description: 'Không tìm thấy comment' })
+	async likeComment(
+		@Request() req,
+		@Param('commentId') commentId: string,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<CommentResponseDto>> {
+		try {
+			const comment = await this.commentService.likeComment(commentId, req.user.id, i18n);
+			return {
+				success: true,
+				data: comment as any as CommentResponseDto,
+				message: i18n.t('comment.LIKE_SUCCESS'),
+			};
+		} catch (error) {
+			if (error instanceof BadRequestException || error instanceof ForbiddenException) {
+				throw error;
+			}
+			throw new BadRequestException(i18n.t('comment.LIKE_FAILED'));
+		}
+	}
+
+	@Version('1')
+	@Post(':commentId/unlike')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Unlike comment' })
+	@ApiParam({
+		name: 'commentId',
+		description: 'ID của comment',
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Unlike comment thành công',
+		type: CommentResponseDto,
+	})
+	@ApiResponse({ status: 400, description: 'Dữ liệu không hợp lệ' })
+	@ApiResponse({ status: 401, description: 'Không có quyền truy cập' })
+	@ApiResponse({ status: 404, description: 'Không tìm thấy comment' })
+	async unlikeComment(
+		@Request() req,
+		@Param('commentId') commentId: string,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<CommentResponseDto>> {
+		try {
+			const comment = await this.commentService.unlikeComment(commentId, req.user.id, i18n);
+			return {
+				success: true,
+				data: comment as any as CommentResponseDto,
+				message: i18n.t('comment.UNLIKE_SUCCESS'),
+			};
+		} catch (error) {
+			if (error instanceof BadRequestException || error instanceof ForbiddenException) {
+				throw error;
+			}
+			throw new BadRequestException(i18n.t('comment.UNLIKE_FAILED'));
+		}
+	}
 }

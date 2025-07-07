@@ -219,7 +219,7 @@ export class CommentService {
 
 	async updateCommentVisibility(
 		commentId: string,
-		authorId: string,
+		userId: string,
 		updateVisibilityDto: UpdateCommentVisibilityDto,
 		i18n: I18nContext,
 	): Promise<Comment | null> {
@@ -227,12 +227,15 @@ export class CommentService {
 		if (!comment) {
 			throw new NotFoundException(i18n.t('comment.COMMENT_NOT_FOUND'));
 		}
-
-		// Check if user is the author or admin
-		if (comment.author.toString() !== authorId) {
+		// Lấy post để kiểm tra quyền
+		const post = await this.postModel.findById(comment.postId);
+		if (!post) {
+			throw new NotFoundException(i18n.t('comment.POST_NOT_FOUND'));
+		}
+		// Chỉ chủ comment hoặc chủ post mới được phép
+		if (comment.author.toString() !== userId && post.author.toString() !== userId) {
 			throw new ForbiddenException(i18n.t('comment.NOT_AUTHORIZED_TO_UPDATE'));
 		}
-
 		const updatedComment = await this.commentModel
 			.findByIdAndUpdate(commentId, { isHidden: updateVisibilityDto.isHidden }, { new: true })
 			.populate([
@@ -240,7 +243,6 @@ export class CommentService {
 				{ path: 'post', select: 'content' },
 				{ path: 'parentComment', select: 'content author' },
 			]);
-
 		return updatedComment;
 	}
 
@@ -273,5 +275,50 @@ export class CommentService {
 		}
 
 		return comment;
+	}
+
+	async likeComment(commentId: string, userId: string, i18n: I18nContext): Promise<Comment> {
+		const comment = await this.commentModel.findById(commentId);
+		if (!comment) {
+			throw new NotFoundException(i18n.t('comment.COMMENT_NOT_FOUND'));
+		}
+		if (!comment.isActive || comment.isHidden) {
+			throw new BadRequestException(i18n.t('comment.COMMENT_IS_INACTIVE'));
+		}
+		const userObjectId = new Types.ObjectId(userId);
+		if (comment.likes.some(id => id.equals(userObjectId))) {
+			throw new BadRequestException(i18n.t('comment.ALREADY_LIKED'));
+		}
+		comment.likes.push(userObjectId);
+		comment.likeCount = comment.likes.length;
+		await comment.save();
+		return comment.populate([
+			{ path: 'authorUser', select: 'firstName lastName avatar' },
+			{ path: 'post', select: 'content' },
+			{ path: 'parentComment', select: 'content author' },
+		]);
+	}
+
+	async unlikeComment(commentId: string, userId: string, i18n: I18nContext): Promise<Comment> {
+		const comment = await this.commentModel.findById(commentId);
+		if (!comment) {
+			throw new NotFoundException(i18n.t('comment.COMMENT_NOT_FOUND'));
+		}
+		if (!comment.isActive || comment.isHidden) {
+			throw new BadRequestException(i18n.t('comment.COMMENT_IS_INACTIVE'));
+		}
+		const userObjectId = new Types.ObjectId(userId);
+		const idx = comment.likes.findIndex(id => id.equals(userObjectId));
+		if (idx === -1) {
+			throw new BadRequestException(i18n.t('comment.NOT_LIKED'));
+		}
+		comment.likes.splice(idx, 1);
+		comment.likeCount = comment.likes.length;
+		await comment.save();
+		return comment.populate([
+			{ path: 'authorUser', select: 'firstName lastName avatar' },
+			{ path: 'post', select: 'content' },
+			{ path: 'parentComment', select: 'content author' },
+		]);
 	}
 }

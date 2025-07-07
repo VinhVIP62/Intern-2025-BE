@@ -19,5 +19,11 @@
 	"PARENT_COMMENT_IS_INACTIVE": "Comment cha không còn hoạt động",
 	"COMMENT_IS_INACTIVE": "Comment không còn hoạt động",
 	"NOT_AUTHORIZED_TO_UPDATE": "Bạn không có quyền chỉnh sửa comment này",
-	"NOT_AUTHORIZED_TO_DELETE": "Bạn không có quyền xóa comment này"
+	"NOT_AUTHORIZED_TO_DELETE": "Bạn không có quyền xóa comment này",
+	"LIKE_SUCCESS": "Like comment thành công",
+	"LIKE_FAILED": "Like comment thất bại",
+	"UNLIKE_SUCCESS": "Bỏ like comment thành công",
+	"UNLIKE_FAILED": "Bỏ like comment thất bại",
+	"ALREADY_LIKED": "Bạn đã like comment này rồi",
+	"NOT_LIKED": "Bạn chưa like comment này"
 }
