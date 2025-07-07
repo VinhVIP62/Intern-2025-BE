@@ -567,7 +567,7 @@ export class PostRepositoryImpl implements IPostRepository {
 	async addSharedPost(originalPostId: string, sharedPostId: string): Promise<void> {
 		await this.postModel.findByIdAndUpdate(
 			originalPostId,
-			{ $addToSet: { sharedPosts: sharedPostId } },
+			{ $addToSet: { sharedPosts: sharedPostId }, $inc: { shareCount: 1 } },
 			{ new: true },
 		);
 	}
