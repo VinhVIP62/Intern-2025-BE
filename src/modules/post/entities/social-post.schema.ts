@@ -26,7 +26,7 @@ export class SocialPostSchemaDef implements WithPopulated<Complete<SocialPost>> 
 	})
 	id!: string;
 
-	@Prop({ type: String, enum: Visibility, required: true })
+	@Prop({ type: String, enum: Visibility, required: true, index: true })
 	visibility!: Visibility;
 
 	@Prop({ type: String, index: 'text', required: true })
@@ -42,7 +42,7 @@ export class SocialPostSchemaDef implements WithPopulated<Complete<SocialPost>> 
 	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Event', default: null })
 	embeddedEventId!: string | null;
 
-	@Prop({ type: String, enum: PostType, required: true, default: PostType.FILES, index: true })
+	@Prop({ type: String, enum: PostType, required: true, default: PostType.FILES })
 	postType!: PostType;
 
 	@Prop({ type: mongoose.Schema.Types.ObjectId, index: true, ref: User.name, required: true })
@@ -84,7 +84,7 @@ export class SocialPostSchemaDef implements WithPopulated<Complete<SocialPost>> 
 	@Prop({ type: [mongoose.Schema.Types.ObjectId], default: null, ref: 'Group' })
 	visibleToCommunityId!: string | null;
 
-	@Prop({ type: [mongoose.Schema.Types.ObjectId], default: null, ref: User.name })
+	@Prop({ type: [mongoose.Schema.Types.ObjectId], default: null, ref: User.name, index: true })
 	visibleToUsersIds!: string[];
 
 	@Virtual({
@@ -97,7 +97,7 @@ export class SocialPostSchemaDef implements WithPopulated<Complete<SocialPost>> 
 	})
 	visibleToUsersIdsPopulated!: User[];
 
-	@Prop({ type: [mongoose.Schema.Types.ObjectId], default: null, ref: User.name })
+	@Prop({ type: [mongoose.Schema.Types.ObjectId], default: null, ref: User.name, index: true })
 	invisibleToUsersIds!: string[];
 
 	@Virtual({

@@ -1005,7 +1005,8 @@
 							"deleted",
 							"deletedAt",
 							"deletedBy",
-							"googleLoginInfo"
+							"googleLoginInfo",
+							"deletedByUser"
 						]
 					}
 				]
@@ -1144,8 +1145,7 @@
 						"minimum": 1,
 						"example": 20
 					}
-				},
-				"required": []
+				}
 			},
 			"ResponsePostDto": {
 				"type": "object",
@@ -1269,7 +1269,8 @@
 					"updatedAt",
 					"deleted",
 					"visibleToUsersIds",
-					"invisibleToUsersIds"
+					"invisibleToUsersIds",
+					"deletedByUser"
 				]
 			},
 			"Visibility": {

@@ -61,7 +61,7 @@ export class ResponsePostDto {
 			avatarUrl: user.avatarUrl,
 		};
 	})
-	deletedByUser?: Partial<Pick<User, 'username' | 'avatarUrl'>> | null;
+	deletedByUser!: Partial<Pick<User, 'username' | 'avatarUrl'>> | null;
 
 	// ignore
 	@Expose()

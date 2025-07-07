@@ -1,6 +1,13 @@
 import { OmitType } from '@nestjs/mapped-types';
 import { Expose, Type } from 'class-transformer';
-import { IsEmail, IsOptional, IsPhoneNumber, IsString, IsStrongPassword } from 'class-validator';
+import {
+	IsEmail,
+	IsNotEmpty,
+	IsOptional,
+	IsPhoneNumber,
+	IsString,
+	IsStrongPassword,
+} from 'class-validator';
 import { MemoryStoredFile } from 'nestjs-form-data';
 
 import { SetupUserDto } from './setup-user.dto';
@@ -12,6 +19,7 @@ export class SetupGoogleUserDto extends OmitType(SetupUserDto, ['avatar']) {
 	avatar?: MemoryStoredFile;
 
 	@Expose()
+	@IsNotEmpty()
 	@IsOptional()
 	@IsString()
 	username?: string;

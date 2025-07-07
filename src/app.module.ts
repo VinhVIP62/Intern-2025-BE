@@ -13,11 +13,12 @@ import {
 	MongoExceptionFilter,
 	MongooseExceptionFilter,
 } from '@common/filters';
-import { JwtAuthGuard, RolesGuard } from '@common/guards';
+import { RolesGuard } from '@common/guards';
 import { ResponseTransformInterceptor } from '@common/interceptors';
 
 import { Config, DatabaseConfig } from '@configs';
 
+import { JwtAuthGuard } from '@modules/auth/guards';
 import { LoggerModule } from '@modules/logger';
 import { RouteModule } from '@modules/router';
 
