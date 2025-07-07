@@ -1,7 +1,7 @@
 import { SetMetadata } from '@nestjs/common';
 
 export interface ResponseTransformOptions {
-	/** Specifies if the response is paginated data. Throws an error if response is not of type PaginatedData<T> */
+	/** Specifies if the response is paginated data. Throws an error if response is not of type PaginatedData<T> or CursorPaginatedData<T>*/
 	pagination: boolean;
 }
 

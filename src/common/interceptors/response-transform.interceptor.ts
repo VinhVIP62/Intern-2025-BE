@@ -1,11 +1,18 @@
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { plainToInstance } from 'class-transformer';
 import { validateSync } from 'class-validator';
 import { Request, Response } from 'express';
 import { Observable, catchError, map } from 'rxjs';
 
 import { IS_RES_TRANSFORM_KEY, ResponseTransformOptions } from '@common/decorators';
-import { PaginatedData, PaginatedResponseEntity, ResponseEntity } from '@common/types/data';
+import {
+	CursorPaginatedData,
+	CursorPaginatedResponseEntity,
+	PaginatedData,
+	PaginatedResponseEntity,
+	ResponseEntity,
+} from '@common/types/data';
 
 @Injectable()
 export class ResponseTransformInterceptor implements NestInterceptor {
@@ -24,16 +31,26 @@ export class ResponseTransformInterceptor implements NestInterceptor {
 			[context.getHandler(), context.getClass()],
 		);
 
-		const responseTransformer = <T>(data: T): ResponseEntity<T> | PaginatedResponseEntity<T> => {
+		const responseTransformer = <T>(
+			data: T,
+		): ResponseEntity<T> | PaginatedResponseEntity<T> | CursorPaginatedResponseEntity<T> => {
 			if (transformOptions?.pagination == true) {
-				const err = validateSync(data as PaginatedData<any>);
-				if (err.length) {
-					throw new Error(
-						'The `pagination` options only works with return type of PaginatedData<T>',
-					);
+				// if paginated data
+				const paginatedError = validateSync(plainToInstance(PaginatedData<any>, data));
+				if (!paginatedError.length) {
+					const paginatedData = data as PaginatedData<T>;
+					return new PaginatedResponseEntity<T>(request.url, statusCode, paginatedData);
 				}
-				const paginatedData = data as PaginatedData<T>;
-				return new PaginatedResponseEntity<T>(request.url, statusCode, paginatedData);
+				// if cursor paginated data
+				const cursorPaginatedError = validateSync(plainToInstance(CursorPaginatedData<any>, data));
+				if (!cursorPaginatedError.length) {
+					const cursorPaginatedData = data as CursorPaginatedData<T>;
+					return new CursorPaginatedResponseEntity<T>(request.url, statusCode, cursorPaginatedData);
+				}
+				// if nothing matches
+				throw new Error(
+					'The `pagination` options only works with return type of PaginatedData<T> or CursorPaginatedData<T>',
+				);
 			}
 
 			return new ResponseEntity<T>(request.url, statusCode, data);

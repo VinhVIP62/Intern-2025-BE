@@ -1,12 +1,24 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Req, Version } from '@nestjs/common';
+import {
+	Body,
+	Controller,
+	Delete,
+	Get,
+	Param,
+	Patch,
+	Post,
+	Query,
+	Req,
+	Version,
+} from '@nestjs/common';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 
 import { WithPopulated } from '@common/crud/entities';
-import { AuthenticatedRequest } from '@common/types/data';
+import { ResponseTransform } from '@common/decorators';
+import { AuthenticatedRequest, CursorPaginatedData } from '@common/types/data';
 import { plainToInstanceStrict } from '@common/utils';
 
-import { CreatePostDto, ResponsePostDto, UpdatePostDto } from '../dto';
+import { CreatePostDto, FeedPostDto, ResponsePostDto, UpdatePostDto } from '../dto';
 import { PostService } from '../providers';
 
 @Controller()
@@ -50,6 +62,20 @@ export class PostController {
 	}
 
 	@Version('1')
+	@Get('feed')
+	@ResponseTransform({ pagination: true })
+	async getFeed(
+		@Req() request: AuthenticatedRequest,
+		@Query() query: FeedPostDto,
+	): Promise<CursorPaginatedData<WithPopulated<ResponsePostDto>>> {
+		const feedPosts = await this.postService.getFeeds(request.user.id, query);
+		return new CursorPaginatedData(
+			feedPosts.nextCursor,
+			plainToInstanceStrict(ResponsePostDto, feedPosts.foundPosts),
+		);
+	}
+
+	@Version('1')
 	@Get(':id')
 	async getPost(
 		@Param('id', ParseObjectIdPipe) id: string,
@@ -59,6 +85,5 @@ export class PostController {
 		return plainToInstanceStrict(ResponsePostDto, foundPost);
 	}
 
-	// async getFeed();
 	// async getPosts();
 }

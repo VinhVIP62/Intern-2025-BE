@@ -43,5 +43,9 @@ export class PostService {
 		return foundPost;
 	}
 
-	// async getFeeds() {}
+	async getFeeds(userId: string, options?: { cursor?: string; limit?: number }) {
+		const foundPosts = await this.postRepository.fetchFeed(userId, options);
+		const nextCursor = foundPosts.at(-1)?.id || '';
+		return { foundPosts, nextCursor };
+	}
 }
