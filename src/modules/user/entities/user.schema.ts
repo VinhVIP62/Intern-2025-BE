@@ -52,7 +52,7 @@ export class UserSchemaDef implements WithPopulated<Complete<User>> {
 	})
 	id!: string;
 
-	@Prop({ required: true, unique: true })
+	@Prop({ required: true, unique: true, index: 'text' })
 	username!: string;
 
 	@Prop({
@@ -76,6 +76,7 @@ export class UserSchemaDef implements WithPopulated<Complete<User>> {
 			message: (props: ValidatorProps) => `${props.path} must be updated with a non-empty value`,
 		},
 		default: null,
+		index: 'text',
 	})
 	mail!: string | null;
 
