@@ -44,7 +44,7 @@ export class ResponseProfileDto extends ResponseUserDto {
 			avatarUrl: user.avatarUrl,
 		};
 	})
-	deletedByUser?: Partial<Pick<User, 'username' | 'avatarUrl'>> | null;
+	deletedByUser!: Partial<Pick<User, 'username' | 'avatarUrl'>> | null;
 
 	@Expose()
 	googleLoginInfo!: GoogleLoginInfo | null;
