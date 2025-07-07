@@ -3,12 +3,14 @@ import { CreatePostDto } from '../dto/createPost.dto';
 import { IPostRepository } from '../repositories/post.repository';
 import { UpdatePostDto } from '../dto/updattePost.dto';
 import { IFriendRepository } from '@modules/friend/repositories/friend.repository';
+import { PostMapper } from '../mapper/post.mapper';
 
 @Injectable()
 export class PostService {
 	constructor(
 		private readonly postRepo: IPostRepository,
 		private readonly friendRepo: IFriendRepository,
+		private readonly postMapper: PostMapper,
 	) {}
 
 	async getNewsfeed(userId: string, updatedBefore?: string) {
@@ -56,6 +58,8 @@ export class PostService {
 	}
 
 	async getUserPosts(userId: string) {
-		return await this.postRepo.findByUserId(userId);
+		const posts = await this.postRepo.findByUserId(userId);
+		const response = await Promise.all(posts.map(post => this.postMapper.toResponse(post)));
+		return response;
 	}
 }
