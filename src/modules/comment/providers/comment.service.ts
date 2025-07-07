@@ -86,37 +86,43 @@ export class CommentService {
 			throw new NotFoundException(i18n.t('comment.POST_NOT_FOUND'));
 		}
 
-		const skip = (page - 1) * limit;
-
-		// Get only top-level comments (parentId is null)
-		const [comments, total] = await Promise.all([
-			this.commentModel
-				.find({
-					postId: new Types.ObjectId(postId),
-					parentId: null,
-					isActive: true,
-					isHidden: false,
-				})
-				.sort({ createdAt: -1 })
-				.skip(skip)
-				.limit(limit)
-				.populate([
-					{ path: 'authorUser', select: 'firstName lastName avatar' },
-					{ path: 'replies', match: { isActive: true, isHidden: false } },
-				])
-				.exec(),
-			this.commentModel.countDocuments({
+		// Lấy tất cả comment của post (isActive)
+		const allComments = (await this.commentModel
+			.find({
 				postId: new Types.ObjectId(postId),
-				parentId: null,
 				isActive: true,
-				isHidden: false,
-			}),
-		]);
+			})
+			.sort({ createdAt: -1 })
+			.populate([{ path: 'authorUser', select: 'firstName lastName avatar' }])
+			.lean()) as any[];
 
+		// Xây dựng map commentId -> comment
+		const commentMap = new Map();
+		allComments.forEach(c => {
+			c.replies = [];
+			commentMap.set(String(c._id), c);
+		});
+
+		// Xây dựng cây comment
+		const rootComments: any[] = [];
+		allComments.forEach(c => {
+			if (c.parentId) {
+				const parent = commentMap.get(String(c.parentId));
+				if (parent) {
+					parent.replies.push(c);
+				}
+			} else {
+				rootComments.push(c);
+			}
+		});
+
+		// Phân trang trên root comments
+		const total = rootComments.length;
 		const totalPages = Math.ceil(total / limit);
+		const pagedRootComments = rootComments.slice((page - 1) * limit, page * limit);
 
 		return {
-			comments: comments as any as CommentResponseDto[],
+			comments: pagedRootComments as any as CommentResponseDto[],
 			total,
 			page,
 			limit,
