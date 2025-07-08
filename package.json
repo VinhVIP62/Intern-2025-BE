@@ -8,7 +8,7 @@
 	"scripts": {
 		"build": "nest build --builder swc",
 		"format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-		"start": "nest start",
+		"start": "cross-env NODE_ENV=production node dist/main",
 		"start:dev": "cross-env NODE_ENV=development nest start --watch --builder swc",
 		"start:debug": "cross-env NODE_ENV=development nest start --debug --watch --builder swc",
 		"start:prod": "cross-env NODE_ENV=production node dist/main",
