@@ -1,0 +1,10 @@
+{
+	"LIST_RETRIEVED_SUCCESS": "Lấy danh sách thông báo thành công",
+	"UNREAD_COUNT_SUCCESS": "Lấy số lượng thông báo chưa đọc thành công",
+	"MARK_READ_SUCCESS": "Đánh dấu thông báo đã đọc thành công",
+	"MARK_ALL_READ_SUCCESS": "Đánh dấu tất cả thông báo đã đọc thành công",
+	"MARK_UNREAD_SUCCESS": "Đánh dấu thông báo chưa đọc thành công",
+	"DELETE_SUCCESS": "Xóa thông báo thành công",
+	"CLEAR_ALL_SUCCESS": "Xóa tất cả thông báo thành công",
+	"NOT_FOUND": "Không tìm thấy thông báo"
+}

@@ -1,0 +1,10 @@
+{
+	"LIST_RETRIEVED_SUCCESS": "Notification list retrieved successfully",
+	"UNREAD_COUNT_SUCCESS": "Unread notification count retrieved successfully",
+	"MARK_READ_SUCCESS": "Notification marked as read successfully",
+	"MARK_ALL_READ_SUCCESS": "All notifications marked as read successfully",
+	"MARK_UNREAD_SUCCESS": "Notification marked as unread successfully",
+	"DELETE_SUCCESS": "Notification deleted successfully",
+	"CLEAR_ALL_SUCCESS": "All notifications deleted successfully",
+	"NOT_FOUND": "Notification not found"
+}

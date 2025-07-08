@@ -815,6 +815,190 @@
         ]
       }
     },
+    "/api/v1/notifications": {
+      "get": {
+        "operationId": "NotificationController_getNotifications_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "isRead",
+            "required": false,
+            "in": "query",
+            "description": "Lọc theo đã đọc/chưa đọc (nếu không truyền thì lấy tất cả)",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách thông báo thành công"
+          }
+        },
+        "summary": "Lấy danh sách thông báo của người dùng hiện tại",
+        "tags": [
+          "Notification"
+        ]
+      }
+    },
+    "/api/v1/notifications/unread-count": {
+      "get": {
+        "operationId": "NotificationController_getUnreadCount_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Trang thông báo chưa đọc muốn lấy (không bắt buộc)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng thông báo chưa đọc muốn lấy (không bắt buộc)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy số lượng và danh sách thông báo chưa đọc thành công"
+          }
+        },
+        "summary": "Lấy số lượng và danh sách thông báo chưa đọc",
+        "tags": [
+          "Notification"
+        ]
+      }
+    },
+    "/api/v1/notifications/{notificationId}/read": {
+      "put": {
+        "operationId": "NotificationController_markAsRead_v1",
+        "parameters": [
+          {
+            "name": "notificationId",
+            "required": true,
+            "in": "path",
+            "description": "ID của thông báo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Đánh dấu thông báo đã đọc thành công"
+          }
+        },
+        "summary": "Đánh dấu thông báo đã đọc",
+        "tags": [
+          "Notification"
+        ]
+      }
+    },
+    "/api/v1/notifications/read-all": {
+      "put": {
+        "operationId": "NotificationController_markAllAsRead_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Đánh dấu tất cả thông báo đã đọc thành công"
+          }
+        },
+        "summary": "Đánh dấu tất cả thông báo đã đọc",
+        "tags": [
+          "Notification"
+        ]
+      }
+    },
+    "/api/v1/notifications/{notificationId}/unread": {
+      "put": {
+        "operationId": "NotificationController_markAsUnread_v1",
+        "parameters": [
+          {
+            "name": "notificationId",
+            "required": true,
+            "in": "path",
+            "description": "ID của thông báo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Đánh dấu thông báo là chưa đọc thành công"
+          }
+        },
+        "summary": "Đánh dấu thông báo là chưa đọc",
+        "tags": [
+          "Notification"
+        ]
+      }
+    },
+    "/api/v1/notifications/clear-all": {
+      "delete": {
+        "operationId": "NotificationController_clearAll_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Xóa tất cả thông báo thành công"
+          }
+        },
+        "summary": "Xóa (ẩn) tất cả thông báo của user",
+        "tags": [
+          "Notification"
+        ]
+      }
+    },
+    "/api/v1/notifications/{notificationId}": {
+      "delete": {
+        "operationId": "NotificationController_deleteNotification_v1",
+        "parameters": [
+          {
+            "name": "notificationId",
+            "required": true,
+            "in": "path",
+            "description": "ID của thông báo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Xóa thông báo thành công"
+          }
+        },
+        "summary": "Xóa (ẩn) một thông báo cụ thể",
+        "tags": [
+          "Notification"
+        ]
+      }
+    },
     "/api/v1/posts": {
       "post": {
         "operationId": "PostController_createPost_v1",
