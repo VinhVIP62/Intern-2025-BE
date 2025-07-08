@@ -215,6 +215,25 @@ export class PostService {
 			);
 		}
 
+		// Gửi notification cho các user được tag
+		if (createPostDto.taggedUsers && createPostDto.taggedUsers.length > 0) {
+			await Promise.all(
+				createPostDto.taggedUsers
+					.filter(taggedUserId => taggedUserId !== authorId) // Không gửi notification cho chính mình
+					.map(taggedUserId =>
+						this.notificationService.createNotification({
+							recipient: taggedUserId,
+							sender: authorId,
+							type: NotificationType.MENTION,
+							title: 'You have been tagged in a post',
+							message: 'You have been tagged in a post',
+							referenceId: (post as any)._id.toString(),
+							referenceModel: ReferenceModel.POST,
+						}),
+					),
+			);
+		}
+
 		return post as PostResponseDto;
 	}
 
@@ -276,6 +295,36 @@ export class PostService {
 
 		try {
 			const post = await this.postRepository.update(postId, updateData, images, video);
+
+			// Gửi notification cho các user mới được tag (nếu có cập nhật taggedUsers)
+			if (updatePostDto.taggedUsers !== undefined) {
+				// Lấy danh sách taggedUsers cũ để so sánh
+				const postBefore = await this.postRepository.findById(postId);
+				const oldTagged = (postBefore.taggedUsers || []).map(id => id.toString());
+
+				// Tìm những user mới được tag
+				const newTagged = updatePostDto.taggedUsers.filter(
+					id => !oldTagged.includes(id) && id !== userId,
+				);
+
+				// Gửi notification cho các user mới được tag
+				if (newTagged.length > 0) {
+					await Promise.all(
+						newTagged.map(taggedUserId =>
+							this.notificationService.createNotification({
+								recipient: taggedUserId,
+								sender: userId,
+								type: NotificationType.MENTION,
+								title: 'You have been tagged in a post',
+								message: 'You have been tagged in a post',
+								referenceId: postId,
+								referenceModel: ReferenceModel.POST,
+							}),
+						),
+					);
+				}
+			}
+
 			return post as PostResponseDto;
 		} catch (error) {
 			if (error.message === 'Post not found') {
