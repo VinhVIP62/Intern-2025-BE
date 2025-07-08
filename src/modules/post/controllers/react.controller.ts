@@ -1,4 +1,4 @@
-import { Controller, Post, Param, Req, Body } from '@nestjs/common';
+import { Controller, Post, Param, Req, Body, Put } from '@nestjs/common';
 import { ReactService } from '../providers/react.post.service';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { Request } from 'express';
@@ -21,6 +21,21 @@ export class ReactController {
 	): Promise<ResponseEntity<any>> {
 		const user = req.user as { id: string };
 		const res = await this.reactService.reactPost(user.id, postId, body.type);
+		return {
+			success: true,
+			data: res,
+		};
+	}
+
+	@Put('update/:postId')
+	@Response()
+	async update(
+		@Param('postId') postId: string,
+		@Body() body: ReactDto,
+		@Req() req: Request,
+	): Promise<ResponseEntity<any>> {
+		const user = req.user as { id: string };
+		const res = await this.reactService.updateReact(user.id, postId, body.type);
 		return {
 			success: true,
 			data: res,

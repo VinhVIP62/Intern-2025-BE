@@ -24,4 +24,16 @@ export class ReactRepositoryImpl implements IReactRepository {
 		const existed = await this.reactModel.exists({ userId, postId });
 		return !!existed;
 	}
+
+	async findByUserIdAndPostId(userId: string, postId: string): Promise<React | null> {
+		return this.reactModel.findOne({ userId: userId, postId: postId });
+	}
+
+	async updateReact(userId: string, postId: string, type: ReactType): Promise<React | null> {
+		return this.reactModel.findOneAndUpdate(
+			{ userId: userId, postId: postId },
+			{ type: type },
+			{ new: true },
+		);
+	}
 }

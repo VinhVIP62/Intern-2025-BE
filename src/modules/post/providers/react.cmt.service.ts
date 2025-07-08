@@ -23,6 +23,22 @@ export class ReactCmtService {
 		return { message: 'react.SUCCESS' };
 	}
 
+	async updateReact(userId: string, cmtId: string, type: ReactType) {
+		const already = await this.reactRepo.isReacted(userId, cmtId);
+		if (!already) throw new ConflictException('react.FAILED');
+		const existedCmt = await this.commentRepo.findById(cmtId);
+		if (!existedCmt) {
+			throw new NotFoundException('cmt.NOT_FOUND');
+		}
+		const reactedCmt = await this.reactRepo.findByUserIdAndCmtId(userId, cmtId);
+		if (!reactedCmt) throw new NotFoundException('common.error');
+		const oldType = reactedCmt.type;
+		await this.reactRepo.updateReact(userId, cmtId, type);
+		await this.commentRepo.updateReactCount(cmtId, type, 1);
+		await this.commentRepo.updateReactCount(cmtId, oldType, -1);
+		return { message: 'react.SUCCESS' };
+	}
+
 	async unReactCmt(userId: string, cmtId: string) {
 		const result = await this.reactRepo.unReactComment(userId, cmtId);
 		if (!result) {
