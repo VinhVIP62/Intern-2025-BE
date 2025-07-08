@@ -19,6 +19,8 @@ export class PostMapper {
 			reactsCount: post.reactsCount,
 			commentsCount: post.commentsCount,
 			taggedUserIds: post.taggedUserIds,
+			createdAt: post.createdAt,
+			updatedAt: post.updatedAt,
 		};
 	}
 }

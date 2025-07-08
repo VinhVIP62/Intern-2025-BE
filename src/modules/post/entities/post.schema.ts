@@ -44,6 +44,11 @@ export class Post {
 
 	@Prop({ default: false })
 	isDeleted: boolean;
+
+	@Prop()
+	createdAt: Date;
+	@Prop()
+	updatedAt: Date;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);

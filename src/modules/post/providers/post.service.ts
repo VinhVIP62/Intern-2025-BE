@@ -22,7 +22,8 @@ export class PostService {
 			updatedBefore,
 		);
 		if (feedFromFriend && feedFromFriend.length > 0) {
-			return feedFromFriend;
+			const response = await Promise.all(feedFromFriend.map(f => this.postMapper.toResponse(f)));
+			return response;
 		}
 		const feedFromOthers = await this.postRepo.findByExcludingUserIds_InfiniteScroll(
 			10,
@@ -30,19 +31,22 @@ export class PostService {
 			updatedBefore,
 		);
 		if (feedFromOthers && feedFromOthers.length > 0) {
-			return feedFromOthers;
+			const response = await Promise.all(feedFromOthers.map(f => this.postMapper.toResponse(f)));
+			return response;
 		}
 		return { message: 'post.NO_MORE_POSTS' };
 	}
 
 	async createPost(userId: string, dto: CreatePostDto) {
-		return await this.postRepo.create({
+		const newPost = await this.postRepo.create({
 			userId: userId,
 			title: dto.title,
 			content: dto.content,
 			mediaUrls: dto.mediaUrls || [],
 			taggedUserIds: dto.taggedUserIds || [],
 		});
+		const response = await this.postMapper.toResponse(newPost);
+		return response;
 	}
 
 	async updatePost(userId: string, postId: string, body: UpdatePostDto) {
@@ -54,7 +58,8 @@ export class PostService {
 		if (userId !== owner) {
 			throw new ForbiddenException('post.FORBIDDEN');
 		}
-		return await this.postRepo.updatePost(postId, body);
+		const updatedPost = await this.postRepo.updatePost(postId, body);
+		return updatedPost;
 	}
 
 	async getUserPosts(userId: string) {
