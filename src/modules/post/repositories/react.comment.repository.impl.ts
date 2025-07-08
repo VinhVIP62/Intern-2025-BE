@@ -21,4 +21,14 @@ export class ReactCommentRepositoryImpl implements IReactCommentRepository {
 		const existed = await this.reactcmtModel.exists({ userId, commentId: cmtId });
 		return !!existed;
 	}
+	async updateReact(userId: string, cmtId: string, type: ReactType) {
+		return this.reactcmtModel.findOneAndUpdate(
+			{ userId: userId, commentId: cmtId },
+			{ type: type },
+			{ new: true },
+		);
+	}
+	async findByUserIdAndCmtId(userId: string, cmtId: string): Promise<ReactComment | null> {
+		return this.reactcmtModel.findOne({ userId: userId, commentId: cmtId });
+	}
 }

@@ -6,5 +6,7 @@ import { ReactType } from '@common/enum/react.type.enum';
 export abstract class IReactRepository {
 	abstract reactPost(userId: string, postId: string, type: ReactType): Promise<React>;
 	abstract unReactPost(userId: string, postId: string): Promise<React | null>;
+	abstract updateReact(userId: string, postId: string, type: ReactType): Promise<React | null>;
+	abstract findByUserIdAndPostId(userId: string, postId: string): Promise<React | null>;
 	abstract isReacted(userId: string, postId: string): Promise<boolean>;
 }
