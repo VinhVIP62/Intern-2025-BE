@@ -3,6 +3,7 @@ import { ICommentRepository } from '../repositories/comment.repository';
 import { IPostRepository } from '../repositories/post.repository';
 import { CreateCommentDto } from '../dto/createComment.dto';
 import { CmtMapper } from '../mapper/cmt.mapper';
+import { Comment } from '../entities/comment.schema';
 
 @Injectable()
 export class CommentService {
@@ -17,20 +18,21 @@ export class CommentService {
 		if (!post) throw new NotFoundException('post.NOT_FOUND');
 
 		const parentId = body.parentId ? body.parentId : null;
+		let cmt: Comment;
 		if (parentId) {
 			const isExistParentCmt = await this.commentRepo.existParent(parentId);
 			console.log(isExistParentCmt);
 			if (!isExistParentCmt) {
 				throw new NotFoundException('post.NOT_FOUND');
 			}
-			await this.commentRepo.create({
+			cmt = await this.commentRepo.create({
 				userId,
 				postId: body.postId,
 				parentId: body.parentId,
 				content: body.content,
 			});
 		} else {
-			await this.commentRepo.create({
+			cmt = await this.commentRepo.create({
 				userId,
 				postId: body.postId,
 				content: body.content,
@@ -40,7 +42,7 @@ export class CommentService {
 			commentsCount: (post.commentsCount ?? 0) + 1,
 		});
 
-		return { message: 'Create successfully' };
+		return this.cmtMapper.toRespose(cmt);
 	}
 
 	async findByPost(postId: string) {
