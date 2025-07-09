@@ -14,8 +14,9 @@ import { JwtAccessConfig, JwtRefreshConfig } from '@configs/index';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh-strategy';
 import googleOauthConfig from '@configs/google-oauth.config';
 import { GoogleStrategy } from './strategies/google.strategy';
-import { VerificationModule } from '@modules/verification/verification.module';
-
+import { VerificationModule } from 'src/shared/verification/verification.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { Token, TokenSchema } from './entities/token.schema';
 @Global()
 @Module({
 	imports: [
@@ -23,6 +24,7 @@ import { VerificationModule } from '@modules/verification/verification.module';
 		UserModule,
 		VerificationModule,
 		ConfigModule.forFeature(googleOauthConfig),
+		MongooseModule.forFeature([{ name: Token.name, schema: TokenSchema }]),
 	],
 	controllers: [AuthController],
 	providers: [
@@ -33,6 +35,7 @@ import { VerificationModule } from '@modules/verification/verification.module';
 		TokenService,
 		AuthService,
 		GoogleStrategy,
+
 		{
 			inject: [ConfigService],
 			provide: 'JWT_ACCESS_TOKEN',

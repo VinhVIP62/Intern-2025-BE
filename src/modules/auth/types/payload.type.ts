@@ -6,3 +6,11 @@ export type Payload = {
 		roles: string[];
 	};
 };
+export type PasswordChangePayload = {
+	sub: {
+		userId: string;
+		account: string; // email or phone
+	};
+	purpose: 'password-change';
+	otpVerified: true; // confirms OTP was validated
+};

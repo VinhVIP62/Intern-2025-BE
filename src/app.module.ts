@@ -34,7 +34,6 @@ import { ResponsePagingInterceptor } from '@common/interceptors/responsePaging.i
 			},
 			resolvers: [{ use: QueryResolver, options: ['lang'] }, AcceptLanguageResolver],
 		}),
-
 		LoggerModule,
 		RouteModule,
 		ThrottlerModule.forRootAsync({

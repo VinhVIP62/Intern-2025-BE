@@ -1,11 +1,14 @@
 import { Role } from '@common/enum/roles.enum';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
-	IsArray,
-	IsEnum,
+	IsBoolean,
+	IsDateString,
+	IsIn,
 	IsNotEmpty,
+	IsString,
 	IsOptional,
 	IsStrongPassword,
+	IsUrl,
 	MinLength,
 } from 'class-validator';
 
@@ -17,6 +20,20 @@ export class CreateUserDto {
 	@IsStrongPassword()
 	@MinLength(8)
 	password: string;
+
+	@ApiPropertyOptional({
+		description: 'Gender of the user',
+		enum: ['male', 'female'],
+		example: 'male',
+	})
+	@IsOptional()
+	@IsIn(['male', 'female'], { message: 'Gender must be either male or female' })
+	gender: string;
+
+	@ApiProperty({ description: 'birthday user from external system', example: '2000-01-01' })
+	@IsNotEmpty({ message: 'Birthday is required' })
+	@IsDateString()
+	birthday: Date;
 }
 
 export class CreateUserByExternalDto {
@@ -33,11 +50,29 @@ export class CreateUserByExternalDto {
 		isArray: true,
 		enum: Role,
 	})
-	@IsArray()
-	@IsEnum(Role, { each: true })
-	@IsOptional()
-	roles?: Role[];
 	@ApiProperty({ description: 'email user from external system', example: '1234567' })
 	@IsNotEmpty({ message: 'Email is required' })
 	email: string;
+
+	@ApiProperty({ description: 'full name user from external system', example: 'John Doe' })
+	@IsNotEmpty({ message: 'Full name is required' })
+	fullName: string;
+
+	@ApiProperty({ description: 'User avatar url' })
+	@IsOptional()
+	@IsUrl()
+	avatar?: string;
+
+	@ApiProperty({ description: 'Verified user', default: true })
+	@IsBoolean()
+	verified: true;
+
+	@ApiPropertyOptional({
+		description: 'Gender of the user',
+		enum: ['male', 'female'],
+		example: 'male',
+	})
+	@IsOptional()
+	@IsIn(['male', 'female'], { message: 'Gender must be either male or female' })
+	gender: string;
 }

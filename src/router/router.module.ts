@@ -5,10 +5,11 @@ import {
 	AuthModule,
 	AdminModule,
 	EventModule,
-	NotificationModule,
+	FriendModule,
 	PostModule,
 	UserModule,
 } from '../modules';
+import { SearchModule } from '../shared/search/search.module';
 
 @Module({
 	imports: [
@@ -22,18 +23,20 @@ import {
 				children: [
 					{ path: 'auth', module: AuthModule },
 					{ path: 'events', module: EventModule },
-					{ path: 'notifications', module: NotificationModule },
+					{ path: 'friends', module: FriendModule },
 					{ path: 'posts', module: PostModule },
 					{ path: 'users', module: UserModule },
+					{ path: 'search', module: SearchModule },
 				],
 			},
 		]),
 		AuthModule,
 		AdminModule,
 		EventModule,
-		NotificationModule,
+		FriendModule,
 		PostModule,
 		UserModule,
+		SearchModule,
 	],
 })
 export class RouteModule {}

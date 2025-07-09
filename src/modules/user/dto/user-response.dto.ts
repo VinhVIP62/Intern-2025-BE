@@ -6,17 +6,41 @@ export class ResponseUserDto {
 	@Expose()
 	_id: string;
 
-	@ApiProperty({ description: 'Email đăng nhập' })
+	@ApiProperty({ description: 'Danh sách email', type: [String], required: false })
 	@Expose()
-	email: string;
+	emails?: string[];
 
-	@ApiProperty({ description: 'Số điện thoại' })
+	@ApiProperty({ description: 'Danh sách số điện thoại', type: [String], required: false })
 	@Expose()
-	phoneNumber: string;
+	phoneNumbers?: string[];
 
-	@ApiProperty({ description: 'Mật khẩu' })
+	@ApiProperty({ description: 'Họ và tên', required: false })
+	@Expose()
+	fullName?: string;
+
+	@ApiProperty({ description: 'Ngày sinh', type: String, format: 'date', required: false })
+	@Expose()
+	birthday?: Date;
+
+	@ApiProperty({ description: 'Giới tính', enum: ['male', 'female'], required: true })
+	@Expose()
+	gender: string;
+
+	@ApiProperty({ description: 'Avatar URL', required: false })
+	@Expose()
+	avatar?: string | null;
+
+	@ApiProperty({ description: 'Mật khẩu - KHÔNG BAO GIỜ TRẢ VỀ' })
 	@Exclude()
-	password: string;
+	password?: string;
+
+	@ApiProperty({ description: 'External ID (Google, Facebook...)', required: false })
+	@Exclude()
+	externalId?: string;
+
+	@ApiProperty({ description: 'External type (google, facebook...)', required: false })
+	@Exclude()
+	externalType?: string;
 
 	@ApiProperty({
 		description: 'Các role của người dùng',
@@ -33,4 +57,12 @@ export class ResponseUserDto {
 	@ApiProperty({ description: 'Ngày cập nhật', type: String, format: 'date-time', required: false })
 	@Expose()
 	updatedAt?: Date;
+
+	@ApiProperty({ description: 'Background URL', required: true })
+	@Expose()
+	background?: string | null;
+
+	@ApiProperty({ description: 'Mô tả', required: true })
+	@Expose()
+	description?: string | null;
 }

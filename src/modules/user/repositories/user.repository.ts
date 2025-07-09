@@ -10,4 +10,13 @@ export abstract class IUserRepository {
 	abstract findOneById(id: string): Promise<User | null>;
 	abstract findByEmail(email: string): Promise<User | null>;
 	abstract findByEmailOrNumber(emailOrNumber: string): Promise<User | null>;
+	abstract addEmail(userId: string, email: string): Promise<User>;
+	abstract removeEmail(userId: string, email: string, password: string): Promise<User>;
+	abstract addPhoneNumber(userId: string, phoneNumber: string): Promise<User>;
+	abstract removePhoneNumber(userId: string, phoneNumber: string): Promise<User>;
+	abstract updatePassword(userId: string, password: string);
+	abstract getUserById(userId: string): Promise<User | null>;
+	abstract getAllUsers(): Promise<User[]>;
+	abstract checkPassword(userId: string, password: string): Promise<boolean>;
+	abstract search(query: any): Promise<User[]>;
 }

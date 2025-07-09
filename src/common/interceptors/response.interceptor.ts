@@ -19,11 +19,41 @@ export class ResponseInterceptor<T> implements NestInterceptor<T, any> {
 		});
 
 		return next.handle().pipe(
-			map(data => ({
-				statusCode,
-				message,
-				data: data.data || null,
-			})),
+			map(data => {
+				// If the response is already formatted by exception filters
+				// (has success field and statusCode), don't transform it
+				if (data && typeof data === 'object' && 'success' in data && 'statusCode' in data) {
+					return data;
+				}
+
+				// If data already has expected controller structure with success and data fields
+				if (data && typeof data === 'object' && 'success' in data && 'data' in data) {
+					return {
+						success: data.success,
+						statusCode,
+						message: data.message || message,
+						data: data.data,
+					};
+				}
+
+				// If data has data field but no success field (some controllers)
+				if (data && typeof data === 'object' && 'data' in data && !('success' in data)) {
+					return {
+						success: true,
+						statusCode,
+						message: data.message || message,
+						data: data.data,
+					};
+				}
+
+				// For raw data responses, wrap them
+				return {
+					success: true,
+					statusCode,
+					message,
+					data: data,
+				};
+			}),
 		);
 	}
 }

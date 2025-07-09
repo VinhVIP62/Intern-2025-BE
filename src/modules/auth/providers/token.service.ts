@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '@modules/user/providers/user.service';
-import { Payload, Tokens } from '../types';
+import { Payload, Tokens, PasswordChangePayload } from '../types';
 
 @Injectable()
 export class TokenService {
@@ -20,7 +20,7 @@ export class TokenService {
 
 		return {
 			accessToken,
-			...(genRefresh && { refreshToken }),
+			refreshToken,
 		};
 	}
 
@@ -35,6 +35,36 @@ export class TokenService {
 
 	async validateRefreshToken(token: string): Promise<Payload> {
 		const payload = await this.RefreshTokenService.verifyAsync<Payload>(token);
+		return payload;
+	}
+	// Add to your existing TokenService
+	async generatePasswordChangeToken(userId: string, account: string): Promise<string> {
+		const payload: PasswordChangePayload = {
+			sub: {
+				userId,
+				account,
+			},
+			purpose: 'password-change',
+			otpVerified: true,
+		};
+
+		// Use existing JWT service with shorter expiry
+		return this.AccessTokenService.signAsync(payload, { expiresIn: '10m' });
+	}
+
+	async validatePasswordChangeToken(token: string): Promise<PasswordChangePayload> {
+		const payload = await this.AccessTokenService.verifyAsync<PasswordChangePayload>(token);
+
+		// Validate token purpose
+		if (payload.purpose !== 'password-change') {
+			throw new Error('Invalid token purpose');
+		}
+
+		if (!payload.otpVerified) {
+			throw new Error('OTP not verified');
+		}
+		console.log(payload);
+
 		return payload;
 	}
 }
