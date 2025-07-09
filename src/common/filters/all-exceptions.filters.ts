@@ -16,16 +16,13 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 		const res = ctx.getResponse<Response>();
 		const req = ctx.getRequest<Request>();
 
-		const resolved = this.resolve(exception, req);
-
 		this.logger.error(
 			`Exception Caught - ${req.method} ${req.url}`,
 			exception instanceof Error ? exception.stack : String(exception),
 		);
 
-		return res.status(resolved.status).json({
-			...resolved.response,
-		});
+		const resolved = this.resolve(exception, req);
+		return res.status(resolved.status).json(resolved.response);
 	}
 
 	private resolve(
@@ -35,10 +32,16 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 		status: HttpStatus;
 		response: ResponseEntity<null>;
 	} {
-		const translatedMessage = this.i18n.translate('common.ERROR_MESSAGE', {
-			lang: req.headers['accept-language'] || 'en',
-			args: { message: String(exception) },
-		});
+		const lang = req.headers['accept-language'] || 'vi';
+
+		// Nếu là Error, dùng message, còn lại fallback
+		const rawMessage =
+			exception instanceof Error ? exception.message
+			: typeof exception === 'string' ? exception
+			: 'common.internalServerError';
+
+		// Giả định messageKey đã được định nghĩa trong i18n (ví dụ: common.internalServerError)
+		const translatedMessage: string = this.i18n.translate(`exception.${rawMessage}`, { lang });
 
 		return {
 			status: HttpStatus.INTERNAL_SERVER_ERROR,

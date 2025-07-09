@@ -1,38 +1,122 @@
 import { Roles } from '@common/decorators';
 import { Role } from '@common/enum';
-import { RolesGuard } from '@common/guards';
-import { Controller, Get, UseGuards, Version } from '@nestjs/common';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import {
+	Body,
+	ClassSerializerInterceptor,
+	Controller,
+	Get,
+	Param,
+	Patch,
+	Req,
+	UseInterceptors,
+	Version,
+} from '@nestjs/common';
+import { UserService } from '../providers/user.service';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ResponseUserDto, UpdateUserDto } from '../dto';
+import { Response } from '@common/decorators/response.decorator';
+import { UpdateAvatarDto } from '../dto/update-avatar.dto';
+import { ChangePasswordDto } from '../dto/change-password.dto';
+import { Request } from 'express';
 
-@Controller('user')
+@ApiTags('Users')
+@Controller('users')
 export class UserController {
-	// New protected routes to test RBAC
-	// These routes' return values do not follow the ResponseEntity interface
-	@UseGuards(RolesGuard)
-	@Roles(Role.ADMIN)
-	@Version('1')
-	@Get('admin-only')
-	@ApiOperation({ summary: 'Chỉ Admin được phép truy cập' })
-	@ApiResponse({ status: 200, description: 'Truy cập thành công với quyền admin' })
-	adminOnlyRoute() {
-		return { message: 'This route is accessible to admin' };
-	}
-
-	@UseGuards(RolesGuard)
-	@Roles(Role.MODERATOR, Role.ADMIN)
-	@Version('1')
-	@Get('moderator-and-admin')
-	@ApiOperation({ summary: 'Moderator hoặc Admin được phép truy cập' })
-	@ApiResponse({ status: 200, description: 'Truy cập thành công với quyền moderator hoặc admin' })
-	moderatorAndAdminRoute() {
-		return { message: 'This route is accessible to moderators and admin' };
-	}
+	constructor(private readonly userService: UserService) {}
 
 	@Version('1')
-	@Get('all-users')
-	@ApiOperation({ summary: 'Tất cả user có thể truy cập' })
-	@ApiResponse({ status: 200, description: 'Truy cập thành công với bất kỳ user nào' })
-	allUsersRoute() {
-		return { message: 'This route is accessible to all authenticated users' };
+	@Patch('me')
+	@Roles(Role.USER, Role.MODERATOR, Role.ADMIN)
+	@Response('response.user.update.success')
+	@ApiBearerAuth()
+	@UseInterceptors(ClassSerializerInterceptor)
+	@ApiOperation({
+		summary: 'Cập nhật thông tin cá nhân người dùng hiện tại',
+		description:
+			'Cập nhật thông tin cá nhân của người dùng đang đăng nhập dựa vào token JWT. Không cần truyền ID.',
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Cập nhật thông tin thành công',
+	})
+	async updateProfile(@Req() req: Request, @Body() dto: UpdateUserDto) {
+		const updatedUser = await this.userService.updateProfile(req.user!.id, dto);
+		return updatedUser;
+	}
+
+	@Version('1')
+	@Get('me')
+	@Response('response.user.get.success')
+	@ApiBearerAuth()
+	@UseInterceptors(ClassSerializerInterceptor)
+	@ApiOperation({
+		summary: 'Lấy thông tin cá nhân của người dùng hiện tại',
+		description:
+			'Lấy thông tin cá nhân của người dùng đang đăng nhập dựa vào token JWT. Không cần truyền ID.',
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Lấy thông tin cá nhân thành công',
+		type: [ResponseUserDto],
+	})
+	async getProfile(@Req() req: Request) {
+		const user = await this.userService.getProfile(req.user!.id, req.user!.id);
+		return user;
+	}
+
+	@Version('1')
+	@Patch('profile/avatar')
+	@Response('response.user.update.success')
+	@ApiBearerAuth()
+	@UseInterceptors(ClassSerializerInterceptor)
+	@ApiOperation({
+		summary: 'Cập nhật avatar cá nhân người dùng hiện tại',
+		description:
+			'Cập nhật avatar cá nhân của người dùng đang đăng nhập dựa vào token JWT. Không cần truyền ID.',
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Cập nhật thông tin thành công',
+	})
+	async updateAvatar(@Req() req: Request, @Body() body: UpdateAvatarDto) {
+		const updatedUser = await this.userService.updateAvatar(req.user!.id, body.avatarUrl);
+		return updatedUser;
+	}
+
+	@Version('1')
+	@Patch('change-password')
+	@Roles(Role.USER, Role.MODERATOR, Role.ADMIN)
+	@Response('response.user.changePassword.success')
+	@ApiBearerAuth()
+	@ApiOperation({
+		summary: 'Đổi mật khẩu người dùng hiện tại',
+		description: 'Đổi mật khẩu dựa trên mật khẩu hiện tại của người dùng đang đăng nhập.',
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Đổi mật khẩu thành công',
+	})
+	async changePassword(@Req() req: Request, @Body() dto: ChangePasswordDto) {
+		await this.userService.changePassword(req.user!.id, dto);
+		return;
+	}
+
+	@Version('1')
+	@Get(':id')
+	@Response('response.user.get.success')
+	@ApiBearerAuth()
+	@UseInterceptors(ClassSerializerInterceptor)
+	@ApiOperation({
+		summary: 'Lấy thông tin người dùng khác',
+		description: 'Lấy thông tin người dùng theo ID.',
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Lấy thông tin người dùng thành công',
+		type: [ResponseUserDto],
+	})
+	async getUserById(@Req() req: Request, @Param('id') id: string) {
+		const user = await this.userService.getProfile(id, req.user!.id);
+		return user;
 	}
 }

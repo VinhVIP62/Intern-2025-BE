@@ -1,0 +1,63 @@
+{
+	"auth": {
+		"emailAlreadyExists": "Email đã tồn tại trong hệ thống",
+		"emailNotFound": "Email không tồn tại trong hệ thống",
+		"invalidCredentials": "Tài khoản hoặc mật khẩu không chính xác",
+		"unauthorized": "Bạn chưa đăng nhập hoặc phiên đăng nhập hết hạn",
+		"emailNotVerified": "Email của bạn chưa được xác minh",
+		"invalidOtp": "OTP của bạn không đúng hoặc đã hết hạn",
+		"googlePayloadInvalid": "Không thể xác thực thông tin từ Google. Vui lòng thử lại sau.",
+		"userCreationFailed": "Không thể tạo người dùng. Vui lòng thử lại sau.",
+		"accessDenied": "Bạn không có quyền truy cập. Vai trò được phép: {{roles}}",
+		"invalidOldPassword": "Mật khẩu cũ không chính xác"
+	},
+	"user": {
+		"notFound": "Người dùng không tồn tại",
+		"forbidden": "Bạn không có quyền truy cập người dùng này",
+		"invalidRole": "Vai trò người dùng không hợp lệ"
+	},
+	"post": {
+		"notFound": "Bài viết không tồn tại",
+		"forbidden": "Bạn không có quyền truy xuất bài viết này"
+	},
+	"event": {
+		"notFound": "Sự kiện không tồn tại",
+		"forbidden": "Bạn không có quyền thực hiện hành động này",
+		"full": "Sự kiện đã đầy người tham gia",
+		"alreadyJoined": "Bạn đã tham gia sự kiện này rồi",
+		"alreadyRequested": "Bạn đã gửi yêu cầu tham gia trước đó.",
+		"cannotJoinOwnEvent": "Bạn không thể tham gia sự kiện do chính bạn tạo.",
+		"requestNotFound": "Không tìm thấy yêu cầu tham gia sự kiện",
+		"alreadyResponded": "Yêu cầu này đã được phản hồi trước đó"
+	},
+	"friend": {
+		"alreadyFriends": "Hai người đã là bạn bè",
+		"notFound": "Quan hệ bạn bè không tồn tại"
+	},
+	"friendRequest": {
+		"alreadySent": "Yêu cầu kết bạn đã được gửi trước đó",
+		"notFound": "Yêu cầu kết bạn không tồn tại"
+	},
+	"comment": {
+		"notFound": "Bình luận không tồn tại"
+	},
+	"like": {
+		"alreadyLiked": "Bạn đã thích bài viết này"
+	},
+	"notification": {
+		"notFound": "Thông báo không tồn tại"
+	},
+	"file": {
+		"googleError": "Xoá file thất bại: {{message}}",
+		"unknown": "Xoá file thất bại do lỗi không xác định"
+	},
+	"common": {
+		"badRequest": "Yêu cầu không hợp lệ",
+		"internalServerError": "Lỗi hệ thống, vui lòng thử lại sau",
+		"notFound": "Tài nguyên không tồn tại",
+		"forbidden": "Bạn không có quyền truy cập",
+		"unauthorized": "Bạn chưa đăng nhập hoặc phiên đăng nhập hết hạn",
+		"conflict": "Dữ liệu đã tồn tại hoặc có xung đột",
+		"tooManyRequests": "Bạn đã gửi quá nhiều yêu cầu. Vui lòng thử lại sau."
+	}
+}

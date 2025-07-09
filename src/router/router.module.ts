@@ -3,10 +3,12 @@ import { RouterModule } from '@nestjs/core';
 
 import {
 	AuthModule,
-	AdminModule,
 	EventModule,
+	FileModule,
+	FriendModule,
 	NotificationModule,
 	PostModule,
+	SearchModule,
 	UserModule,
 } from '../modules';
 
@@ -14,25 +16,26 @@ import {
 	imports: [
 		RouterModule.register([
 			{
-				path: 'admin',
-				children: [{ path: 'admin', module: AdminModule }],
-			},
-			{
-				path: 'client',
+				path: '',
 				children: [
-					{ path: 'auth', module: AuthModule },
-					{ path: 'events', module: EventModule },
-					{ path: 'notifications', module: NotificationModule },
-					{ path: 'posts', module: PostModule },
-					{ path: 'users', module: UserModule },
+					{ path: '', module: AuthModule },
+					{ path: '', module: EventModule },
+					{ path: '', module: FileModule },
+					{ path: '', module: FriendModule },
+					{ path: '', module: NotificationModule },
+					{ path: '', module: PostModule },
+					{ path: '', module: SearchModule },
+					{ path: '', module: UserModule },
 				],
 			},
 		]),
 		AuthModule,
-		AdminModule,
 		EventModule,
+		FileModule,
+		FriendModule,
 		NotificationModule,
 		PostModule,
+		SearchModule,
 		UserModule,
 	],
 })

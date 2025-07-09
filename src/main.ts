@@ -1,13 +1,15 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
-import { IEnvVars } from '@configs/config';
+import { IEnvVars } from '@configs/env.config';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { VersioningType } from '@nestjs/common';
-import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
+// import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
 import { AppLoggerService } from '@common/logger/logger.service';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as fs from 'fs';
+import { I18nValidationPipe } from 'nestjs-i18n';
+import { OptionalJwtMiddleware } from '@common/middleware/optional-jwt.middleware';
 
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -27,8 +29,11 @@ async function bootstrap() {
 		type: VersioningType.URI,
 	});
 
+	const optionalJwtMiddleware = app.get(OptionalJwtMiddleware);
+	app.use(optionalJwtMiddleware.use.bind(optionalJwtMiddleware));
+
 	app.useGlobalPipes(
-		new ValidationPipe({
+		new I18nValidationPipe({
 			whitelist: true,
 			forbidNonWhitelisted: true,
 			transform: true,
@@ -47,7 +52,13 @@ async function bootstrap() {
 
 	fs.writeFileSync('./openapi.json', JSON.stringify(document, null, 2));
 
-	await app.listen(configService.get('port', { infer: true })!);
+	app.enableCors({
+		origin: configService.get('corsOrigin', { infer: true }) || '*',
+		methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+		credentials: true,
+	});
+
+	await app.listen(configService.get('port', { infer: true })!, '0.0.0.0');
 }
 
 bootstrap().catch(console.error);

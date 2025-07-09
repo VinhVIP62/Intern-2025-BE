@@ -1,0 +1,22 @@
+FROM node:20-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy only package files for install
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Optional: install SWC for faster dev build if needed
+RUN npm install -D @swc/cli @swc/core
+
+# Copy all source files (optional — không cần nếu bạn dùng volumes trong docker-compose)
+COPY . .
+
+# Expose port
+EXPOSE 3000
+
+# Default command for dev
+CMD ["npm", "run", "start:dev"]

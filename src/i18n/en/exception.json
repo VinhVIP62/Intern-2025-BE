@@ -1,0 +1,63 @@
+{
+	"auth": {
+		"emailAlreadyExists": "Email already exists in the system",
+		"emailNotFound": "Email does not exist in the system",
+		"invalidCredentials": "Incorrect username or password",
+		"unauthorized": "You are not logged in or your session has expired",
+		"emailNotVerified": "Your email has not been verified",
+		"invalidOtp": "Your OTP is incorrect or has expired",
+		"googlePayloadInvalid": "Unable to verify information from Google. Please try again later.",
+		"userCreationFailed": "Unable to create user. Please try again later.",
+		"accessDenied": "Access denied. Allowed roles: {{roles}}",
+		"invalidOldPassword": "Old password is incorrect"
+	},
+	"user": {
+		"notFound": "User does not exist",
+		"forbidden": "You do not have permission to access this user",
+		"invalidRole": "Invalid user role"
+	},
+	"post": {
+		"notFound": "Post does not exist",
+		"forbidden": "You do not have permission to access this post"
+	},
+	"event": {
+		"notFound": "Event does not exist",
+		"forbidden": "You do not have permission to perform this action",
+		"full": "The event is full",
+		"alreadyJoined": "You have already joined this event",
+		"alreadyRequested": "You have already sent a join request.",
+		"cannotJoinOwnEvent": "You cannot join an event you created.",
+		"requestNotFound": "Event join request not found",
+		"alreadyResponded": "This request has already been responded to"
+	},
+	"friend": {
+		"alreadyFriends": "You are already friends",
+		"notFound": "Friendship does not exist"
+	},
+	"friendRequest": {
+		"alreadySent": "Friend request has already been sent",
+		"notFound": "Friend request does not exist"
+	},
+	"comment": {
+		"notFound": "Comment does not exist"
+	},
+	"like": {
+		"alreadyLiked": "You have already liked this post"
+	},
+	"notification": {
+		"notFound": "Notification does not exist"
+	},
+	"file": {
+		"googleError": "Failed to delete file: {{message}}",
+		"unknown": "Failed to delete file due to an unknown error"
+	},
+	"common": {
+		"badRequest": "Invalid request",
+		"internalServerError": "System error, please try again later",
+		"notFound": "Resource not found",
+		"forbidden": "You do not have permission to access",
+		"unauthorized": "You are not logged in or your session has expired",
+		"conflict": "Data already exists or there is a conflict",
+		"tooManyRequests": "You have sent too many requests. Please try again later."
+	}
+}
