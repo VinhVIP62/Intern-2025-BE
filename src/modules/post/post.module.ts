@@ -10,6 +10,7 @@ import { NotificationModule } from '../notification/notification.module';
 import { UserSchema } from '@modules/user/entities/user.schema';
 import { User } from '@modules/user/entities/user.schema';
 import { UserModule } from '../user/user.module';
+import { CommentModule } from '../comment/comment.module';
 
 @Module({
 	imports: [
@@ -18,6 +19,7 @@ import { UserModule } from '../user/user.module';
 		FileModule,
 		NotificationModule,
 		UserModule,
+		CommentModule,
 	],
 	controllers: [PostController],
 	providers: [PostService, { provide: IPostRepository, useClass: PostRepositoryImpl }],

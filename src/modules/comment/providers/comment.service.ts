@@ -327,4 +327,15 @@ export class CommentService {
 			{ path: 'parentComment', select: 'content author' },
 		]);
 	}
+
+	// Xóa cứng toàn bộ comment của một bài post (theo postId)
+	async deleteCommentsByPostId(postId: string, i18n: I18nContext): Promise<number> {
+		// Kiểm tra post tồn tại
+		const post = await this.postModel.findById(postId);
+		if (!post) {
+			throw new NotFoundException(i18n.t('comment.POST_NOT_FOUND'));
+		}
+		const result = await this.commentModel.deleteMany({ postId: new Types.ObjectId(postId) });
+		return result.deletedCount || 0;
+	}
 }

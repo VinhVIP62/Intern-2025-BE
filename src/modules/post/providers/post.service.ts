@@ -22,6 +22,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '../../user/entities/user.schema';
 import { UserService } from '../../user/providers/user.service';
+import { CommentService } from '../../comment/providers/comment.service';
 
 @Injectable()
 export class PostService {
@@ -31,6 +32,7 @@ export class PostService {
 		private readonly notificationService: NotificationService,
 		@InjectModel('User') private readonly userModel: Model<User>,
 		private readonly userService: UserService,
+		private readonly commentService: CommentService,
 	) {}
 
 	async getNewsfeed(
@@ -342,6 +344,9 @@ export class PostService {
 		}
 
 		try {
+			// Xóa toàn bộ comment của post này (xóa cứng)
+			await this.commentService.deleteCommentsByPostId(postId, i18n);
+
 			await this.postRepository.delete(postId);
 		} catch (error) {
 			if (error.message === 'Post not found') {
