@@ -4242,6 +4242,86 @@
         ]
       }
     },
+    "/api/v1/achievements/all": {
+      "get": {
+        "operationId": "AchievementController_getAllAchievements_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lấy thành công"
+          }
+        },
+        "summary": "Lấy tất cả achievement",
+        "tags": [
+          "Achievement"
+        ]
+      }
+    },
+    "/api/v1/achievements/user": {
+      "get": {
+        "operationId": "AchievementController_getUserAchievements_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Lấy thành công"
+          }
+        },
+        "summary": "Lấy achievement của user hiện tại",
+        "tags": [
+          "Achievement"
+        ]
+      }
+    },
+    "/api/v1/achievements/unlock": {
+      "post": {
+        "operationId": "AchievementController_unlockAchievement_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AchievementProgressDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Unlock thành công"
+          }
+        },
+        "summary": "Unlock achievement cho user",
+        "tags": [
+          "Achievement"
+        ]
+      }
+    },
+    "/api/v1/achievements/progress": {
+      "post": {
+        "operationId": "AchievementController_updateProgress_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AchievementProgressDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cập nhật thành công"
+          }
+        },
+        "summary": "Cập nhật tiến trình achievement cho user",
+        "tags": [
+          "Achievement"
+        ]
+      }
+    },
     "/api/v1/search/all": {
       "get": {
         "operationId": "SearchController_searchAll_v1",
@@ -6743,6 +6823,22 @@
           "currentUserId",
           "targetUserId",
           "mutualFriends"
+        ]
+      },
+      "AchievementProgressDto": {
+        "type": "object",
+        "properties": {
+          "achievementId": {
+            "type": "string",
+            "description": "ID của achievement"
+          },
+          "progress": {
+            "type": "number",
+            "description": "Tiến trình đạt được"
+          }
+        },
+        "required": [
+          "achievementId"
         ]
       },
       "SearchResultDto": {
