@@ -196,6 +196,20 @@ export class CreatePostDto {
 	@IsOptional()
 	@IsArray()
 	@IsMongoId({ each: true })
+	@Transform(({ value }) => {
+		// Handle multipart/form-data array serialization
+		if (typeof value === 'string') {
+			try {
+				// Try to parse as JSON string
+				return JSON.parse(value);
+			} catch {
+				// If not JSON, treat as single value
+				return [value];
+			}
+		}
+		// If already array, return as is
+		return Array.isArray(value) ? value : [];
+	})
 	taggedUsers?: string[];
 
 	@ApiProperty({
