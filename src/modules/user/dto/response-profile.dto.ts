@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude, Expose } from 'class-transformer';
+import { Exclude, Expose, Transform } from 'class-transformer';
 import { ActivityLevel, SportType } from '../enums/user.enum';
 
 export class ResponseProfileDto {
@@ -99,7 +99,8 @@ export class ResponseProfileDto {
 export class FriendSimpleDto {
 	@ApiProperty({ description: 'ID của người dùng' })
 	@Expose()
-	_id: string;
+	@Transform(({ obj }) => obj._id) // Use the original _id from the source object
+	_id: any;
 
 	@ApiProperty({ description: 'Tên đầy đủ' })
 	@Expose()
