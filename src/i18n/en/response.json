@@ -1,0 +1,91 @@
+{
+	"auth": {
+		"register": { "success": "Registration successful" },
+		"login": { "success": "Login successful" },
+		"logout": { "success": "Logout successful" },
+		"refresh": { "success": "Token refreshed successfully" },
+		"otp": { "sent": "OTP has been sent", "verified": "OTP verification successful" },
+		"oauth": { "success": "Login with Google successful" }
+	},
+	"user": {
+		"get": { "success": "User information retrieved successfully" },
+		"update": { "success": "Profile updated successfully" },
+		"preferences": { "updated": "Preferences updated successfully" },
+		"avatar": { "uploaded": "Avatar uploaded successfully" },
+		"location": { "updated": "Location updated successfully" },
+		"friends": {
+			"invited": "Friend request sent",
+			"responded": "Friend request responded to",
+			"list": "Friends list"
+		},
+		"changePassword": { "success": "Password changed successfully" },
+		"resetPassword": { "success": "Password reset successfully" }
+	},
+	"sport": {
+		"get": { "list": "Retrieved list of sports" }
+	},
+	"post": {
+		"create": { "success": "Post created successfully" },
+		"detail": { "success": "Post information retrieved successfully" },
+		"update": { "success": "Post updated successfully" },
+		"delete": { "success": "Post deleted successfully" },
+		"feed": { "success": "Post list retrieved successfully" },
+		"get": { "success": "Post details retrieved successfully" },
+		"like": {
+			"toggled": "Like status updated successfully",
+			"list": "Likes list retrieved successfully"
+		},
+		"comment": {
+			"added": "Comment added successfully",
+			"list": "Comments list retrieved successfully"
+		}
+	},
+	"event": {
+		"create": { "success": "Event created successfully" },
+		"get": { "list": "Events list retrieved", "detail": "Event details" },
+		"invite": { "success": "Friends invited to event" },
+		"respond": { "success": "Event participation response submitted" },
+		"participants": { "list": "Participants list retrieved" },
+		"join": {
+			"success": "Join event request submitted successfully"
+		},
+		"request": {
+			"respond": {
+				"success": "Event join request responded to successfully"
+			}
+		}
+	},
+	"notification": {
+		"list": "Notifications list retrieved",
+		"read": "Marked as read"
+	},
+	"search": {
+		"users": { "success": "User search successful" },
+		"events": { "success": "Event search successful" },
+		"posts": { "success": "Post search successful" },
+		"all": { "success": "Search for posts and users successful" }
+	},
+	"friend": {
+		"friendRequest": {
+			"send": "Friend request sent successfully",
+			"receivedList": "Friend request list retrieved successfully",
+			"respond": "Friend request response successful",
+			"cancel": "Friend request canceled successfully"
+		},
+		"list": { "success": "Friend list retrieved successfully" },
+		"unfriend": { "success": "Unfriended successfully" }
+	},
+	"file": {
+		"upload": "File uploaded successfully"
+	},
+	"location": {
+		"nearbyUsers": "Nearby users suggested",
+		"nearbyPosts": "Nearby posts suggested",
+		"nearbyEvents": "Nearby events suggested"
+	},
+	"common": {
+		"response": {
+			"paginate": { "success": "List retrieved successfully" }
+		}
+	}
+}

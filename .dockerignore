@@ -5,5 +5,7 @@ dist
 .gitignore
 Dockerfile
 docker-compose.yml
+Dockerfile.dev
+docker-compose.dev.yml
 test
 *.md

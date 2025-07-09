@@ -1,14 +1,23 @@
-import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsOptional, IsString } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { IsBoolean, IsString } from 'class-validator';
 
-export class ResponseAuthDto {
-	@ApiPropertyOptional({ description: 'Access token trả về sau khi đăng nhập hoặc refresh' })
+export class TokensDto {
+	@ApiProperty({ example: 'access-token-jwt...' })
 	@IsString()
-	@IsOptional()
-	accessToken?: string;
+	accessToken: string;
 
-	@ApiPropertyOptional({ description: 'Refresh token đi kèm với access token' })
+	@ApiPropertyOptional({ example: 'refresh-token-jwt...' })
 	@IsString()
-	@IsOptional()
 	refreshToken?: string;
+}
+
+export class ResponseEntityDto<T> {
+	@ApiProperty({ example: true })
+	@IsBoolean()
+	success: boolean;
+
+	@ApiProperty({
+		example: { accessToken: 'access-token-jwt...', refreshToken: 'refresh-token-jwt...' },
+	})
+	data: T;
 }

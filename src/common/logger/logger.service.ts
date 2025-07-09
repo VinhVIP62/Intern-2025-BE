@@ -7,8 +7,12 @@ import { Inject } from '@nestjs/common';
 export class AppLoggerService implements LoggerService {
 	constructor(@Inject('winston') private readonly logger: Logger) {}
 
+	private isProduction = process.env.NODE_ENV === 'production';
+
 	log(message: string, context?: string) {
-		this.logger.info(message, { context });
+		if (!this.isProduction) {
+			this.logger.info(message, { context });
+		}
 	}
 
 	error(message: string, trace?: string, context?: string) {
@@ -20,10 +24,14 @@ export class AppLoggerService implements LoggerService {
 	}
 
 	debug(message: string, context?: string) {
-		this.logger.debug(message, { context });
+		if (!this.isProduction) {
+			this.logger.debug(message, { context });
+		}
 	}
 
 	verbose?(message: string, context?: string) {
-		this.logger.verbose?.(message, { context });
+		if (!this.isProduction) {
+			this.logger.verbose?.(message, { context });
+		}
 	}
 }

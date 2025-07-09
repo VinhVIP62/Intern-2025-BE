@@ -1,0 +1,137 @@
+{
+	"auth": {
+		"email": {
+			"required": "Email is required",
+			"invalid": "Invalid email"
+		},
+		"password": {
+			"required": "Password is required",
+			"invalid": "Invalid password"
+		},
+		"otp": {
+			"required": "OTP code is required",
+			"invalid": "Invalid OTP code"
+		},
+		"accessToken": { "invalid": "Invalid access token" },
+		"refreshToken": {
+			"expired": "Refresh token has expired",
+			"invalid": "Invalid refresh token",
+			"revoked": "Refresh token has been revoked"
+		},
+		"tempToken": { "invalid": "Invalid temp token" }
+	},
+	"user": {
+		"email": {
+			"required": "Email is required",
+			"invalid": "Invalid email"
+		},
+		"password": {
+			"required": "Password is required",
+			"weak": "Password must be at least 8 characters long and include uppercase, lowercase letters, numbers, and special characters",
+			"min_length": "Password must be at least {{min}} characters long"
+		},
+		"oldPassword": {
+			"required": "Old password is required",
+			"invalid": "Incorrect old password"
+		},
+		"newPassword": {
+			"required": "New password is required",
+			"weak": "Password must be at least 8 characters long and include uppercase, lowercase letters, numbers, and special characters",
+			"sameAsOld": "New password must not be the same as the old password"
+		},
+		"fullName": {
+			"required": "Full name is required",
+			"invalid": "Invalid user name"
+		},
+		"avatarUrl": {
+			"invalid": "Invalid avatar URL"
+		},
+		"roles": {
+			"notArray": "Roles must be an array",
+			"invalidEnum": "Invalid role. Accepted values: ADMIN, MODERATOR, USER"
+		},
+		"oauthProvider": {
+			"invalid": "Invalid OAuth provider"
+		},
+		"sports": {
+			"invalid": "Invalid sports list",
+			"sport": {
+				"required": "Sport ID is required",
+				"invalid": "Invalid sport ID"
+			},
+			"level": {
+				"invalid": "Level must be beginner, intermediate, or advanced"
+			}
+		}
+	},
+	"location": {
+		"type": {
+			"invalid": "Location type must be 'Point'"
+		},
+		"coordinates": {
+			"required": "Location coordinates are required",
+			"invalid": "Coordinates must be an array [longitude, latitude]"
+		},
+		"address": {
+			"required": "Address is required"
+		},
+		"city": {
+			"required": "City is required"
+		},
+		"district": {
+			"required": "District is required"
+		}
+	},
+	"post": {
+		"title": {
+			"required": "Post title is required"
+		},
+		"content": {
+			"required": "Post content is required"
+		},
+		"visibility": {
+			"invalid": "Invalid post visibility"
+		}
+	},
+	"comment": {
+		"content": {
+			"required": "Comment content is required"
+		}
+	},
+	"event": {
+		"title": {
+			"required": "Event title is required"
+		},
+		"time": {
+			"required": "Event time is required"
+		},
+		"sport": {
+			"invalid": "Invalid sport ID"
+		}
+	},
+	"friendRequest": {
+		"receiver": {
+			"invalid": "Invalid friend request status",
+			"required": "Receiver ID is required"
+		}
+	},
+	"eventParticipant": {
+		"status": {
+			"invalid": "Invalid event participant status"
+		}
+	},
+	"notification": {
+		"type": {
+			"invalid": "Invalid notification type"
+		}
+	},
+	"sport": {
+		"name": {
+			"required": "Sport name is required"
+		}
+	},
+	"common": {
+		"required": "This field is required",
+		"string": "This field must be a string"
+	}
+}

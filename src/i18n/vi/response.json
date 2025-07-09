@@ -1,0 +1,91 @@
+{
+	"auth": {
+		"register": { "success": "Đăng ký thành công" },
+		"login": { "success": "Đăng nhập thành công" },
+		"logout": { "success": "Đăng xuất thành công" },
+		"refresh": { "success": "Làm mới token thành công" },
+		"otp": { "sent": "OTP đã được gửi", "verified": "Xác minh OTP thành công" },
+		"oauth": { "success": "Đăng nhập bằng Google thành công" }
+	},
+	"user": {
+		"get": { "success": "Lấy thông tin cá nhân thành công" },
+		"update": { "success": "Cập nhật hồ sơ thành công" },
+		"preferences": { "updated": "Cập nhật sở thích thành công" },
+		"avatar": { "uploaded": "Tải ảnh đại diện thành công" },
+		"location": { "updated": "Cập nhật vị trí thành công" },
+		"friends": {
+			"invited": "Đã gửi lời mời kết bạn",
+			"responded": "Phản hồi lời mời kết bạn",
+			"list": "Danh sách bạn bè"
+		},
+		"changePassword": { "success": "Đổi mật khẩu thành công" },
+		"resetPassword": { "success": "Thiết lập lại mật khẩu thành công" }
+	},
+	"sport": {
+		"get": { "list": "Lấy danh sách các môn thể thao" }
+	},
+	"post": {
+		"create": { "success": "Tạo bài viết thành công" },
+		"detail": { "success": "Lấy thông tin bài viết thành công" },
+		"update": { "success": "Cập nhật thông tin bài viết thành công" },
+		"delete": { "success": "Xóa bài viết thành công" },
+		"feed": { "success": "Lấy danh sách bài viết thành công" },
+		"get": { "success": "Lấy chi tiết bài viết thành công" },
+		"like": {
+			"toggled": "Thay đổi trạng thái thích thành công",
+			"list": "Lấy danh sách thích thành công"
+		},
+		"comment": {
+			"added": "Bình luận đã được thêm thành công",
+			"list": "Lấy danh sách bình luận thành công"
+		}
+	},
+	"event": {
+		"create": { "success": "Tạo sự kiện thành công" },
+		"get": { "list": "Lấy danh sách sự kiện", "detail": "Chi tiết sự kiện" },
+		"invite": { "success": "Mời bạn bè tham gia" },
+		"respond": { "success": "Phản hồi tham gia sự kiện" },
+		"participants": { "list": "Danh sách người tham gia" },
+		"join": {
+			"success": "Yêu cầu tham gia sự kiện đã được gửi."
+		},
+		"request": {
+			"respond": {
+				"success": "Phản hồi yêu cầu tham gia sự kiện thành công"
+			}
+		}
+	},
+	"notification": {
+		"list": "Lấy danh sách thông báo",
+		"read": "Đã đánh dấu đã đọc"
+	},
+	"search": {
+		"users": { "success": "Tìm kiếm người dùng thành công" },
+		"events": { "success": "Tìm kiếm sự kiện thành công" },
+		"posts": { "success": "Tìm kiếm bài viết thành công" },
+		"all": { "success": "Tìm kiếm bài viết và người dùng thành công" }
+	},
+	"friend": {
+		"friendRequest": {
+			"send": "Gửi lời mời kết bạn thành công",
+			"receivedList": "Lấy danh sách lời mời kết bạn thành công",
+			"respond": "Phản hồi lời mời thành công",
+			"cancel": "Xoá lời mời kết bạn thành công"
+		},
+		"list": { "success": "Lấy danh sách bạn bè thành công" },
+		"unfriend": { "success": "Hủy kết bạn thành công" }
+	},
+	"file": {
+		"upload": "Tải ảnh lên thành công"
+	},
+	"location": {
+		"nearbyUsers": "Gợi ý người dùng gần vị trí",
+		"nearbyPosts": "Gợi ý bài viết gần vị trí",
+		"nearbyEvents": "Gợi ý sự kiện gần vị trí"
+	},
+	"common": {
+		"response": {
+			"paginate": { "success": "Lấy danh sách thành công" }
+		}
+	}
+}

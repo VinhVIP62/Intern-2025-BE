@@ -7,6 +7,7 @@ WORKDIR /app
 # Install dependencies
 COPY package*.json ./
 RUN npm install
+RUN npm install @swc/cli @swc/core
 
 # Copy source code
 COPY . .
