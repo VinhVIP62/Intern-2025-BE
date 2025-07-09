@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Param, Put } from '@nestjs/common';
+import { Controller, Post, Body, Param, Put, Get } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ReactCmtService } from '../providers/react.cmt.service';
 import { ApiOperation } from '@nestjs/swagger';
@@ -56,6 +56,20 @@ export class ReactCmtController {
 		return {
 			success: true,
 			data: res,
+		};
+	}
+
+	@Get('isreacted/:cmtId')
+	@Response()
+	async isReacted(
+		@Param('cmtId') cmtId: string,
+		@Req() req: Request,
+	): Promise<ResponseEntity<any>> {
+		const user = req.user as { id: string };
+		const isReacted = await this.reactCmtService.isReacted(user.id, cmtId);
+		return {
+			success: true,
+			data: isReacted,
 		};
 	}
 }

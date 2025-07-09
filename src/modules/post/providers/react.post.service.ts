@@ -52,4 +52,8 @@ export class ReactService {
 		await this.postRepo.updateReactCount(postId, type, -1);
 		return { message: 'react.SUCCESS' };
 	}
+
+	async isReacted(userId: string, postId: string) {
+		return this.reactRepo.findByUserIdAndPostId(userId, postId);
+	}
 }

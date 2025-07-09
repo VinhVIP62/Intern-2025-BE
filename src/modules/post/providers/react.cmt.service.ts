@@ -52,4 +52,8 @@ export class ReactCmtService {
 		await this.commentRepo.updateReactCount(cmtId, type, -1);
 		return { message: 'react.SUCCESS' };
 	}
+
+	async isReacted(userId: string, cmtId: string) {
+		return this.reactRepo.findByUserIdAndCmtId(userId, cmtId);
+	}
 }
