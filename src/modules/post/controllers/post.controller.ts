@@ -37,9 +37,9 @@ export class PostController {
 	}
 
 	@Version('1')
-	@Delete(':id')
+	@Delete(':postid')
 	async deletePost(
-		@Param('id', ParseObjectIdPipe) id: string,
+		@Param('postid', ParseObjectIdPipe) id: string,
 		@Req() request: AuthenticatedRequest,
 	): Promise<WithPopulated<ResponsePostDto>> {
 		const deletedPost = await this.postService.deletePost(id, request.user.id);
@@ -47,10 +47,10 @@ export class PostController {
 	}
 
 	@Version('1')
-	@Patch(':id')
+	@Patch(':postid')
 	@FormDataRequest({ storage: MemoryStoredFile })
 	async updatePost(
-		@Param('id', ParseObjectIdPipe) id: string,
+		@Param('postid', ParseObjectIdPipe) id: string,
 		@Req() request: AuthenticatedRequest,
 		@Body() body: UpdatePostDto,
 	): Promise<WithPopulated<ResponsePostDto>> {
@@ -76,9 +76,9 @@ export class PostController {
 	}
 
 	@Version('1')
-	@Get(':id')
+	@Get(':postid')
 	async getPost(
-		@Param('id', ParseObjectIdPipe) id: string,
+		@Param('postid', ParseObjectIdPipe) id: string,
 		@Req() request: AuthenticatedRequest,
 	): Promise<WithPopulated<ResponsePostDto>> {
 		const foundPost = await this.postService.getPost(id, request.user.id);
