@@ -1,5 +1,5 @@
-import { Expose } from 'class-transformer';
-import { IsMongoId, IsOptional, IsPositive } from 'class-validator';
+import { Expose, Type } from 'class-transformer';
+import { IsMongoId, IsNumber, IsOptional, IsPositive } from 'class-validator';
 
 export class FeedPostDto {
 	@Expose()
@@ -8,6 +8,8 @@ export class FeedPostDto {
 	cursor?: string;
 
 	@Expose()
+	@Type(() => Number)
+	@IsNumber()
 	@IsOptional()
 	@IsPositive()
 	limit: number = 10;
