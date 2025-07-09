@@ -44,6 +44,7 @@ export interface IBaseRepository<T extends IBaseEntity> {
 		queryOptions?: QueryOptions<T>,
 	): Promise<WithPopulated<T> | null>;
 	count(where: Partial<T>, queryOptions?: QueryOptions<T>): Promise<number>;
+	exists(where: Partial<T>, queryOptions?: QueryOptions<T>): Promise<boolean>;
 }
 
 export interface ISoftDeleteBaseRepository<

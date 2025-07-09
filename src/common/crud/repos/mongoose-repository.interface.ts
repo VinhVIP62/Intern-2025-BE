@@ -32,9 +32,23 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 	constructor(
 		protected readonly entityModel: Model<T>,
 		protected readonly entityClass: Class<T>,
-	) {}
+		repoOptions: RepoOptions<T> = {},
+	) {
+		// merge the merfed base and subclass with the user set Options
+		// since this is the BASE class, field initializer came before constructor is called
+		this.repoOptions = {};
+		this.mergeRepoOptions(repoOptions);
+	}
 
-	repoOptions: RepoOptions<T> = {};
+	repoOptions: RepoOptions<T>;
+
+	protected mergeRepoOptions(repoOptions: RepoOptions<T>) {
+		this.repoOptions = {
+			filter: this.mergeFilter({ ...repoOptions.filter } as Partial<T>),
+			populate: this.mergePopulate([...(repoOptions.populate ?? [])]),
+			sort: this.mergeSort({ ...repoOptions.sort } as unknown as Record<keyof T, SORT>),
+		};
+	}
 
 	/** To apply middleware transformation for all class methods */
 	protected mergeFilter(filter: Partial<T> = {}) {
@@ -155,6 +169,8 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 	async create(data: Partial<T>, queryOptions?: QueryOptions<T>): Promise<T> {
 		const createdEntity = await this.entityModel.create(data);
 		const populatedEntity = await createdEntity.populate(this.transformPopulate(queryOptions));
+
+		console.log(this.transformPopulate(queryOptions));
 		return populatedEntity.toObject();
 	}
 
@@ -253,6 +269,11 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 		const count = this.entityModel.countDocuments(this.transformFilter(where, queryOptions));
 		return count;
 	}
+
+	async exists(where: Partial<T>, queryOptions?: QueryOptions<T>): Promise<boolean> {
+		const existing = await this.entityModel.exists(this.transformFilter(where, queryOptions));
+		return existing ? true : false;
+	}
 }
 
 /**
@@ -271,26 +292,20 @@ export class MongooseSoftDeleteRepositoryImpl<
 	constructor(
 		protected readonly entityModel: Model<T>,
 		protected readonly entityClass: Class<T>,
-		repoOptions: RepoOptions<T>,
+		repoOptions: RepoOptions<T> = {},
 	) {
+		/**
+		 * this is a sub class so the field initializers came after super is called,
+		 * calling super here would just merge with the options in the baseclass.
+		 *
+		 * init base -> set repoOptions for THIS subclass -> merge
+		 */
 		super(entityModel, entityClass);
-		// set class-scoped default constructor value here
-		const filter = { deleted: false };
-		const populate = ['deletedBy'];
-		const sort = { username: -1 } as unknown as Record<keyof T, SORT>;
-		// end of class-scoped default cons value
-		// merge the base repo Options with the subclass Options
 		this.repoOptions = {
-			filter: this.mergeFilter({ ...filter } as Partial<T>),
-			populate: this.mergePopulate([...populate]),
-			sort: this.mergeSort({ ...sort }),
+			filter: { deleted: false } as Partial<T>,
+			populate: ['deletedBy'],
 		};
-		// merge the merfed base and subclass with the user set Options
-		this.repoOptions = {
-			filter: this.mergeFilter({ ...repoOptions.filter } as Partial<T>),
-			populate: this.mergePopulate([...(repoOptions.populate ?? [])]),
-			sort: this.mergeSort({ ...repoOptions.sort } as unknown as Record<keyof T, SORT>),
-		};
+		this.mergeRepoOptions(repoOptions);
 	}
 
 	/** [PLA] not finished as this does not soft delete related entities */
