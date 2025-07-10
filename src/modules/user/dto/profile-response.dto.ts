@@ -1,4 +1,4 @@
-import { Exclude, Expose, Transform } from 'class-transformer';
+import { Exclude, Expose, Transform, Type } from 'class-transformer';
 
 import { WithPopulated } from '@common/crud/entities';
 
@@ -33,6 +33,7 @@ export class ResponseProfileDto extends ResponseUserDto {
 	deletedAt!: Date | null;
 
 	@Expose()
+	@Type(() => String)
 	deletedBy!: string | null;
 
 	@Expose()

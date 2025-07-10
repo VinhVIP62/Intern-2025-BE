@@ -1,4 +1,4 @@
-import { Expose, Transform } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 
 import { WithPopulated } from '@common/crud/entities';
 import { Visibility } from '@common/enums';
@@ -24,6 +24,7 @@ export class ResponsePostDto {
 	fileUrls!: string[] | null;
 
 	@Expose()
+	@Type(() => String)
 	userId!: string;
 
 	@Expose()
@@ -65,12 +66,15 @@ export class ResponsePostDto {
 
 	// ignore
 	@Expose()
+	@Type(() => String)
 	visibleToCommunityId!: string | null;
 
 	@Expose()
+	@Type(() => String)
 	visibleToUsersIds!: string[];
 
 	@Expose()
+	@Type(() => String)
 	invisibleToUsersIds!: string[];
 
 	// [PLA] possible fields for future

@@ -30,7 +30,7 @@ export class CreatePostDto {
 		return o.files;
 	})
 	@Type(() => MemoryStoredFile)
-	@HasExtension(['png', 'jpg', 'jpeg', 'gif', 'ogg', 'mp4'], { each: true })
+	@HasExtension(['png', 'jpg', 'jpeg', 'gif', 'ogg', 'mp4', 'webp'], { each: true })
 	@HasMimeType(['image/*', 'video/*'], { each: true })
 	@IsArray()
 	@IsFile({ each: true })
