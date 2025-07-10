@@ -142,6 +142,13 @@ PostSchema.virtual('sharedPostsList', {
 	foreignField: '_id',
 });
 
+// Virtual populate for tagged users
+PostSchema.virtual('taggedUsersList', {
+	ref: 'User',
+	localField: 'taggedUsers',
+	foreignField: '_id',
+});
+
 // Ensure virtual fields are included when converting to JSON
 PostSchema.set('toJSON', {
 	virtuals: true,

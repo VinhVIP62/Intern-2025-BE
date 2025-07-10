@@ -104,6 +104,9 @@ export class PostResponseDto {
 
 	@ApiProperty({ description: 'Danh sách comment', required: false })
 	comments?: any[];
+
+	@ApiProperty({ description: 'Danh sách thông tin người dùng được tag', required: false })
+	taggedUsersList?: any[];
 }
 
 export class PaginatedPostsResponseDto {
@@ -284,6 +287,20 @@ export class UpdatePostDto {
 	@IsOptional()
 	@IsArray()
 	@IsMongoId({ each: true })
+	@Transform(({ value }) => {
+		// Handle multipart/form-data array serialization
+		if (typeof value === 'string') {
+			try {
+				// Try to parse as JSON string
+				return JSON.parse(value);
+			} catch {
+				// If not JSON, treat as single value
+				return [value];
+			}
+		}
+		// If already array, return as is
+		return Array.isArray(value) ? value : [];
+	})
 	taggedUsers?: string[];
 
 	@ApiProperty({

@@ -47,6 +47,10 @@ export class PostRepositoryImpl implements IPostRepository {
 						select: 'firstName lastName avatar fullName',
 					},
 				})
+				.populate({
+					path: 'taggedUsersList',
+					select: 'firstName lastName avatar fullName',
+				})
 				.populate('comments')
 				.sort({ createdAt: -1 })
 				.skip(skip)
@@ -72,6 +76,10 @@ export class PostRepositoryImpl implements IPostRepository {
 					path: 'authorUser',
 					select: 'firstName lastName avatar fullName',
 				},
+			})
+			.populate({
+				path: 'taggedUsersList',
+				select: 'firstName lastName avatar fullName',
 			})
 			.populate('comments')
 			.lean({ virtuals: true });
@@ -109,6 +117,10 @@ export class PostRepositoryImpl implements IPostRepository {
 						path: 'authorUser',
 						select: 'firstName lastName avatar fullName',
 					},
+				})
+				.populate({
+					path: 'taggedUsersList',
+					select: 'firstName lastName avatar fullName',
 				})
 				.populate('comments')
 				.sort({ createdAt: -1 })
@@ -158,6 +170,10 @@ export class PostRepositoryImpl implements IPostRepository {
 						select: 'firstName lastName avatar fullName',
 					},
 				})
+				.populate({
+					path: 'taggedUsersList',
+					select: 'firstName lastName avatar fullName',
+				})
 				.populate('comments')
 				.sort({ createdAt: -1 })
 				.skip(skip)
@@ -182,7 +198,35 @@ export class PostRepositoryImpl implements IPostRepository {
 			video,
 		});
 
-		return await post.save();
+		const savedPost = await post.save();
+
+		// Populate virtual fields after saving
+		const populatedPost = await this.postModel
+			.findById(savedPost._id)
+			.populate('authorUser', 'firstName lastName avatar fullName')
+			.populate('event', 'title description')
+			.populate('group', 'name description')
+			.populate('sharedFromPost')
+			.populate({
+				path: 'sharedPostsList',
+				select: 'author',
+				populate: {
+					path: 'authorUser',
+					select: 'firstName lastName avatar fullName',
+				},
+			})
+			.populate({
+				path: 'taggedUsersList',
+				select: 'firstName lastName avatar fullName',
+			})
+			.populate('comments')
+			.lean({ virtuals: true });
+
+		if (!populatedPost) {
+			throw new Error('Failed to populate post after creation');
+		}
+
+		return populatedPost;
 	}
 
 	async update(
@@ -214,6 +258,10 @@ export class PostRepositoryImpl implements IPostRepository {
 					path: 'authorUser',
 					select: 'firstName lastName avatar fullName',
 				},
+			})
+			.populate({
+				path: 'taggedUsersList',
+				select: 'firstName lastName avatar fullName',
 			})
 			.populate('comments')
 			.lean({ virtuals: true });
@@ -355,6 +403,10 @@ export class PostRepositoryImpl implements IPostRepository {
 						select: 'firstName lastName avatar fullName',
 					},
 				})
+				.populate({
+					path: 'taggedUsersList',
+					select: 'firstName lastName avatar fullName',
+				})
 				.populate('comments')
 				.sort({ createdAt: -1 })
 				.skip(skip)
@@ -369,6 +421,23 @@ export class PostRepositoryImpl implements IPostRepository {
 	async replaceTaggedUsers(postId: string, userIds: string[]): Promise<Post> {
 		const post = await this.postModel
 			.findByIdAndUpdate(postId, { $set: { taggedUsers: userIds } }, { new: true })
+			.populate('authorUser', 'firstName lastName avatar fullName')
+			.populate('event', 'title description')
+			.populate('group', 'name description')
+			.populate('sharedFromPost')
+			.populate({
+				path: 'sharedPostsList',
+				select: 'author',
+				populate: {
+					path: 'authorUser',
+					select: 'firstName lastName avatar fullName',
+				},
+			})
+			.populate({
+				path: 'taggedUsersList',
+				select: 'firstName lastName avatar fullName',
+			})
+			.populate('comments')
 			.lean({ virtuals: true });
 		if (!post) throw new Error('Post not found');
 		return post;
@@ -382,6 +451,22 @@ export class PostRepositoryImpl implements IPostRepository {
 				{ new: true },
 			)
 			.populate('authorUser', 'firstName lastName avatar fullName')
+			.populate('event', 'title description')
+			.populate('group', 'name description')
+			.populate('sharedFromPost')
+			.populate({
+				path: 'sharedPostsList',
+				select: 'author',
+				populate: {
+					path: 'authorUser',
+					select: 'firstName lastName avatar fullName',
+				},
+			})
+			.populate({
+				path: 'taggedUsersList',
+				select: 'firstName lastName avatar fullName',
+			})
+			.populate('comments')
 			.lean({ virtuals: true });
 		if (!post) throw new Error('Already liked or post not found');
 		return post;
@@ -395,6 +480,22 @@ export class PostRepositoryImpl implements IPostRepository {
 				{ new: true },
 			)
 			.populate('authorUser', 'firstName lastName avatar fullName')
+			.populate('event', 'title description')
+			.populate('group', 'name description')
+			.populate('sharedFromPost')
+			.populate({
+				path: 'sharedPostsList',
+				select: 'author',
+				populate: {
+					path: 'authorUser',
+					select: 'firstName lastName avatar fullName',
+				},
+			})
+			.populate({
+				path: 'taggedUsersList',
+				select: 'firstName lastName avatar fullName',
+			})
+			.populate('comments')
 			.lean({ virtuals: true });
 		if (!post) throw new Error('Not liked or post not found');
 		return post;
@@ -437,6 +538,10 @@ export class PostRepositoryImpl implements IPostRepository {
 						path: 'authorUser',
 						select: 'firstName lastName avatar fullName',
 					},
+				})
+				.populate({
+					path: 'taggedUsersList',
+					select: 'firstName lastName avatar fullName',
 				})
 				.populate('comments')
 				.sort({ createdAt: -1 })
@@ -485,6 +590,10 @@ export class PostRepositoryImpl implements IPostRepository {
 						path: 'authorUser',
 						select: 'firstName lastName avatar fullName',
 					},
+				})
+				.populate({
+					path: 'taggedUsersList',
+					select: 'firstName lastName avatar fullName',
 				})
 				.populate('comments')
 				.sort({ createdAt: -1 })
@@ -536,6 +645,10 @@ export class PostRepositoryImpl implements IPostRepository {
 						path: 'authorUser',
 						select: 'firstName lastName avatar fullName',
 					},
+				})
+				.populate({
+					path: 'taggedUsersList',
+					select: 'firstName lastName avatar fullName',
 				})
 				.populate('comments')
 				.sort({
