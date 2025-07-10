@@ -122,15 +122,25 @@ export class CommentService {
 			throw new ForbiddenException(i18n.t('comment.NOT_AUTHORIZED_TO_DELETE'));
 		}
 
-		// Soft delete - set isActive to false
-		await this.commentRepository.softDeleteComment(commentId);
+		// Hard delete comment and all descendants
+		const deleteResult = await this.commentRepository.deleteCommentAndDescendants(commentId);
 
-		// Update post comment count
-		await this.commentRepository.updatePostCommentCount(comment.postId.toString(), -1);
+		// Update post comment count (trừ đi số lượng comment đã xóa)
+		await this.commentRepository.updatePostCommentCount(
+			comment.postId.toString(),
+			-deleteResult.deletedCount,
+		);
 
 		// If this is a reply, update parent comment reply count
 		if (comment.parentId) {
-			await this.commentRepository.updateCommentReplyCount(comment.parentId.toString(), -1);
+			// Tính số lượng reply đã xóa (trừ đi comment gốc)
+			const deletedRepliesCount = deleteResult.deletedCount - 1;
+			if (deletedRepliesCount > 0) {
+				await this.commentRepository.updateCommentReplyCount(
+					comment.parentId.toString(),
+					-deletedRepliesCount,
+				);
+			}
 		}
 	}
 
