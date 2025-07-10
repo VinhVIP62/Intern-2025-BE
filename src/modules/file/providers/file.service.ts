@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { v2 as cloudinary, UploadApiResponse, DeleteApiResponse } from 'cloudinary';
 import { ConfigService } from '@nestjs/config';
 import { IEnvVars } from '@configs/config';
+import { FILE_TYPE_CONSTANTS, CloudinaryResourceType } from '@common/constants/file-types.constant';
 
 @Injectable()
 export class FileService {
@@ -20,14 +21,15 @@ export class FileService {
 	async uploadFile(file: Express.Multer.File): Promise<UploadApiResponse> {
 		return new Promise((resolve, reject) => {
 			// Determine resource type based on MIME type
-			let resourceType: 'image' | 'video' | 'raw' = 'image';
+			let resourceType: CloudinaryResourceType =
+				FILE_TYPE_CONSTANTS.CLOUDINARY_RESOURCE_TYPES.IMAGE;
 
-			if (file.mimetype && file.mimetype.startsWith('video/')) {
-				resourceType = 'video';
-			} else if (file.mimetype && file.mimetype.startsWith('image/')) {
-				resourceType = 'image';
+			if (FILE_TYPE_CONSTANTS.ALLOWED_VIDEO_MIME_TYPES.includes(file.mimetype as any)) {
+				resourceType = FILE_TYPE_CONSTANTS.CLOUDINARY_RESOURCE_TYPES.VIDEO;
+			} else if (FILE_TYPE_CONSTANTS.ALLOWED_IMAGE_MIME_TYPES.includes(file.mimetype as any)) {
+				resourceType = FILE_TYPE_CONSTANTS.CLOUDINARY_RESOURCE_TYPES.IMAGE;
 			} else {
-				resourceType = 'raw';
+				resourceType = FILE_TYPE_CONSTANTS.CLOUDINARY_RESOURCE_TYPES.RAW;
 			}
 
 			const uploadStream = cloudinary.uploader.upload_stream(
@@ -35,7 +37,7 @@ export class FileService {
 					public_id: file.originalname,
 					resource_type: resourceType,
 					// Add video-specific options for better upload
-					...(resourceType === 'video' && {
+					...(resourceType === FILE_TYPE_CONSTANTS.CLOUDINARY_RESOURCE_TYPES.VIDEO && {
 						chunk_size: 6000000, // 6MB chunks for better upload
 					}),
 				},
@@ -69,11 +71,12 @@ export class FileService {
 			}
 
 			// Determine resource type from URL
-			let resourceType: 'image' | 'video' | 'raw' = 'image';
+			let resourceType: CloudinaryResourceType =
+				FILE_TYPE_CONSTANTS.CLOUDINARY_RESOURCE_TYPES.IMAGE;
 			if (url.includes('/video/')) {
-				resourceType = 'video';
+				resourceType = FILE_TYPE_CONSTANTS.CLOUDINARY_RESOURCE_TYPES.VIDEO;
 			} else if (url.includes('/raw/')) {
-				resourceType = 'raw';
+				resourceType = FILE_TYPE_CONSTANTS.CLOUDINARY_RESOURCE_TYPES.RAW;
 			}
 
 			cloudinary.uploader.destroy(publicId, { resource_type: resourceType }, (error, result) => {

@@ -23,6 +23,7 @@ import { Model } from 'mongoose';
 import { User } from '../../user/entities/user.schema';
 import { UserService } from '../../user/providers/user.service';
 import { CommentService } from '../../comment/providers/comment.service';
+import { FILE_TYPE_CONSTANTS } from '@common/constants/file-types.constant';
 
 @Injectable()
 export class PostService {
@@ -397,7 +398,7 @@ export class PostService {
 		}
 
 		// Validate file count
-		if (files.length > 10) {
+		if (files.length > FILE_TYPE_CONSTANTS.MAX_FILES_COUNT) {
 			throw new BadRequestException(i18n.t('post.TOO_MANY_FILES'));
 		}
 
@@ -419,7 +420,7 @@ export class PostService {
 		}
 
 		// Validate file count
-		if (files.length > 10) {
+		if (files.length > FILE_TYPE_CONSTANTS.MAX_FILES_COUNT) {
 			throw new BadRequestException(i18n.t('post.TOO_MANY_FILES'));
 		}
 	}
@@ -436,20 +437,8 @@ export class PostService {
 			return false;
 		}
 
-		const videoExtensions = [
-			'.mp4',
-			'.avi',
-			'.mov',
-			'.wmv',
-			'.flv',
-			'.webm',
-			'.mkv',
-			'.m4v',
-			'.3gp',
-			'.ogv',
-		];
 		const extension = filename.toLowerCase().substring(filename.lastIndexOf('.'));
-		return videoExtensions.includes(extension);
+		return FILE_TYPE_CONSTANTS.ALLOWED_VIDEO_EXTENSIONS.includes(extension as any);
 	}
 
 	private isVideoFileByMimeType(file: Express.Multer.File): boolean {
@@ -457,9 +446,8 @@ export class PostService {
 	}
 
 	private validateFileSize(files: Express.Multer.File[], i18n: I18nContext): void {
-		const maxFileSize = 10 * 1024 * 1024; // 10MB for Cloudinary
 		for (const file of files) {
-			if (file.size > maxFileSize) {
+			if (file.size > FILE_TYPE_CONSTANTS.MAX_FILE_SIZE) {
 				const fileSizeMB = (file.size / (1024 * 1024)).toFixed(2);
 				throw new BadRequestException(
 					`${i18n.t('post.FILE_TOO_LARGE')} File "${file.originalname}", size: ${fileSizeMB}MB`,
@@ -469,20 +457,9 @@ export class PostService {
 	}
 
 	private validateFileType(files: Express.Multer.File[], i18n: I18nContext): void {
-		const allowedImageTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-		const allowedVideoTypes = [
-			'video/mp4',
-			'video/avi',
-			'video/mov',
-			'video/wmv',
-			'video/flv',
-			'video/webm',
-			'video/mkv',
-		];
-
 		for (const file of files) {
-			const isImage = allowedImageTypes.includes(file.mimetype);
-			const isVideo = allowedVideoTypes.includes(file.mimetype);
+			const isImage = FILE_TYPE_CONSTANTS.ALLOWED_IMAGE_MIME_TYPES.includes(file.mimetype as any);
+			const isVideo = FILE_TYPE_CONSTANTS.ALLOWED_VIDEO_MIME_TYPES.includes(file.mimetype as any);
 			const isValidExtension =
 				this.isVideoFile(file.originalname) || this.isImageFile(file.originalname);
 
@@ -503,9 +480,8 @@ export class PostService {
 			return false;
 		}
 
-		const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.bmp', '.svg'];
 		const extension = filename.toLowerCase().substring(filename.lastIndexOf('.'));
-		return imageExtensions.includes(extension);
+		return FILE_TYPE_CONSTANTS.ALLOWED_IMAGE_EXTENSIONS.includes(extension as any);
 	}
 
 	async getTrendingHashtags(

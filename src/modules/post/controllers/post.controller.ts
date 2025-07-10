@@ -42,6 +42,7 @@ import { Roles } from '@common/decorators';
 import { Role } from '@common/enum';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { PostAccessLevel, PostStatus } from '../entities/post.enum';
+import { FILE_TYPE_CONSTANTS } from '@common/constants/file-types.constant';
 
 @ApiTags('Post')
 @Controller('posts')
@@ -53,13 +54,13 @@ export class PostController {
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
 	@UseInterceptors(
-		FilesInterceptor('files', 10, {
+		FilesInterceptor('files', FILE_TYPE_CONSTANTS.MAX_FILES_COUNT, {
 			limits: {
-				fileSize: 15 * 1024 * 1024, // 15MB limit (higher than Cloudinary's 10MB)
+				fileSize: FILE_TYPE_CONSTANTS.MAX_FILE_SIZE + 5 * 1024 * 1024, // 15MB limit (higher than Cloudinary's 10MB)
 			},
 			fileFilter: (req, file, cb) => {
 				// Check file size before processing
-				if (file.size > 10 * 1024 * 1024) {
+				if (file.size > FILE_TYPE_CONSTANTS.MAX_FILE_SIZE) {
 					// 10MB for Cloudinary
 					return cb(new BadRequestException('File size too large. Maximum is 10MB.'), false);
 				}
@@ -290,13 +291,13 @@ export class PostController {
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
 	@UseInterceptors(
-		FilesInterceptor('files', 10, {
+		FilesInterceptor('files', FILE_TYPE_CONSTANTS.MAX_FILES_COUNT, {
 			limits: {
-				fileSize: 15 * 1024 * 1024, // 15MB limit (higher than Cloudinary's 10MB)
+				fileSize: FILE_TYPE_CONSTANTS.MAX_FILE_SIZE + 5 * 1024 * 1024, // 15MB limit (higher than Cloudinary's 10MB)
 			},
 			fileFilter: (req, file, cb) => {
 				// Check file size before processing
-				if (file.size > 10 * 1024 * 1024) {
+				if (file.size > FILE_TYPE_CONSTANTS.MAX_FILE_SIZE) {
 					// 10MB for Cloudinary
 					return cb(new BadRequestException('File size too large. Maximum is 10MB.'), false);
 				}
