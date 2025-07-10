@@ -12,7 +12,6 @@ export class NotificationService {
 		recipient: string;
 		sender: string;
 		type: NotificationType;
-		title: string;
 		message: string;
 		referenceId?: string;
 		referenceModel?: ReferenceModel;
@@ -53,7 +52,6 @@ export class NotificationService {
 			recipient: postAuthorId,
 			sender: likerId,
 			type: NotificationType.LIKE,
-			title: 'New Like',
 			message: 'Someone liked your post',
 			referenceId: postId,
 			referenceModel: ReferenceModel.POST,
@@ -71,7 +69,6 @@ export class NotificationService {
 			recipient: postAuthorId,
 			sender: commenterId,
 			type: NotificationType.COMMENT,
-			title: 'New Comment',
 			message: 'Someone commented on your post',
 			referenceId: commentId,
 			referenceModel: ReferenceModel.COMMENT,
@@ -84,7 +81,6 @@ export class NotificationService {
 			recipient: recipientId,
 			sender: senderId,
 			type: NotificationType.FRIEND_REQUEST,
-			title: 'Friend Request',
 			message: 'You have a new friend request',
 			referenceId: requestId,
 			referenceModel: ReferenceModel.FRIEND_REQUEST,
