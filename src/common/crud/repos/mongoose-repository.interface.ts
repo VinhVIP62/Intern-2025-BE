@@ -169,8 +169,6 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 	async create(data: Partial<T>, queryOptions?: QueryOptions<T>): Promise<T> {
 		const createdEntity = await this.entityModel.create(data);
 		const populatedEntity = await createdEntity.populate(this.transformPopulate(queryOptions));
-
-		console.log(this.transformPopulate(queryOptions));
 		return populatedEntity.toObject();
 	}
 

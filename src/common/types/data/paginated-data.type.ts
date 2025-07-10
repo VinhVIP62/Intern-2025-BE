@@ -1,6 +1,6 @@
 import { IsArray, IsNumber, IsString } from 'class-validator';
 
-export class PaginatedData<T> {
+export class OffsetPaginatedData<T> {
 	constructor(page: number, limit: number, data: T[]) {
 		this.page = page;
 		this.data = data;

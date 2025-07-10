@@ -5,6 +5,7 @@ import mongoose, { FilterQuery, Model } from 'mongoose';
 import { WithPopulated } from '@common/crud/entities';
 import { MongooseSoftDeleteRepositoryImpl } from '@common/crud/repos';
 import { Visibility } from '@common/enums';
+import { CursorPaginationOption } from '@common/types/data';
 
 import { SocialPost } from '../entities';
 import { IPostRepository } from './social-post.repository';
@@ -45,7 +46,7 @@ export class PostRepositoryImpl
 
 	async fetchFeed(
 		userId: string,
-		options?: { cursor?: string; limit?: number },
+		options?: CursorPaginationOption<string>,
 	): Promise<WithPopulated<SocialPost>[]> {
 		const userObjectId = new mongoose.Types.ObjectId(userId);
 		const cursorPost = options?.cursor ? await this.findOneByIdOrFail(options.cursor) : undefined;

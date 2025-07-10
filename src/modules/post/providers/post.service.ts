@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { MemoryStoredFile } from 'nestjs-form-data';
 
 import { WithPopulated } from '@common/crud/entities';
+import { CursorPaginationOption } from '@common/types/data';
 
 import { FileHostService } from '@shared/modules';
 
@@ -18,9 +19,7 @@ export class PostService {
 	async createPost(
 		data: Partial<SocialPost> & { files?: MemoryStoredFile[] },
 	): Promise<WithPopulated<SocialPost>> {
-		if (data.files)
-			data.fileUrls =
-				(await Promise.all(data.files.map(f => this.fileHostService.file2Url(f)))) || null;
+		if (data.files) data.fileUrls = await this.fileHostService.files2Urls(data.files);
 		const createdPost = this.postRepository.create(data);
 		return createdPost;
 	}
@@ -30,9 +29,7 @@ export class PostService {
 		userId: string,
 		data: Partial<SocialPost> & { files?: MemoryStoredFile[] },
 	): Promise<WithPopulated<SocialPost> | null> {
-		if (data.files)
-			data.fileUrls =
-				(await Promise.all(data.files.map(f => this.fileHostService.file2Url(f)))) || null;
+		if (data.files) data.fileUrls = await this.fileHostService.files2Urls(data.files);
 		const createdPost = this.postRepository.findOneByAndUpdate({ id, userId }, data);
 		return createdPost;
 	}
@@ -49,7 +46,7 @@ export class PostService {
 
 	async getFeeds(
 		userId: string,
-		options?: { cursor?: string; limit?: number },
+		options?: CursorPaginationOption<string>,
 	): Promise<{
 		foundPosts: WithPopulated<SocialPost>[];
 		nextCursor: string;
