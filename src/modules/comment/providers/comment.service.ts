@@ -4,8 +4,8 @@ import {
 	NotFoundException,
 	ForbiddenException,
 } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Inject } from '@nestjs/common';
+import { Types } from 'mongoose';
 import { I18nContext } from 'nestjs-i18n';
 import { Comment } from '../entities/comment.schema';
 import { Post } from '@modules/post/entities/post.schema';
@@ -17,12 +17,15 @@ import {
 	PaginatedCommentsResponseDto,
 	CommentResponseDto,
 } from '../dto/comment.dto';
+import {
+	ICommentRepository,
+	ICommentRepository as ICommentRepositoryToken,
+} from '../repositories/comment.repository';
 
 @Injectable()
 export class CommentService {
 	constructor(
-		@InjectModel(Comment.name) private readonly commentModel: Model<Comment>,
-		@InjectModel(Post.name) private readonly postModel: Model<Post>,
+		@Inject(ICommentRepositoryToken) private readonly commentRepository: ICommentRepository,
 	) {}
 
 	async createComment(
@@ -32,14 +35,14 @@ export class CommentService {
 		i18n: I18nContext,
 	): Promise<Comment> {
 		// Validate post exists
-		const post = await this.postModel.findById(postId);
+		const post = await this.commentRepository.findPostById(postId);
 		if (!post) {
 			throw new NotFoundException(i18n.t('comment.POST_NOT_FOUND'));
 		}
 
 		// If this is a reply, validate parent comment exists
 		if (createCommentDto.parentId) {
-			const parentComment = await this.commentModel.findById(createCommentDto.parentId);
+			const parentComment = await this.commentRepository.findCommentById(createCommentDto.parentId);
 			if (!parentComment) {
 				throw new NotFoundException(i18n.t('comment.PARENT_COMMENT_NOT_FOUND'));
 			}
@@ -48,30 +51,22 @@ export class CommentService {
 			}
 		}
 
-		const comment = new this.commentModel({
+		const comment = await this.commentRepository.createComment({
 			postId: new Types.ObjectId(postId),
 			author: new Types.ObjectId(authorId),
 			content: createCommentDto.content,
 			parentId: createCommentDto.parentId ? new Types.ObjectId(createCommentDto.parentId) : null,
 		});
 
-		const savedComment = await comment.save();
-
 		// Update post comment count
-		await this.postModel.findByIdAndUpdate(postId, { $inc: { commentCount: 1 } });
+		await this.commentRepository.updatePostCommentCount(postId, 1);
 
 		// If this is a reply, update parent comment reply count
 		if (createCommentDto.parentId) {
-			await this.commentModel.findByIdAndUpdate(createCommentDto.parentId, {
-				$inc: { replyCount: 1 },
-			});
+			await this.commentRepository.updateCommentReplyCount(createCommentDto.parentId, 1);
 		}
 
-		return savedComment.populate([
-			{ path: 'authorUser', select: 'firstName lastName avatar' },
-			{ path: 'post', select: 'content' },
-			{ path: 'parentComment', select: 'content author' },
-		]);
+		return comment;
 	}
 
 	async getCommentsByPostId(
@@ -81,55 +76,12 @@ export class CommentService {
 		limit: number = 10,
 	): Promise<PaginatedCommentsResponseDto> {
 		// Validate post exists
-		const post = await this.postModel.findById(postId);
+		const post = await this.commentRepository.findPostById(postId);
 		if (!post) {
 			throw new NotFoundException(i18n.t('comment.POST_NOT_FOUND'));
 		}
 
-		// Lấy tất cả comment của post (isActive)
-		const allComments = (await this.commentModel
-			.find({
-				postId: new Types.ObjectId(postId),
-				isActive: true,
-			})
-			.sort({ createdAt: -1 })
-			.populate([{ path: 'authorUser', select: 'firstName lastName avatar' }])
-			.lean()) as any[];
-
-		// Xây dựng map commentId -> comment
-		const commentMap = new Map();
-		allComments.forEach(c => {
-			c.replies = [];
-			commentMap.set(String(c._id), c);
-		});
-
-		// Xây dựng cây comment
-		const rootComments: any[] = [];
-		allComments.forEach(c => {
-			if (c.parentId) {
-				const parent = commentMap.get(String(c.parentId));
-				if (parent) {
-					parent.replies.push(c);
-				}
-			} else {
-				rootComments.push(c);
-			}
-		});
-
-		// Phân trang trên root comments
-		const total = rootComments.length;
-		const totalPages = Math.ceil(total / limit);
-		const pagedRootComments = rootComments.slice((page - 1) * limit, page * limit);
-
-		return {
-			comments: pagedRootComments as any as CommentResponseDto[],
-			total,
-			page,
-			limit,
-			totalPages,
-			hasNextPage: page < totalPages,
-			hasPrevPage: page > 1,
-		};
+		return this.commentRepository.getPaginatedComments(postId, page, limit);
 	}
 
 	async updateComment(
@@ -138,7 +90,7 @@ export class CommentService {
 		updateCommentDto: UpdateCommentDto,
 		i18n: I18nContext,
 	): Promise<Comment | null> {
-		const comment = await this.commentModel.findById(commentId);
+		const comment = await this.commentRepository.findCommentById(commentId);
 		if (!comment) {
 			throw new NotFoundException(i18n.t('comment.COMMENT_NOT_FOUND'));
 		}
@@ -152,19 +104,11 @@ export class CommentService {
 			throw new BadRequestException(i18n.t('comment.COMMENT_IS_INACTIVE'));
 		}
 
-		const updatedComment = await this.commentModel
-			.findByIdAndUpdate(commentId, { $set: updateCommentDto }, { new: true })
-			.populate([
-				{ path: 'authorUser', select: 'firstName lastName avatar' },
-				{ path: 'post', select: 'content' },
-				{ path: 'parentComment', select: 'content author' },
-			]);
-
-		return updatedComment;
+		return this.commentRepository.updateComment(commentId, updateCommentDto);
 	}
 
 	async deleteComment(commentId: string, authorId: string, i18n: I18nContext): Promise<void> {
-		const comment = await this.commentModel.findById(commentId);
+		const comment = await this.commentRepository.findCommentById(commentId);
 		if (!comment) {
 			throw new NotFoundException(i18n.t('comment.COMMENT_NOT_FOUND'));
 		}
@@ -175,14 +119,14 @@ export class CommentService {
 		}
 
 		// Soft delete - set isActive to false
-		await this.commentModel.findByIdAndUpdate(commentId, { isActive: false });
+		await this.commentRepository.softDeleteComment(commentId);
 
 		// Update post comment count
-		await this.postModel.findByIdAndUpdate(comment.postId, { $inc: { commentCount: -1 } });
+		await this.commentRepository.updatePostCommentCount(comment.postId.toString(), -1);
 
 		// If this is a reply, update parent comment reply count
 		if (comment.parentId) {
-			await this.commentModel.findByIdAndUpdate(comment.parentId, { $inc: { replyCount: -1 } });
+			await this.commentRepository.updateCommentReplyCount(comment.parentId.toString(), -1);
 		}
 	}
 
@@ -192,7 +136,7 @@ export class CommentService {
 		createReplyDto: CreateReplyDto,
 		i18n: I18nContext,
 	): Promise<Comment> {
-		const parentComment = await this.commentModel.findById(commentId);
+		const parentComment = await this.commentRepository.findCommentById(commentId);
 		if (!parentComment) {
 			throw new NotFoundException(i18n.t('comment.PARENT_COMMENT_NOT_FOUND'));
 		}
@@ -201,26 +145,20 @@ export class CommentService {
 			throw new BadRequestException(i18n.t('comment.PARENT_COMMENT_IS_INACTIVE'));
 		}
 
-		const reply = new this.commentModel({
+		const reply = await this.commentRepository.createComment({
 			postId: parentComment.postId,
 			author: new Types.ObjectId(authorId),
 			content: createReplyDto.content,
 			parentId: new Types.ObjectId(commentId),
 		});
 
-		const savedReply = await reply.save();
-
 		// Update post comment count
-		await this.postModel.findByIdAndUpdate(parentComment.postId, { $inc: { commentCount: 1 } });
+		await this.commentRepository.updatePostCommentCount(parentComment.postId.toString(), 1);
 
 		// Update parent comment reply count
-		await this.commentModel.findByIdAndUpdate(commentId, { $inc: { replyCount: 1 } });
+		await this.commentRepository.updateCommentReplyCount(commentId, 1);
 
-		return savedReply.populate([
-			{ path: 'authorUser', select: 'firstName lastName avatar' },
-			{ path: 'post', select: 'content' },
-			{ path: 'parentComment', select: 'content author' },
-		]);
+		return reply;
 	}
 
 	async updateCommentVisibility(
@@ -229,12 +167,12 @@ export class CommentService {
 		updateVisibilityDto: UpdateCommentVisibilityDto,
 		i18n: I18nContext,
 	): Promise<Comment | null> {
-		const comment = await this.commentModel.findById(commentId);
+		const comment = await this.commentRepository.findCommentById(commentId);
 		if (!comment) {
 			throw new NotFoundException(i18n.t('comment.COMMENT_NOT_FOUND'));
 		}
 		// Lấy post để kiểm tra quyền
-		const post = await this.postModel.findById(comment.postId);
+		const post = await this.commentRepository.findPostById(comment.postId.toString());
 		if (!post) {
 			throw new NotFoundException(i18n.t('comment.POST_NOT_FOUND'));
 		}
@@ -242,14 +180,7 @@ export class CommentService {
 		if (comment.author.toString() !== userId && post.author.toString() !== userId) {
 			throw new ForbiddenException(i18n.t('comment.NOT_AUTHORIZED_TO_UPDATE'));
 		}
-		const updatedComment = await this.commentModel
-			.findByIdAndUpdate(commentId, { isHidden: updateVisibilityDto.isHidden }, { new: true })
-			.populate([
-				{ path: 'authorUser', select: 'firstName lastName avatar' },
-				{ path: 'post', select: 'content' },
-				{ path: 'parentComment', select: 'content author' },
-			]);
-		return updatedComment;
+		return this.commentRepository.updateCommentVisibility(commentId, updateVisibilityDto.isHidden);
 	}
 
 	async hideComment(
@@ -269,12 +200,7 @@ export class CommentService {
 	}
 
 	async getCommentById(commentId: string, i18n: I18nContext): Promise<Comment | null> {
-		const comment = await this.commentModel.findById(commentId).populate([
-			{ path: 'authorUser', select: 'firstName lastName avatar' },
-			{ path: 'post', select: 'content' },
-			{ path: 'parentComment', select: 'content author' },
-			{ path: 'replies', match: { isActive: true, isHidden: false } },
-		]);
+		const comment = await this.commentRepository.findCommentById(commentId);
 
 		if (!comment) {
 			throw new NotFoundException(i18n.t('comment.COMMENT_NOT_FOUND'));
@@ -284,58 +210,50 @@ export class CommentService {
 	}
 
 	async likeComment(commentId: string, userId: string, i18n: I18nContext): Promise<Comment> {
-		const comment = await this.commentModel.findById(commentId);
+		const comment = await this.commentRepository.findCommentById(commentId);
 		if (!comment) {
 			throw new NotFoundException(i18n.t('comment.COMMENT_NOT_FOUND'));
 		}
 		if (!comment.isActive || comment.isHidden) {
 			throw new BadRequestException(i18n.t('comment.COMMENT_IS_INACTIVE'));
 		}
-		const userObjectId = new Types.ObjectId(userId);
-		if (comment.likes.some(id => id.equals(userObjectId))) {
-			throw new BadRequestException(i18n.t('comment.ALREADY_LIKED'));
+
+		try {
+			return await this.commentRepository.likeComment(commentId, new Types.ObjectId(userId));
+		} catch (error) {
+			if (error.message === 'Already liked') {
+				throw new BadRequestException(i18n.t('comment.ALREADY_LIKED'));
+			}
+			throw error;
 		}
-		comment.likes.push(userObjectId);
-		comment.likeCount = comment.likes.length;
-		await comment.save();
-		return comment.populate([
-			{ path: 'authorUser', select: 'firstName lastName avatar' },
-			{ path: 'post', select: 'content' },
-			{ path: 'parentComment', select: 'content author' },
-		]);
 	}
 
 	async unlikeComment(commentId: string, userId: string, i18n: I18nContext): Promise<Comment> {
-		const comment = await this.commentModel.findById(commentId);
+		const comment = await this.commentRepository.findCommentById(commentId);
 		if (!comment) {
 			throw new NotFoundException(i18n.t('comment.COMMENT_NOT_FOUND'));
 		}
 		if (!comment.isActive || comment.isHidden) {
 			throw new BadRequestException(i18n.t('comment.COMMENT_IS_INACTIVE'));
 		}
-		const userObjectId = new Types.ObjectId(userId);
-		const idx = comment.likes.findIndex(id => id.equals(userObjectId));
-		if (idx === -1) {
-			throw new BadRequestException(i18n.t('comment.NOT_LIKED'));
+
+		try {
+			return await this.commentRepository.unlikeComment(commentId, new Types.ObjectId(userId));
+		} catch (error) {
+			if (error.message === 'Not liked') {
+				throw new BadRequestException(i18n.t('comment.NOT_LIKED'));
+			}
+			throw error;
 		}
-		comment.likes.splice(idx, 1);
-		comment.likeCount = comment.likes.length;
-		await comment.save();
-		return comment.populate([
-			{ path: 'authorUser', select: 'firstName lastName avatar' },
-			{ path: 'post', select: 'content' },
-			{ path: 'parentComment', select: 'content author' },
-		]);
 	}
 
 	// Xóa cứng toàn bộ comment của một bài post (theo postId)
 	async deleteCommentsByPostId(postId: string, i18n: I18nContext): Promise<number> {
 		// Kiểm tra post tồn tại
-		const post = await this.postModel.findById(postId);
+		const post = await this.commentRepository.findPostById(postId);
 		if (!post) {
 			throw new NotFoundException(i18n.t('comment.POST_NOT_FOUND'));
 		}
-		const result = await this.commentModel.deleteMany({ postId: new Types.ObjectId(postId) });
-		return result.deletedCount || 0;
+		return this.commentRepository.deleteCommentsByPostId(postId);
 	}
 }
