@@ -9,6 +9,11 @@ import {
 } from '../dto/search.dto';
 import { ISearchRepository } from '../repositories/search.repository';
 import { PostService } from '@modules/post/providers/post.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
+import { SearchHistory } from '../entities/searchHistory.schema';
+import { CreateSearchHistoryInternalDto } from '../dto/searchHistory.dto';
+import { ISearchHistoryRepository } from '../repositories/searchHistory.repository';
 
 @Injectable()
 export class SearchService {
@@ -17,6 +22,8 @@ export class SearchService {
 		private readonly searchRepository: ISearchRepository,
 		@Inject(forwardRef(() => PostService))
 		private readonly postService: PostService,
+		@Inject(ISearchHistoryRepository)
+		private readonly searchHistoryRepository: ISearchHistoryRepository,
 	) {}
 
 	async searchAll(
@@ -25,6 +32,12 @@ export class SearchService {
 		i18n: I18nContext,
 	): Promise<PaginatedSearchResultDto> {
 		const { key, page = 1, limit = 10, timeRange } = query;
+		// Save search history if userId and key exist
+		if (userId && key) {
+			const history = await this.searchHistoryRepository.create(new Types.ObjectId(userId), {
+				text: key,
+			});
+		}
 		// Parallel search for all types
 		const [userRes, postRes, eventRes, groupRes, hashtagRes, locationRes] = await Promise.all([
 			this.searchRepository.searchUsers(key, undefined, undefined, page, limit),
@@ -69,6 +82,12 @@ export class SearchService {
 		i18n: I18nContext,
 	): Promise<PaginatedSearchResultDto> {
 		const { key, filter, sportType, level, page = 1, limit = 10, timeRange } = query;
+		// Save search history if userId and key exist
+		if (userId && key) {
+			const history = await this.searchHistoryRepository.create(new Types.ObjectId(userId), {
+				text: key,
+			});
+		}
 		const data: SearchResultDto[] = [];
 		let maxTotal = 0;
 		for (const f of filter) {

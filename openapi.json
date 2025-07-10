@@ -2487,6 +2487,77 @@
           "Search"
         ]
       }
+    },
+    "/api/v1/search/history": {
+      "get": {
+        "operationId": "SearchController_getSearchHistory_v1",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedSearchHistoryResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy lịch sử tìm kiếm",
+        "tags": [
+          "Search"
+        ]
+      },
+      "post": {
+        "operationId": "SearchController_createSearchHistory_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSearchHistoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchHistoryResultDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Thêm lịch sử tìm kiếm",
+        "tags": [
+          "Search"
+        ]
+      }
     }
   },
   "info": {
@@ -3311,6 +3382,13 @@
             "items": {
               "type": "string"
             }
+          },
+          "taggedUsersList": {
+            "description": "Danh sách thông tin người dùng được tag",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "required": [
@@ -3844,6 +3922,101 @@
         "required": [
           "filter"
         ]
+      },
+      "SearchHistoryResultDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string",
+            "description": "Text hoặc hashtag mà user nhập"
+          },
+          "hashtag": {
+            "type": "string",
+            "description": "Hashtag mà user nhập"
+          },
+          "user": {
+            "type": "string",
+            "description": "User ID được tìm kiếm"
+          },
+          "group": {
+            "type": "string",
+            "description": "Group ID được tìm kiếm"
+          },
+          "event": {
+            "type": "string",
+            "description": "Event ID được tìm kiếm"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Thời gian tạo"
+          }
+        },
+        "required": [
+          "userId",
+          "createdAt"
+        ]
+      },
+      "PaginatedSearchHistoryResultDto": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SearchHistoryResultDto"
+            }
+          },
+          "page": {
+            "type": "number"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "totalPages": {
+            "type": "number"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          },
+          "hasPrevPage": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "data",
+          "page",
+          "limit",
+          "totalPages",
+          "hasNextPage",
+          "hasPrevPage"
+        ]
+      },
+      "CreateSearchHistoryDto": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "Text hoặc hashtag mà user nhập"
+          },
+          "hashtag": {
+            "type": "string",
+            "description": "Hashtag mà user nhập"
+          },
+          "user": {
+            "type": "string",
+            "description": "User ID được tìm kiếm"
+          },
+          "group": {
+            "type": "string",
+            "description": "Group ID được tìm kiếm"
+          },
+          "event": {
+            "type": "string",
+            "description": "Event ID được tìm kiếm"
+          }
+        }
       }
     }
   }

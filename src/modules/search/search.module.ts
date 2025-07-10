@@ -10,6 +10,9 @@ import { SearchRepositoryImpl } from './repositories/search.repository.impl';
 import { User, UserSchema } from '../user/entities/user.schema';
 import { Post, PostSchema } from '../post/entities/post.schema';
 import { Event, EventSchema } from '../event/entities/event.schema';
+import { SearchHistory, SearchHistorySchema } from './entities/searchHistory.schema';
+import { ISearchHistoryRepository } from './repositories/searchHistory.repository';
+import { SearchHistoryRepositoryImpl } from './repositories/searchHistory.repository.impl';
 
 @Module({
 	imports: [
@@ -17,13 +20,18 @@ import { Event, EventSchema } from '../event/entities/event.schema';
 			{ name: User.name, schema: UserSchema },
 			{ name: Post.name, schema: PostSchema },
 			{ name: Event.name, schema: EventSchema },
+			{ name: SearchHistory.name, schema: SearchHistorySchema },
 		]),
 		forwardRef(() => UserModule),
 		forwardRef(() => PostModule),
 		forwardRef(() => EventModule),
 	],
 	controllers: [SearchController],
-	providers: [SearchService, { provide: ISearchRepository, useClass: SearchRepositoryImpl }],
+	providers: [
+		SearchService,
+		{ provide: ISearchRepository, useClass: SearchRepositoryImpl },
+		{ provide: ISearchHistoryRepository, useClass: SearchHistoryRepositoryImpl },
+	],
 	exports: [SearchService],
 })
 export class SearchModule {}

@@ -2,5 +2,7 @@
 	"SEARCH_ALL_SUCCESS": "Search all success",
 	"SEARCH_SUCCESS": "Search success",
 	"SEARCH_NO_RESULT": "No result found",
-	"SEARCH_ERROR": "Search error"
+	"SEARCH_ERROR": "Search error",
+	"CREATE_HISTORY_SUCCESS": "Create search history success",
+	"FETCH_HISTORY_SUCCESS": "Fetch search history success"
 }
