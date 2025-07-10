@@ -31,6 +31,9 @@ export class Comment extends Document {
 	@Prop({ default: 0, index: true })
 	replyCount: number;
 
+	@Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
+	taggedUsers: Types.ObjectId[];
+
 	createdAt?: Date;
 	updatedAt?: Date;
 }
@@ -42,6 +45,8 @@ CommentSchema.index({ postId: 1, createdAt: -1 });
 CommentSchema.index({ author: 1, createdAt: -1 });
 CommentSchema.index({ parentId: 1, createdAt: -1 });
 CommentSchema.index({ isActive: 1, createdAt: -1 });
+CommentSchema.index({ taggedUsers: 1, createdAt: -1 });
+CommentSchema.index({ isActive: 1, isHidden: 1, taggedUsers: 1 });
 
 // Text search index for comments
 CommentSchema.index({ content: 'text' });

@@ -184,4 +184,44 @@ export class CommentRepositoryImpl implements ICommentRepository {
 			hasPrevPage: page > 1,
 		};
 	}
+
+	// Tagged users operations
+	async tagUsers(commentId: string, userIds: Types.ObjectId[]): Promise<Comment> {
+		const comment = await this.commentModel.findById(commentId);
+		if (!comment) {
+			throw new Error('Comment not found');
+		}
+
+		// Thêm các user mới vào taggedUsers (tránh duplicate)
+		userIds.forEach(userId => {
+			if (!comment.taggedUsers.some(id => id.equals(userId))) {
+				comment.taggedUsers.push(userId);
+			}
+		});
+
+		await comment.save();
+
+		return comment.populate([
+			{ path: 'authorUser', select: 'firstName lastName avatar' },
+			{ path: 'post', select: 'content' },
+			{ path: 'parentComment', select: 'content author' },
+		]);
+	}
+
+	async updateTaggedUsers(commentId: string, userIds: Types.ObjectId[]): Promise<Comment> {
+		const comment = await this.commentModel.findById(commentId);
+		if (!comment) {
+			throw new Error('Comment not found');
+		}
+
+		// Thay thế toàn bộ danh sách taggedUsers
+		comment.taggedUsers = userIds;
+		await comment.save();
+
+		return comment.populate([
+			{ path: 'authorUser', select: 'firstName lastName avatar' },
+			{ path: 'post', select: 'content' },
+			{ path: 'parentComment', select: 'content author' },
+		]);
+	}
 }

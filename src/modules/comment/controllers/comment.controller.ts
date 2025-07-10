@@ -23,6 +23,7 @@ import {
 	UpdateCommentDto,
 	CreateReplyDto,
 	UpdateCommentVisibilityDto,
+	TagUsersDto,
 } from '../dto/comment.dto';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { Public } from '@common/decorators';
@@ -524,6 +525,121 @@ export class CommentController {
 				throw error;
 			}
 			throw new BadRequestException(i18n.t('comment.UNLIKE_FAILED'));
+		}
+	}
+
+	@Version('1')
+	@Post(':commentId/tagged-users')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Tag users vào comment' })
+	@ApiParam({
+		name: 'commentId',
+		description: 'ID của comment',
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiBody({
+		description: 'Tag users vào comment',
+		schema: {
+			type: 'object',
+			properties: {
+				userIds: {
+					type: 'array',
+					items: { type: 'string' },
+					description: 'Danh sách ID người dùng được tag',
+					example: ['507f1f77bcf86cd799439011', '507f1f77bcf86cd799439012'],
+				},
+			},
+			required: ['userIds'],
+		},
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Tag users thành công',
+		type: CommentResponseDto,
+	})
+	@ApiResponse({ status: 400, description: 'Dữ liệu không hợp lệ' })
+	@ApiResponse({ status: 401, description: 'Không có quyền truy cập' })
+	@ApiResponse({ status: 403, description: 'Không có quyền chỉnh sửa comment này' })
+	@ApiResponse({ status: 404, description: 'Không tìm thấy comment' })
+	async tagUsers(
+		@Request() req,
+		@Param('commentId') commentId: string,
+		@Body() tagUsersDto: TagUsersDto,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<CommentResponseDto>> {
+		try {
+			const comment = await this.commentService.tagUsers(commentId, req.user.id, tagUsersDto, i18n);
+			return {
+				success: true,
+				data: comment as any as CommentResponseDto,
+				message: i18n.t('comment.TAG_USERS_SUCCESS'),
+			};
+		} catch (error) {
+			if (error instanceof BadRequestException || error instanceof ForbiddenException) {
+				throw error;
+			}
+			throw new BadRequestException(i18n.t('comment.TAG_USERS_FAILED'));
+		}
+	}
+
+	@Version('1')
+	@Put(':commentId/tagged-users')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Cập nhật danh sách tagged users (thay thế toàn bộ)' })
+	@ApiParam({
+		name: 'commentId',
+		description: 'ID của comment',
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiBody({
+		description: 'Cập nhật danh sách tagged users',
+		schema: {
+			type: 'object',
+			properties: {
+				userIds: {
+					type: 'array',
+					items: { type: 'string' },
+					description: 'Danh sách ID người dùng được tag (sẽ thay thế toàn bộ danh sách cũ)',
+					example: ['507f1f77bcf86cd799439011', '507f1f77bcf86cd799439012'],
+				},
+			},
+			required: ['userIds'],
+		},
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Cập nhật tagged users thành công',
+		type: CommentResponseDto,
+	})
+	@ApiResponse({ status: 400, description: 'Dữ liệu không hợp lệ' })
+	@ApiResponse({ status: 401, description: 'Không có quyền truy cập' })
+	@ApiResponse({ status: 403, description: 'Không có quyền chỉnh sửa comment này' })
+	@ApiResponse({ status: 404, description: 'Không tìm thấy comment' })
+	async updateTaggedUsers(
+		@Request() req,
+		@Param('commentId') commentId: string,
+		@Body() tagUsersDto: TagUsersDto,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<CommentResponseDto>> {
+		try {
+			const comment = await this.commentService.updateTaggedUsers(
+				commentId,
+				req.user.id,
+				tagUsersDto,
+				i18n,
+			);
+			return {
+				success: true,
+				data: comment as any as CommentResponseDto,
+				message: i18n.t('comment.UPDATE_TAGGED_USERS_SUCCESS'),
+			};
+		} catch (error) {
+			if (error instanceof BadRequestException || error instanceof ForbiddenException) {
+				throw error;
+			}
+			throw new BadRequestException(i18n.t('comment.UPDATE_TAGGED_USERS_FAILED'));
 		}
 	}
 }

@@ -25,5 +25,13 @@
 	"UNLIKE_SUCCESS": "Comment unliked successfully",
 	"UNLIKE_FAILED": "Failed to unlike comment",
 	"ALREADY_LIKED": "You have already liked this comment",
-	"NOT_LIKED": "You have not liked this comment yet"
+	"NOT_LIKED": "You have not liked this comment yet",
+	"TAG_USERS_SUCCESS": "Users tagged successfully",
+	"TAG_USERS_FAILED": "Failed to tag users",
+	"UNTAG_USERS_SUCCESS": "Users untagged successfully",
+	"UNTAG_USERS_FAILED": "Failed to untag users",
+	"UPDATE_TAGGED_USERS_SUCCESS": "Tagged users updated successfully",
+	"UPDATE_TAGGED_USERS_FAILED": "Failed to update tagged users",
+	"TAGGED_USERS_RETRIEVED_SUCCESS": "Tagged users retrieved successfully",
+	"TAGGED_USERS_RETRIEVAL_FAILED": "Failed to retrieve tagged users"
 }

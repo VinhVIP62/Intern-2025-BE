@@ -1,6 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Types } from 'mongoose';
-import { IsString, IsOptional, IsMongoId, MinLength, MaxLength, IsBoolean } from 'class-validator';
+import {
+	IsString,
+	IsOptional,
+	IsMongoId,
+	MinLength,
+	MaxLength,
+	IsBoolean,
+	IsArray,
+} from 'class-validator';
 
 export class CommentResponseDto {
 	@ApiProperty({ description: 'ID của comment' })
@@ -20,6 +28,9 @@ export class CommentResponseDto {
 
 	@ApiProperty({ type: [Types.ObjectId], description: 'Danh sách ID người dùng đã like' })
 	likes: Types.ObjectId[];
+
+	@ApiProperty({ type: [Types.ObjectId], description: 'Danh sách ID người dùng được tag' })
+	taggedUsers: Types.ObjectId[];
 
 	@ApiProperty({ description: 'Trạng thái hoạt động' })
 	isActive: boolean;
@@ -175,4 +186,15 @@ export class UpdateCommentVisibilityDto {
 	})
 	@IsBoolean()
 	isHidden: boolean;
+}
+
+export class TagUsersDto {
+	@ApiProperty({
+		description: 'Danh sách ID người dùng',
+		type: [String],
+		example: ['507f1f77bcf86cd799439011', '507f1f77bcf86cd799439012'],
+	})
+	@IsArray()
+	@IsMongoId({ each: true, message: 'Mỗi ID người dùng phải là MongoDB ObjectId hợp lệ' })
+	userIds: string[];
 }
