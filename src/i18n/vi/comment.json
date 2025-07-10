@@ -25,5 +25,13 @@
 	"UNLIKE_SUCCESS": "Bỏ like comment thành công",
 	"UNLIKE_FAILED": "Bỏ like comment thất bại",
 	"ALREADY_LIKED": "Bạn đã like comment này rồi",
-	"NOT_LIKED": "Bạn chưa like comment này"
+	"NOT_LIKED": "Bạn chưa like comment này",
+	"TAG_USERS_SUCCESS": "Tag người dùng thành công",
+	"TAG_USERS_FAILED": "Tag người dùng thất bại",
+	"UNTAG_USERS_SUCCESS": "Bỏ tag người dùng thành công",
+	"UNTAG_USERS_FAILED": "Bỏ tag người dùng thất bại",
+	"UPDATE_TAGGED_USERS_SUCCESS": "Cập nhật danh sách tagged users thành công",
+	"UPDATE_TAGGED_USERS_FAILED": "Cập nhật danh sách tagged users thất bại",
+	"TAGGED_USERS_RETRIEVED_SUCCESS": "Lấy danh sách tagged users thành công",
+	"TAGGED_USERS_RETRIEVAL_FAILED": "Lấy danh sách tagged users thất bại"
 }

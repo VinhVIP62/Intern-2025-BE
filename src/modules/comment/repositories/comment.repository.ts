@@ -43,6 +43,10 @@ export interface ICommentRepository {
 	likeComment(commentId: string, userId: Types.ObjectId): Promise<Comment>;
 	unlikeComment(commentId: string, userId: Types.ObjectId): Promise<Comment>;
 
+	// Tagged users operations
+	tagUsers(commentId: string, userIds: Types.ObjectId[]): Promise<Comment>;
+	updateTaggedUsers(commentId: string, userIds: Types.ObjectId[]): Promise<Comment>;
+
 	// Pagination
 	getPaginatedComments(
 		postId: string,

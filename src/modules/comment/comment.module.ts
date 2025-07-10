@@ -6,6 +6,7 @@ import { CommentController } from './controllers/comment.controller';
 import { CommentService } from './providers/comment.service';
 import { ICommentRepository } from './repositories/comment.repository';
 import { CommentRepositoryImpl } from './repositories/comment.repository.impl';
+import { NotificationModule } from '@modules/notification/notification.module';
 
 @Module({
 	imports: [
@@ -13,6 +14,7 @@ import { CommentRepositoryImpl } from './repositories/comment.repository.impl';
 			{ name: Comment.name, schema: CommentSchema },
 			{ name: Post.name, schema: PostSchema },
 		]),
+		NotificationModule,
 	],
 	controllers: [CommentController],
 	providers: [CommentService, { provide: ICommentRepository, useClass: CommentRepositoryImpl }],

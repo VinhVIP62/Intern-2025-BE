@@ -2249,6 +2249,148 @@
         ]
       }
     },
+    "/api/v1/comments/{commentId}/tagged-users": {
+      "post": {
+        "operationId": "CommentController_tagUsers_v1",
+        "parameters": [
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "description": "ID của comment",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Tag users vào comment",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Danh sách ID người dùng được tag",
+                    "example": [
+                      "507f1f77bcf86cd799439011",
+                      "507f1f77bcf86cd799439012"
+                    ]
+                  }
+                },
+                "required": [
+                  "userIds"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tag users thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền chỉnh sửa comment này"
+          },
+          "404": {
+            "description": "Không tìm thấy comment"
+          }
+        },
+        "summary": "Tag users vào comment",
+        "tags": [
+          "Comment"
+        ]
+      },
+      "put": {
+        "operationId": "CommentController_updateTaggedUsers_v1",
+        "parameters": [
+          {
+            "name": "commentId",
+            "required": true,
+            "in": "path",
+            "description": "ID của comment",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Cập nhật danh sách tagged users",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Danh sách ID người dùng được tag (sẽ thay thế toàn bộ danh sách cũ)",
+                    "example": [
+                      "507f1f77bcf86cd799439011",
+                      "507f1f77bcf86cd799439012"
+                    ]
+                  }
+                },
+                "required": [
+                  "userIds"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cập nhật tagged users thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền chỉnh sửa comment này"
+          },
+          "404": {
+            "description": "Không tìm thấy comment"
+          }
+        },
+        "summary": "Cập nhật danh sách tagged users (thay thế toàn bộ)",
+        "tags": [
+          "Comment"
+        ]
+      }
+    },
     "/api/v1/search/all": {
       "get": {
         "operationId": "SearchController_searchAll_v1",
@@ -3429,6 +3571,13 @@
               "$ref": "#/components/schemas/ObjectId"
             }
           },
+          "taggedUsers": {
+            "description": "Danh sách ID người dùng được tag",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ObjectId"
+            }
+          },
           "isActive": {
             "type": "boolean",
             "description": "Trạng thái hoạt động"
@@ -3497,6 +3646,7 @@
           "author",
           "content",
           "likes",
+          "taggedUsers",
           "isActive",
           "isHidden",
           "likeCount",

@@ -9,6 +9,8 @@ import { Types } from 'mongoose';
 import { I18nContext } from 'nestjs-i18n';
 import { Comment } from '../entities/comment.schema';
 import { Post } from '@modules/post/entities/post.schema';
+import { NotificationService } from '@modules/notification/providers/notification.service';
+import { NotificationType, ReferenceModel } from '@modules/notification/entities/notification.enum';
 import {
 	CreateCommentDto,
 	UpdateCommentDto,
@@ -16,6 +18,7 @@ import {
 	UpdateCommentVisibilityDto,
 	PaginatedCommentsResponseDto,
 	CommentResponseDto,
+	TagUsersDto,
 } from '../dto/comment.dto';
 import {
 	ICommentRepository,
@@ -26,6 +29,7 @@ import {
 export class CommentService {
 	constructor(
 		@Inject(ICommentRepositoryToken) private readonly commentRepository: ICommentRepository,
+		private readonly notificationService: NotificationService,
 	) {}
 
 	async createComment(
@@ -255,5 +259,109 @@ export class CommentService {
 			throw new NotFoundException(i18n.t('comment.POST_NOT_FOUND'));
 		}
 		return this.commentRepository.deleteCommentsByPostId(postId);
+	}
+
+	// Tag users vào comment
+	async tagUsers(
+		commentId: string,
+		authorId: string,
+		tagUsersDto: TagUsersDto,
+		i18n: I18nContext,
+	): Promise<Comment> {
+		const comment = await this.commentRepository.findCommentById(commentId);
+		if (!comment) {
+			throw new NotFoundException(i18n.t('comment.COMMENT_NOT_FOUND'));
+		}
+
+		// Check if user is the author
+		if (comment.author.toString() !== authorId) {
+			throw new ForbiddenException(i18n.t('comment.NOT_AUTHORIZED_TO_UPDATE'));
+		}
+
+		if (!comment.isActive) {
+			throw new BadRequestException(i18n.t('comment.COMMENT_IS_INACTIVE'));
+		}
+
+		// Lấy danh sách taggedUsers cũ để so sánh
+		const oldTagged = (comment.taggedUsers || []).map(id => id.toString());
+
+		// Convert string IDs to ObjectIds
+		const userIds = tagUsersDto.userIds.map(id => new Types.ObjectId(id));
+
+		const updatedComment = await this.commentRepository.tagUsers(commentId, userIds);
+
+		// Tìm những user mới được tag để gửi notification
+		const newTagged = tagUsersDto.userIds.filter(id => !oldTagged.includes(id) && id !== authorId);
+
+		// Gửi notification cho các user mới được tag
+		if (newTagged.length > 0) {
+			await Promise.all(
+				newTagged.map(taggedUserId =>
+					this.notificationService.createNotification({
+						recipient: taggedUserId,
+						sender: authorId,
+						type: NotificationType.MENTION,
+						title: 'You have been tagged in a comment',
+						message: 'You have been tagged in a comment',
+						referenceId: commentId,
+						referenceModel: ReferenceModel.COMMENT,
+					}),
+				),
+			);
+		}
+
+		return updatedComment;
+	}
+
+	// Update toàn bộ danh sách tagged users (thay thế array cũ)
+	async updateTaggedUsers(
+		commentId: string,
+		authorId: string,
+		tagUsersDto: TagUsersDto,
+		i18n: I18nContext,
+	): Promise<Comment> {
+		const comment = await this.commentRepository.findCommentById(commentId);
+		if (!comment) {
+			throw new NotFoundException(i18n.t('comment.COMMENT_NOT_FOUND'));
+		}
+
+		// Check if user is the author
+		if (comment.author.toString() !== authorId) {
+			throw new ForbiddenException(i18n.t('comment.NOT_AUTHORIZED_TO_UPDATE'));
+		}
+
+		if (!comment.isActive) {
+			throw new BadRequestException(i18n.t('comment.COMMENT_IS_INACTIVE'));
+		}
+
+		// Lấy danh sách taggedUsers cũ để so sánh
+		const oldTagged = (comment.taggedUsers || []).map(id => id.toString());
+
+		// Convert string IDs to ObjectIds
+		const userIds = tagUsersDto.userIds.map(id => new Types.ObjectId(id));
+
+		const updatedComment = await this.commentRepository.updateTaggedUsers(commentId, userIds);
+
+		// Tìm những user mới được tag để gửi notification
+		const newTagged = tagUsersDto.userIds.filter(id => !oldTagged.includes(id) && id !== authorId);
+
+		// Gửi notification cho các user mới được tag
+		if (newTagged.length > 0) {
+			await Promise.all(
+				newTagged.map(taggedUserId =>
+					this.notificationService.createNotification({
+						recipient: taggedUserId,
+						sender: authorId,
+						type: NotificationType.MENTION,
+						title: 'You have been tagged in a comment',
+						message: 'You have been tagged in a comment',
+						referenceId: commentId,
+						referenceModel: ReferenceModel.COMMENT,
+					}),
+				),
+			);
+		}
+
+		return updatedComment;
 	}
 }
