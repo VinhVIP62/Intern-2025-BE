@@ -6,5 +6,17 @@
 	"MARK_UNREAD_SUCCESS": "Đánh dấu thông báo chưa đọc thành công",
 	"DELETE_SUCCESS": "Xóa thông báo thành công",
 	"CLEAR_ALL_SUCCESS": "Xóa tất cả thông báo thành công",
-	"NOT_FOUND": "Không tìm thấy thông báo"
+	"NOT_FOUND": "Không tìm thấy thông báo",
+	"MESSAGE_TAGGED_IN_POST": "Bạn đã được gắn thẻ trong một bài viết của",
+	"MESSAGE_TAGGED_IN_COMMENT": "Bạn đã được gắn thẻ trong một bình luận của",
+	"MESSAGE_LIKE_POST": "đã thích bài viết của bạn",
+	"MESSAGE_LIKE_COMMENT": "đã thích bình luận của bạn",
+	"MESSAGE_COMMENT_ON_POST": "đã bình luận bài viết của bạn",
+	"MESSAGE_REPLY_ON_COMMENT": "đã trả lời bình luận của bạn",
+	"MESSAGE_FRIEND_REQUEST": "đã gửi lời mời kết bạn",
+	"MESSAGE_FRIEND_ACCEPTED": "đã chấp nhận lời mời kết bạn của bạn",
+	"MESSAGE_EVENT_INVITATION": "đã mời bạn tham gia sự kiện",
+	"MESSAGE_EVENT_UPDATE": "đã cập nhật sự kiện bạn đang tham gia",
+	"MESSAGE_MENTION_IN_POST": "đã nhắc đến bạn trong một bài viết",
+	"MESSAGE_MENTION_IN_COMMENT": "đã nhắc đến bạn trong một bình luận"
 }

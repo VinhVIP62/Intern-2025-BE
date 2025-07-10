@@ -5,6 +5,7 @@ import { Notification } from '../entities/notification.schema';
 import { NotificationType, ReferenceModel } from '../entities/notification.enum';
 import { INotificationRepository } from '../repositories/notification.repository';
 import { I18nContext } from 'nestjs-i18n';
+import { CreateNotificationDto } from '../dto/notification.dto';
 
 @Injectable()
 export class NotificationService {
@@ -13,15 +14,7 @@ export class NotificationService {
 		private readonly notificationRepository: INotificationRepository,
 	) {}
 
-	async createNotification(data: {
-		recipient: string;
-		sender: string;
-		type: NotificationType;
-		title: string;
-		message: string;
-		referenceId?: string;
-		referenceModel?: ReferenceModel;
-	}) {
+	async createNotification(data: CreateNotificationDto) {
 		const notification = new this.notificationModel(data);
 		return await notification.save();
 	}
