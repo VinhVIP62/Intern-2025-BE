@@ -224,4 +224,49 @@ export class CommentRepositoryImpl implements ICommentRepository {
 			{ path: 'parentComment', select: 'content author' },
 		]);
 	}
+
+	// Hard delete comment and all descendants using MongoDB aggregation
+	async deleteCommentAndDescendants(
+		commentId: string,
+	): Promise<{ deletedCount: number; deletedCommentIds: string[] }> {
+		// Sử dụng $graphLookup để tìm tất cả comment con, cháu
+		const result = await this.commentModel.aggregate([
+			{
+				$match: { _id: new Types.ObjectId(commentId) },
+			},
+			{
+				$graphLookup: {
+					from: 'comments',
+					startWith: '$_id',
+					connectFromField: '_id',
+					connectToField: 'parentId',
+					as: 'descendants',
+					depthField: 'depth',
+				},
+			},
+			{
+				$project: {
+					_id: 1,
+					descendantIds: '$descendants._id',
+				},
+			},
+		]);
+
+		if (result.length === 0) {
+			return { deletedCount: 0, deletedCommentIds: [] };
+		}
+
+		// Tạo danh sách tất cả comment cần xóa (bao gồm comment gốc và tất cả con, cháu)
+		const allCommentIds = [new Types.ObjectId(commentId), ...result[0].descendantIds];
+
+		// Xóa tất cả comment trong 1 lần query
+		const deleteResult = await this.commentModel.deleteMany({
+			_id: { $in: allCommentIds },
+		});
+
+		return {
+			deletedCount: deleteResult.deletedCount || 0,
+			deletedCommentIds: allCommentIds.map(id => id.toString()),
+		};
+	}
 }

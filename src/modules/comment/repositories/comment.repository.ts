@@ -47,6 +47,11 @@ export interface ICommentRepository {
 	tagUsers(commentId: string, userIds: Types.ObjectId[]): Promise<Comment>;
 	updateTaggedUsers(commentId: string, userIds: Types.ObjectId[]): Promise<Comment>;
 
+	// Hard delete comment and all descendants
+	deleteCommentAndDescendants(
+		commentId: string,
+	): Promise<{ deletedCount: number; deletedCommentIds: string[] }>;
+
 	// Pagination
 	getPaginatedComments(
 		postId: string,
