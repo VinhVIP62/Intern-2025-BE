@@ -19,9 +19,6 @@ export class Notification extends Document {
 	type: NotificationType; // 'friend_request', 'event_invitation', 'group_invitation', 'like', 'comment', 'post_approved', 'post_rejected', etc.
 
 	@Prop({ required: true })
-	title: string;
-
-	@Prop({ required: true })
 	message: string;
 
 	@Prop({ type: Types.ObjectId, refPath: 'referenceModel', default: null, index: true })

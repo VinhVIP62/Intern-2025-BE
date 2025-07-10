@@ -228,8 +228,7 @@ export class PostService {
 							recipient: taggedUserId,
 							sender: authorId,
 							type: NotificationType.MENTION,
-							title: 'You have been tagged in a post',
-							message: 'You have been tagged in a post',
+							message: `MESSAGE_TAGGED_IN_POST ${authorId}`,
 							referenceId: (post as any)._id.toString(),
 							referenceModel: ReferenceModel.POST,
 						}),
@@ -318,8 +317,7 @@ export class PostService {
 								recipient: taggedUserId,
 								sender: userId,
 								type: NotificationType.MENTION,
-								title: 'You have been tagged in a post',
-								message: 'You have been tagged in a post',
+								message: `MESSAGE_TAGGED_IN_POST ${userId}`,
 								referenceId: postId,
 								referenceModel: ReferenceModel.POST,
 							}),
@@ -572,8 +570,7 @@ export class PostService {
 					recipient: friendId,
 					sender: userId,
 					type: NotificationType.MENTION,
-					title: 'You have been tagged in a post',
-					message: 'You have been tagged in a post',
+					message: `MESSAGE_TAGGED_IN_POST ${userId}`,
 					referenceId: postId,
 					referenceModel: ReferenceModel.POST,
 				}),
@@ -586,6 +583,19 @@ export class PostService {
 	async likePost(postId: string, userId: string, i18n: I18nContext): Promise<PostResponseDto> {
 		try {
 			const post = await this.postRepository.likePost(postId, userId);
+
+			// Gửi notification cho chủ bài viết (trừ khi người like chính là chủ bài viết)
+			if (post.author.toString() !== userId) {
+				await this.notificationService.createNotification({
+					recipient: post.author.toString(),
+					sender: userId,
+					type: NotificationType.LIKE,
+					message: `@${userId} MESSAGE_LIKE_POST`,
+					referenceId: postId,
+					referenceModel: ReferenceModel.POST,
+				});
+			}
+
 			return post as PostResponseDto;
 		} catch (error) {
 			if (error.message === 'Already liked or post not found') {

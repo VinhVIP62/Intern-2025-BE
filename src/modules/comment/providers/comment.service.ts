@@ -70,6 +70,33 @@ export class CommentService {
 			await this.commentRepository.updateCommentReplyCount(createCommentDto.parentId, 1);
 		}
 
+		// Gửi notification cho chủ bài viết (trừ khi người comment chính là chủ bài viết)
+		if (post.author.toString() !== authorId) {
+			await this.notificationService.createNotification({
+				recipient: post.author.toString(),
+				sender: authorId,
+				type: NotificationType.COMMENT,
+				message: `@${authorId} MESSAGE_COMMENT_ON_POST`,
+				referenceId: postId,
+				referenceModel: ReferenceModel.POST,
+			});
+		}
+
+		// Nếu là reply, gửi notification cho chủ comment gốc
+		if (createCommentDto.parentId) {
+			const parentComment = await this.commentRepository.findCommentById(createCommentDto.parentId);
+			if (parentComment && parentComment.author.toString() !== authorId) {
+				await this.notificationService.createNotification({
+					recipient: parentComment.author.toString(),
+					sender: authorId,
+					type: NotificationType.COMMENT,
+					message: `@${authorId} MESSAGE_REPLY_ON_COMMENT`,
+					referenceId: createCommentDto.parentId,
+					referenceModel: ReferenceModel.COMMENT,
+				});
+			}
+		}
+
 		return comment;
 	}
 
@@ -172,6 +199,18 @@ export class CommentService {
 		// Update parent comment reply count
 		await this.commentRepository.updateCommentReplyCount(commentId, 1);
 
+		// Gửi notification cho chủ comment gốc (trừ khi người reply chính là chủ comment gốc)
+		if (parentComment.author.toString() !== authorId) {
+			await this.notificationService.createNotification({
+				recipient: parentComment.author.toString(),
+				sender: authorId,
+				type: NotificationType.COMMENT,
+				message: `@${authorId} MESSAGE_REPLY_ON_COMMENT`,
+				referenceId: commentId,
+				referenceModel: ReferenceModel.COMMENT,
+			});
+		}
+
 		return reply;
 	}
 
@@ -233,7 +272,24 @@ export class CommentService {
 		}
 
 		try {
-			return await this.commentRepository.likeComment(commentId, new Types.ObjectId(userId));
+			const updatedComment = await this.commentRepository.likeComment(
+				commentId,
+				new Types.ObjectId(userId),
+			);
+
+			// Gửi notification cho chủ comment (trừ khi người like chính là chủ comment)
+			if (comment.author.toString() !== userId) {
+				await this.notificationService.createNotification({
+					recipient: comment.author.toString(),
+					sender: userId,
+					type: NotificationType.LIKE,
+					message: `@${userId} MESSAGE_LIKE_COMMENT`,
+					referenceId: commentId,
+					referenceModel: ReferenceModel.COMMENT,
+				});
+			}
+
+			return updatedComment;
 		} catch (error) {
 			if (error.message === 'Already liked') {
 				throw new BadRequestException(i18n.t('comment.ALREADY_LIKED'));
@@ -311,8 +367,7 @@ export class CommentService {
 						recipient: taggedUserId,
 						sender: authorId,
 						type: NotificationType.MENTION,
-						title: 'You have been tagged in a comment',
-						message: 'You have been tagged in a comment',
+						message: `MESSAGE_TAGGED_IN_COMMENT @${authorId}`,
 						referenceId: commentId,
 						referenceModel: ReferenceModel.COMMENT,
 					}),
@@ -363,8 +418,7 @@ export class CommentService {
 						recipient: taggedUserId,
 						sender: authorId,
 						type: NotificationType.MENTION,
-						title: 'You have been tagged in a comment',
-						message: 'You have been tagged in a comment',
+						message: `MESSAGE_TAGGED_IN_COMMENT @${authorId}`,
 						referenceId: commentId,
 						referenceModel: ReferenceModel.COMMENT,
 					}),

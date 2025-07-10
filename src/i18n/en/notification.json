@@ -6,5 +6,17 @@
 	"MARK_UNREAD_SUCCESS": "Notification marked as unread successfully",
 	"DELETE_SUCCESS": "Notification deleted successfully",
 	"CLEAR_ALL_SUCCESS": "All notifications deleted successfully",
-	"NOT_FOUND": "Notification not found"
+	"NOT_FOUND": "Notification not found",
+	"MESSAGE_TAGGED_IN_POST": "You have been tagged in a post of",
+	"MESSAGE_TAGGED_IN_COMMENT": "You have been tagged in a comment of",
+	"MESSAGE_LIKE_POST": "liked your post",
+	"MESSAGE_LIKE_COMMENT": "liked your comment",
+	"MESSAGE_COMMENT_ON_POST": "commented on your post",
+	"MESSAGE_REPLY_ON_COMMENT": "replied to your comment",
+	"MESSAGE_FRIEND_REQUEST": "sent you a friend request",
+	"MESSAGE_FRIEND_ACCEPTED": "accepted your friend request",
+	"MESSAGE_EVENT_INVITATION": "invited you to an event",
+	"MESSAGE_EVENT_UPDATE": "updated an event you're attending",
+	"MESSAGE_MENTION_IN_POST": "mentioned you in a post",
+	"MESSAGE_MENTION_IN_COMMENT": "mentioned you in a comment"
 }
