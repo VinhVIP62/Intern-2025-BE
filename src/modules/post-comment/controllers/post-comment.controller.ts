@@ -13,9 +13,10 @@ import {
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 
-import { Roles } from '@common/decorators';
+import { WithPopulated } from '@common/crud/entities';
+import { ResponseTransform, Roles } from '@common/decorators';
 import { Action, Role } from '@common/enums';
-import { AuthenticatedRequest } from '@common/types/data';
+import { AuthenticatedRequest, CursorPaginatedData } from '@common/types/data';
 import { plainToInstanceStrict } from '@common/utils';
 
 import { PostService } from '@modules/post/providers';
@@ -49,18 +50,24 @@ export class PostCommentController {
 
 	@Version('1')
 	@Get(':postid/comments')
+	@ResponseTransform({ pagination: true })
 	async getDirectComments(
 		@Param('postid', ParseObjectIdPipe) postId: string,
 		@Query() query: GetCommentsDto,
-	) {
+	): Promise<CursorPaginatedData<WithPopulated<ResponseCommentDto>>> {
 		await this.postService.checkAccessTo(postId, Action.READ);
-		const foundComment = await this.commentService.getCommentsOf(postId, query);
-		return plainToInstanceStrict(ResponseCommentDto, foundComment);
+		const comments = await this.commentService.getCommentsOf(postId, query);
+		return new CursorPaginatedData(
+			comments.nextCursor,
+			plainToInstanceStrict(ResponseCommentDto, comments.foundComments),
+		);
 	}
 
 	@Version('1')
 	@Get(':postid/comments/count')
-	async getDirectCommentsCount(@Param('postid', ParseObjectIdPipe) postId: string) {
+	async getDirectCommentsCount(
+		@Param('postid', ParseObjectIdPipe) postId: string,
+	): Promise<number> {
 		await this.postService.checkAccessTo(postId, Action.READ);
 		const count = await this.commentService.getCommentsCountOfTarget(postId);
 		return count;
@@ -83,7 +90,7 @@ export class PostCommentController {
 	async deleteComment(
 		@Param('postid', ParseObjectIdPipe) postId: string,
 		@Param('commentid', ParseObjectIdPipe) commentId: string,
-	) {
+	): Promise<number> {
 		await this.postService.checkAccessTo(postId, Action.READ);
 		const deletedComment = await this.commentService.deleteComment(commentId);
 		return deletedComment;

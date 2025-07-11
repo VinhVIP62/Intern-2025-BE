@@ -38,9 +38,18 @@ export class CommentService {
 	async getCommentsOf(
 		targetId: string,
 		options?: CursorPaginationOption<string>,
-	): Promise<WithPopulated<Comment>[]> {
-		const foundComments = this.commentRepository.findCommentsCursorPaginated(targetId, options);
-		return foundComments;
+	): Promise<
+		Promise<{
+			foundComments: WithPopulated<Comment>[];
+			nextCursor: string;
+		}>
+	> {
+		const foundComments = await this.commentRepository.findCommentsCursorPaginated(
+			targetId,
+			options,
+		);
+		const nextCursor = foundComments.at(-1)?.id || '';
+		return { foundComments, nextCursor };
 	}
 
 	// update, delete requires user to own the comment
