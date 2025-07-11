@@ -83,6 +83,13 @@ CommentSchema.virtual('parentComment', {
 	justOne: true,
 });
 
+// Virtual populate for tagged users
+CommentSchema.virtual('taggedUsersList', {
+	ref: 'User',
+	localField: 'taggedUsers',
+	foreignField: '_id',
+});
+
 // Ensure virtual fields are included when converting to JSON
 CommentSchema.set('toJSON', {
 	virtuals: true,

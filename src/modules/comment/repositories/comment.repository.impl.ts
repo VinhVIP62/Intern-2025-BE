@@ -40,6 +40,7 @@ export class CommentRepositoryImpl implements ICommentRepository {
 			{ path: 'authorUser', select: 'firstName lastName avatar' },
 			{ path: 'post', select: 'content' },
 			{ path: 'parentComment', select: 'content author' },
+			{ path: 'taggedUsersList', select: 'firstName lastName avatar' },
 		]);
 	}
 
@@ -49,6 +50,7 @@ export class CommentRepositoryImpl implements ICommentRepository {
 			{ path: 'post', select: 'content' },
 			{ path: 'parentComment', select: 'content author' },
 			{ path: 'replies', match: { isActive: true, isHidden: false } },
+			{ path: 'taggedUsersList', select: 'firstName lastName avatar' },
 		]);
 	}
 
@@ -59,7 +61,10 @@ export class CommentRepositoryImpl implements ICommentRepository {
 				isActive: true,
 			})
 			.sort({ createdAt: -1 })
-			.populate([{ path: 'authorUser', select: 'firstName lastName avatar' }])
+			.populate([
+				{ path: 'authorUser', select: 'firstName lastName avatar' },
+				{ path: 'taggedUsersList', select: 'firstName lastName avatar' },
+			])
 			.lean();
 	}
 
@@ -70,6 +75,7 @@ export class CommentRepositoryImpl implements ICommentRepository {
 				{ path: 'authorUser', select: 'firstName lastName avatar' },
 				{ path: 'post', select: 'content' },
 				{ path: 'parentComment', select: 'content author' },
+				{ path: 'taggedUsersList', select: 'firstName lastName avatar' },
 			]);
 	}
 
@@ -93,6 +99,7 @@ export class CommentRepositoryImpl implements ICommentRepository {
 			{ path: 'authorUser', select: 'firstName lastName avatar' },
 			{ path: 'post', select: 'content' },
 			{ path: 'parentComment', select: 'content author' },
+			{ path: 'taggedUsersList', select: 'firstName lastName avatar' },
 		]);
 	}
 
@@ -115,6 +122,7 @@ export class CommentRepositoryImpl implements ICommentRepository {
 			{ path: 'authorUser', select: 'firstName lastName avatar' },
 			{ path: 'post', select: 'content' },
 			{ path: 'parentComment', select: 'content author' },
+			{ path: 'taggedUsersList', select: 'firstName lastName avatar' },
 		]);
 	}
 
@@ -137,6 +145,7 @@ export class CommentRepositoryImpl implements ICommentRepository {
 			{ path: 'authorUser', select: 'firstName lastName avatar' },
 			{ path: 'post', select: 'content' },
 			{ path: 'parentComment', select: 'content author' },
+			{ path: 'taggedUsersList', select: 'firstName lastName avatar' },
 		]);
 	}
 
@@ -205,6 +214,7 @@ export class CommentRepositoryImpl implements ICommentRepository {
 			{ path: 'authorUser', select: 'firstName lastName avatar' },
 			{ path: 'post', select: 'content' },
 			{ path: 'parentComment', select: 'content author' },
+			{ path: 'taggedUsersList', select: 'firstName lastName avatar' },
 		]);
 	}
 
@@ -222,6 +232,7 @@ export class CommentRepositoryImpl implements ICommentRepository {
 			{ path: 'authorUser', select: 'firstName lastName avatar' },
 			{ path: 'post', select: 'content' },
 			{ path: 'parentComment', select: 'content author' },
+			{ path: 'taggedUsersList', select: 'firstName lastName avatar' },
 		]);
 	}
 
