@@ -83,10 +83,57 @@ export class SearchHistoryResultDto {
 	createdAt: string;
 }
 
-export class PaginatedSearchHistoryResultDto {
-	@ApiProperty({ type: [SearchHistoryResultDto] })
+// Enhanced DTOs for basic data
+export class BasicInfoDto {
+	@ApiProperty({ type: String, description: 'Entity ID' })
+	@IsString()
+	id: string;
+
+	@ApiProperty({ type: String, description: 'Entity name/title' })
+	@IsString()
+	name: string;
+
+	@ApiProperty({ type: String, required: false, description: 'Entity avatar/image' })
+	@IsOptional()
+	@IsString()
+	avatar?: string;
+}
+
+export class EnhancedSearchHistoryResultDto {
+	@ApiProperty({ type: String })
+	userId: string;
+
+	@ApiProperty({ type: String, required: false, description: 'Text hoặc hashtag mà user nhập' })
+	@IsOptional()
+	@IsString()
+	text?: string;
+
+	@ApiProperty({ type: String, required: false, description: 'Hashtag mà user nhập' })
+	@IsOptional()
+	@IsString()
+	hashtag?: string;
+
+	@ApiProperty({ type: BasicInfoDto, required: false, description: 'Basic user information' })
+	@IsOptional()
+	user?: BasicInfoDto;
+
+	@ApiProperty({ type: BasicInfoDto, required: false, description: 'Basic group information' })
+	@IsOptional()
+	group?: BasicInfoDto;
+
+	@ApiProperty({ type: BasicInfoDto, required: false, description: 'Basic event information' })
+	@IsOptional()
+	event?: BasicInfoDto;
+
+	@ApiProperty({ type: String, description: 'Thời gian tạo' })
+	@IsString()
+	createdAt: string;
+}
+
+export class PaginatedEnhancedSearchHistoryResultDto {
+	@ApiProperty({ type: [EnhancedSearchHistoryResultDto] })
 	@IsArray()
-	data: SearchHistoryResultDto[];
+	data: EnhancedSearchHistoryResultDto[];
 
 	@ApiProperty()
 	@IsNumber()

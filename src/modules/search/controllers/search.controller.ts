@@ -17,8 +17,9 @@ import { ISearchHistoryRepository } from '../repositories/searchHistory.reposito
 import {
 	CreateSearchHistoryDto,
 	CreateSearchHistoryInternalDto,
-	PaginatedSearchHistoryResultDto,
 	SearchHistoryResultDto,
+	PaginatedEnhancedSearchHistoryResultDto,
+	EnhancedSearchHistoryResultDto,
 } from '../dto/searchHistory.dto';
 import { Inject } from '@nestjs/common';
 import { Types } from 'mongoose';
@@ -94,27 +95,19 @@ export class SearchController {
 	@ApiOperation({ summary: 'Lấy lịch sử tìm kiếm' })
 	@ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
 	@ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
-	@ApiResponse({ status: 200, type: PaginatedSearchHistoryResultDto })
+	@ApiResponse({ status: 200, type: PaginatedEnhancedSearchHistoryResultDto })
 	async getSearchHistory(
 		@Query('page') page = 1,
 		@Query('limit') limit = 10,
 		@Request() req,
 		@I18n() i18n: I18nContext,
-	): Promise<ResponseEntity<PaginatedSearchHistoryResultDto>> {
+	): Promise<ResponseEntity<PaginatedEnhancedSearchHistoryResultDto>> {
 		const userId = req.user?.id;
-		let data: SearchHistoryResultDto[] = [];
+		let data: EnhancedSearchHistoryResultDto[] = [];
 		let total = 0;
 		if (userId) {
-			const result = await this.searchHistoryRepository.findByUserIdPagination(userId, page, limit);
-			data = result.data.map((h: any) => ({
-				userId: h.userId?.toString?.() || '',
-				text: h.text,
-				hashtag: h.hashtag,
-				user: h.user?.toString?.() || undefined,
-				group: h.group?.toString?.() || undefined,
-				event: h.event?.toString?.() || undefined,
-				createdAt: h.createdAt ? new Date(h.createdAt).toISOString() : '',
-			}));
+			const result = await this.searchService.getSearchHistoryWithBasicData(userId, page, limit);
+			data = result.data;
 			total = result.total;
 		}
 		const totalPages = Math.ceil(total / limit);

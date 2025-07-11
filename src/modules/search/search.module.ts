@@ -10,6 +10,7 @@ import { SearchRepositoryImpl } from './repositories/search.repository.impl';
 import { User, UserSchema } from '../user/entities/user.schema';
 import { Post, PostSchema } from '../post/entities/post.schema';
 import { Event, EventSchema } from '../event/entities/event.schema';
+import { Group, GroupSchema } from '../group/entities/group.schema';
 import { SearchHistory, SearchHistorySchema } from './entities/searchHistory.schema';
 import { ISearchHistoryRepository } from './repositories/searchHistory.repository';
 import { SearchHistoryRepositoryImpl } from './repositories/searchHistory.repository.impl';
@@ -20,6 +21,7 @@ import { SearchHistoryRepositoryImpl } from './repositories/searchHistory.reposi
 			{ name: User.name, schema: UserSchema },
 			{ name: Post.name, schema: PostSchema },
 			{ name: Event.name, schema: EventSchema },
+			{ name: Group.name, schema: GroupSchema },
 			{ name: SearchHistory.name, schema: SearchHistorySchema },
 		]),
 		forwardRef(() => UserModule),

@@ -2517,7 +2517,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedSearchHistoryResultDto"
+                  "$ref": "#/components/schemas/PaginatedEnhancedSearchHistoryResultDto"
                 }
               }
             }
@@ -3923,7 +3923,28 @@
           "filter"
         ]
       },
-      "SearchHistoryResultDto": {
+      "BasicInfoDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Entity ID"
+          },
+          "name": {
+            "type": "string",
+            "description": "Entity name/title"
+          },
+          "avatar": {
+            "type": "string",
+            "description": "Entity avatar/image"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "EnhancedSearchHistoryResultDto": {
         "type": "object",
         "properties": {
           "userId": {
@@ -3938,16 +3959,28 @@
             "description": "Hashtag mà user nhập"
           },
           "user": {
-            "type": "string",
-            "description": "User ID được tìm kiếm"
+            "description": "Basic user information",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BasicInfoDto"
+              }
+            ]
           },
           "group": {
-            "type": "string",
-            "description": "Group ID được tìm kiếm"
+            "description": "Basic group information",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BasicInfoDto"
+              }
+            ]
           },
           "event": {
-            "type": "string",
-            "description": "Event ID được tìm kiếm"
+            "description": "Basic event information",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/BasicInfoDto"
+              }
+            ]
           },
           "createdAt": {
             "type": "string",
@@ -3959,13 +3992,13 @@
           "createdAt"
         ]
       },
-      "PaginatedSearchHistoryResultDto": {
+      "PaginatedEnhancedSearchHistoryResultDto": {
         "type": "object",
         "properties": {
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SearchHistoryResultDto"
+              "$ref": "#/components/schemas/EnhancedSearchHistoryResultDto"
             }
           },
           "page": {
@@ -4017,6 +4050,42 @@
             "description": "Event ID được tìm kiếm"
           }
         }
+      },
+      "SearchHistoryResultDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string",
+            "description": "Text hoặc hashtag mà user nhập"
+          },
+          "hashtag": {
+            "type": "string",
+            "description": "Hashtag mà user nhập"
+          },
+          "user": {
+            "type": "string",
+            "description": "User ID được tìm kiếm"
+          },
+          "group": {
+            "type": "string",
+            "description": "Group ID được tìm kiếm"
+          },
+          "event": {
+            "type": "string",
+            "description": "Event ID được tìm kiếm"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Thời gian tạo"
+          }
+        },
+        "required": [
+          "userId",
+          "createdAt"
+        ]
       }
     }
   }

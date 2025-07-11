@@ -14,6 +14,9 @@ import { Model, Types } from 'mongoose';
 import { SearchHistory } from '../entities/searchHistory.schema';
 import { CreateSearchHistoryInternalDto } from '../dto/searchHistory.dto';
 import { ISearchHistoryRepository } from '../repositories/searchHistory.repository';
+import { User } from '@modules/user/entities/user.schema';
+import { Group } from '@modules/group/entities/group.schema';
+import { Event } from '@modules/event/entities/event.schema';
 
 @Injectable()
 export class SearchService {
@@ -24,6 +27,9 @@ export class SearchService {
 		private readonly postService: PostService,
 		@Inject(ISearchHistoryRepository)
 		private readonly searchHistoryRepository: ISearchHistoryRepository,
+		@InjectModel(User.name) private readonly userModel: Model<User>,
+		@InjectModel(Group.name) private readonly groupModel: Model<Group>,
+		@InjectModel(Event.name) private readonly eventModel: Model<Event>,
 	) {}
 
 	async searchAll(
@@ -158,6 +164,127 @@ export class SearchService {
 			totalPages,
 			hasNextPage: page < totalPages,
 			hasPrevPage: page > 1,
+		};
+	}
+
+	async getSearchHistoryWithBasicData(
+		userId: string,
+		page: number = 1,
+		limit: number = 10,
+	): Promise<{ data: any[]; total: number }> {
+		const result = await this.searchHistoryRepository.findByUserIdPagination(
+			new Types.ObjectId(userId),
+			page,
+			limit,
+		);
+
+		// Collect all unique IDs for batch fetching
+		const userIds = new Set<string>();
+		const groupIds = new Set<string>();
+		const eventIds = new Set<string>();
+
+		result.data.forEach((history: any) => {
+			if (history.user) userIds.add(history.user.toString());
+			if (history.group) groupIds.add(history.group.toString());
+			if (history.event) eventIds.add(history.event.toString());
+		});
+
+		// Batch fetch basic data
+		const [users, groups, events] = await Promise.all([
+			userIds.size > 0 ?
+				this.userModel
+					.find({ _id: { $in: Array.from(userIds).map(id => new Types.ObjectId(id)) } })
+					.select('_id firstName lastName avatar')
+					.lean()
+			:	([] as any[]),
+			groupIds.size > 0 ?
+				this.groupModel
+					.find({ _id: { $in: Array.from(groupIds).map(id => new Types.ObjectId(id)) } })
+					.select('_id name avatar')
+					.lean()
+			:	([] as any[]),
+			eventIds.size > 0 ?
+				this.eventModel
+					.find({ _id: { $in: Array.from(eventIds).map(id => new Types.ObjectId(id)) } })
+					.select('_id title image')
+					.lean()
+			:	([] as any[]),
+		]);
+
+		// Create lookup maps with proper typing
+		const userMap = new Map<string, any>();
+		const groupMap = new Map<string, any>();
+		const eventMap = new Map<string, any>();
+
+		(users as any[]).forEach((user: any) => {
+			if (user._id) {
+				userMap.set(user._id.toString(), user);
+			}
+		});
+
+		(groups as any[]).forEach((group: any) => {
+			if (group._id) {
+				groupMap.set(group._id.toString(), group);
+			}
+		});
+
+		(events as any[]).forEach((event: any) => {
+			if (event._id) {
+				eventMap.set(event._id.toString(), event);
+			}
+		});
+
+		// Enhance search history with basic data
+		const enhancedData = result.data.map((history: any) => {
+			const enhanced: any = {
+				userId: history.userId?.toString?.() || '',
+				text: history.text,
+				hashtag: history.hashtag,
+				createdAt: history.createdAt ? new Date(history.createdAt).toISOString() : '',
+			};
+
+			// Add user data if exists
+			if (history.user) {
+				const user = userMap.get(history.user.toString());
+				if (user && user._id && user.firstName !== undefined && user.lastName !== undefined) {
+					enhanced.user = {
+						id: user._id.toString(),
+						name: `${user.firstName} ${user.lastName}`.trim(),
+						avatar: user.avatar || null,
+					};
+				}
+			}
+
+			// Add group data if exists
+			if (history.group) {
+				const group = groupMap.get(history.group.toString());
+				if (group && group._id && group.name) {
+					enhanced.group = {
+						id: group._id.toString(),
+						name: group.name,
+						avatar: group.avatar || null,
+					};
+				}
+			}
+
+			// Add event data if exists
+			if (history.event) {
+				const event = eventMap.get(history.event.toString());
+				if (event && event._id && event.title) {
+					enhanced.event = {
+						id: event._id.toString(),
+						name: event.title,
+						avatar: event.image || null,
+					};
+				}
+			}
+
+			return enhanced;
+		});
+
+		return {
+			data: enhancedData,
+			total: result.total,
 		};
 	}
 }
