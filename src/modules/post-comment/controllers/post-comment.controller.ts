@@ -42,7 +42,6 @@ export class PostCommentController {
 		await this.postService.checkAccessTo(postId, Action.READ);
 		const createdComment = await this.commentService.createComment({
 			...body,
-			targetId: postId,
 			userId: request.user.id,
 		});
 		return plainToInstanceStrict(ResponseCommentDto, createdComment);
