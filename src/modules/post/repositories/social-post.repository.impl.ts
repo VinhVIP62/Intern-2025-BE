@@ -4,7 +4,6 @@ import mongoose, { FilterQuery, Model } from 'mongoose';
 
 import { WithPopulated } from '@common/crud/entities';
 import { MongooseSoftDeleteRepositoryImpl } from '@common/crud/repos';
-import { Visibility } from '@common/enums';
 import { CursorPaginationOption } from '@common/types/data';
 
 import { SocialPost } from '../entities';
@@ -21,48 +20,12 @@ export class PostRepositoryImpl
 		});
 	}
 
-	async fetchPost(id: string, userId: string): Promise<WithPopulated<SocialPost> | null> {
-		const userObjectId = new mongoose.Types.ObjectId(userId);
-		const foundPost =
-			(
-				await this.postModel
-					.findOne(
-						this.transformFilter({
-							id,
-							$or: [
-								{ visibility: Visibility.PUBLIC },
-								{
-									visibility: Visibility.LIMITED,
-									visibleToUsersIds: { $in: [userObjectId] },
-								},
-							],
-						}),
-					)
-					.populate(this.transformPopulate())
-					.exec()
-			)?.toObject() || null;
-		return foundPost;
-	}
-
 	async fetchFeed(
-		userId: string,
+		where: Partial<SocialPost>,
 		options?: CursorPaginationOption<string>,
 	): Promise<WithPopulated<SocialPost>[]> {
-		const userObjectId = new mongoose.Types.ObjectId(userId);
 		const cursorPost = options?.cursor ? await this.findOneByIdOrFail(options.cursor) : undefined;
-		const filter: FilterQuery<SocialPost> = {
-			$and: [
-				{
-					$or: [
-						{ visibility: Visibility.PUBLIC },
-						{
-							visibility: Visibility.LIMITED,
-							visibleToUsersIds: { $in: [userObjectId] },
-						},
-					],
-				},
-			],
-		};
+		const filter: FilterQuery<SocialPost> = where;
 		if (cursorPost) {
 			filter.$and!.push({
 				$or: [

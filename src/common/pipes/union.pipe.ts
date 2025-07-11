@@ -1,0 +1,40 @@
+import { BadRequestException, Injectable, PipeTransform, Type } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
+
+interface UnionPipeOptions<T extends Record<string, any>, D extends keyof T = keyof T> {
+	discriminator: D;
+	types: Record<T[D], Type<T>>;
+}
+
+@Injectable()
+export class UnionValidationPipe<T extends Record<string, any>> implements PipeTransform {
+	constructor(private readonly options: UnionPipeOptions<T>) {}
+
+	async transform(value: T) {
+		const { discriminator, types } = this.options;
+
+		const typeKey = value[discriminator];
+
+		const TargetDtoType = types[typeKey];
+
+		if (!TargetDtoType) {
+			throw new BadRequestException(
+				`Invalid discriminator "${typeKey}". Expected one of: ${Object.keys(types).join(', ')}`,
+			);
+		}
+
+		const instance = plainToInstance(TargetDtoType, value);
+		const errors = await validate(instance, {
+			whitelist: true,
+			forbidNonWhitelisted: true,
+			forbidUnknownValues: true,
+		});
+
+		if (errors.length > 0) {
+			throw new BadRequestException(errors);
+		}
+
+		return instance;
+	}
+}

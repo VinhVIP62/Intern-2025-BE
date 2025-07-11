@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConditionalModule, ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
@@ -18,9 +18,20 @@ import { ResponseTransformInterceptor } from '@common/interceptors';
 
 import { Config, DatabaseConfig } from '@configs';
 
+import { AdminModule } from '@modules/admin';
+import { AuthModule } from '@modules/auth';
 import { JwtAuthGuard } from '@modules/auth/guards';
+import { CommentModule } from '@modules/comment';
+import { DevModule } from '@modules/dev';
+import { EventModule } from '@modules/event';
 import { LoggerModule } from '@modules/logger';
+import { NotificationModule } from '@modules/notification';
+import { PostModule } from '@modules/post';
+import { PostCommentModule } from '@modules/post-comment';
 import { RouteModule } from '@modules/router';
+import { UserModule } from '@modules/user';
+
+import { CustomRequestCtxModule } from '@shared/modules';
 
 @Module({
 	imports: [
@@ -53,6 +64,21 @@ import { RouteModule } from '@modules/router';
 			],
 			errorMessage: 'Rate limit reached',
 		}),
+		CustomRequestCtxModule,
+		/* dev modules for testing */
+		ConditionalModule.registerWhen(
+			DevModule,
+			(env: NodeJS.ProcessEnv) => env.NODE_ENV === 'development',
+		),
+		/* production modules */
+		AuthModule,
+		AdminModule,
+		EventModule,
+		NotificationModule,
+		PostModule,
+		PostCommentModule,
+		CommentModule,
+		UserModule,
 	],
 	providers: [
 		{

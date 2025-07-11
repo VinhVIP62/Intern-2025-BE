@@ -38,11 +38,8 @@ export interface IBaseRepository<T extends IBaseEntity> {
 		where: Partial<T>,
 		data: Partial<T>,
 		queryOptions?: QueryOptions<T>,
-	): Promise<WithPopulated<T> | null>;
-	findOneByAndDelete(
-		where: Partial<T>,
-		queryOptions?: QueryOptions<T>,
-	): Promise<WithPopulated<T> | null>;
+	): Promise<WithPopulated<T>>;
+	findOneByAndDelete(where: Partial<T>, queryOptions?: QueryOptions<T>): Promise<WithPopulated<T>>;
 	count(where: Partial<T>, queryOptions?: QueryOptions<T>): Promise<number>;
 	exists(where: Partial<T>, queryOptions?: QueryOptions<T>): Promise<boolean>;
 }

@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { ConditionalModule } from '@nestjs/config';
 import { RouterModule } from '@nestjs/core';
 
 import { AdminModule } from '@modules/admin';
@@ -8,42 +7,32 @@ import { DevModule } from '@modules/dev';
 import { EventModule } from '@modules/event';
 import { NotificationModule } from '@modules/notification';
 import { PostModule } from '@modules/post';
+import { PostCommentModule } from '@modules/post-comment';
 import { UserModule } from '@modules/user';
 
 @Module({
 	imports: [
 		RouterModule.register([
-			{ path: 'auth', module: AuthModule },
+			{ path: '/auth', module: AuthModule },
 			{
-				path: 'admin',
+				path: '/admin',
 				module: AdminModule,
 			},
 			{
-				path: 'client',
+				path: '/client',
 				children: [
-					{ path: 'events', module: EventModule },
-					{ path: 'notifications', module: NotificationModule },
-					{ path: 'posts', module: PostModule },
-					{ path: 'users', module: UserModule },
+					{ path: '/events', module: EventModule },
+					{ path: '/notifications', module: NotificationModule },
+					{
+						path: '/posts',
+						module: PostModule,
+						children: [{ path: '/', module: PostCommentModule }],
+					},
+					{ path: '/users', module: UserModule },
 				],
 			},
-			{
-				path: 'dev',
-				module: DevModule,
-			},
+			{ path: '/dev', module: DevModule },
 		]),
-		/* dev modules for testing */
-		ConditionalModule.registerWhen(
-			DevModule,
-			(env: NodeJS.ProcessEnv) => env.NODE_ENV === 'development',
-		),
-		/* production modules */
-		AuthModule,
-		AdminModule,
-		EventModule,
-		NotificationModule,
-		PostModule,
-		UserModule,
 	],
 })
 export class RouteModule {}

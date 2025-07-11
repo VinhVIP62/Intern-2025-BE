@@ -1,10 +1,11 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import { MemoryStoredFile } from 'nestjs-form-data';
 
 import { WithPopulated } from '@common/crud/entities';
-import { CursorPaginationOption } from '@common/types/data';
+import { Action } from '@common/enums';
+import { CursorPaginationOption, CustomRequestCtx } from '@common/types/data';
 
-import { FileHostService } from '@shared/modules';
+import { CaslFilterFactory, FileHostService } from '@shared/modules';
 
 import { SocialPost } from '../entities';
 import { IPostRepository, IPostRepositoryToken } from '../repositories';
@@ -14,7 +15,15 @@ export class PostService {
 	constructor(
 		@Inject(IPostRepositoryToken) private readonly postRepository: IPostRepository,
 		private readonly fileHostService: FileHostService,
+		private readonly caslFilterFactory: CaslFilterFactory,
 	) {}
+
+	async checkAccessTo(id: string, action: Action): Promise<void> {
+		const filter = this.caslFilterFactory.createFilterForUser(SocialPost, action);
+		await this.postRepository.findOneByOrFail({ id, ...filter }).catch(() => {
+			throw new ForbiddenException();
+		});
+	}
 
 	async createPost(
 		data: Partial<SocialPost> & { files?: MemoryStoredFile[] },
@@ -26,21 +35,26 @@ export class PostService {
 
 	async updatePost(
 		id: string,
-		userId: string,
 		data: Partial<SocialPost> & { files?: MemoryStoredFile[] },
 	): Promise<WithPopulated<SocialPost> | null> {
+		const filter = this.caslFilterFactory.createFilterForUser(SocialPost, Action.UPDATE);
 		if (data.files) data.fileUrls = await this.fileHostService.files2Urls(data.files);
-		const createdPost = this.postRepository.findOneByAndUpdate({ id, userId }, data);
+		const createdPost = this.postRepository.findOneByAndUpdate({ id, ...filter }, data);
 		return createdPost;
 	}
 
-	async deletePost(id: string, userId: string): Promise<WithPopulated<SocialPost>> {
-		const deletedPost = this.postRepository.findOneByAndSoftDelete({ id, userId }, userId);
+	async deletePost(id: string): Promise<WithPopulated<SocialPost>> {
+		const filter = this.caslFilterFactory.createFilterForUser(SocialPost, Action.DELETE);
+		const deletedPost = this.postRepository.findOneByAndSoftDelete(
+			{ id, ...filter },
+			CustomRequestCtx.getAuthenticated().req.user.id,
+		);
 		return deletedPost;
 	}
 
-	async getPost(id: string, userId: string): Promise<WithPopulated<SocialPost> | null> {
-		const foundPost = await this.postRepository.fetchPost(id, userId);
+	async getPost(id: string): Promise<WithPopulated<SocialPost> | null> {
+		const filter = this.caslFilterFactory.createFilterForUser(SocialPost, Action.READ);
+		const foundPost = await this.postRepository.findOneBy({ id, ...filter });
 		return foundPost;
 	}
 
@@ -51,7 +65,8 @@ export class PostService {
 		foundPosts: WithPopulated<SocialPost>[];
 		nextCursor: string;
 	}> {
-		const foundPosts = await this.postRepository.fetchFeed(userId, options);
+		const filter = this.caslFilterFactory.createFilterForUser(SocialPost, Action.READ);
+		const foundPosts = await this.postRepository.fetchFeed(filter, options);
 		const nextCursor = foundPosts.at(-1)?.id || '';
 		return { foundPosts, nextCursor };
 	}

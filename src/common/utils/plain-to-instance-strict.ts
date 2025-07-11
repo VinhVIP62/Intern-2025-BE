@@ -1,24 +1,24 @@
 import { ClassTransformOptions, plainToInstance } from 'class-transformer';
 
-import { Class } from '@common/types/utils';
+import { ConcreteClass } from '@common/types/utils';
 
 /** `plainToInstance` wrapper function with `excludeExtraneousValues` set to `true` */
 export function plainToInstanceStrict<T, V>(
-	cls: Class<T>,
+	cls: ConcreteClass<T>,
 	plain: V[],
 	options?: ClassTransformOptions,
 ): T[];
 
 /** `plainToInstance` wrapper function with `excludeExtraneousValues` set to `true` */
 export function plainToInstanceStrict<T, V>(
-	cls: Class<T>,
+	cls: ConcreteClass<T>,
 	plain: V,
 	options?: ClassTransformOptions,
 ): T;
 
 /** `plainToInstance` wrapper function with `excludeExtraneousValues` set to `true` */
 export function plainToInstanceStrict<T, V>(
-	cls: Class<T>,
+	cls: ConcreteClass<T>,
 	plain: V | V[],
 	options?: ClassTransformOptions,
 ) {

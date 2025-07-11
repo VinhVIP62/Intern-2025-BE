@@ -1,4 +1,4 @@
-import { Model, PopulateOptions, SortOrder } from 'mongoose';
+import mongoose, { Model, PopulateOptions, SortOrder } from 'mongoose';
 
 import { SORT } from '@common/enums';
 import { EntityNotFound } from '@common/exceptions';
@@ -80,11 +80,24 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 		return merged;
 	}
 
+	// overload 1
+	protected transformFilter<TWhere>(
+		this: MongooseRepositoryImpl<T>,
+		where: { id: string } & TWhere,
+		queryOptions?: QueryOptions<T>,
+	): { _id: mongoose.Types.ObjectId } & Omit<TWhere, 'id'>;
+	// overload 2
 	protected transformFilter<TWhere>(
 		this: MongooseRepositoryImpl<T>,
 		where: { id?: string } & TWhere,
 		queryOptions?: QueryOptions<T>,
-	): { _id?: string } & Omit<TWhere, 'id'> {
+	): { _id?: mongoose.Types.ObjectId } & Omit<TWhere, 'id'>;
+	// implementation
+	protected transformFilter<TWhere>(
+		this: MongooseRepositoryImpl<T>,
+		where: { id?: string } & TWhere,
+		queryOptions?: QueryOptions<T>,
+	): { _id?: mongoose.Types.ObjectId } & Omit<TWhere, 'id'> {
 		const repoOptions: Partial<T> =
 			(
 				queryOptions?.doNotUseRepoOptions === true ||
@@ -111,7 +124,7 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 		const transformed = {
 			...defaultFindOptions,
 			...cleanedFindOptions,
-			...(where.id && { _id: where.id }),
+			...(where.id && { _id: new mongoose.Types.ObjectId(where.id) }),
 		};
 		delete transformed.id;
 		return transformed;
@@ -155,9 +168,10 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 		const merged: string[] = Array.from(new Set([...repoOptions, ...queryRepoOptions]));
 		/** string transformation, appending  'Populated' postfix to values
 		 * (.eg userId.deletedBy => userIdPopulated.deletedByPopulated)*/
-		merged.forEach(
-			(v, i) =>
-				(merged[i] = v
+		merged.forEach((v, i) =>
+			v.endsWith('_') ?
+				(merged[i] = v.slice(0, -1))
+			:	(merged[i] = v
 					.split('.')
 					.map(vsegment => vsegment + 'Populated')
 					.join('.')),
@@ -251,15 +265,17 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 	}
 
 	async find(where: Partial<T>, queryOptions?: QueryOptions<T>): Promise<WithPopulated<T>[]> {
-		const foundEntities = (
-			await this.entityModel
-				.find(this.transformFilter(where, queryOptions))
-				.sort(this.transformSort(queryOptions))
-				.skip(queryOptions?.skip || 0)
-				.limit(queryOptions?.limit || 0)
-				.populate(this.transformPopulate(queryOptions))
-				.exec()
-		).map(e => e.toObject());
+		const foundEntities: WithPopulated<T>[] = [];
+		const query = this.entityModel
+			.find(this.transformFilter(where, queryOptions))
+			.sort(this.transformSort(queryOptions))
+			.skip(queryOptions?.skip || 0)
+			.limit(queryOptions?.limit || 0)
+			.populate(this.transformPopulate(queryOptions));
+		const cursor = query.cursor();
+		for await (const doc of cursor) {
+			foundEntities.push(doc.toObject());
+		}
 		return foundEntities;
 	}
 

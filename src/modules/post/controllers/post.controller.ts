@@ -41,10 +41,9 @@ export class PostController {
 	@Version('1')
 	@Delete(':postid')
 	async deletePost(
-		@Param('postid', ParseObjectIdPipe) id: string,
-		@Req() request: AuthenticatedRequest,
+		@Param('postid', ParseObjectIdPipe) postId: string,
 	): Promise<WithPopulated<ResponsePostDto>> {
-		const deletedPost = await this.postService.deletePost(id, request.user.id);
+		const deletedPost = await this.postService.deletePost(postId);
 		return plainToInstanceStrict(ResponsePostDto, deletedPost);
 	}
 
@@ -52,14 +51,10 @@ export class PostController {
 	@Patch(':postid')
 	@FormDataRequest({ storage: MemoryStoredFile })
 	async updatePost(
-		@Param('postid', ParseObjectIdPipe) id: string,
-		@Req() request: AuthenticatedRequest,
+		@Param('postid', ParseObjectIdPipe) postId: string,
 		@Body() body: UpdatePostDto,
 	): Promise<WithPopulated<ResponsePostDto>> {
-		const updatedPost = await this.postService.updatePost(id, request.user.id, {
-			...body,
-			userId: request.user.id,
-		});
+		const updatedPost = await this.postService.updatePost(postId, body);
 		return plainToInstanceStrict(ResponsePostDto, updatedPost);
 	}
 
@@ -80,12 +75,9 @@ export class PostController {
 	@Version('1')
 	@Get(':postid')
 	async getPost(
-		@Param('postid', ParseObjectIdPipe) id: string,
-		@Req() request: AuthenticatedRequest,
+		@Param('postid', ParseObjectIdPipe) postId: string,
 	): Promise<WithPopulated<ResponsePostDto>> {
-		const foundPost = await this.postService.getPost(id, request.user.id);
+		const foundPost = await this.postService.getPost(postId);
 		return plainToInstanceStrict(ResponsePostDto, foundPost);
 	}
-
-	// async getPosts();
 }

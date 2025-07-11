@@ -6,3 +6,7 @@ import { Sub } from '@modules/auth/types';
 export interface AuthenticatedRequest extends Request {
 	user: Sub;
 }
+
+export interface CustomRequest extends Partial<AuthenticatedRequest> {
+	user?: Sub;
+}
