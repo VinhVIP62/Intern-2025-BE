@@ -51,7 +51,6 @@ export class PostRepositoryImpl implements IPostRepository {
 					path: 'taggedUsersList',
 					select: 'firstName lastName avatar fullName',
 				})
-				.populate('comments')
 				.sort({ createdAt: -1 })
 				.skip(skip)
 				.limit(limit)
@@ -81,7 +80,6 @@ export class PostRepositoryImpl implements IPostRepository {
 				path: 'taggedUsersList',
 				select: 'firstName lastName avatar fullName',
 			})
-			.populate('comments')
 			.lean({ virtuals: true });
 
 		if (!post) {
@@ -122,7 +120,6 @@ export class PostRepositoryImpl implements IPostRepository {
 					path: 'taggedUsersList',
 					select: 'firstName lastName avatar fullName',
 				})
-				.populate('comments')
 				.sort({ createdAt: -1 })
 				.skip(skip)
 				.limit(limit)
@@ -174,7 +171,6 @@ export class PostRepositoryImpl implements IPostRepository {
 					path: 'taggedUsersList',
 					select: 'firstName lastName avatar fullName',
 				})
-				.populate('comments')
 				.sort({ createdAt: -1 })
 				.skip(skip)
 				.limit(limit)
@@ -219,7 +215,6 @@ export class PostRepositoryImpl implements IPostRepository {
 				path: 'taggedUsersList',
 				select: 'firstName lastName avatar fullName',
 			})
-			.populate('comments')
 			.lean({ virtuals: true });
 
 		if (!populatedPost) {
@@ -263,7 +258,6 @@ export class PostRepositoryImpl implements IPostRepository {
 				path: 'taggedUsersList',
 				select: 'firstName lastName avatar fullName',
 			})
-			.populate('comments')
 			.lean({ virtuals: true });
 
 		if (!post) {
@@ -407,7 +401,6 @@ export class PostRepositoryImpl implements IPostRepository {
 					path: 'taggedUsersList',
 					select: 'firstName lastName avatar fullName',
 				})
-				.populate('comments')
 				.sort({ createdAt: -1 })
 				.skip(skip)
 				.limit(limit)
@@ -437,7 +430,6 @@ export class PostRepositoryImpl implements IPostRepository {
 				path: 'taggedUsersList',
 				select: 'firstName lastName avatar fullName',
 			})
-			.populate('comments')
 			.lean({ virtuals: true });
 		if (!post) throw new Error('Post not found');
 		return post;
@@ -466,7 +458,6 @@ export class PostRepositoryImpl implements IPostRepository {
 				path: 'taggedUsersList',
 				select: 'firstName lastName avatar fullName',
 			})
-			.populate('comments')
 			.lean({ virtuals: true });
 		if (!post) throw new Error('Already liked or post not found');
 		return post;
@@ -495,7 +486,6 @@ export class PostRepositoryImpl implements IPostRepository {
 				path: 'taggedUsersList',
 				select: 'firstName lastName avatar fullName',
 			})
-			.populate('comments')
 			.lean({ virtuals: true });
 		if (!post) throw new Error('Not liked or post not found');
 		return post;
@@ -543,7 +533,6 @@ export class PostRepositoryImpl implements IPostRepository {
 					path: 'taggedUsersList',
 					select: 'firstName lastName avatar fullName',
 				})
-				.populate('comments')
 				.sort({ createdAt: -1 })
 				.skip(skip)
 				.limit(limit)
@@ -595,7 +584,6 @@ export class PostRepositoryImpl implements IPostRepository {
 					path: 'taggedUsersList',
 					select: 'firstName lastName avatar fullName',
 				})
-				.populate('comments')
 				.sort({ createdAt: -1 })
 				.skip(skip)
 				.limit(limit)
@@ -650,7 +638,6 @@ export class PostRepositoryImpl implements IPostRepository {
 					path: 'taggedUsersList',
 					select: 'firstName lastName avatar fullName',
 				})
-				.populate('comments')
 				.sort({
 					likeCount: -1,
 					commentCount: -1,
