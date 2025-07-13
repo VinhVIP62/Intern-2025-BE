@@ -142,60 +142,24 @@ export class SearchRepositoryImpl implements ISearchRepository {
 		key?: string,
 		page: number = 1,
 		limit: number = 10,
-	): Promise<{ locations: any[]; total: number }> {
+	): Promise<{ users: any[]; total: number }> {
 		const skip = (page - 1) * limit;
+		const filter: any = {};
 
-		// First, find users that match the location criteria
-		const userFilter: any = {};
 		if (key) {
 			const regex = new RegExp(key, 'i');
-			userFilter.$or = [
+			filter.$or = [
 				{ 'location.city': regex },
 				{ 'location.district': regex },
 				{ 'location.address': regex },
 			];
 		}
 
-		// Get user IDs that match the location criteria
-		const users = await this.userModel.find(userFilter).select('_id').lean();
-		const userIds = users.map(user => user._id);
-
-		if (userIds.length === 0) {
-			return { locations: [], total: 0 };
-		}
-
-		// Find posts from these users
-		const postFilter: any = {
-			approvalStatus: PostStatus.APPROVED,
-			author: { $in: userIds },
-		};
-
-		const [posts, total] = await Promise.all([
-			this.postModel
-				.find(postFilter)
-				.populate('authorUser', 'firstName lastName avatar fullName')
-				.populate('event', 'title description')
-				.populate('group', 'name description')
-				.populate('sharedFromPost')
-				.populate({
-					path: 'sharedPostsList',
-					select: 'author',
-					populate: {
-						path: 'authorUser',
-						select: 'firstName lastName avatar fullName',
-					},
-				})
-				.populate({
-					path: 'taggedUsersList',
-					select: 'firstName lastName avatar fullName',
-				})
-				.sort({ createdAt: -1 })
-				.skip(skip)
-				.limit(limit)
-				.lean({ virtuals: true }),
-			this.postModel.countDocuments(postFilter),
+		const [users, total] = await Promise.all([
+			this.userModel.find(filter).skip(skip).limit(limit).lean({ virtuals: true }),
+			this.userModel.countDocuments(filter),
 		]);
 
-		return { locations: posts, total };
+		return { users, total };
 	}
 }

@@ -60,7 +60,7 @@ export class SearchService {
 			{ type: SearchFilterType.EVENT, results: eventRes.events, total: eventRes.total },
 			{ type: SearchFilterType.GROUP, results: groupRes.groups, total: groupRes.total },
 			{ type: SearchFilterType.HASHTAGS, results: hashtagRes.hashtags, total: hashtagRes.total },
-			{ type: SearchFilterType.LOCATION, results: locationRes.locations, total: locationRes.total },
+			{ type: SearchFilterType.LOCATION, results: locationRes.users, total: locationRes.total },
 		];
 		// Calculate pagination (use max total for totalPages)
 		const maxTotal = Math.max(
@@ -148,7 +148,7 @@ export class SearchService {
 				}
 				case SearchFilterType.LOCATION: {
 					const res = await this.searchRepository.searchLocations(key, page, limit);
-					data.push({ type: SearchFilterType.LOCATION, results: res.locations, total: res.total });
+					data.push({ type: SearchFilterType.LOCATION, results: res.users, total: res.total });
 					if (res.total > maxTotal) maxTotal = res.total;
 					break;
 				}

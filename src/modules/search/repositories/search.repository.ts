@@ -42,7 +42,7 @@ export interface ISearchRepository {
 		key?: string,
 		page?: number,
 		limit?: number,
-	): Promise<{ locations: any[]; total: number }>; // Returns posts from users in specific locations
+	): Promise<{ users: any[]; total: number }>; // Returns users in specific locations
 }
 
 export const ISearchRepository = Symbol('ISearchRepository');
