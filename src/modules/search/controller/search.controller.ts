@@ -50,8 +50,12 @@ export class SearchController {
 	@Get('posts')
 	@Version('1')
 	@Response()
-	async searchPosts(@Query('keyword') keyword: string): Promise<ResponseEntity<any>> {
-		const res = await this.searchService.searchPost(keyword);
+	async searchPosts(
+		@Req() request: Request,
+		@Query('keyword') keyword: string,
+	): Promise<ResponseEntity<any>> {
+		const user = request.user as { id: string };
+		const res = await this.searchService.searchPost(user.id, keyword);
 		return {
 			success: true,
 			data: res,

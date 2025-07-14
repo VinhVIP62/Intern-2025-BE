@@ -18,6 +18,12 @@ import { EventMemberRepository } from '@modules/event/repositories/eventmember.r
 import { IEventRepository } from '@modules/event/repositories/event.repository';
 import { EventRepositoryImpl } from '@modules/event/repositories/event.repository.impl';
 import { EventMapper } from '@modules/event/mapper/event.mapper';
+import { React, ReactSchema } from '@modules/post/entities/react.post.schema';
+import { ReactComment, ReactCommentSchema } from '@modules/post/entities/react.comment.schema';
+import { IReactCommentRepository } from '@modules/post/repositories/react.comment.repository';
+import { ReactCommentRepositoryImpl } from '@modules/post/repositories/react.comment.repository.impl';
+import { IReactRepository } from '@modules/post/repositories/react.repository';
+import { ReactRepositoryImpl } from '@modules/post/repositories/react.repository.impl';
 
 @Module({
 	imports: [
@@ -28,6 +34,8 @@ import { EventMapper } from '@modules/event/mapper/event.mapper';
 			{ name: Post.name, schema: PostSchema },
 			{ name: Event.name, schema: EventSchema },
 			{ name: EventMember.name, schema: EventMemberSchema },
+			{ name: React.name, schema: ReactSchema },
+			{ name: ReactComment.name, schema: ReactCommentSchema },
 		]),
 	],
 	providers: [
@@ -50,6 +58,14 @@ import { EventMapper } from '@modules/event/mapper/event.mapper';
 		{
 			provide: IEventRepository,
 			useClass: EventRepositoryImpl,
+		},
+		{
+			provide: IReactCommentRepository,
+			useClass: ReactCommentRepositoryImpl,
+		},
+		{
+			provide: IReactRepository,
+			useClass: ReactRepositoryImpl,
 		},
 		PostMapper,
 		EventMapper,

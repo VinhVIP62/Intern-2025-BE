@@ -81,14 +81,14 @@ export class SearchService {
 		return successCount;
 	}
 
-	async searchPost(keyword: string) {
+	async searchPost(userId: string, keyword: string) {
 		const postIds = await this.search<Post>('post', keyword, ['title^2', 'content']);
 
 		const res = await Promise.all(
 			postIds.map(async postId => {
 				const post = await this.postRepo.findById(postId.id);
 				if (!post) throw new NotFoundException('post.NOT_FOUND');
-				return await this.postMapper.toResponse(post);
+				return await this.postMapper.toResponse(post, userId);
 			}),
 		);
 		return res;
@@ -157,7 +157,7 @@ export class SearchService {
 					const postId = hit._source as { id: string };
 					const post = await this.postRepo.findById(postId.id);
 					if (!post) throw new NotFoundException('post.NOT_FOUND');
-					data = await this.postMapper.toResponse(post);
+					data = await this.postMapper.toResponse(post, userId);
 				} else if (hit._index === 'event') {
 					const eventId = hit._source as { id: string };
 					const event = await this.eventRepo.getEventById(eventId.id);
