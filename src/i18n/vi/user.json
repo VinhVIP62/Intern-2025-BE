@@ -9,5 +9,16 @@
 	"PASSWORD_CHANGED_SUCCESS": "Đổi mật khẩu thành công",
 	"INVALID_OLD_PASSWORD": "Mật khẩu cũ không đúng",
 	"FRIENDS_RETRIEVED_SUCCESS": "Lấy danh sách bạn bè thành công",
-	"BASIC_INFO_RETRIEVED_SUCCESS": "Lấy thông tin cơ bản thành công"
+	"BASIC_INFO_RETRIEVED_SUCCESS": "Lấy thông tin cơ bản thành công",
+	"FOLLOW_SUCCESS": "Theo dõi người dùng thành công",
+	"UNFOLLOW_SUCCESS": "Bỏ theo dõi người dùng thành công",
+	"FOLLOWERS_RETRIEVED_SUCCESS": "Lấy danh sách người theo dõi thành công",
+	"FOLLOWING_RETRIEVED_SUCCESS": "Lấy danh sách đang theo dõi thành công",
+	"BLOCK_SUCCESS": "Chặn người dùng thành công",
+	"UNBLOCK_SUCCESS": "Bỏ chặn người dùng thành công",
+	"BLOCKED_USERS_RETRIEVED_SUCCESS": "Lấy danh sách người dùng đã chặn thành công",
+	"CANNOT_FOLLOW_SELF": "Bạn không thể tự theo dõi chính mình",
+	"CANNOT_UNFOLLOW_SELF": "Bạn không thể tự bỏ theo dõi chính mình",
+	"CANNOT_BLOCK_SELF": "Bạn không thể tự chặn chính mình",
+	"CANNOT_UNBLOCK_SELF": "Bạn không thể tự bỏ chặn chính mình"
 }
