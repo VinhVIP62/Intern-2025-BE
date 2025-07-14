@@ -33,7 +33,7 @@ export class UserRepositoryImpl implements IUserRepository {
 	}
 
 	async findOneById(id: string): Promise<User | null> {
-		return await this.userModel.findById(id);
+		return await this.userModel.findOne({ id: id });
 	}
 	async findOneByEmail(email: string): Promise<User | null> {
 		return await this.userModel.findOne({ email });
