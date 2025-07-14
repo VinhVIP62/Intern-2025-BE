@@ -7,6 +7,7 @@ import { InviteMemberDto } from '../dto/invite.members.dto';
 import { IUserRepository } from '@modules/user/repositories/user.repository';
 import { RSVP } from '@common/enum/event.member.enum';
 import { SearchService } from '@modules/search/search.service';
+import { EventState } from '@common/enum/event.state';
 
 @Injectable()
 export class EventService {
@@ -30,7 +31,7 @@ export class EventService {
 		});
 
 		const res = await this.eventMapper.toResponse(event, invitation.state);
-
+		if (body?.state === EventState.PRIVATE) return res;
 		await this.searchService.index('event', event.id, {
 			id: event.id,
 			ownerFirstName: res.ownerFirstName,

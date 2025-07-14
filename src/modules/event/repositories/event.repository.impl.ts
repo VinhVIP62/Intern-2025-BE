@@ -3,6 +3,7 @@ import { IEventRepository } from './event.repository';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Event } from '../entities/event.schema';
+import { EventState } from '@common/enum/event.state';
 
 @Injectable()
 export class EventRepositoryImpl implements IEventRepository {
@@ -36,6 +37,7 @@ export class EventRepositoryImpl implements IEventRepository {
 			{
 				$match: {
 					isDeleted: false,
+					state: EventState.PUBLIC,
 				},
 			},
 			{

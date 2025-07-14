@@ -22,6 +22,7 @@ export class EventMapper {
 			rsvp: rsvp,
 			isDeleted: event.isDeleted,
 			address: event.address,
+			state: event.state,
 		};
 	}
 }

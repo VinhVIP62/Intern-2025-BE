@@ -42,7 +42,10 @@ export class PostRepositoryImpl implements IPostRepository {
 		userIds: string[],
 		updatedBefore?: string,
 	): Promise<Post[]> {
-		const query: FilterQuery<Post> = { userId: { $in: userIds } };
+		const query: FilterQuery<Post> = {
+			userId: { $in: userIds },
+			state: { $in: ['public', 'friend'] },
+		};
 		if (updatedBefore) query.updatedAt = { $lt: new Date(updatedBefore) };
 		return this.postModel
 			.find(query)
@@ -56,7 +59,10 @@ export class PostRepositoryImpl implements IPostRepository {
 		userIds: string[],
 		updatedBefore?: string,
 	): Promise<Post[]> {
-		const query: FilterQuery<Post> = { userId: { $nin: userIds } };
+		const query: FilterQuery<Post> = {
+			userId: { $nin: userIds },
+			state: { $in: ['public'] },
+		};
 		if (updatedBefore) query.updatedAt = { $lt: new Date(updatedBefore) };
 		return this.postModel
 			.find(query)

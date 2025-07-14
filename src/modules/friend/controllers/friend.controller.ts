@@ -1,5 +1,5 @@
 import { ResponseEntity } from '@common/types';
-import { Controller, Get, Post, Body, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Req, Param } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Version } from '@nestjs/common/decorators/core/version.decorator';
 import { Response } from '@common/decorators/response.decorator';
@@ -61,6 +61,21 @@ export class FriendController {
 		return {
 			success: true,
 			data: friends,
+		};
+	}
+
+	@Get('isfriend/:friendId')
+	@Version('1')
+	@Response()
+	async isFriend(
+		@Req() req: Request,
+		@Param('friendId') friendId: string,
+	): Promise<ResponseEntity<any>> {
+		const user = req.user as { id: string };
+		const isFriend = await this.friendService.isFriend(user.id, friendId);
+		return {
+			success: true,
+			data: isFriend,
 		};
 	}
 }
