@@ -27,6 +27,7 @@ export class PostMapper {
 			createdAt: post.createdAt,
 			updatedAt: post.updatedAt,
 			isReacted: isReacted?.type,
+			state: post.state,
 		};
 	}
 }

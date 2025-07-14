@@ -1,4 +1,5 @@
-import { IsString, IsOptional, IsArray } from 'class-validator';
+import { PostState } from '@common/enum/post.state.enum';
+import { IsString, IsOptional, IsArray, IsEnum } from 'class-validator';
 
 export class CreatePostDto {
 	@IsString()
@@ -6,6 +7,10 @@ export class CreatePostDto {
 
 	@IsString()
 	content: string;
+
+	@IsEnum(PostState)
+	@IsOptional()
+	state?: PostState;
 
 	@IsOptional()
 	@IsArray()

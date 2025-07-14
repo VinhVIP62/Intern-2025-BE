@@ -5,6 +5,7 @@ import { UpdatePostDto } from '../dto/updattePost.dto';
 import { IFriendRepository } from '@modules/friend/repositories/friend.repository';
 import { PostMapper } from '../mapper/post.mapper';
 import { SearchService } from '@modules/search/search.service';
+import { PostState } from '@common/enum/post.state.enum';
 
 @Injectable()
 export class PostService {
@@ -48,12 +49,13 @@ export class PostService {
 			userId: userId,
 			title: dto.title,
 			content: dto.content,
+			state: dto.state,
 			mediaUrls: dto.mediaUrls || [],
 			taggedUserIds: dto.taggedUserIds || [],
 		});
 
 		const response = await this.postMapper.toResponse(newPost, userId);
-
+		if (dto?.state === PostState.ONLY_ME || PostState.FRIEND) return response;
 		await this.searchService.index('post', newPost.id, {
 			id: newPost.id,
 			ownerFirstName: response.ownerFirstName,
