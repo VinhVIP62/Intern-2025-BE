@@ -14,6 +14,20 @@ import { Request } from 'express';
 export class SearchController {
 	constructor(private readonly searchService: SearchService) {}
 
+	@Get('all')
+	@Version('1')
+	async searchAll(
+		@Req() request: Request,
+		@Query('keyword') keyword: string,
+	): Promise<ResponseEntity<any>> {
+		const user = request.user as { id: string };
+		const result = await this.searchService.searchAll(user.id, keyword);
+		return {
+			success: true,
+			data: result,
+		};
+	}
+
 	@Get('profile/reindex')
 	@Version('1')
 	@Public()

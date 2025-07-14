@@ -32,7 +32,7 @@ export class CreateEventDto {
 
 	@IsString()
 	@IsOptional()
-	description?: string;
+	content?: string;
 
 	@IsEnum(EventState)
 	@IsOptional()
