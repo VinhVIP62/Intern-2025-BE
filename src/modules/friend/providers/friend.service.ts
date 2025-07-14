@@ -56,4 +56,9 @@ export class FriendService {
 			data: friends,
 		};
 	}
+
+	async isFriend(userId: string, friendId: string) {
+		const existed = await this.friendRepository.findBetween(userId, friendId);
+		return existed ? { isFriend: true } : { isFriend: false };
+	}
 }
