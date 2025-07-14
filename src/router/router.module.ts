@@ -10,6 +10,8 @@ import {
 	UserModule,
 } from '../modules';
 import { FriendModule } from '@modules/friend/friend.module';
+import { ChatModule } from 'src/chatbot/chat.module';
+import { SearchModule } from '@modules/search/search.module';
 
 @Module({
 	imports: [
@@ -26,6 +28,7 @@ import { FriendModule } from '@modules/friend/friend.module';
 					{ path: 'notifications', module: NotificationModule },
 					{ path: 'posts', module: PostModule },
 					{ path: 'users', module: UserModule },
+					{ path: 'search', module: SearchModule },
 				],
 			},
 		]),
@@ -36,6 +39,8 @@ import { FriendModule } from '@modules/friend/friend.module';
 		PostModule,
 		UserModule,
 		FriendModule,
+		ChatModule,
+		SearchModule,
 	],
 })
 export class RouteModule {}

@@ -4,6 +4,7 @@ import { ReactType } from '@common/enum/react.type.enum';
 
 @Injectable()
 export abstract class IPostRepository {
+	abstract findAll(): Promise<Post[]>;
 	abstract create(post: Partial<Post>): Promise<Post>;
 	abstract findByUserId(userId: string): Promise<Post[]>;
 	abstract updateReactCount(postId: string, type: ReactType, inc: number): Promise<Post | null>;

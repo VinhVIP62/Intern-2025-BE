@@ -5,6 +5,7 @@ import { Profile } from '../entities/profile.schema';
 
 @Injectable()
 export abstract class IProfileRepository {
+	abstract findAll(): Promise<Profile[]>;
 	abstract create(request: CreateProfileDto): Promise<Profile>;
 	abstract findById(userId: string): Promise<Profile>;
 	abstract update(request: UpdateProfileDto): Promise<Profile>;

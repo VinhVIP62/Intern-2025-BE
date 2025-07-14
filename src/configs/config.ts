@@ -27,6 +27,8 @@ export interface IEnvVars {
 	readonly mail_port?: number;
 	readonly mail_user?: string;
 	readonly mail_pass?: string;
+	readonly es_node: string;
+	readonly es_api_key?: string;
 }
 
 // env validation schema for Joi
@@ -53,6 +55,8 @@ const envFileSchema = Joi.object<IEnvVars, true>({
 	mail_port: Joi.number().optional(),
 	mail_user: Joi.string().optional(),
 	mail_pass: Joi.string().optional(),
+	es_node: Joi.string().default('http://localhost:9200'),
+	es_api_key: Joi.string().optional(),
 });
 
 // map your env vars to ConfigService's properties
@@ -79,6 +83,8 @@ const loadEnv = () => ({
 	mail_port: process.env.MAIL_PORT,
 	mail_user: process.env.MAIL_USER,
 	mail_pass: process.env.MAIL_PASS,
+	es_node: process.env.ES_NODE,
+	es_api_key: process.env.ES_API_KEY,
 });
 
 // validate and optionally transform your env variables here

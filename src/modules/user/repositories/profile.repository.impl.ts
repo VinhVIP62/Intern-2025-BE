@@ -45,4 +45,7 @@ export class ProfileRepositoryImpl implements IProfileRepository {
 		const result = await this.profileModel.deleteOne({ userId }).exec();
 		return result.deletedCount > 0;
 	}
+	async findAll(): Promise<Profile[]> {
+		return this.profileModel.find().exec();
+	}
 }

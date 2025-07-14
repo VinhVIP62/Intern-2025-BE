@@ -5,13 +5,27 @@ import { IProfileRepository } from '../repositories/profile.repository';
 import { ProfileResponseDto } from '../dto/profile-response.dto';
 import { ProfileMapper } from '../mapper/profile.mapper';
 import { ConflictException } from '@nestjs/common/exceptions/conflict.exception';
+import { SearchService } from '@modules/search/search.service';
 
 @Injectable()
 export class ProfileService {
-	constructor(private readonly profileRepository: IProfileRepository) {}
+	constructor(
+		private readonly profileRepository: IProfileRepository,
+		private readonly searchService: SearchService,
+	) {}
 	async createProfile(request: CreateProfileDto): Promise<ProfileResponseDto> {
 		try {
 			const profile = await this.profileRepository.create(request);
+			await this.searchService.index('profile', profile.userId, {
+				userId: profile.userId,
+				firstName: profile.firstName,
+				lastName: profile.lastName,
+				nickName: profile.nickname,
+				address: profile.address,
+				avatarUrl: profile.avatarUrl,
+				coverUrl: profile.coverUrl,
+				sportInterests: profile.sportInterests,
+			});
 			return ProfileMapper.toResponse(profile, 'profile.created');
 		} catch (error) {
 			throw new ConflictException(`error.profileExists`);
