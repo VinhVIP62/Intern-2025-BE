@@ -10,7 +10,6 @@ import {
 	UserModule,
 } from '../modules';
 import { FriendModule } from '@modules/friend/friend.module';
-import { ChatModule } from 'src/chatbot/chat.module';
 import { SearchModule } from '@modules/search/search.module';
 
 @Module({
@@ -39,7 +38,6 @@ import { SearchModule } from '@modules/search/search.module';
 		PostModule,
 		UserModule,
 		FriendModule,
-		ChatModule,
 		SearchModule,
 	],
 })
