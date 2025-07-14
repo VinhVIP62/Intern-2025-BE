@@ -24,7 +24,9 @@ export class PostService {
 			updatedBefore,
 		);
 		if (feedFromFriend && feedFromFriend.length > 0) {
-			const response = await Promise.all(feedFromFriend.map(f => this.postMapper.toResponse(f)));
+			const response = await Promise.all(
+				feedFromFriend.map(f => this.postMapper.toResponse(f, userId)),
+			);
 			return response;
 		}
 		const feedFromOthers = await this.postRepo.findByExcludingUserIds_InfiniteScroll(
@@ -33,7 +35,9 @@ export class PostService {
 			updatedBefore,
 		);
 		if (feedFromOthers && feedFromOthers.length > 0) {
-			const response = await Promise.all(feedFromOthers.map(f => this.postMapper.toResponse(f)));
+			const response = await Promise.all(
+				feedFromOthers.map(f => this.postMapper.toResponse(f, userId)),
+			);
 			return response;
 		}
 		return { message: 'post.NO_MORE_POSTS' };
@@ -48,7 +52,7 @@ export class PostService {
 			taggedUserIds: dto.taggedUserIds || [],
 		});
 
-		const response = await this.postMapper.toResponse(newPost);
+		const response = await this.postMapper.toResponse(newPost, userId);
 
 		await this.searchService.index('post', newPost.id, {
 			id: newPost.id,
@@ -76,13 +80,13 @@ export class PostService {
 
 	async getUserPosts(userId: string) {
 		const posts = await this.postRepo.findByUserId(userId);
-		const response = await Promise.all(posts.map(post => this.postMapper.toResponse(post)));
+		const response = await Promise.all(posts.map(post => this.postMapper.toResponse(post, userId)));
 		return response;
 	}
 
-	async getPostById(postId: string) {
+	async getPostById(userId: string, postId: string) {
 		const post = await this.postRepo.findById(postId);
 		if (!post) throw new NotFoundException('post.NOT_FOUND');
-		return await this.postMapper.toResponse(post);
+		return await this.postMapper.toResponse(post, userId);
 	}
 }
