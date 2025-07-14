@@ -25,6 +25,7 @@ import { CommentService } from './providers/comment.service';
 import { Comment, CommentSchema } from './entities/comment.schema';
 import { CommentController } from './controllers/comment.controller';
 import { PostMapper } from './mapper/post.mapper';
+import { SearchModule } from '@modules/search/search.module';
 
 @Module({
 	imports: [
@@ -35,6 +36,7 @@ import { PostMapper } from './mapper/post.mapper';
 			{ name: Comment.name, schema: CommentSchema },
 		]),
 		SharedModule,
+		SearchModule,
 	],
 	providers: [
 		PostService,

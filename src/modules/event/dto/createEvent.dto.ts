@@ -12,6 +12,7 @@ import {
 import { Type } from 'class-transformer';
 import { Sports } from '@common/enum/sports.enum';
 import { IsGeoCoordinates } from '@common/validators/is.geo.coordinate';
+import { AddressDto } from '@modules/user/dto/address.dto';
 
 class LocationDto {
 	@IsEnum(['Point'])
@@ -40,6 +41,10 @@ export class CreateEventDto {
 	@ValidateNested()
 	@Type(() => LocationDto)
 	location: LocationDto;
+
+	@ValidateNested()
+	@Type(() => AddressDto)
+	address?: AddressDto;
 
 	@IsDateString()
 	startTime: Date;

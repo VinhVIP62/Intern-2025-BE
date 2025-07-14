@@ -1,7 +1,16 @@
-import { IsString, IsOptional, IsDateString, IsEnum, IsArray, IsUUID } from 'class-validator';
+import {
+	IsString,
+	IsOptional,
+	IsDateString,
+	IsEnum,
+	IsArray,
+	IsUUID,
+	ValidateNested,
+} from 'class-validator';
 import { Sports } from '@common/enum/sports.enum';
 import { SportLevel } from '@common/enum/sport-level.enum';
 import { AddressDto } from './address.dto';
+import { Type } from 'class-transformer';
 
 export class CreateProfileDto {
 	@IsUUID()
@@ -36,6 +45,8 @@ export class CreateProfileDto {
 	gender: string;
 
 	@IsOptional()
+	@ValidateNested()
+	@Type(() => AddressDto)
 	address?: AddressDto;
 
 	@IsOptional()

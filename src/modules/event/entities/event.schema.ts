@@ -12,7 +12,7 @@ export class Event {
 	title: string;
 
 	@Prop()
-	description?: string;
+	content?: string;
 
 	@Prop({ type: String, enum: EventState, default: EventState.PUBLIC })
 	state: string;
@@ -24,6 +24,24 @@ export class Event {
 	location: {
 		type: 'Point';
 		coordinates: [number, number];
+	};
+
+	@Prop({
+		type: {
+			country: { type: String },
+			province: { type: String },
+			district: { type: String },
+			ward: { type: String },
+			street: { type: String },
+		},
+		required: false,
+	})
+	address?: {
+		country?: string;
+		province?: string;
+		district?: string;
+		ward?: string;
+		street?: string;
 	};
 
 	@Prop({ required: true })
@@ -51,8 +69,17 @@ export class Event {
 	@Prop({ default: false })
 	isDeleted: boolean;
 
+	@Prop({ default: 0 })
+	numOfMem: number;
+
 	@Prop({ required: true })
 	ownerId: string;
+
+	@Prop()
+	createdAt: Date;
+
+	@Prop()
+	updatedAt: Date;
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);

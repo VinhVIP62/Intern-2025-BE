@@ -12,6 +12,7 @@ import { Profile } from './entities/profile.schema';
 import { ProfileSchema } from './entities/profile.schema';
 import { ProfileController } from './controllers/profile.controller';
 import { ProfileMapper } from './mapper/profile.mapper';
+import { SearchModule } from '@modules/search/search.module';
 
 @Module({
 	imports: [
@@ -25,6 +26,7 @@ import { ProfileMapper } from './mapper/profile.mapper';
 				schema: ProfileSchema,
 			},
 		]),
+		SearchModule,
 	],
 	controllers: [UserController, ProfileController],
 	providers: [

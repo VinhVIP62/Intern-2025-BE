@@ -64,4 +64,8 @@ export class PostRepositoryImpl implements IPostRepository {
 			.limit(limit)
 			.exec();
 	}
+
+	async findAll(): Promise<Post[]> {
+		return this.postModel.find().exec();
+	}
 }

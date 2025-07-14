@@ -7,6 +7,7 @@ import { Response } from '@common/decorators/response.decorator';
 import { ResponseEntity } from '@common/types';
 import { Request } from 'express';
 import { UpdatePostDto } from '../dto/updattePost.dto';
+import { Public } from '@common/decorators';
 
 @ApiTags('Posts')
 @Controller({
@@ -14,6 +15,28 @@ import { UpdatePostDto } from '../dto/updattePost.dto';
 })
 export class PostController {
 	constructor(private readonly postService: PostService) {}
+
+	@Get('detail/:postId')
+	@Version('1')
+	@Response()
+	async getPostById(@Param('postId') postId: string): Promise<ResponseEntity<any>> {
+		const res = await this.postService.getPostById(postId);
+		return {
+			success: true,
+			data: res,
+		};
+	}
+
+	@Get('user/:userId')
+	@Version('1')
+	@Response()
+	async getPostOfUser(@Param('userId') userId: string): Promise<ResponseEntity<any>> {
+		const res = await this.postService.getUserPosts(userId);
+		return {
+			success: true,
+			data: res,
+		};
+	}
 
 	@Get('newsfeed')
 	@Version('1')

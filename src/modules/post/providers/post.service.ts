@@ -4,6 +4,7 @@ import { IPostRepository } from '../repositories/post.repository';
 import { UpdatePostDto } from '../dto/updattePost.dto';
 import { IFriendRepository } from '@modules/friend/repositories/friend.repository';
 import { PostMapper } from '../mapper/post.mapper';
+import { SearchService } from '@modules/search/search.service';
 
 @Injectable()
 export class PostService {
@@ -11,6 +12,7 @@ export class PostService {
 		private readonly postRepo: IPostRepository,
 		private readonly friendRepo: IFriendRepository,
 		private readonly postMapper: PostMapper,
+		private readonly searchService: SearchService,
 	) {}
 
 	async getNewsfeed(userId: string, updatedBefore?: string) {
@@ -45,7 +47,17 @@ export class PostService {
 			mediaUrls: dto.mediaUrls || [],
 			taggedUserIds: dto.taggedUserIds || [],
 		});
+
 		const response = await this.postMapper.toResponse(newPost);
+
+		await this.searchService.index('post', newPost.id, {
+			id: newPost.id,
+			ownerFirstName: response.ownerFirstName,
+			ownerLastName: response.ownerLastName,
+			title: newPost.title,
+			content: newPost.content,
+		});
+
 		return response;
 	}
 
@@ -66,5 +78,11 @@ export class PostService {
 		const posts = await this.postRepo.findByUserId(userId);
 		const response = await Promise.all(posts.map(post => this.postMapper.toResponse(post)));
 		return response;
+	}
+
+	async getPostById(postId: string) {
+		const post = await this.postRepo.findById(postId);
+		if (!post) throw new NotFoundException('post.NOT_FOUND');
+		return await this.postMapper.toResponse(post);
 	}
 }
