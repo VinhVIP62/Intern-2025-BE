@@ -128,4 +128,49 @@ export class SearchService {
 		);
 		return res;
 	}
+
+	async searchAll(userId: string, keyword: string) {
+		const all = await this.esService.search({
+			index: ['post', 'event', 'profile'],
+			query: {
+				multi_match: {
+					query: keyword, // từ khóa tìm kiếm
+					fields: [
+						'title^2',
+						'content',
+						'firstName',
+						'lastName',
+						'nickName',
+						'description',
+						'address.province',
+						'address.district',
+						'sportInterests',
+					],
+				},
+			},
+		});
+
+		const res = Promise.all(
+			all.hits.hits.map(async hit => {
+				let data = hit._source;
+				if (hit._index === 'post') {
+					const postId = hit._source as { id: string };
+					const post = await this.postRepo.findById(postId.id);
+					if (!post) throw new NotFoundException('post.NOT_FOUND');
+					data = await this.postMapper.toResponse(post);
+				} else if (hit._index === 'event') {
+					const eventId = hit._source as { id: string };
+					const event = await this.eventRepo.getEventById(eventId.id);
+					if (!event) throw new NotFoundException('event.NOT_FOUND');
+					const invitaion = await this.eventMemberRepo.getByUserIdAndEventId(eventId.id, userId);
+					data = await this.eventMapper.toResponse(event, invitaion?.state);
+				}
+				return {
+					index: hit._index,
+					data: data,
+				};
+			}),
+		);
+		return res;
+	}
 }
