@@ -2391,6 +2391,383 @@
         ]
       }
     },
+    "/api/v1/friends/requests": {
+      "post": {
+        "operationId": "FriendRequestController_createFriendRequest_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFriendRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Gửi lời mời kết bạn thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendRequestResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ hoặc lời mời đã tồn tại"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          }
+        },
+        "summary": "Gửi lời mời kết bạn",
+        "tags": [
+          "Friend Request"
+        ]
+      },
+      "get": {
+        "operationId": "FriendRequestController_getFriendRequests_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng lời mời trên mỗi trang (mặc định: 10)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "Loại lời mời (sent: đã gửi, received: đã nhận), default: received",
+            "schema": {
+              "enum": [
+                "sent",
+                "received"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách lời mời kết bạn thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedFriendRequestsResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          }
+        },
+        "summary": "Lấy danh sách lời mời kết bạn",
+        "tags": [
+          "Friend Request"
+        ]
+      }
+    },
+    "/api/v1/friends/requests/check-friendship": {
+      "get": {
+        "operationId": "FriendRequestController_checkFriendshipStatus_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "query",
+            "description": "ID của người dùng cần kiểm tra",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Kiểm tra trạng thái bạn bè thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendshipStatusResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          }
+        },
+        "summary": "Kiểm tra trạng thái bạn bè giữa người dùng hiện tại và người dùng khác",
+        "tags": [
+          "Friend Request"
+        ]
+      }
+    },
+    "/api/v1/friends/requests/{requestId}/accept": {
+      "put": {
+        "operationId": "FriendRequestController_acceptFriendRequest_v1",
+        "parameters": [
+          {
+            "name": "requestId",
+            "required": true,
+            "in": "path",
+            "description": "ID của lời mời kết bạn",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chấp nhận lời mời kết bạn thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendRequestResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ hoặc lời mời không ở trạng thái pending"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền chấp nhận lời mời này"
+          },
+          "404": {
+            "description": "Không tìm thấy lời mời kết bạn"
+          }
+        },
+        "summary": "Chấp nhận lời mời kết bạn",
+        "tags": [
+          "Friend Request"
+        ]
+      }
+    },
+    "/api/v1/friends/requests/{requestId}/decline": {
+      "put": {
+        "operationId": "FriendRequestController_declineFriendRequest_v1",
+        "parameters": [
+          {
+            "name": "requestId",
+            "required": true,
+            "in": "path",
+            "description": "ID của lời mời kết bạn",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Từ chối lời mời kết bạn thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendRequestResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ hoặc lời mời không ở trạng thái pending"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền từ chối lời mời này"
+          },
+          "404": {
+            "description": "Không tìm thấy lời mời kết bạn"
+          }
+        },
+        "summary": "Từ chối lời mời kết bạn",
+        "tags": [
+          "Friend Request"
+        ]
+      }
+    },
+    "/api/v1/friends": {
+      "get": {
+        "operationId": "FriendsController_getFriendsList_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng bạn bè trên mỗi trang (mặc định: 10)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Tìm kiếm bạn bè theo tên hoặc email",
+            "schema": {
+              "example": "Nguyen Van",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách bạn bè thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedFriendsResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          }
+        },
+        "summary": "Lấy danh sách bạn bè của người dùng hiện tại",
+        "tags": [
+          "Friends"
+        ]
+      }
+    },
+    "/api/v1/friends/{friendId}": {
+      "delete": {
+        "operationId": "FriendsController_removeFriend_v1",
+        "parameters": [
+          {
+            "name": "friendId",
+            "required": true,
+            "in": "path",
+            "description": "ID của người bạn cần xóa",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Xóa bạn bè thành công"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ hoặc không phải bạn bè"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "404": {
+            "description": "Không tìm thấy người dùng"
+          }
+        },
+        "summary": "Xóa bạn bè",
+        "tags": [
+          "Friends"
+        ]
+      }
+    },
+    "/api/v1/friends/{userId}/mutual": {
+      "get": {
+        "operationId": "FriendsController_getMutualFriends_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "ID của người dùng cần kiểm tra bạn bè chung",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng bạn bè chung trên mỗi trang (mặc định: 10)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách bạn bè chung thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MutualFriendsResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "404": {
+            "description": "Không tìm thấy người dùng"
+          }
+        },
+        "summary": "Lấy danh sách bạn bè chung với người dùng khác (người này có thể chưa phải là bạn bè)",
+        "tags": [
+          "Friends"
+        ]
+      }
+    },
     "/api/v1/search/all": {
       "get": {
         "operationId": "SearchController_searchAll_v1",
@@ -3770,6 +4147,370 @@
         },
         "required": [
           "comments",
+          "total",
+          "page",
+          "limit",
+          "totalPages",
+          "hasNextPage",
+          "hasPrevPage"
+        ]
+      },
+      "CreateFriendRequestDto": {
+        "type": "object",
+        "properties": {
+          "recipientId": {
+            "type": "string",
+            "description": "ID của người nhận lời mời kết bạn",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "message": {
+            "type": "string",
+            "description": "Tin nhắn kèm theo lời mời kết bạn",
+            "example": "Xin chào! Tôi muốn kết bạn với bạn."
+          }
+        },
+        "required": [
+          "recipientId"
+        ]
+      },
+      "FriendRequestResponseDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "ID của lời mời kết bạn",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "sender": {
+            "type": "string",
+            "description": "ID của người gửi lời mời",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "senderUser": {
+            "type": "object",
+            "description": "Thông tin người gửi lời mời",
+            "example": {
+              "_id": "507f1f77bcf86cd799439011",
+              "fullName": "Nguyen Van A",
+              "avatar": "https://example.com/avatar.jpg",
+              "username": "nguyenvana"
+            }
+          },
+          "recipient": {
+            "type": "string",
+            "description": "ID của người nhận lời mời",
+            "example": "507f1f77bcf86cd799439012"
+          },
+          "recipientUser": {
+            "type": "object",
+            "description": "Thông tin người nhận lời mời",
+            "example": {
+              "_id": "507f1f77bcf86cd799439012",
+              "fullName": "Tran Thi B",
+              "avatar": "https://example.com/avatar2.jpg",
+              "username": "tranthib"
+            }
+          },
+          "status": {
+            "type": "string",
+            "description": "Trạng thái lời mời kết bạn",
+            "enum": [
+              "pending",
+              "accepted",
+              "rejected"
+            ],
+            "example": "pending"
+          },
+          "message": {
+            "type": "string",
+            "description": "Tin nhắn kèm theo lời mời kết bạn",
+            "example": "Xin chào! Tôi muốn kết bạn với bạn."
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Thời gian tạo lời mời kết bạn",
+            "example": "2024-01-01T00:00:00.000Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Thời gian cập nhật lời mời kết bạn",
+            "example": "2024-01-01T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "_id",
+          "sender",
+          "senderUser",
+          "recipient",
+          "recipientUser",
+          "status",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PaginatedFriendRequestsResponseDto": {
+        "type": "object",
+        "properties": {
+          "friendRequests": {
+            "description": "Danh sách lời mời kết bạn",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FriendRequestResponseDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "description": "Tổng số lời mời kết bạn",
+            "example": 100
+          },
+          "page": {
+            "type": "number",
+            "description": "Số trang hiện tại",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Số lượng lời mời kết bạn trên mỗi trang",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Tổng số trang",
+            "example": 10
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Có trang tiếp theo hay không",
+            "example": true
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Có trang trước đó hay không",
+            "example": false
+          }
+        },
+        "required": [
+          "friendRequests",
+          "total",
+          "page",
+          "limit",
+          "totalPages",
+          "hasNextPage",
+          "hasPrevPage"
+        ]
+      },
+      "FriendshipStatusResponseDto": {
+        "type": "object",
+        "properties": {
+          "currentUserId": {
+            "type": "string",
+            "description": "ID của người dùng hiện tại",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "targetUserId": {
+            "type": "string",
+            "description": "ID của người dùng cần kiểm tra",
+            "example": "507f1f77bcf86cd799439012"
+          },
+          "areFriends": {
+            "type": "boolean",
+            "description": "Hai người dùng có phải là bạn bè hay không",
+            "example": true
+          },
+          "friendRequestStatus": {
+            "type": "string",
+            "description": "Trạng thái lời mời kết bạn (nếu có)",
+            "enum": [
+              "pending",
+              "accepted",
+              "rejected"
+            ],
+            "example": "pending"
+          },
+          "currentUser": {
+            "type": "object",
+            "description": "Thông tin người dùng hiện tại",
+            "example": {
+              "_id": "507f1f77bcf86cd799439011",
+              "fullName": "Nguyen Van A",
+              "avatar": "https://example.com/avatar.jpg"
+            }
+          },
+          "targetUser": {
+            "type": "object",
+            "description": "Thông tin người dùng cần kiểm tra",
+            "example": {
+              "_id": "507f1f77bcf86cd799439012",
+              "fullName": "Tran Thi B",
+              "avatar": "https://example.com/avatar2.jpg"
+            }
+          }
+        },
+        "required": [
+          "currentUserId",
+          "targetUserId",
+          "areFriends"
+        ]
+      },
+      "FriendResponseDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "ID của người dùng",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "fullName": {
+            "type": "string",
+            "description": "Họ và tên",
+            "example": "Nguyen Van A"
+          },
+          "avatar": {
+            "type": "string",
+            "description": "Avatar",
+            "example": "https://example.com/avatar.jpg"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email",
+            "example": "nguyenvana@example.com"
+          },
+          "username": {
+            "type": "string",
+            "description": "Username",
+            "example": "nguyenvana"
+          },
+          "bio": {
+            "type": "string",
+            "description": "Bio",
+            "example": "I love sports!"
+          },
+          "favoritesSports": {
+            "description": "Môn thể thao yêu thích",
+            "example": [
+              "football",
+              "basketball"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "_id",
+          "fullName",
+          "email"
+        ]
+      },
+      "PaginatedFriendsResponseDto": {
+        "type": "object",
+        "properties": {
+          "friends": {
+            "description": "Danh sách bạn bè",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FriendResponseDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "description": "Tổng số bạn bè",
+            "example": 100
+          },
+          "page": {
+            "type": "number",
+            "description": "Số trang hiện tại",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Số lượng bạn bè trên mỗi trang",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Tổng số trang",
+            "example": 10
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Có trang tiếp theo hay không",
+            "example": true
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Có trang trước đó hay không",
+            "example": false
+          }
+        },
+        "required": [
+          "friends",
+          "total",
+          "page",
+          "limit",
+          "totalPages",
+          "hasNextPage",
+          "hasPrevPage"
+        ]
+      },
+      "MutualFriendsResponseDto": {
+        "type": "object",
+        "properties": {
+          "currentUserId": {
+            "type": "string",
+            "description": "ID của người dùng hiện tại",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "targetUserId": {
+            "type": "string",
+            "description": "ID của người dùng cần kiểm tra",
+            "example": "507f1f77bcf86cd799439012"
+          },
+          "mutualFriends": {
+            "description": "Danh sách bạn bè chung",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FriendResponseDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "description": "Tổng số bạn bè chung",
+            "example": 5
+          },
+          "page": {
+            "type": "number",
+            "description": "Số trang hiện tại",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Số lượng bạn bè chung trên mỗi trang",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Tổng số trang",
+            "example": 1
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Có trang tiếp theo hay không",
+            "example": false
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Có trang trước đó hay không",
+            "example": false
+          }
+        },
+        "required": [
+          "currentUserId",
+          "targetUserId",
+          "mutualFriends",
           "total",
           "page",
           "limit",
