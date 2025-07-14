@@ -147,4 +147,50 @@ export class UserService {
 			avatar: user.avatar,
 		};
 	}
+
+	// FOLLOW/UNFOLLOW
+	async followUser(currentUserId: string, targetUserId: string, i18n?: I18nContext): Promise<void> {
+		if (currentUserId === targetUserId)
+			throw new Error(i18n?.t('user.CANNOT_FOLLOW_SELF') || 'Cannot follow yourself');
+		await this.userRepository.followUser(currentUserId, targetUserId);
+	}
+
+	async unfollowUser(
+		currentUserId: string,
+		targetUserId: string,
+		i18n?: I18nContext,
+	): Promise<void> {
+		if (currentUserId === targetUserId)
+			throw new Error(i18n?.t('user.CANNOT_UNFOLLOW_SELF') || 'Cannot unfollow yourself');
+		await this.userRepository.unfollowUser(currentUserId, targetUserId);
+	}
+
+	async getFollowers(userId: string, i18n?: I18nContext): Promise<any[]> {
+		return this.userRepository.getFollowers(userId);
+	}
+
+	async getFollowing(userId: string, i18n?: I18nContext): Promise<any[]> {
+		return this.userRepository.getFollowing(userId);
+	}
+
+	// BLOCK/UNBLOCK
+	async blockUser(currentUserId: string, targetUserId: string, i18n?: I18nContext): Promise<void> {
+		if (currentUserId === targetUserId)
+			throw new Error(i18n?.t('user.CANNOT_BLOCK_SELF') || 'Cannot block yourself');
+		await this.userRepository.blockUser(currentUserId, targetUserId);
+	}
+
+	async unblockUser(
+		currentUserId: string,
+		targetUserId: string,
+		i18n?: I18nContext,
+	): Promise<void> {
+		if (currentUserId === targetUserId)
+			throw new Error(i18n?.t('user.CANNOT_UNBLOCK_SELF') || 'Cannot unblock yourself');
+		await this.userRepository.unblockUser(currentUserId, targetUserId);
+	}
+
+	async getBlockedUsers(userId: string, i18n?: I18nContext): Promise<any[]> {
+		return this.userRepository.getBlockedUsers(userId);
+	}
 }

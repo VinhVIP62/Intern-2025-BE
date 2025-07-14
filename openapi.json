@@ -569,6 +569,197 @@
         ]
       }
     },
+    "/api/v1/users/{userId}/block": {
+      "post": {
+        "operationId": "UserManagementController_blockUser_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "ID của người dùng cần chặn",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chặn thành công"
+          }
+        },
+        "summary": "Chặn người dùng",
+        "tags": [
+          "User Management"
+        ]
+      },
+      "delete": {
+        "operationId": "UserManagementController_unblockUser_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "ID của người dùng cần bỏ chặn",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bỏ chặn thành công"
+          }
+        },
+        "summary": "Bỏ chặn người dùng",
+        "tags": [
+          "User Management"
+        ]
+      }
+    },
+    "/api/v1/users/blocked": {
+      "get": {
+        "operationId": "UserManagementController_getBlockedUsers_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Danh sách đã chặn",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserBasicInfoDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy danh sách người dùng đã chặn",
+        "tags": [
+          "User Management"
+        ]
+      }
+    },
+    "/api/v1/users/{userId}/follow": {
+      "post": {
+        "operationId": "FollowController_followUser_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "ID của người dùng cần theo dõi",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Theo dõi thành công"
+          }
+        },
+        "summary": "Theo dõi người dùng",
+        "tags": [
+          "User Follow"
+        ]
+      },
+      "delete": {
+        "operationId": "FollowController_unfollowUser_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "ID của người dùng cần bỏ theo dõi",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bỏ theo dõi thành công"
+          }
+        },
+        "summary": "Bỏ theo dõi người dùng",
+        "tags": [
+          "User Follow"
+        ]
+      }
+    },
+    "/api/v1/users/followers": {
+      "get": {
+        "operationId": "FollowController_getFollowers_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "query",
+            "description": "ID của người dùng",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Danh sách followers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserBasicInfoDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy danh sách người theo dõi",
+        "tags": [
+          "User Follow"
+        ]
+      }
+    },
+    "/api/v1/users/following": {
+      "get": {
+        "operationId": "FollowController_getFollowing_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "description": "ID của người dùng",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Danh sách following",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserBasicInfoDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy danh sách đang theo dõi",
+        "tags": [
+          "User Follow"
+        ]
+      }
+    },
     "/api/v1/file/upload": {
       "post": {
         "operationId": "FileController_uploadFile_v1",

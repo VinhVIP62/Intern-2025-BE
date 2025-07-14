@@ -50,4 +50,80 @@ export class UserRepositoryImpl implements IUserRepository {
 			.limit(limit)
 			.exec();
 	}
+
+	// FOLLOW/UNFOLLOW
+	async followUser(currentUserId: string, targetUserId: string): Promise<void> {
+		await this.userModel.findByIdAndUpdate(currentUserId, {
+			$addToSet: { following: targetUserId },
+		});
+		await this.userModel.findByIdAndUpdate(targetUserId, {
+			$addToSet: { followers: currentUserId },
+		});
+	}
+
+	async unfollowUser(currentUserId: string, targetUserId: string): Promise<void> {
+		await this.userModel.findByIdAndUpdate(currentUserId, { $pull: { following: targetUserId } });
+		await this.userModel.findByIdAndUpdate(targetUserId, { $pull: { followers: currentUserId } });
+	}
+
+	async getFollowers(userId: string): Promise<any> {
+		const user = await this.userModel
+			.findById(userId)
+			.populate('followers', 'firstName lastName avatar fullName')
+			.lean({ virtuals: true });
+		if (!user) return { total: 0, data: [] };
+		const data = (user.followers || []).map((u: any) => ({
+			_id: u._id,
+			fullName: u.fullName,
+			firstName: u.firstName,
+			lastName: u.lastName,
+			avatar: u.avatar,
+		}));
+		return { total: data.length, data };
+	}
+
+	async getFollowing(userId: string): Promise<any> {
+		const user = await this.userModel
+			.findById(userId)
+			.populate('following', 'firstName lastName avatar fullName')
+			.lean({ virtuals: true });
+		if (!user) return { total: 0, data: [] };
+		const data = (user.following || []).map((u: any) => ({
+			_id: u._id,
+			fullName: u.fullName,
+			firstName: u.firstName,
+			lastName: u.lastName,
+			avatar: u.avatar,
+		}));
+		return { total: data.length, data };
+	}
+
+	// BLOCK/UNBLOCK
+	async blockUser(currentUserId: string, targetUserId: string): Promise<void> {
+		await this.userModel.findByIdAndUpdate(currentUserId, {
+			$addToSet: { blockedUsers: targetUserId },
+		});
+	}
+
+	async unblockUser(currentUserId: string, targetUserId: string): Promise<void> {
+		await this.userModel.findByIdAndUpdate(currentUserId, {
+			$pull: { blockedUsers: targetUserId },
+		});
+	}
+
+	async getBlockedUsers(userId: string): Promise<any> {
+		const user = await this.userModel
+			.findById(userId)
+			.populate('blockedUsers', 'firstName lastName avatar fullName')
+			.lean({ virtuals: true });
+		if (!user) return { total: 0, data: [] };
+		const data = (user.blockedUsers || []).map((u: any) => ({
+			_id: u._id,
+			fullName: u.fullName,
+			firstName: u.firstName,
+			lastName: u.lastName,
+			avatar: u.avatar,
+		}));
+		return { total: data.length, data };
+	}
 }

@@ -75,6 +75,9 @@ export class User extends Document {
 	@Prop({ type: [{ type: Types.ObjectId, ref: 'Group' }], default: [] })
 	joinedGroups: Types.ObjectId[];
 
+	@Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
+	blockedUsers: Types.ObjectId[];
+
 	@Prop({ default: true })
 	isActive: boolean;
 
