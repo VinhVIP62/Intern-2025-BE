@@ -5813,6 +5813,16 @@
             ],
             "example": "pending"
           },
+          "friendRequestId": {
+            "type": "string",
+            "description": "ID của lời mời kết bạn (nếu có)",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "friendRequestMessage": {
+            "type": "string",
+            "description": "Tin nhắn kèm theo lời mời kết bạn (nếu có)",
+            "example": "Xin chào! Tôi muốn kết bạn với bạn."
+          },
           "currentUser": {
             "type": "object",
             "description": "Thông tin người dùng hiện tại",
@@ -5830,12 +5840,18 @@
               "fullName": "Tran Thi B",
               "avatar": "https://example.com/avatar2.jpg"
             }
+          },
+          "isFollowing": {
+            "type": "boolean",
+            "description": "Bạn đã follow người này chưa",
+            "example": false
           }
         },
         "required": [
           "currentUserId",
           "targetUserId",
-          "areFriends"
+          "areFriends",
+          "isFollowing"
         ]
       },
       "FriendResponseDto": {

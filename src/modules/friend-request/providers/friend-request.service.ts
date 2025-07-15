@@ -138,10 +138,23 @@ export class FriendRequestService {
 			new Types.ObjectId(targetUserId),
 		);
 
+		// Lấy thông tin user target để kiểm tra followers
+		const targetUser = await this.userRepository.findOneById(targetUserId);
+		let isFollowing = false;
+		if (targetUser && Array.isArray(targetUser.followers)) {
+			isFollowing = targetUser.followers.some(f => f.toString() === currentUserId);
+		}
+
 		return {
 			currentUserId,
 			targetUserId,
-			...result,
+			areFriends: result.areFriends,
+			friendRequestStatus: result.friendRequestStatus,
+			friendRequestId: result.friendRequestId,
+			friendRequestMessage: result.friendRequestMessage,
+			currentUser: result.currentUser,
+			targetUser: result.targetUser,
+			isFollowing,
 		};
 	}
 

@@ -108,6 +108,8 @@ export class FriendRequestRepositoryImpl implements IFriendRequestRepository {
 	): Promise<{
 		areFriends: boolean;
 		friendRequestStatus?: FriendRequestStatus;
+		friendRequestId?: string;
+		friendRequestMessage?: string;
 		currentUser?: any;
 		targetUser?: any;
 	}> {
@@ -164,6 +166,8 @@ export class FriendRequestRepositoryImpl implements IFriendRequestRepository {
 		return {
 			areFriends: false,
 			friendRequestStatus: friendRequest?.status,
+			friendRequestId: friendRequest?._id?.toString(),
+			friendRequestMessage: friendRequest?.message,
 			currentUser: {
 				_id: currentUser._id,
 				fullName: currentUser.fullName,

@@ -37,6 +37,8 @@ export interface IFriendRequestRepository {
 	): Promise<{
 		areFriends: boolean;
 		friendRequestStatus?: FriendRequestStatus;
+		friendRequestId?: string;
+		friendRequestMessage?: string;
 		currentUser?: any;
 		targetUser?: any;
 	}>;

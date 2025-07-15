@@ -170,6 +170,20 @@ export class FriendshipStatusResponseDto {
 	friendRequestStatus?: FriendRequestStatus;
 
 	@ApiProperty({
+		description: 'ID của lời mời kết bạn (nếu có)',
+		example: '507f1f77bcf86cd799439011',
+		required: false,
+	})
+	friendRequestId?: string;
+
+	@ApiProperty({
+		description: 'Tin nhắn kèm theo lời mời kết bạn (nếu có)',
+		example: 'Xin chào! Tôi muốn kết bạn với bạn.',
+		required: false,
+	})
+	friendRequestMessage?: string;
+
+	@ApiProperty({
 		description: 'Thông tin người dùng hiện tại',
 		example: {
 			_id: '507f1f77bcf86cd799439011',
@@ -198,6 +212,9 @@ export class FriendshipStatusResponseDto {
 		fullName: string;
 		avatar: string;
 	};
+
+	@ApiProperty({ description: 'Bạn đã follow người này chưa', example: false })
+	isFollowing: boolean;
 }
 
 export class FriendResponseDto {
