@@ -6,6 +6,7 @@ import { Group, GroupSchema } from './entities/group.schema';
 import { IGroupRepository } from './repositories/group.repository';
 import { GroupRepositoryImpl } from './repositories/group.repository.impl';
 import { Post, PostSchema } from '@modules/post/entities/post.schema';
+import { NotificationModule } from '@modules/notification/notification.module';
 
 @Module({
 	imports: [
@@ -13,6 +14,7 @@ import { Post, PostSchema } from '@modules/post/entities/post.schema';
 			{ name: Group.name, schema: GroupSchema },
 			{ name: Post.name, schema: PostSchema },
 		]),
+		NotificationModule,
 	],
 	controllers: [GroupController],
 	providers: [GroupService, { provide: IGroupRepository, useClass: GroupRepositoryImpl }],

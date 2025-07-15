@@ -195,6 +195,30 @@ export class GroupRepositoryImpl implements IGroupRepository {
 		}
 	}
 
+	async addToInviteList(groupId: string, userId: string): Promise<void> {
+		const result = await this.groupModel.findByIdAndUpdate(
+			groupId,
+			{ $addToSet: { inviteList: userId } },
+			{ new: true },
+		);
+
+		if (!result) {
+			throw new Error('Group not found');
+		}
+	}
+
+	async removeFromInviteList(groupId: string, userId: string): Promise<void> {
+		const result = await this.groupModel.findByIdAndUpdate(
+			groupId,
+			{ $pull: { inviteList: userId } },
+			{ new: true },
+		);
+
+		if (!result) {
+			throw new Error('Group not found');
+		}
+	}
+
 	async approveMember(groupId: string, userId: string): Promise<void> {
 		const result = await this.groupModel.findByIdAndUpdate(
 			groupId,
@@ -224,6 +248,19 @@ export class GroupRepositoryImpl implements IGroupRepository {
 	async isUserInWaitingList(groupId: string, userId: string): Promise<boolean> {
 		const group = await this.groupModel.findById(groupId).lean();
 		return group?.waitingList?.some(waitingId => waitingId.toString() === userId) || false;
+	}
+
+	async isUserInInviteList(groupId: string, userId: string): Promise<boolean> {
+		const group = await this.groupModel.findById(groupId).lean();
+		return group?.inviteList?.some(inviteId => inviteId.toString() === userId) || false;
+	}
+
+	async getGroupAdmins(groupId: string): Promise<string[]> {
+		const group = await this.groupModel.findById(groupId).lean();
+		if (!group) {
+			throw new Error('Group not found');
+		}
+		return group.admins?.map(adminId => adminId.toString()) || [];
 	}
 
 	async getSimpleGroupsByUserId(
@@ -281,6 +318,7 @@ export class GroupRepositoryImpl implements IGroupRepository {
 			admins: group.admins?.map((id: any) => id.toString()) || [],
 			members: group.members?.map((id: any) => id.toString()) || [],
 			waitingList: group.waitingList?.map((id: any) => id.toString()) || [],
+			inviteList: group.inviteList?.map((id: any) => id.toString()) || [],
 			sport: group.sport,
 			location: group.location,
 			isPrivate: group.isPrivate,

@@ -36,10 +36,14 @@ export interface IGroupRepository {
 	removeAdmin(groupId: string, userId: string): Promise<void>;
 	addToWaitingList(groupId: string, userId: string): Promise<void>;
 	removeFromWaitingList(groupId: string, userId: string): Promise<void>;
+	addToInviteList(groupId: string, userId: string): Promise<void>;
+	removeFromInviteList(groupId: string, userId: string): Promise<void>;
 	approveMember(groupId: string, userId: string): Promise<void>;
 	isUserAdmin(groupId: string, userId: string): Promise<boolean>;
 	isUserMember(groupId: string, userId: string): Promise<boolean>;
 	isUserInWaitingList(groupId: string, userId: string): Promise<boolean>;
+	isUserInInviteList(groupId: string, userId: string): Promise<boolean>;
+	getGroupAdmins(groupId: string): Promise<string[]>;
 }
 
 export const IGroupRepository = Symbol('IGroupRepository');

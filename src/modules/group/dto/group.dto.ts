@@ -170,6 +170,9 @@ export class GroupResponseDto {
 	@ApiProperty({ description: 'Waiting list user IDs', type: [String] })
 	waitingList: string[];
 
+	@ApiProperty({ description: 'Invite list user IDs', type: [String] })
+	inviteList: string[];
+
 	@ApiProperty({ description: 'Sport type', enum: SportType, example: SportType.FOOTBALL })
 	sport: SportType;
 

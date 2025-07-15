@@ -18,5 +18,9 @@
 	"MESSAGE_EVENT_INVITATION": "invited you to an event",
 	"MESSAGE_EVENT_UPDATE": "updated an event you're attending",
 	"MESSAGE_MENTION_IN_POST": "mentioned you in a post",
-	"MESSAGE_MENTION_IN_COMMENT": "mentioned you in a comment"
+	"MESSAGE_MENTION_IN_COMMENT": "mentioned you in a comment",
+	"MESSAGE_INVITED_TO_GROUP": "invited you to join the group",
+	"MESSAGE_JOIN_REQUEST": "requested to join your group",
+	"MESSAGE_ACCEPTED_INVITATION": "accepted your group invitation",
+	"MESSAGE_REJECTED_INVITATION": "rejected your group invitation"
 }

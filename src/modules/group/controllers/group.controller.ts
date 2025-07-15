@@ -275,4 +275,438 @@ export class GroupController {
 			message: i18n.t('group.GROUP_DELETED_SUCCESS'),
 		};
 	}
+
+	// ====== GROUP MEMBERSHIP MANAGEMENT APIs ======
+
+	@Version('1')
+	@Post(':groupId/join')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Tham gia nhóm' })
+	@ApiParam({
+		name: 'groupId',
+		description: 'ID của nhóm',
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Tham gia nhóm thành công',
+	})
+	@ApiResponse({
+		status: 400,
+		description: 'Đã là thành viên hoặc dữ liệu không hợp lệ',
+	})
+	@ApiResponse({
+		status: 401,
+		description: 'Không có quyền truy cập',
+	})
+	@ApiResponse({
+		status: 404,
+		description: 'Không tìm thấy nhóm',
+	})
+	async joinGroup(
+		@Request() req,
+		@Param('groupId') groupId: string,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<null>> {
+		await this.groupService.joinGroup(groupId, req.user.id, i18n);
+
+		return {
+			success: true,
+			message: i18n.t('group.JOIN_GROUP_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Delete(':groupId/leave')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Rời khỏi nhóm' })
+	@ApiParam({
+		name: 'groupId',
+		description: 'ID của nhóm',
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Rời khỏi nhóm thành công',
+	})
+	@ApiResponse({
+		status: 400,
+		description: 'Không phải thành viên hoặc dữ liệu không hợp lệ',
+	})
+	@ApiResponse({
+		status: 401,
+		description: 'Không có quyền truy cập',
+	})
+	@ApiResponse({
+		status: 404,
+		description: 'Không tìm thấy nhóm',
+	})
+	async leaveGroup(
+		@Request() req,
+		@Param('groupId') groupId: string,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<null>> {
+		await this.groupService.leaveGroup(groupId, req.user.id, i18n);
+		return {
+			success: true,
+			message: i18n.t('group.LEAVE_GROUP_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Put(':groupId/members/:userId/role')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Thay đổi vai trò thành viên (admin/member)' })
+	@ApiParam({
+		name: 'groupId',
+		description: 'ID của nhóm',
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiParam({
+		name: 'userId',
+		description: 'ID của người dùng',
+		example: '507f1f77bcf86cd799439012',
+	})
+	@ApiBody({
+		description: 'Thay đổi vai trò',
+		schema: {
+			type: 'object',
+			properties: {
+				role: {
+					type: 'string',
+					enum: ['admin', 'member'],
+					description: 'Vai trò mới',
+					example: 'admin',
+				},
+			},
+			required: ['role'],
+		},
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Thay đổi vai trò thành công',
+	})
+	@ApiResponse({
+		status: 400,
+		description: 'Dữ liệu không hợp lệ',
+	})
+	@ApiResponse({
+		status: 401,
+		description: 'Không có quyền truy cập',
+	})
+	@ApiResponse({
+		status: 403,
+		description: 'Không có quyền thay đổi vai trò',
+	})
+	@ApiResponse({
+		status: 404,
+		description: 'Không tìm thấy nhóm hoặc người dùng',
+	})
+	async changeMemberRole(
+		@Request() req,
+		@Param('groupId') groupId: string,
+		@Param('userId') userId: string,
+		@Body('role') role: string,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<null>> {
+		await this.groupService.changeMemberRole(groupId, userId, role, req.user.id, i18n);
+
+		return {
+			success: true,
+			message: i18n.t('group.ROLE_CHANGED_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Get(':groupId/members')
+	@Public()
+	@ApiOperation({ summary: 'Lấy danh sách thành viên nhóm' })
+	@ApiParam({
+		name: 'groupId',
+		description: 'ID của nhóm',
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiQuery({
+		name: 'page',
+		required: false,
+		type: Number,
+		description: 'Số trang (mặc định: 1)',
+		example: 1,
+	})
+	@ApiQuery({
+		name: 'limit',
+		required: false,
+		type: Number,
+		description: 'Số lượng thành viên trên mỗi trang (mặc định: 10)',
+		example: 10,
+	})
+	@ApiQuery({
+		name: 'role',
+		required: false,
+		enum: ['admin', 'member', 'waiting'],
+		description: 'Lọc theo vai trò',
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Lấy danh sách thành viên thành công',
+		schema: {
+			example: {
+				success: true,
+				data: {
+					total: 15,
+					page: 1,
+					limit: 10,
+					totalPages: 2,
+					data: [
+						{
+							userId: '507f1f77bcf86cd799439012',
+							fullName: 'Nguyen Van A',
+							avatar: 'https://example.com/avatar1.jpg',
+							role: 'admin',
+							joinedAt: '2024-01-15T10:30:00.000Z',
+						},
+						{
+							userId: '507f1f77bcf86cd799439013',
+							fullName: 'Tran Thi B',
+							avatar: 'https://example.com/avatar2.jpg',
+							role: 'member',
+							joinedAt: '2024-01-16T14:20:00.000Z',
+						},
+					],
+				},
+				message: 'Lấy danh sách thành viên thành công',
+			},
+		},
+	})
+	@ApiResponse({
+		status: 404,
+		description: 'Không tìm thấy nhóm',
+	})
+	async getGroupMembers(
+		@Param('groupId') groupId: string,
+		@I18n() i18n: I18nContext,
+		@Query('page') page: number = 1,
+		@Query('limit') limit: number = 10,
+		@Query('role') role?: string,
+	): Promise<ResponseEntity<any>> {
+		const result = await this.groupService.getGroupMembers(groupId, i18n, page, limit, role);
+
+		return {
+			success: true,
+			data: result,
+			message: i18n.t('group.MEMBERS_RETRIEVED_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Post(':groupId/requests/:userId/approve')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Phê duyệt yêu cầu tham gia nhóm' })
+	@ApiParam({
+		name: 'groupId',
+		description: 'ID của nhóm',
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiParam({
+		name: 'userId',
+		description: 'ID của yêu cầu (user ID)',
+		example: '507f1f77bcf86cd799439012',
+	})
+	@ApiBody({
+		description: 'Phê duyệt yêu cầu',
+		schema: {
+			type: 'object',
+			properties: {
+				approved: {
+					type: 'boolean',
+					description: 'Phê duyệt hoặc từ chối, default = false',
+					example: true,
+				},
+				reason: {
+					type: 'string',
+					description: 'Lý do từ chối (nếu approved = false)',
+					example: 'Không phù hợp với nhóm',
+				},
+			},
+			required: ['approved'],
+		},
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Xử lý yêu cầu thành công',
+	})
+	@ApiResponse({
+		status: 400,
+		description: 'Dữ liệu không hợp lệ',
+	})
+	@ApiResponse({
+		status: 401,
+		description: 'Không có quyền truy cập',
+	})
+	@ApiResponse({
+		status: 403,
+		description: 'Không có quyền phê duyệt yêu cầu',
+	})
+	@ApiResponse({
+		status: 404,
+		description: 'Không tìm thấy nhóm hoặc yêu cầu',
+	})
+	async approveJoinRequest(
+		@Request() req,
+		@Param('groupId') groupId: string,
+		@Param('userId') userId: string,
+		@Query('approved') approved: boolean,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<null>> {
+		await this.groupService.approveJoinRequest(groupId, userId, approved, req.user.id, i18n);
+
+		return {
+			success: true,
+			message:
+				approved ?
+					i18n.t('group.REQUEST_APPROVED_SUCCESS')
+				:	i18n.t('group.REQUEST_REJECTED_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Post(':groupId/invite')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Mời người dùng tham gia nhóm' })
+	@ApiParam({
+		name: 'groupId',
+		description: 'ID của nhóm',
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiBody({
+		description: 'Danh sách người dùng được mời',
+		schema: {
+			type: 'object',
+			properties: {
+				userIds: {
+					type: 'array',
+					items: { type: 'string' },
+					description: 'Danh sách ID người dùng được mời',
+					example: ['507f1f77bcf86cd799439012', '507f1f77bcf86cd799439013'],
+				},
+			},
+			required: ['userIds'],
+		},
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Gửi lời mời thành công',
+	})
+	@ApiResponse({
+		status: 400,
+		description: 'Dữ liệu không hợp lệ',
+	})
+	@ApiResponse({
+		status: 401,
+		description: 'Không có quyền truy cập',
+	})
+	@ApiResponse({
+		status: 403,
+		description: 'Không có quyền mời người dùng',
+	})
+	@ApiResponse({
+		status: 404,
+		description: 'Không tìm thấy nhóm',
+	})
+	async inviteUsersToGroup(
+		@Request() req,
+		@Param('groupId') groupId: string,
+		@Body('userIds') userIds: string[],
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<null>> {
+		await this.groupService.inviteUsersToGroup(groupId, userIds, req.user.id, i18n);
+
+		return {
+			success: true,
+			message: i18n.t('group.INVITE_USERS_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Post(':groupId/invitation/accept')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Chấp nhận lời mời tham gia nhóm' })
+	@ApiParam({
+		name: 'groupId',
+		description: 'ID của nhóm',
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Chấp nhận lời mời thành công',
+	})
+	@ApiResponse({
+		status: 400,
+		description: 'Dữ liệu không hợp lệ',
+	})
+	@ApiResponse({
+		status: 401,
+		description: 'Không có quyền truy cập',
+	})
+	@ApiResponse({
+		status: 404,
+		description: 'Không tìm thấy nhóm hoặc lời mời',
+	})
+	async acceptGroupInvitation(
+		@Request() req,
+		@Param('groupId') groupId: string,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<null>> {
+		await this.groupService.acceptGroupInvitation(groupId, req.user.id, i18n);
+
+		return {
+			success: true,
+			message: i18n.t('group.INVITATION_ACCEPTED_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Post(':groupId/invitation/reject')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Từ chối lời mời tham gia nhóm' })
+	@ApiParam({
+		name: 'groupId',
+		description: 'ID của nhóm',
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Từ chối lời mời thành công',
+	})
+	@ApiResponse({
+		status: 400,
+		description: 'Dữ liệu không hợp lệ',
+	})
+	@ApiResponse({
+		status: 401,
+		description: 'Không có quyền truy cập',
+	})
+	@ApiResponse({
+		status: 404,
+		description: 'Không tìm thấy nhóm hoặc lời mời',
+	})
+	async rejectGroupInvitation(
+		@Request() req,
+		@Param('groupId') groupId: string,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<null>> {
+		await this.groupService.rejectGroupInvitation(groupId, req.user.id, i18n);
+
+		return {
+			success: true,
+			message: i18n.t('group.INVITATION_REJECTED_SUCCESS'),
+		};
+	}
 }

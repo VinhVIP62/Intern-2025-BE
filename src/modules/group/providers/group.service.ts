@@ -14,10 +14,15 @@ import {
 	PaginatedSimpleGroupsResponseDto,
 } from '../dto/group.dto';
 import { SportType } from '@modules/user/enums/user.enum';
+import { NotificationService } from '../../notification/providers/notification.service';
+import { NotificationType, ReferenceModel } from '../../notification/entities/notification.enum';
 
 @Injectable()
 export class GroupService {
-	constructor(private readonly groupRepository: IGroupRepository) {}
+	constructor(
+		private readonly groupRepository: IGroupRepository,
+		private readonly notificationService: NotificationService,
+	) {}
 
 	async createGroup(
 		createGroupDto: CreateGroupDto,
@@ -218,6 +223,399 @@ export class GroupService {
 				throw error;
 			}
 			throw new BadRequestException(i18n.t('group.USER_GROUPS_RETRIEVAL_FAILED'));
+		}
+	}
+
+	async joinGroup(groupId: string, userId: string, i18n: I18nContext): Promise<void> {
+		try {
+			if (!groupId || groupId.trim().length === 0) {
+				throw new BadRequestException(i18n.t('group.INVALID_GROUP_ID'));
+			}
+
+			// Check if user is already a member
+			const isMember = await this.groupRepository.isUserMember(groupId, userId);
+			if (isMember) {
+				throw new BadRequestException(i18n.t('group.ALREADY_MEMBER'));
+			}
+
+			// Check if user is in waiting list
+			const isInWaitingList = await this.groupRepository.isUserInWaitingList(groupId, userId);
+			if (isInWaitingList) {
+				throw new BadRequestException(i18n.t('group.ALREADY_IN_WAITING_LIST'));
+			}
+
+			await this.groupRepository.addToWaitingList(groupId, userId);
+
+			// Send notifications to group admins
+			try {
+				const adminIds = await this.groupRepository.getGroupAdmins(groupId);
+				const group = await this.groupRepository.getGroupById(groupId);
+
+				// Send notification to each admin (except the user requesting to join)
+				const notifications = adminIds
+					.filter(adminId => adminId !== userId)
+					.map(adminId => ({
+						recipient: adminId,
+						sender: userId,
+						type: NotificationType.GROUP_JOIN_REQUEST,
+						message: `@${userId} MESSAGE_JOIN_REQUEST`,
+						referenceId: groupId,
+						referenceModel: ReferenceModel.GROUP,
+						relatedUsers: [userId],
+					}));
+
+				// Create notifications in parallel
+				await Promise.all(
+					notifications.map(notification =>
+						this.notificationService.createNotification(notification),
+					),
+				);
+			} catch (notificationError) {
+				// Log the error but don't fail the join request
+				console.error('Failed to send join request notifications:', notificationError);
+			}
+		} catch (error) {
+			if (error instanceof BadRequestException) {
+				throw error;
+			}
+			if (error.message === 'Group not found') {
+				throw new NotFoundException(i18n.t('group.GROUP_NOT_FOUND'));
+			}
+			throw new BadRequestException(i18n.t('group.JOIN_GROUP_FAILED'));
+		}
+	}
+
+	async leaveGroup(groupId: string, userId: string, i18n: I18nContext): Promise<void> {
+		try {
+			if (!groupId || groupId.trim().length === 0) {
+				throw new BadRequestException(i18n.t('group.INVALID_GROUP_ID'));
+			}
+
+			// Check if user is a member
+			const isMember = await this.groupRepository.isUserMember(groupId, userId);
+			if (!isMember) {
+				throw new BadRequestException(i18n.t('group.NOT_MEMBER'));
+			}
+
+			// Check if user is admin and if they're the last admin
+			const isAdmin = await this.groupRepository.isUserAdmin(groupId, userId);
+			if (isAdmin) {
+				// TODO: Add logic to check if this is the last admin
+				// For now, allow admin to leave
+			}
+
+			await this.groupRepository.removeMember(groupId, userId);
+		} catch (error) {
+			if (error instanceof BadRequestException) {
+				throw error;
+			}
+			if (error.message === 'Group not found') {
+				throw new NotFoundException(i18n.t('group.GROUP_NOT_FOUND'));
+			}
+			throw new BadRequestException(i18n.t('group.LEAVE_GROUP_FAILED'));
+		}
+	}
+
+	async changeMemberRole(
+		groupId: string,
+		targetUserId: string,
+		role: string,
+		adminUserId: string,
+		i18n: I18nContext,
+	): Promise<void> {
+		try {
+			if (!groupId || groupId.trim().length === 0) {
+				throw new BadRequestException(i18n.t('group.INVALID_GROUP_ID'));
+			}
+
+			// Check if admin user is actually an admin
+			const isAdmin = await this.groupRepository.isUserAdmin(groupId, adminUserId);
+			if (!isAdmin) {
+				throw new ForbiddenException(i18n.t('group.UNAUTHORIZED_TO_MODIFY_ROLE'));
+			}
+
+			// Validate role
+			if (!['admin', 'member'].includes(role)) {
+				throw new BadRequestException(i18n.t('group.INVALID_ROLE'));
+			}
+
+			if (role === 'admin') {
+				await this.groupRepository.addAdmin(groupId, targetUserId);
+			} else {
+				await this.groupRepository.removeAdmin(groupId, targetUserId);
+			}
+		} catch (error) {
+			if (error instanceof BadRequestException || error instanceof ForbiddenException) {
+				throw error;
+			}
+			if (error.message === 'Group not found') {
+				throw new NotFoundException(i18n.t('group.GROUP_NOT_FOUND'));
+			}
+			throw new BadRequestException(i18n.t('group.ROLE_CHANGE_FAILED'));
+		}
+	}
+
+	async getGroupMembers(
+		groupId: string,
+		i18n: I18nContext,
+		page: number = 1,
+		limit: number = 10,
+		role?: string,
+	): Promise<any> {
+		try {
+			if (!groupId || groupId.trim().length === 0) {
+				throw new BadRequestException(i18n.t('group.INVALID_GROUP_ID'));
+			}
+
+			// Validate pagination parameters
+			if (page < 1) page = 1;
+			if (limit < 1 || limit > 50) limit = 10;
+
+			// Validate role filter
+			if (role && !['admin', 'member', 'waiting'].includes(role)) {
+				throw new BadRequestException(i18n.t('group.INVALID_ROLE_FILTER'));
+			}
+
+			// TODO: Implement getGroupMembers in repository
+			// For now, return a placeholder response
+			return {
+				total: 0,
+				page,
+				limit,
+				totalPages: 0,
+				data: [],
+			};
+		} catch (error) {
+			if (error instanceof BadRequestException) {
+				throw error;
+			}
+			if (error.message === 'Group not found') {
+				throw new NotFoundException(i18n.t('group.GROUP_NOT_FOUND'));
+			}
+			throw new BadRequestException(i18n.t('group.MEMBERS_RETRIEVAL_FAILED'));
+		}
+	}
+
+	async approveJoinRequest(
+		groupId: string,
+		requestId: string,
+		approved: boolean,
+		adminUserId: string,
+		i18n: I18nContext,
+	): Promise<void> {
+		try {
+			if (!groupId || groupId.trim().length === 0) {
+				throw new BadRequestException(i18n.t('group.INVALID_GROUP_ID'));
+			}
+
+			// Check if admin user is actually an admin
+			const isAdmin = await this.groupRepository.isUserAdmin(groupId, adminUserId);
+			if (!isAdmin) {
+				throw new ForbiddenException(i18n.t('group.UNAUTHORIZED_TO_APPROVE'));
+			}
+
+			// Check if user is in waiting list
+			const isInWaitingList = await this.groupRepository.isUserInWaitingList(groupId, requestId);
+			if (!isInWaitingList) {
+				throw new BadRequestException(i18n.t('group.NOT_IN_WAITING_LIST'));
+			}
+
+			if (approved) {
+				await this.groupRepository.approveMember(groupId, requestId);
+			} else {
+				await this.groupRepository.removeFromWaitingList(groupId, requestId);
+			}
+		} catch (error) {
+			if (error instanceof BadRequestException || error instanceof ForbiddenException) {
+				throw error;
+			}
+			if (error.message === 'Group not found') {
+				throw new NotFoundException(i18n.t('group.GROUP_NOT_FOUND'));
+			}
+			throw new BadRequestException(i18n.t('group.REQUEST_APPROVAL_FAILED'));
+		}
+	}
+
+	async inviteUsersToGroup(
+		groupId: string,
+		userIds: string[],
+		senderId: string,
+		i18n: I18nContext,
+	): Promise<void> {
+		try {
+			if (!groupId || groupId.trim().length === 0) {
+				throw new BadRequestException(i18n.t('group.INVALID_GROUP_ID'));
+			}
+
+			if (!userIds || userIds.length === 0) {
+				throw new BadRequestException(i18n.t('group.USER_IDS_REQUIRED'));
+			}
+
+			// Check if sender is a member of the group
+			const isMember = await this.groupRepository.isUserMember(groupId, senderId);
+			if (!isMember) {
+				throw new ForbiddenException(i18n.t('group.UNAUTHORIZED_TO_INVITE'));
+			}
+
+			// Filter out users who are already members, in waiting list, or in invite list
+			const validUserIds: string[] = [];
+			for (const userId of userIds) {
+				const isAlreadyMember = await this.groupRepository.isUserMember(groupId, userId);
+				const isInWaitingList = await this.groupRepository.isUserInWaitingList(groupId, userId);
+				const isInInviteList = await this.groupRepository.isUserInInviteList(groupId, userId);
+
+				if (!isAlreadyMember && !isInWaitingList && !isInInviteList) {
+					validUserIds.push(userId);
+				}
+			}
+
+			if (validUserIds.length === 0) {
+				throw new BadRequestException(i18n.t('group.NO_VALID_USERS_TO_INVITE'));
+			}
+
+			// Add users to invite list
+			await Promise.all(
+				validUserIds.map(userId => this.groupRepository.addToInviteList(groupId, userId)),
+			);
+
+			// Send notifications to invited users
+			await Promise.all(
+				validUserIds
+					.filter(invitedUserId => invitedUserId !== senderId) // Không gửi notification cho chính mình
+					.map(invitedUserId =>
+						this.notificationService.createNotification({
+							recipient: invitedUserId,
+							sender: senderId,
+							type: NotificationType.GROUP_INVITATION,
+							message: `@${senderId} MESSAGE_INVITED_TO_GROUP @${groupId}`,
+							referenceId: groupId,
+							referenceModel: ReferenceModel.GROUP,
+						}),
+					),
+			);
+		} catch (error) {
+			if (error instanceof BadRequestException || error instanceof ForbiddenException) {
+				throw error;
+			}
+			if (error.message === 'Group not found') {
+				throw new NotFoundException(i18n.t('group.GROUP_NOT_FOUND'));
+			}
+			throw new BadRequestException(i18n.t('group.INVITE_USERS_FAILED'));
+		}
+	}
+
+	async acceptGroupInvitation(groupId: string, userId: string, i18n: I18nContext): Promise<void> {
+		try {
+			if (!groupId || groupId.trim().length === 0) {
+				throw new BadRequestException(i18n.t('group.INVALID_GROUP_ID'));
+			}
+
+			// Check if user is in invite list
+			const isInInviteList = await this.groupRepository.isUserInInviteList(groupId, userId);
+			if (!isInInviteList) {
+				throw new BadRequestException(i18n.t('group.NOT_IN_INVITE_LIST'));
+			}
+
+			// Check if user is already a member
+			const isMember = await this.groupRepository.isUserMember(groupId, userId);
+			if (isMember) {
+				throw new BadRequestException(i18n.t('group.ALREADY_MEMBER'));
+			}
+
+			// Move user from invite list to members
+			await this.groupRepository.removeFromInviteList(groupId, userId);
+			await this.groupRepository.addMember(groupId, userId);
+
+			// Send notifications to group admins
+			try {
+				const adminIds = await this.groupRepository.getGroupAdmins(groupId);
+				const group = await this.groupRepository.getGroupById(groupId);
+
+				// Send notification to each admin (except the user who accepted the invitation)
+				const notifications = adminIds
+					.filter(adminId => adminId !== userId)
+					.map(adminId => ({
+						recipient: adminId,
+						sender: userId,
+						type: NotificationType.GROUP_INVITATION_ACCEPTED,
+						message: `@${userId} MESSAGE_ACCEPTED_INVITATION`,
+						referenceId: groupId,
+						referenceModel: ReferenceModel.GROUP,
+						relatedUsers: [userId],
+					}));
+
+				// Create notifications in parallel
+				await Promise.all(
+					notifications.map(notification =>
+						this.notificationService.createNotification(notification),
+					),
+				);
+			} catch (notificationError) {
+				// Log the error but don't fail the invitation acceptance
+				console.error('Failed to send invitation acceptance notifications:', notificationError);
+			}
+		} catch (error) {
+			if (error instanceof BadRequestException) {
+				throw error;
+			}
+			if (error.message === 'Group not found') {
+				throw new NotFoundException(i18n.t('group.GROUP_NOT_FOUND'));
+			}
+			throw new BadRequestException(i18n.t('group.ACCEPT_INVITATION_FAILED'));
+		}
+	}
+
+	async rejectGroupInvitation(groupId: string, userId: string, i18n: I18nContext): Promise<void> {
+		try {
+			if (!groupId || groupId.trim().length === 0) {
+				throw new BadRequestException(i18n.t('group.INVALID_GROUP_ID'));
+			}
+
+			// Check if user is in invite list
+			const isInInviteList = await this.groupRepository.isUserInInviteList(groupId, userId);
+			if (!isInInviteList) {
+				throw new BadRequestException(i18n.t('group.NOT_IN_INVITE_LIST'));
+			}
+
+			// Remove user from invite list
+			await this.groupRepository.removeFromInviteList(groupId, userId);
+
+			// Send notifications to group admins
+			try {
+				const adminIds = await this.groupRepository.getGroupAdmins(groupId);
+				const group = await this.groupRepository.getGroupById(groupId);
+
+				// Send notification to each admin (except the user who rejected the invitation)
+				const notifications = adminIds
+					.filter(adminId => adminId !== userId)
+					.map(adminId => ({
+						recipient: adminId,
+						sender: userId,
+						type: NotificationType.GROUP_INVITATION_REJECTED,
+						message: `@${userId} MESSAGE_REJECTED_INVITATION`,
+						referenceId: groupId,
+						referenceModel: ReferenceModel.GROUP,
+						relatedUsers: [userId],
+					}));
+
+				// Create notifications in parallel
+				await Promise.all(
+					notifications.map(notification =>
+						this.notificationService.createNotification(notification),
+					),
+				);
+			} catch (notificationError) {
+				// Log the error but don't fail the invitation rejection
+				console.error('Failed to send invitation rejection notifications:', notificationError);
+			}
+		} catch (error) {
+			if (error instanceof BadRequestException) {
+				throw error;
+			}
+			if (error.message === 'Group not found') {
+				throw new NotFoundException(i18n.t('group.GROUP_NOT_FOUND'));
+			}
+			throw new BadRequestException(i18n.t('group.REJECT_INVITATION_FAILED'));
 		}
 	}
 }

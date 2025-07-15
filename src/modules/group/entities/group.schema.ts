@@ -26,6 +26,9 @@ export class Group extends Document {
 	@Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
 	waitingList: Types.ObjectId[];
 
+	@Prop({ type: [{ type: Types.ObjectId, ref: 'User' }], default: [] })
+	inviteList: Types.ObjectId[];
+
 	@Prop({ type: String, enum: SportType, required: true })
 	sport: SportType;
 
@@ -88,6 +91,13 @@ GroupSchema.virtual('memberUsers', {
 GroupSchema.virtual('waitingListUsers', {
 	ref: 'User',
 	localField: 'waitingList',
+	foreignField: '_id',
+});
+
+// Virtual populate for invite list
+GroupSchema.virtual('inviteListUsers', {
+	ref: 'User',
+	localField: 'inviteList',
 	foreignField: '_id',
 });
 

@@ -2871,6 +2871,461 @@
         ]
       }
     },
+    "/api/v1/groups/{groupId}/join": {
+      "post": {
+        "operationId": "GroupController_joinGroup_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tham gia nhóm thành công"
+          },
+          "400": {
+            "description": "Đã là thành viên hoặc dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "Tham gia nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/leave": {
+      "delete": {
+        "operationId": "GroupController_leaveGroup_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Rời khỏi nhóm thành công"
+          },
+          "400": {
+            "description": "Không phải thành viên hoặc dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "Rời khỏi nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/members/{userId}/role": {
+      "put": {
+        "operationId": "GroupController_changeMemberRole_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "ID của người dùng",
+            "schema": {
+              "example": "507f1f77bcf86cd799439012",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Thay đổi vai trò",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string",
+                    "enum": [
+                      "admin",
+                      "member"
+                    ],
+                    "description": "Vai trò mới",
+                    "example": "admin"
+                  }
+                },
+                "required": [
+                  "role"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Thay đổi vai trò thành công"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền thay đổi vai trò"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm hoặc người dùng"
+          }
+        },
+        "summary": "Thay đổi vai trò thành viên (admin/member)",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/members": {
+      "get": {
+        "operationId": "GroupController_getGroupMembers_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng thành viên trên mỗi trang (mặc định: 10)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "role",
+            "required": false,
+            "in": "query",
+            "description": "Lọc theo vai trò",
+            "schema": {
+              "enum": [
+                "admin",
+                "member",
+                "waiting"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách thành viên thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "success": true,
+                    "data": {
+                      "total": 15,
+                      "page": 1,
+                      "limit": 10,
+                      "totalPages": 2,
+                      "data": [
+                        {
+                          "userId": "507f1f77bcf86cd799439012",
+                          "fullName": "Nguyen Van A",
+                          "avatar": "https://example.com/avatar1.jpg",
+                          "role": "admin",
+                          "joinedAt": "2024-01-15T10:30:00.000Z"
+                        },
+                        {
+                          "userId": "507f1f77bcf86cd799439013",
+                          "fullName": "Tran Thi B",
+                          "avatar": "https://example.com/avatar2.jpg",
+                          "role": "member",
+                          "joinedAt": "2024-01-16T14:20:00.000Z"
+                        }
+                      ]
+                    },
+                    "message": "Lấy danh sách thành viên thành công"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "Lấy danh sách thành viên nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/requests/{userId}/approve": {
+      "post": {
+        "operationId": "GroupController_approveJoinRequest_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "ID của yêu cầu (user ID)",
+            "schema": {
+              "example": "507f1f77bcf86cd799439012",
+              "type": "string"
+            }
+          },
+          {
+            "name": "approved",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Phê duyệt yêu cầu",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "approved": {
+                    "type": "boolean",
+                    "description": "Phê duyệt hoặc từ chối, default = false",
+                    "example": true
+                  },
+                  "reason": {
+                    "type": "string",
+                    "description": "Lý do từ chối (nếu approved = false)",
+                    "example": "Không phù hợp với nhóm"
+                  }
+                },
+                "required": [
+                  "approved"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Xử lý yêu cầu thành công"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền phê duyệt yêu cầu"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm hoặc yêu cầu"
+          }
+        },
+        "summary": "Phê duyệt yêu cầu tham gia nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/invite": {
+      "post": {
+        "operationId": "GroupController_inviteUsersToGroup_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Danh sách người dùng được mời",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Danh sách ID người dùng được mời",
+                    "example": [
+                      "507f1f77bcf86cd799439012",
+                      "507f1f77bcf86cd799439013"
+                    ]
+                  }
+                },
+                "required": [
+                  "userIds"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Gửi lời mời thành công"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền mời người dùng"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "Mời người dùng tham gia nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/invitation/accept": {
+      "post": {
+        "operationId": "GroupController_acceptGroupInvitation_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chấp nhận lời mời thành công"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm hoặc lời mời"
+          }
+        },
+        "summary": "Chấp nhận lời mời tham gia nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/invitation/reject": {
+      "post": {
+        "operationId": "GroupController_rejectGroupInvitation_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Từ chối lời mời thành công"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm hoặc lời mời"
+          }
+        },
+        "summary": "Từ chối lời mời tham gia nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
     "/api/v1/friends/requests": {
       "post": {
         "operationId": "FriendRequestController_createFriendRequest_v1",
@@ -4758,6 +5213,13 @@
               "type": "string"
             }
           },
+          "inviteList": {
+            "description": "Invite list user IDs",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "sport": {
             "type": "string",
             "description": "Sport type",
@@ -4827,6 +5289,7 @@
           "admins",
           "members",
           "waitingList",
+          "inviteList",
           "sport",
           "isPrivate",
           "memberCount",
