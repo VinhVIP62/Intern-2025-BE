@@ -3326,6 +3326,163 @@
         ]
       }
     },
+    "/api/v1/groups/{groupId}/posts": {
+      "get": {
+        "operationId": "GroupController_getGroupPosts_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng bài viết trên mỗi trang (mặc định: 10)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách bài viết của nhóm thành công"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm hoặc bài viết"
+          }
+        },
+        "summary": "Lấy danh sách bài viết của nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/posts/{postId}/approve": {
+      "put": {
+        "operationId": "GroupController_approveGroupPost_v1",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "description": "ID của bài viết",
+            "schema": {
+              "example": "507f1f77bcf86cd799439099",
+              "type": "string"
+            }
+          },
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Phê duyệt hoặc từ chối bài viết",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "approved": {
+                    "type": "boolean",
+                    "description": "Phê duyệt hoặc từ chối",
+                    "example": true
+                  },
+                  "reason": {
+                    "type": "string",
+                    "description": "Lý do từ chối (nếu approved = false)",
+                    "example": "Nội dung không phù hợp"
+                  }
+                },
+                "required": [
+                  "approved"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Phê duyệt bài viết thành công"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền phê duyệt bài viết"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm hoặc bài viết"
+          }
+        },
+        "summary": "Phê duyệt hoặc từ chối bài viết trong nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/post": {
+      "post": {
+        "operationId": "GroupController_createGroupPost_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Dữ liệu tạo bài viết",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePostDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tạo bài viết thành công"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "Tạo bài viết mới trong nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
     "/api/v1/friends/requests": {
       "post": {
         "operationId": "FriendRequestController_createFriendRequest_v1",

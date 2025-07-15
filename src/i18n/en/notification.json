@@ -22,5 +22,8 @@
 	"MESSAGE_INVITED_TO_GROUP": "invited you to join the group",
 	"MESSAGE_JOIN_REQUEST": "requested to join your group",
 	"MESSAGE_ACCEPTED_INVITATION": "accepted your group invitation",
-	"MESSAGE_REJECTED_INVITATION": "rejected your group invitation"
+	"MESSAGE_REJECTED_INVITATION": "rejected your group invitation",
+	"MESSAGE_NEW_POST_IN_GROUP": "has posted in your group",
+	"MESSAGE_POST_APPROVED": "Your post has been approved",
+	"MESSAGE_POST_REJECTED": "Your post has been rejected"
 }

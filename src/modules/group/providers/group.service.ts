@@ -16,6 +16,8 @@ import {
 import { SportType } from '@modules/user/enums/user.enum';
 import { NotificationService } from '../../notification/providers/notification.service';
 import { NotificationType, ReferenceModel } from '../../notification/entities/notification.enum';
+import { CreatePostDto } from '@modules/post/dto/post.dto';
+import { PostService } from '@modules/post/providers/post.service';
 
 @Injectable()
 export class GroupService {
@@ -617,5 +619,63 @@ export class GroupService {
 			}
 			throw new BadRequestException(i18n.t('group.REJECT_INVITATION_FAILED'));
 		}
+	}
+
+	async createGroupPost(
+		userId: string,
+		createPostDto: CreatePostDto,
+		files: Express.Multer.File[],
+		i18n: I18nContext,
+		postService: PostService,
+	): Promise<any> {
+		const groupId = createPostDto.groupId?.toString();
+		if (!groupId) {
+			throw new BadRequestException(i18n.t('group.GROUP_ID_REQUIRED'));
+		}
+		// Inject groupId into DTO
+		const post = await postService.createPost(createPostDto, userId, files, i18n);
+
+		// Notify all group admins except the creator
+		const adminIds = await this.groupRepository.getGroupAdmins(groupId);
+
+		const notifications = adminIds
+			.filter(adminId => adminId !== userId)
+			.map(adminId => ({
+				recipient: adminId,
+				sender: userId,
+				type: NotificationType.REQUEST_APPROVE_POST,
+				message: `@${userId} MESSAGE_NEW_POST_IN_GROUP`,
+				referenceId: groupId,
+				referenceModel: ReferenceModel.GROUP,
+				relatedUsers: [userId],
+			}));
+
+		if (notifications.length > 0) {
+			await Promise.all(
+				notifications.map(notification =>
+					this.notificationService.createNotification(notification),
+				),
+			);
+		}
+
+		return post;
+	}
+
+	async notifyPostOwner(
+		postOwnerId: string,
+		adminId: string,
+		groupId: string,
+		approved: boolean,
+		i18n: I18nContext,
+	): Promise<void> {
+		await this.notificationService.createNotification({
+			recipient: postOwnerId,
+			sender: adminId,
+			type: approved ? NotificationType.POST_APPROVED : NotificationType.POST_REJECTED,
+			message: approved ? 'MESSAGE_POST_APPROVED' : 'MESSAGE_POST_REJECTED',
+			referenceId: groupId,
+			referenceModel: ReferenceModel.GROUP,
+			relatedUsers: [adminId],
+		});
 	}
 }

@@ -13,6 +13,7 @@ export enum NotificationType {
 	MENTION = 'mention',
 	FOLLOW = 'follow',
 	SHARE = 'share',
+	REQUEST_APPROVE_POST = 'request_approve_post',
 }
 
 export enum ReferenceModel {

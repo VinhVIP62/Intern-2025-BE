@@ -56,5 +56,13 @@
 	"INVITE_USERS_FAILED": "Gửi lời mời thất bại",
 	"UNAUTHORIZED_TO_INVITE": "Bạn không có quyền mời người dùng vào nhóm này",
 	"USER_IDS_REQUIRED": "ID người dùng là bắt buộc",
-	"NO_VALID_USERS_TO_INVITE": "Không có người dùng hợp lệ để mời. Tất cả người dùng đã là thành viên hoặc trong danh sách chờ"
+	"NO_VALID_USERS_TO_INVITE": "Không có người dùng hợp lệ để mời. Tất cả người dùng đã là thành viên hoặc trong danh sách chờ",
+	"ACCEPT_INVITATION_FAILED": "Tham gia nhóm thất bại",
+	"REJECT_INVITATION_FAILED": "Từ chối lời mời tham gia nhóm thất bại",
+	"INVITATION_ACCEPTED_SUCCESS": "Lời mời tham gia nhóm đã được chấp nhận thành công",
+	"INVITATION_REJECTED_SUCCESS": "Lời mời tham gia nhóm đã được từ chối thành công",
+	"GROUP_POST_RETRIEVED_SUCCESS": "Lấy bài viết nhóm thành công",
+	"POST_REJECTED_SUCCESS": "Bài viết đã được từ chối thành công",
+	"POST_APPROVED_SUCCESS": "Bài viết đã được phê duyệt thành công",
+	"POST_CREATED_SUCCESS": "Bài viết đã được tạo thành công"
 }

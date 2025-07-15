@@ -96,6 +96,14 @@ export interface IPostRepository {
 	): Promise<{ posts: Post[]; total: number }>;
 
 	clearUrl(postId: string, isClearImage: boolean, isClearVideo: boolean): Promise<void>;
+
+	findByGroupId(
+		groupId: string,
+		page: number,
+		limit: number,
+	): Promise<{ posts: Post[]; total: number }>;
+
+	approvePost(postId: string, approved: boolean, adminId: string, reason?: string): Promise<Post>;
 }
 
 export const IPostRepository = Symbol('IPostRepository');

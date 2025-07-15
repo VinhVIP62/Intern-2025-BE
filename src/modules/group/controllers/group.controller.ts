@@ -10,8 +10,18 @@ import {
 	Request,
 	UseGuards,
 	Version,
+	UploadedFiles,
+	UseInterceptors,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody } from '@nestjs/swagger';
+import {
+	ApiTags,
+	ApiOperation,
+	ApiResponse,
+	ApiParam,
+	ApiQuery,
+	ApiBody,
+	ApiConsumes,
+} from '@nestjs/swagger';
 import { GroupService } from '../providers/group.service';
 import { ResponseEntity } from '@common/types';
 import {
@@ -27,11 +37,17 @@ import { Public } from '@common/decorators';
 import { RolesGuard } from '@common/guards';
 import { Roles } from '@common/decorators';
 import { Role } from '@common/enum';
+import { PostService } from '@modules/post/providers/post.service';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { CreatePostDto } from '@modules/post/dto/post.dto';
 
 @ApiTags('Group')
 @Controller('groups')
 export class GroupController {
-	constructor(private readonly groupService: GroupService) {}
+	constructor(
+		private readonly groupService: GroupService,
+		private readonly postService: PostService,
+	) {}
 
 	@Version('1')
 	@Post()
@@ -707,6 +723,171 @@ export class GroupController {
 		return {
 			success: true,
 			message: i18n.t('group.INVITATION_REJECTED_SUCCESS'),
+		};
+	}
+
+	// ====== GROUP POSTS MANAGEMENT APIs ======
+
+	@Version('1')
+	@Get(':groupId/posts')
+	@Public()
+	@ApiOperation({ summary: 'Lấy danh sách bài viết của nhóm' })
+	@ApiParam({
+		name: 'groupId',
+		description: 'ID của nhóm',
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiQuery({
+		name: 'page',
+		required: false,
+		type: Number,
+		description: 'Số trang (mặc định: 1)',
+		example: 1,
+	})
+	@ApiQuery({
+		name: 'limit',
+		required: false,
+		type: Number,
+		description: 'Số lượng bài viết trên mỗi trang (mặc định: 10)',
+		example: 10,
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Lấy danh sách bài viết của nhóm thành công',
+	})
+	@ApiResponse({
+		status: 404,
+		description: 'Không tìm thấy nhóm hoặc bài viết',
+	})
+	async getGroupPosts(
+		@Param('groupId') groupId: string,
+		@I18n() i18n: I18nContext,
+		@Query('page') page: number = 1,
+		@Query('limit') limit: number = 10,
+	): Promise<ResponseEntity<any>> {
+		const result = await this.postService.getPostsByGroupId(groupId, i18n, page, limit);
+		return {
+			success: true,
+			data: result,
+			message: i18n.t('group.GROUP_POST_RETRIEVED_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Put(':groupId/posts/:postId/approve')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Phê duyệt hoặc từ chối bài viết trong nhóm' })
+	@ApiParam({
+		name: 'groupId',
+		description: 'ID của nhóm',
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiParam({
+		name: 'postId',
+		description: 'ID của bài viết',
+		example: '507f1f77bcf86cd799439099',
+	})
+	@ApiBody({
+		description: 'Phê duyệt hoặc từ chối bài viết',
+		schema: {
+			type: 'object',
+			properties: {
+				approved: {
+					type: 'boolean',
+					description: 'Phê duyệt hoặc từ chối',
+					example: true,
+				},
+				reason: {
+					type: 'string',
+					description: 'Lý do từ chối (nếu approved = false)',
+					example: 'Nội dung không phù hợp',
+				},
+			},
+			required: ['approved'],
+		},
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Phê duyệt bài viết thành công',
+	})
+	@ApiResponse({
+		status: 400,
+		description: 'Dữ liệu không hợp lệ',
+	})
+	@ApiResponse({
+		status: 401,
+		description: 'Không có quyền truy cập',
+	})
+	@ApiResponse({
+		status: 403,
+		description: 'Không có quyền phê duyệt bài viết',
+	})
+	@ApiResponse({
+		status: 404,
+		description: 'Không tìm thấy nhóm hoặc bài viết',
+	})
+	async approveGroupPost(
+		@Request() req,
+		@Param('postId') postId: string,
+		@Body('approved') approved: boolean,
+		@Body('reason') reason: string,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<any>> {
+		// TODO: Optionally check if post belongs to groupId
+		const result = await this.postService.approvePost(postId, approved, req.user.id, i18n, reason);
+		return {
+			success: true,
+			data: result,
+			message:
+				approved ? i18n.t('group.POST_APPROVED_SUCCESS') : i18n.t('group.POST_REJECTED_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Post('post')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@UseInterceptors(FilesInterceptor('files'))
+	@ApiOperation({ summary: 'Tạo bài viết mới trong nhóm' })
+	@ApiConsumes('multipart/form-data')
+	@ApiBody({
+		description: 'Dữ liệu tạo bài viết',
+		type: CreatePostDto,
+	})
+	@ApiResponse({
+		status: 201,
+		description: 'Tạo bài viết thành công',
+	})
+	@ApiResponse({
+		status: 400,
+		description: 'Dữ liệu không hợp lệ',
+	})
+	@ApiResponse({
+		status: 401,
+		description: 'Không có quyền truy cập',
+	})
+	@ApiResponse({
+		status: 404,
+		description: 'Không tìm thấy nhóm',
+	})
+	async createGroupPost(
+		@Request() req,
+		@Body() createPostDto: CreatePostDto,
+		@UploadedFiles() files: Express.Multer.File[],
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<any>> {
+		const post = await this.groupService.createGroupPost(
+			req.user.id,
+			createPostDto,
+			files,
+			i18n,
+			this.postService,
+		);
+		return {
+			success: true,
+			data: post,
+			message: i18n.t('group.GROUP_POST_CREATED_SUCCESS'),
 		};
 	}
 }
