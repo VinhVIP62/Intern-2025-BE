@@ -193,4 +193,14 @@ export class UserService {
 	async getBlockedUsers(userId: string, i18n?: I18nContext): Promise<any[]> {
 		return this.userRepository.getBlockedUsers(userId);
 	}
+
+	async removeFollower(
+		currentUserId: string,
+		followerId: string,
+		i18n?: I18nContext,
+	): Promise<void> {
+		if (currentUserId === followerId)
+			throw new Error(i18n?.t('user.CANNOT_REMOVE_SELF') || 'Cannot remove yourself');
+		await this.userRepository.removeFollower(currentUserId, followerId);
+	}
 }

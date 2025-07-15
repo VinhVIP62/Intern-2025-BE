@@ -760,6 +760,31 @@
         ]
       }
     },
+    "/api/v1/users/followers/{followerId}": {
+      "delete": {
+        "operationId": "FollowController_removeFollower_v1",
+        "parameters": [
+          {
+            "name": "followerId",
+            "required": true,
+            "in": "path",
+            "description": "ID của follower cần xóa",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Xóa follower thành công"
+          }
+        },
+        "summary": "Xóa follower khỏi tài khoản của bạn",
+        "tags": [
+          "User Follow"
+        ]
+      }
+    },
     "/api/v1/file/upload": {
       "post": {
         "operationId": "FileController_uploadFile_v1",

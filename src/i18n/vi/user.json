@@ -20,5 +20,6 @@
 	"CANNOT_FOLLOW_SELF": "Bạn không thể tự theo dõi chính mình",
 	"CANNOT_UNFOLLOW_SELF": "Bạn không thể tự bỏ theo dõi chính mình",
 	"CANNOT_BLOCK_SELF": "Bạn không thể tự chặn chính mình",
-	"CANNOT_UNBLOCK_SELF": "Bạn không thể tự bỏ chặn chính mình"
+	"CANNOT_UNBLOCK_SELF": "Bạn không thể tự bỏ chặn chính mình",
+	"REMOVE_FOLLOWER_SUCCESS": "Xóa follower thành công"
 }

@@ -126,4 +126,9 @@ export class UserRepositoryImpl implements IUserRepository {
 		}));
 		return { total: data.length, data };
 	}
+
+	async removeFollower(currentUserId: string, followerId: string): Promise<void> {
+		await this.userModel.findByIdAndUpdate(currentUserId, { $pull: { followers: followerId } });
+		await this.userModel.findByIdAndUpdate(followerId, { $pull: { following: currentUserId } });
+	}
 }

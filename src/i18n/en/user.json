@@ -20,5 +20,6 @@
 	"CANNOT_FOLLOW_SELF": "You cannot follow yourself",
 	"CANNOT_UNFOLLOW_SELF": "You cannot unfollow yourself",
 	"CANNOT_BLOCK_SELF": "You cannot block yourself",
-	"CANNOT_UNBLOCK_SELF": "You cannot unblock yourself"
+	"CANNOT_UNBLOCK_SELF": "You cannot unblock yourself",
+	"REMOVE_FOLLOWER_SUCCESS": "Removed follower successfully"
 }
