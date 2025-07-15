@@ -2582,6 +2582,295 @@
         ]
       }
     },
+    "/api/v1/groups": {
+      "post": {
+        "operationId": "GroupController_createGroup_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGroupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tạo nhóm thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          }
+        },
+        "summary": "Tạo nhóm mới",
+        "tags": [
+          "Group"
+        ]
+      },
+      "get": {
+        "operationId": "GroupController_getAllGroups_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng nhóm trên mỗi trang (mặc định: 10)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sport",
+            "required": false,
+            "in": "query",
+            "description": "Lọc theo môn thể thao",
+            "schema": {
+              "enum": [
+                "football",
+                "basketball",
+                "tennis",
+                "badminton",
+                "volleyball",
+                "table_tennis",
+                "swimming",
+                "running",
+                "cycling",
+                "yoga",
+                "gym",
+                "martial_arts",
+                "boxing",
+                "golf",
+                "rock_climbing"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "isPrivate",
+            "required": false,
+            "in": "query",
+            "description": "Lọc theo loại nhóm (công khai/riêng tư)",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách nhóm thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedGroupsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy danh sách tất cả nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/user/{userId}": {
+      "get": {
+        "operationId": "GroupController_getGroupsByUserId_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "ID của người dùng",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng nhóm trên mỗi trang (mặc định: 10)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách nhóm của người dùng thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedSimpleGroupsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy danh sách nhóm của người dùng",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}": {
+      "get": {
+        "operationId": "GroupController_getGroupById_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy thông tin nhóm thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "Lấy thông tin chi tiết nhóm theo ID",
+        "tags": [
+          "Group"
+        ]
+      },
+      "put": {
+        "operationId": "GroupController_updateGroup_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateGroupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cập nhật nhóm thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền chỉnh sửa nhóm này"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "Cập nhật thông tin nhóm",
+        "tags": [
+          "Group"
+        ]
+      },
+      "delete": {
+        "operationId": "GroupController_deleteGroup_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Xóa nhóm thành công"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền xóa nhóm này"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "Xóa nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
     "/api/v1/friends/requests": {
       "post": {
         "operationId": "FriendRequestController_createFriendRequest_v1",
@@ -4345,6 +4634,390 @@
           "hasNextPage",
           "hasPrevPage"
         ]
+      },
+      "CreateGroupDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Group name",
+            "example": "Fitness Enthusiasts"
+          },
+          "description": {
+            "type": "string",
+            "description": "Group description",
+            "example": "A group for fitness lovers"
+          },
+          "avatar": {
+            "type": "string",
+            "description": "Group avatar URL",
+            "example": "https://example.com/avatar.jpg"
+          },
+          "coverImage": {
+            "type": "string",
+            "description": "Group cover image URL",
+            "example": "https://example.com/cover.jpg"
+          },
+          "sport": {
+            "type": "string",
+            "description": "Sport type",
+            "enum": [
+              "football",
+              "basketball",
+              "tennis",
+              "badminton",
+              "volleyball",
+              "table_tennis",
+              "swimming",
+              "running",
+              "cycling",
+              "yoga",
+              "gym",
+              "martial_arts",
+              "boxing",
+              "golf",
+              "rock_climbing"
+            ],
+            "example": "football"
+          },
+          "location": {
+            "description": "Group location",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LocationDto"
+              }
+            ]
+          },
+          "isPrivate": {
+            "type": "boolean",
+            "description": "Is private group",
+            "example": false
+          },
+          "requirePostApproval": {
+            "type": "boolean",
+            "description": "Require post approval",
+            "example": false
+          },
+          "autoApproveAdminPosts": {
+            "type": "boolean",
+            "description": "Auto approve admin posts",
+            "example": true
+          }
+        },
+        "required": [
+          "name",
+          "sport"
+        ]
+      },
+      "GroupResponseDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Group ID",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "name": {
+            "type": "string",
+            "description": "Group name",
+            "example": "Fitness Enthusiasts"
+          },
+          "description": {
+            "type": "string",
+            "description": "Group description",
+            "example": "A group for fitness lovers"
+          },
+          "avatar": {
+            "type": "string",
+            "description": "Group avatar URL",
+            "example": "https://example.com/avatar.jpg"
+          },
+          "coverImage": {
+            "type": "string",
+            "description": "Group cover image URL",
+            "example": "https://example.com/cover.jpg"
+          },
+          "admins": {
+            "description": "Admin user IDs",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "members": {
+            "description": "Member user IDs",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "waitingList": {
+            "description": "Waiting list user IDs",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sport": {
+            "type": "string",
+            "description": "Sport type",
+            "enum": [
+              "football",
+              "basketball",
+              "tennis",
+              "badminton",
+              "volleyball",
+              "table_tennis",
+              "swimming",
+              "running",
+              "cycling",
+              "yoga",
+              "gym",
+              "martial_arts",
+              "boxing",
+              "golf",
+              "rock_climbing"
+            ],
+            "example": "football"
+          },
+          "location": {
+            "description": "Group location",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LocationDto"
+              }
+            ]
+          },
+          "isPrivate": {
+            "type": "boolean",
+            "description": "Is private group",
+            "example": false
+          },
+          "memberCount": {
+            "type": "number",
+            "description": "Member count",
+            "example": 50
+          },
+          "requirePostApproval": {
+            "type": "boolean",
+            "description": "Require post approval",
+            "example": false
+          },
+          "autoApproveAdminPosts": {
+            "type": "boolean",
+            "description": "Auto approve admin posts",
+            "example": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Created at",
+            "example": "2024-01-01T00:00:00.000Z"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Updated at",
+            "example": "2024-01-01T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "_id",
+          "name",
+          "admins",
+          "members",
+          "waitingList",
+          "sport",
+          "isPrivate",
+          "memberCount",
+          "requirePostApproval",
+          "autoApproveAdminPosts",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PaginatedGroupsResponseDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "Total number of groups",
+            "example": 100
+          },
+          "page": {
+            "type": "number",
+            "description": "Current page",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Items per page",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Total pages",
+            "example": 10
+          },
+          "data": {
+            "description": "Groups data",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GroupResponseDto"
+            }
+          }
+        },
+        "required": [
+          "total",
+          "page",
+          "limit",
+          "totalPages",
+          "data"
+        ]
+      },
+      "SimpleGroupResponseDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Group ID",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "name": {
+            "type": "string",
+            "description": "Group name",
+            "example": "Fitness Enthusiasts"
+          },
+          "description": {
+            "type": "string",
+            "description": "Group description",
+            "example": "A group for fitness lovers"
+          },
+          "avatar": {
+            "type": "string",
+            "description": "Group avatar URL",
+            "example": "https://example.com/avatar.jpg"
+          },
+          "latestPostTime": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Latest post time in this group",
+            "example": "2024-01-01T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "_id",
+          "name"
+        ]
+      },
+      "PaginatedSimpleGroupsResponseDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "Total number of groups",
+            "example": 100
+          },
+          "page": {
+            "type": "number",
+            "description": "Current page",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Items per page",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Total pages",
+            "example": 10
+          },
+          "data": {
+            "description": "Groups data",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SimpleGroupResponseDto"
+            }
+          }
+        },
+        "required": [
+          "total",
+          "page",
+          "limit",
+          "totalPages",
+          "data"
+        ]
+      },
+      "UpdateGroupDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Group name",
+            "example": "Fitness Enthusiasts"
+          },
+          "description": {
+            "type": "string",
+            "description": "Group description",
+            "example": "A group for fitness lovers"
+          },
+          "avatar": {
+            "type": "string",
+            "description": "Group avatar URL",
+            "example": "https://example.com/avatar.jpg"
+          },
+          "coverImage": {
+            "type": "string",
+            "description": "Group cover image URL",
+            "example": "https://example.com/cover.jpg"
+          },
+          "sport": {
+            "type": "string",
+            "description": "Sport type",
+            "enum": [
+              "football",
+              "basketball",
+              "tennis",
+              "badminton",
+              "volleyball",
+              "table_tennis",
+              "swimming",
+              "running",
+              "cycling",
+              "yoga",
+              "gym",
+              "martial_arts",
+              "boxing",
+              "golf",
+              "rock_climbing"
+            ],
+            "example": "football"
+          },
+          "location": {
+            "description": "Group location",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/LocationDto"
+              }
+            ]
+          },
+          "isPrivate": {
+            "type": "boolean",
+            "description": "Is private group",
+            "example": false
+          },
+          "requirePostApproval": {
+            "type": "boolean",
+            "description": "Require post approval",
+            "example": false
+          },
+          "autoApproveAdminPosts": {
+            "type": "boolean",
+            "description": "Auto approve admin posts",
+            "example": true
+          }
+        }
       },
       "CreateFriendRequestDto": {
         "type": "object",

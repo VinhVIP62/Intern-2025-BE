@@ -5,9 +5,15 @@ import { GroupService } from './providers/group.service';
 import { Group, GroupSchema } from './entities/group.schema';
 import { IGroupRepository } from './repositories/group.repository';
 import { GroupRepositoryImpl } from './repositories/group.repository.impl';
+import { Post, PostSchema } from '@modules/post/entities/post.schema';
 
 @Module({
-	imports: [MongooseModule.forFeature([{ name: Group.name, schema: GroupSchema }])],
+	imports: [
+		MongooseModule.forFeature([
+			{ name: Group.name, schema: GroupSchema },
+			{ name: Post.name, schema: PostSchema },
+		]),
+	],
 	controllers: [GroupController],
 	providers: [GroupService, { provide: IGroupRepository, useClass: GroupRepositoryImpl }],
 	exports: [GroupService],
