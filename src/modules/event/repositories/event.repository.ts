@@ -7,4 +7,6 @@ export abstract class IEventRepository {
 	abstract getEventByUserIdAndEventId(userId: string, eventId: string): Promise<Event | null>;
 	abstract getEventById(eventId: string): Promise<Event | null>;
 	abstract getEventsNearby(center: [number, number], radiusInMeters: number): Promise<Event[]>;
+	abstract updateMemberCount(eventId: string, inc: number): Promise<Event | null>;
+	abstract updateInterestedCount(eventId, inc: number): Promise<Event | null>;
 }

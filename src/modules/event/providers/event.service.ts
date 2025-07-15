@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { IEventRepository } from '../repositories/event.repository';
 import { CreateEventDto } from '../dto/createEvent.dto';
 import { EventMapper } from '../mapper/event.mapper';
@@ -8,6 +8,10 @@ import { IUserRepository } from '@modules/user/repositories/user.repository';
 import { RSVP } from '@common/enum/event.member.enum';
 import { SearchService } from '@modules/search/search.service';
 import { EventState } from '@common/enum/event.state';
+import { IProfileRepository } from '@modules/user/repositories/profile.repository';
+import { RSVPDto } from '../dto/rsvp.dto';
+import { AcceptMemberDto } from '../dto/accept.members.dto';
+import { RejectMemberDto } from '../dto/reject.members.dto';
 
 @Injectable()
 export class EventService {
@@ -16,6 +20,7 @@ export class EventService {
 		private readonly eventMapper: EventMapper,
 		private readonly eventMemberRepo: IEventMemberRepository,
 		private readonly userRepo: IUserRepository,
+		private readonly profileRepo: IProfileRepository,
 		private readonly searchService: SearchService,
 	) {}
 
@@ -92,9 +97,26 @@ export class EventService {
 
 	async updateState(userId: string, eventId: string, state: RSVP) {
 		const invitation = await this.eventMemberRepo.updateInvitation(userId, eventId, state);
-		if (!invitation) return { message: 'event.NOT_FOUND' };
-		const updated = await this.eventRepo.getEventByUserIdAndEventId(userId, eventId);
-		return updated;
+		if (!invitation) throw new NotFoundException('event.NOT_FOUND');
+
+		//update number of member
+		if (state === RSVP.ACCEPTED) await this.eventRepo.updateMemberCount(eventId, 1);
+
+		const updated = await this.eventRepo.getEventById(eventId);
+		if (!updated) throw new NotFoundException('event.NOT_FOUND');
+
+		return this.eventMapper.toResponse(updated, state.toString());
+	}
+
+	async leave(userId: string, eventId: string) {
+		const invitation = await this.eventMemberRepo.updateInvitation(userId, eventId, RSVP.REJECTED);
+		if (!invitation) throw new NotFoundException('event.NOT_FOUND');
+
+		await this.eventRepo.updateMemberCount(eventId, -1);
+		const updated = await this.eventRepo.getEventById(eventId);
+		if (!updated) throw new NotFoundException('event.NOT_FOUND');
+
+		return this.eventMapper.toResponse(updated, RSVP.REJECTED);
 	}
 
 	async getNearbyEvents(userId: string, radiusInMeters = 5000) {
@@ -106,6 +128,108 @@ export class EventService {
 				const eventId = event.id;
 				const invitation = await this.eventMemberRepo.getByUserIdAndEventId(userId, eventId);
 				return this.eventMapper.toResponse(event, invitation?.state);
+			}),
+		);
+		return res;
+	}
+
+	async interest(userId: string, eventId: string) {
+		await this.eventMemberRepo.create({
+			eventId: eventId,
+			memberId: userId,
+			state: RSVP.INTERESTED,
+		});
+
+		await this.eventRepo.updateInterestedCount(eventId, 1);
+		return { message: 'event.IS_INTERESTED' };
+	}
+
+	async unInterest(userId: string, eventId: string) {
+		const deleted = await this.eventMemberRepo.delete(userId, eventId);
+		if (!deleted) {
+			throw new NotFoundException('event.NOT_FOUND');
+		}
+		await this.eventRepo.updateInterestedCount(eventId, -1);
+		return { message: 'event.UN_INTERESTED' };
+	}
+
+	async join(userId: string, eventId: string) {
+		const invitationAlready = await this.eventMemberRepo.getByUserIdAndEventId(userId, eventId);
+		if (invitationAlready) throw new ConflictException('already invite');
+		const required = this.eventMemberRepo.create({
+			memberId: userId,
+			eventId: eventId,
+			state: RSVP.PENDING,
+		});
+		return required;
+	}
+
+	async getPending(userId: string, eventId: string) {
+		const event = await this.eventRepo.getEventByUserIdAndEventId(userId, eventId);
+		if (!event) throw new NotFoundException('event.NOT_FOUND');
+		const pendings = await this.eventMemberRepo.getByEventIdAndState(eventId, RSVP.PENDING);
+		const res = await Promise.all(
+			pendings.map(async pending => {
+				const profile = await this.profileRepo.findById(pending.memberId);
+				return {
+					userId: profile.userId,
+					firstName: profile.firstName,
+					lastName: profile.lastName,
+					avatarUrl: profile.avatarUrl,
+					coverUrl: profile.coverUrl,
+				};
+			}),
+		);
+		return res;
+	}
+
+	async accept(userId: string, acceptMemberDto: AcceptMemberDto) {
+		const eventId = acceptMemberDto.eventId;
+		const already = await this.eventRepo.getEventByUserIdAndEventId(userId, eventId);
+		if (!already) throw new NotFoundException('event.NOT_FOUND');
+		const memberIds = acceptMemberDto.memberIds;
+		await Promise.all(
+			memberIds.map(async memberId => {
+				const userfound = await this.userRepo.findOneById(memberId);
+				if (!userfound) throw new NotFoundException('common.error');
+				await this.eventMemberRepo.updateInvitation(userfound.id, eventId, RSVP.ACCEPTED);
+			}),
+		);
+	}
+
+	async reject(userId: string, rejectMemberDto: RejectMemberDto) {
+		const eventId = rejectMemberDto.eventId;
+		const already = await this.eventRepo.getEventByUserIdAndEventId(userId, eventId);
+		if (!already) throw new NotFoundException('event.NOT_FOUND');
+		const memberIds = rejectMemberDto.memberIds;
+		await Promise.all(
+			memberIds.map(async memberId => {
+				const userfound = await this.userRepo.findOneById(memberId);
+				if (!userfound) throw new NotFoundException('common.error');
+				await this.eventMemberRepo.updateInvitation(userfound.id, eventId, RSVP.REJECTED);
+			}),
+		);
+	}
+
+	async getDetail(userId: string, eventId: string) {
+		const event = await this.eventRepo.getEventById(eventId);
+		if (!event) throw new NotFoundException('event.NOT_FOUND');
+		const invitation = await this.eventMemberRepo.getByUserIdAndEventId(userId, eventId);
+		return this.eventMapper.toResponse(event, invitation?.state);
+	}
+
+	async getAttendees(eventId: string, rsvp: RSVPDto) {
+		const invitations = await this.eventMemberRepo.getByEventIdAndState(eventId, rsvp.state);
+		const res = await Promise.all(
+			invitations.map(async invitation => {
+				const profile = await this.profileRepo.findById(invitation.memberId);
+				return {
+					userId: profile.userId,
+					firstName: profile.firstName,
+					lastName: profile.lastName,
+					avatarUrl: profile.avatarUrl,
+					coverUrl: profile.coverUrl,
+				};
 			}),
 		);
 		return res;
