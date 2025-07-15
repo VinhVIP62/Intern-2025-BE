@@ -18,5 +18,12 @@
 	"MESSAGE_EVENT_INVITATION": "đã mời bạn tham gia sự kiện",
 	"MESSAGE_EVENT_UPDATE": "đã cập nhật sự kiện bạn đang tham gia",
 	"MESSAGE_MENTION_IN_POST": "đã nhắc đến bạn trong một bài viết",
-	"MESSAGE_MENTION_IN_COMMENT": "đã nhắc đến bạn trong một bình luận"
+	"MESSAGE_MENTION_IN_COMMENT": "đã nhắc đến bạn trong một bình luận",
+	"MESSAGE_INVITED_TO_GROUP": "đã mời bạn tham gia nhóm",
+	"MESSAGE_JOIN_REQUEST": "đã yêu cầu tham gia nhóm của bạn",
+	"MESSAGE_ACCEPTED_INVITATION": "đã chấp nhận lời mời tham gia nhóm của bạn",
+	"MESSAGE_REJECTED_INVITATION": "đã từ chối lời mời tham gia nhóm của bạn",
+	"MESSAGE_NEW_POST_IN_GROUP": "đã đăng bài viết trong nhóm của bạn",
+	"MESSAGE_POST_APPROVED": "Bài viết của bạn đã được phê duyệt",
+	"MESSAGE_POST_REJECTED": "Bài viết của bạn đã được từ chối"
 }

@@ -190,6 +190,8 @@ export class PostRepositoryImpl implements IPostRepository {
 		const post = new this.postModel({
 			...postData,
 			author: new Types.ObjectId(authorId),
+			groupId: postData.groupId ? new Types.ObjectId(postData.groupId) : null,
+			eventId: postData.eventId ? new Types.ObjectId(postData.eventId) : null,
 			images,
 			video,
 		});
@@ -670,5 +672,88 @@ export class PostRepositoryImpl implements IPostRepository {
 			{ $addToSet: { sharedPosts: sharedPostId }, $inc: { shareCount: 1 } },
 			{ new: true },
 		);
+	}
+
+	async findByGroupId(
+		groupId: string,
+		page: number,
+		limit: number,
+	): Promise<{ posts: Post[]; total: number }> {
+		const skip = (page - 1) * limit;
+		const filter: any = { groupId: new Types.ObjectId(groupId) };
+		filter.approvalStatus = PostStatus.APPROVED;
+
+		const [posts, total] = await Promise.all([
+			this.postModel
+				.find(filter)
+				.populate('authorUser', 'firstName lastName avatar fullName')
+				.populate('event', 'title description')
+				.populate('group', 'name description')
+				.populate('sharedFromPost')
+				.populate({
+					path: 'sharedPostsList',
+					select: 'author',
+					populate: {
+						path: 'authorUser',
+						select: 'firstName lastName avatar fullName',
+					},
+				})
+				.populate({
+					path: 'taggedUsersList',
+					select: 'firstName lastName avatar fullName',
+				})
+				.sort({ createdAt: -1 })
+				.skip(skip)
+				.limit(limit)
+				.lean({ virtuals: true }),
+			this.postModel.countDocuments(filter),
+		]);
+
+		return { posts: posts as unknown as Post[], total };
+	}
+
+	async approvePost(
+		postId: string,
+		approved: boolean,
+		adminId: string,
+		reason?: string,
+	): Promise<Post> {
+		const updateFields: any = {};
+		if (approved) {
+			updateFields.approvalStatus = PostStatus.APPROVED;
+			updateFields.approvedBy = new Types.ObjectId(adminId);
+			updateFields.approvedAt = new Date();
+			updateFields.rejectionReason = null;
+			updateFields.rejectedBy = null;
+			updateFields.rejectedAt = null;
+		} else {
+			updateFields.approvalStatus = PostStatus.REJECTED;
+			updateFields.rejectionReason = reason || '';
+			updateFields.rejectedBy = new Types.ObjectId(adminId);
+			updateFields.rejectedAt = new Date();
+			updateFields.approvedBy = null;
+			updateFields.approvedAt = null;
+		}
+		const post = await this.postModel
+			.findByIdAndUpdate(postId, updateFields, { new: true, runValidators: true })
+			.populate('authorUser', 'firstName lastName avatar fullName')
+			.populate('event', 'title description')
+			.populate('group', 'name description')
+			.populate('sharedFromPost')
+			.populate({
+				path: 'sharedPostsList',
+				select: 'author',
+				populate: {
+					path: 'authorUser',
+					select: 'firstName lastName avatar fullName',
+				},
+			})
+			.populate({
+				path: 'taggedUsersList',
+				select: 'firstName lastName avatar fullName',
+			})
+			.lean({ virtuals: true });
+		if (!post) throw new Error('Post not found');
+		return post as unknown as Post;
 	}
 }

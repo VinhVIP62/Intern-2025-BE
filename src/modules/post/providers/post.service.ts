@@ -698,4 +698,47 @@ export class PostService {
 		}
 		await this.postRepository.clearUrl(postId, isClearImage, isClearVideo);
 	}
+
+	async getPostsByGroupId(
+		groupId: string,
+		i18n: I18nContext,
+		page: number = 1,
+		limit: number = 10,
+	): Promise<PaginatedPostsResponseDto> {
+		try {
+			const { posts, total } = await this.postRepository.findByGroupId(groupId, page, limit);
+			const totalPages = Math.ceil(total / limit);
+			const hasNextPage = page < totalPages;
+			const hasPrevPage = page > 1;
+			return {
+				posts: posts as PostResponseDto[],
+				total,
+				page,
+				limit,
+				totalPages,
+				hasNextPage,
+				hasPrevPage,
+			};
+		} catch (error) {
+			throw new NotFoundException(i18n.t('post.POSTS_NOT_FOUND'));
+		}
+	}
+
+	async approvePost(
+		postId: string,
+		approved: boolean,
+		adminId: string,
+		i18n: I18nContext,
+		reason?: string,
+	): Promise<PostResponseDto> {
+		try {
+			const post = await this.postRepository.approvePost(postId, approved, adminId, reason);
+			return post as PostResponseDto;
+		} catch (error) {
+			if (error.message === 'Post not found') {
+				throw new NotFoundException(i18n.t('post.POST_NOT_FOUND'));
+			}
+			throw error;
+		}
+	}
 }

@@ -2,6 +2,9 @@ export enum NotificationType {
 	FRIEND_REQUEST = 'friend_request',
 	EVENT_INVITATION = 'event_invitation',
 	GROUP_INVITATION = 'group_invitation',
+	GROUP_INVITATION_ACCEPTED = 'group_invitation_accepted',
+	GROUP_INVITATION_REJECTED = 'group_invitation_rejected',
+	GROUP_JOIN_REQUEST = 'group_join_request',
 	LIKE = 'like',
 	COMMENT = 'comment',
 	POST_APPROVED = 'post_approved',
@@ -10,6 +13,7 @@ export enum NotificationType {
 	MENTION = 'mention',
 	FOLLOW = 'follow',
 	SHARE = 'share',
+	REQUEST_APPROVE_POST = 'request_approve_post',
 }
 
 export enum ReferenceModel {
