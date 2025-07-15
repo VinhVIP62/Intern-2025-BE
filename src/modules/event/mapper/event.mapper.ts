@@ -15,13 +15,13 @@ export class EventMapper {
 			title: event.title,
 			content: event.content,
 			mediaUrls: event.mediaUrls,
-			reactsCount: event.reactsCount,
-			commentsCount: event.commentsCount,
+			interestedCount: event.interestedCount,
 			createdAt: event.createdAt,
 			updatedAt: event.updatedAt,
 			rsvp: rsvp,
 			isDeleted: event.isDeleted,
 			address: event.address,
+			numOfMem: event.numOfMem,
 			state: event.state,
 		};
 	}

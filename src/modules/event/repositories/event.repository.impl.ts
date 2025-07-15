@@ -21,6 +21,18 @@ export class EventRepositoryImpl implements IEventRepository {
 		return this.eventModel.findOne({ id: eventId });
 	}
 
+	async updateMemberCount(eventId: string, inc: number): Promise<Event | null> {
+		return this.eventModel
+			.findOneAndUpdate({ id: eventId }, { $inc: { numOfMem: inc } }, { new: true })
+			.exec();
+	}
+
+	async updateInterestedCount(eventId: any, inc: number): Promise<Event | null> {
+		return this.eventModel
+			.findOneAndUpdate({ id: eventId }, { $inc: { interestedCount: inc } }, { new: true })
+			.exec();
+	}
+
 	async getEventsNearby(center: [number, number], radiusInMeters: number): Promise<Event[]> {
 		return this.eventModel.aggregate([
 			{

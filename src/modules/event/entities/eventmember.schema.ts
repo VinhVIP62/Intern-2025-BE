@@ -15,4 +15,4 @@ export class EventMember {
 
 export const EventMemberSchema = SchemaFactory.createForClass(EventMember);
 
-EventMemberSchema.index({ eventId: 1, memberId: 1 });
+EventMemberSchema.index({ eventId: 1, memberId: 1 }, { unique: true });

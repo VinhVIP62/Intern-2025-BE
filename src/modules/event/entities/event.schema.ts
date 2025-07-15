@@ -60,11 +60,8 @@ export class Event {
 	@Prop({ type: [String], default: [] })
 	mediaUrls: string[];
 
-	@Prop({ type: Map, of: Number, default: {} })
-	reactsCount: Map<string, number>;
-
-	@Prop({ default: 0 })
-	commentsCount: number;
+	@Prop({ type: Number, default: 0 })
+	interestedCount: number;
 
 	@Prop({ default: false })
 	isDeleted: boolean;

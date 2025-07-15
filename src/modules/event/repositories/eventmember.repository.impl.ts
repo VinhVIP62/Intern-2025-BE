@@ -36,6 +36,18 @@ export class EventMemberRepository implements IEventMemberRepository {
 		);
 	}
 
+	async getByEventId(eventId: string): Promise<EventMember[]> {
+		return this.eventmemberModel.find({ eventId: eventId }).exec();
+	}
+
+	async getByEventIdAndState(eventId: string, state: RSVP): Promise<EventMember[]> {
+		return this.eventmemberModel.find({ eventId: eventId, state: state }).exec();
+	}
+
+	async delete(userId: string, eventId: string): Promise<EventMember | null> {
+		return this.eventmemberModel.findOneAndDelete({ memberId: userId, eventId: eventId });
+	}
+
 	async getByUserIdAndEventId(userId: string, eventId: string): Promise<EventMember | null> {
 		return this.eventmemberModel.findOne({ memberId: userId, eventId: eventId });
 	}

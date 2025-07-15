@@ -1,7 +1,9 @@
 import { RSVP } from '@common/enum/event.member.enum';
 import { ApiProperty } from '@nestjs/swagger';
+import { IsString } from 'class-validator';
 
 export class RSVPDto {
-	@ApiProperty({ enum: RSVP, enumName: 'RSVP' })
+	@ApiProperty({ enum: RSVP })
+	@IsString()
 	state: RSVP;
 }
