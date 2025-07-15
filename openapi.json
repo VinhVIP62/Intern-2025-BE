@@ -3707,6 +3707,114 @@
         ]
       }
     },
+    "/api/v1/friends/requests/{requestId}/message": {
+      "put": {
+        "operationId": "FriendRequestController_editFriendRequestMessage_v1",
+        "parameters": [
+          {
+            "name": "requestId",
+            "required": true,
+            "in": "path",
+            "description": "ID của lời mời kết bạn",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Xin chào, mình muốn kết bạn!"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Chỉnh sửa lời nhắn thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendRequestResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ hoặc không thể chỉnh sửa"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền chỉnh sửa lời mời này"
+          },
+          "404": {
+            "description": "Không tìm thấy lời mời kết bạn"
+          }
+        },
+        "summary": "Chỉnh sửa lời nhắn của lời mời kết bạn (chỉ sender, khi pending)",
+        "tags": [
+          "Friend Request"
+        ]
+      }
+    },
+    "/api/v1/friends/requests/{requestId}/cancel": {
+      "put": {
+        "operationId": "FriendRequestController_cancelFriendRequest_v1",
+        "parameters": [
+          {
+            "name": "requestId",
+            "required": true,
+            "in": "path",
+            "description": "ID của lời mời kết bạn",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hủy lời mời kết bạn thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "success": true,
+                    "message": "..."
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ hoặc không thể hủy"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền hủy lời mời này"
+          },
+          "404": {
+            "description": "Không tìm thấy lời mời kết bạn"
+          }
+        },
+        "summary": "Hủy lời mời kết bạn (chỉ sender, khi pending)",
+        "tags": [
+          "Friend Request"
+        ]
+      }
+    },
     "/api/v1/friends": {
       "get": {
         "operationId": "FriendsController_getFriendsList_v1",

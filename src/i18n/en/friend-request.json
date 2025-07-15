@@ -21,5 +21,9 @@
 	"FRIEND_REMOVED_SUCCESS": "Friend removed successfully",
 	"FRIEND_REMOVED_FAILED": "Failed to remove friend",
 	"MUTUAL_FRIENDS_RETRIEVED_SUCCESS": "Mutual friends retrieved successfully",
-	"MUTUAL_FRIENDS_RETRIEVED_FAILED": "Failed to retrieve mutual friends"
+	"MUTUAL_FRIENDS_RETRIEVED_FAILED": "Failed to retrieve mutual friends",
+	"MESSAGE_EDITED_SUCCESS": "Message edited successfully",
+	"MESSAGE_EDITED_FAILED": "Failed to edit message",
+	"REQUEST_CANCELLED_SUCCESS": "Friend request cancelled successfully",
+	"REQUEST_CANCELLED_FAILED": "Failed to cancel friend request"
 }

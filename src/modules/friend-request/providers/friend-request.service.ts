@@ -86,11 +86,7 @@ export class FriendRequestService {
 			throw new BadRequestException(i18n.t('friend-request.REQUEST_NOT_PENDING'));
 		}
 
-		// Update friend request status to accepted
-		const updatedRequest = await this.friendRequestRepository.updateFriendRequestStatus(
-			requestId,
-			FriendRequestStatus.ACCEPTED,
-		);
+		await this.friendRequestRepository.deleteFriendRequest(requestId);
 
 		// Update friends arrays for both users
 		await this.updateUsersFriendsArrays(
@@ -98,8 +94,6 @@ export class FriendRequestService {
 			friendRequest.recipient.toString(),
 			i18n,
 		);
-
-		return updatedRequest;
 	}
 
 	async declineFriendRequest(requestId: string, userId: string, i18n: I18nContext) {
@@ -118,12 +112,7 @@ export class FriendRequestService {
 			throw new BadRequestException(i18n.t('friend-request.REQUEST_NOT_PENDING'));
 		}
 
-		const updatedRequest = await this.friendRequestRepository.updateFriendRequestStatus(
-			requestId,
-			FriendRequestStatus.REJECTED,
-		);
-
-		return updatedRequest;
+		await this.friendRequestRepository.deleteFriendRequest(requestId);
 	}
 
 	async checkFriendshipStatus(currentUserId: string, targetUserId: string, i18n: I18nContext) {
@@ -237,6 +226,40 @@ export class FriendRequestService {
 			targetUserId,
 			...result,
 		};
+	}
+
+	async editFriendRequestMessage(
+		requestId: string,
+		senderId: string,
+		message: string,
+		i18n: I18nContext,
+	) {
+		const friendRequest = await this.friendRequestRepository.getFriendRequestById(requestId);
+		if (!friendRequest) {
+			throw new NotFoundException(i18n.t('friend-request.REQUEST_NOT_FOUND'));
+		}
+		if (friendRequest.sender.toString() !== senderId) {
+			throw new ForbiddenException(i18n.t('friend-request.NOT_AUTHORIZED'));
+		}
+		if (friendRequest.status !== FriendRequestStatus.PENDING) {
+			throw new BadRequestException(i18n.t('friend-request.REQUEST_NOT_PENDING'));
+		}
+		return await this.friendRequestRepository.updateFriendRequestMessage(requestId, message);
+	}
+
+	async cancelFriendRequest(requestId: string, senderId: string, i18n: I18nContext) {
+		const friendRequest = await this.friendRequestRepository.getFriendRequestById(requestId);
+		if (!friendRequest) {
+			throw new NotFoundException(i18n.t('friend-request.REQUEST_NOT_FOUND'));
+		}
+		if (friendRequest.sender.toString() !== senderId) {
+			throw new ForbiddenException(i18n.t('friend-request.NOT_AUTHORIZED'));
+		}
+		if (friendRequest.status !== FriendRequestStatus.PENDING) {
+			throw new BadRequestException(i18n.t('friend-request.REQUEST_NOT_PENDING'));
+		}
+		await this.friendRequestRepository.deleteFriendRequest(requestId);
+		return { success: true };
 	}
 
 	/**
