@@ -29,6 +29,7 @@ export interface IGroupRepository {
 		userId: string,
 		page: number,
 		limit: number,
+		key?: string,
 	): Promise<PaginatedSimpleGroupsResponseDto>;
 	addMember(groupId: string, userId: string): Promise<void>;
 	removeMember(groupId: string, userId: string): Promise<void>;

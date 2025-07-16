@@ -155,6 +155,13 @@ export class GroupController {
 		description: 'Số lượng nhóm trên mỗi trang (mặc định: 10)',
 		example: 10,
 	})
+	@ApiQuery({
+		name: 'key',
+		required: false,
+		type: String,
+		description: 'Tìm kiếm theo tên nhóm (có thể là 1 phần tên)',
+		example: 'football',
+	})
 	@ApiResponse({
 		status: 200,
 		description: 'Lấy danh sách nhóm của người dùng thành công',
@@ -165,8 +172,9 @@ export class GroupController {
 		@I18n() i18n: I18nContext,
 		@Query('page') page: number = 1,
 		@Query('limit') limit: number = 10,
+		@Query('key') key?: string,
 	): Promise<ResponseEntity<PaginatedSimpleGroupsResponseDto>> {
-		const result = await this.groupService.getSimpleGroupsByUserId(userId, i18n, page, limit);
+		const result = await this.groupService.getSimpleGroupsByUserId(userId, i18n, page, limit, key);
 
 		return {
 			success: true,

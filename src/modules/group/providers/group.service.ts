@@ -209,6 +209,7 @@ export class GroupService {
 		i18n: I18nContext,
 		page: number = 1,
 		limit: number = 10,
+		key?: string,
 	): Promise<PaginatedSimpleGroupsResponseDto> {
 		try {
 			if (!userId || userId.trim().length === 0) {
@@ -219,7 +220,7 @@ export class GroupService {
 			if (page < 1) page = 1;
 			if (limit < 1 || limit > 50) limit = 10;
 
-			return await this.groupRepository.getSimpleGroupsByUserId(userId, page, limit);
+			return await this.groupRepository.getSimpleGroupsByUserId(userId, page, limit, key);
 		} catch (error) {
 			if (error instanceof BadRequestException) {
 				throw error;

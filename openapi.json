@@ -2725,6 +2725,16 @@
               "example": 10,
               "type": "number"
             }
+          },
+          {
+            "name": "key",
+            "required": false,
+            "in": "query",
+            "description": "Tìm kiếm theo tên nhóm (có thể là 1 phần tên)",
+            "schema": {
+              "example": "football",
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -5813,11 +5823,21 @@
             "type": "string",
             "description": "Latest post time in this group",
             "example": "2024-01-01T00:00:00.000Z"
+          },
+          "role": {
+            "type": "string",
+            "description": "Role of the user in this group",
+            "example": "admin",
+            "enum": [
+              "admin",
+              "member"
+            ]
           }
         },
         "required": [
           "_id",
-          "name"
+          "name",
+          "role"
         ]
       },
       "PaginatedSimpleGroupsResponseDto": {

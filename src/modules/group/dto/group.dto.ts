@@ -219,6 +219,13 @@ export class SimpleGroupResponseDto {
 		example: '2024-01-01T00:00:00.000Z',
 	})
 	latestPostTime?: Date;
+
+	@ApiProperty({
+		description: 'Role of the user in this group',
+		example: 'admin',
+		enum: ['admin', 'member'],
+	})
+	role: 'admin' | 'member';
 }
 
 export class PaginatedGroupsResponseDto {

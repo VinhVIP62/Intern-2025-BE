@@ -267,11 +267,15 @@ export class GroupRepositoryImpl implements IGroupRepository {
 		userId: string,
 		page: number,
 		limit: number,
+		key?: string,
 	): Promise<PaginatedSimpleGroupsResponseDto> {
 		const skip = (page - 1) * limit;
-		const filter = {
+		const filter: any = {
 			$or: [{ admins: new Types.ObjectId(userId) }, { members: new Types.ObjectId(userId) }],
 		};
+		if (key) {
+			filter.name = { $regex: key, $options: 'i' };
+		}
 
 		const groups = await this.groupModel
 			.find(filter)
@@ -283,8 +287,8 @@ export class GroupRepositoryImpl implements IGroupRepository {
 		const total = await this.groupModel.countDocuments(filter);
 		const totalPages = Math.ceil(total / limit);
 
-		// Get latest post time for each group
-		const groupsWithLatestPost = await Promise.all(
+		// Get latest post time and role for each group
+		const groupsWithLatestPostAndRole = await Promise.all(
 			groups.map(async group => {
 				const latestPost = await this.postModel
 					.findOne({ groupId: group._id })
@@ -292,8 +296,13 @@ export class GroupRepositoryImpl implements IGroupRepository {
 					.select('createdAt')
 					.lean();
 
+				let role: 'admin' | 'member' = 'member';
+				if (group.admins && group.admins.some((id: any) => id.toString() === userId)) {
+					role = 'admin';
+				}
+
 				return {
-					...this.mapToSimpleResponseDto(group),
+					...this.mapToSimpleResponseDto(group, role),
 					latestPostTime: latestPost && 'createdAt' in latestPost ? latestPost.createdAt : null,
 				};
 			}),
@@ -304,7 +313,7 @@ export class GroupRepositoryImpl implements IGroupRepository {
 			page,
 			limit,
 			totalPages,
-			data: groupsWithLatestPost,
+			data: groupsWithLatestPostAndRole,
 		};
 	}
 
@@ -330,12 +339,13 @@ export class GroupRepositoryImpl implements IGroupRepository {
 		};
 	}
 
-	private mapToSimpleResponseDto(group: any): SimpleGroupResponseDto {
+	private mapToSimpleResponseDto(group: any, role: 'admin' | 'member'): SimpleGroupResponseDto {
 		return {
 			_id: group._id.toString(),
 			name: group.name,
 			description: group.description,
 			avatar: group.avatar,
+			role,
 		};
 	}
 }
