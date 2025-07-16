@@ -70,5 +70,6 @@
 	"POST_CREATED_SUCCESS": "Post created successfully",
 	"NO_SKILL_LEVELS_DEFINED": "You have not defined skill levels for any sports",
 	"NO_SKILL_LEVEL_FOR_SPORT": "You do not have a skill level for {sport}",
-	"INSUFFICIENT_SKILL_LEVEL": "Your skill level for {sport} ({current}) is lower than required ({required})"
+	"INSUFFICIENT_SKILL_LEVEL": "Your skill level for {sport} ({current}) is lower than required ({required})",
+	"INVITATION_CANCELLED_SUCCESS": "Group invitation cancelled successfully"
 }

@@ -20,7 +20,7 @@ import { CreatePostDto } from '@modules/post/dto/post.dto';
 import { PostService } from '@modules/post/providers/post.service';
 import { PostStatus } from '@modules/post/entities/post.enum';
 import { UserService } from '@modules/user/providers/user.service';
-
+import { Types } from 'mongoose';
 @Injectable()
 export class GroupService {
 	constructor(
@@ -730,5 +730,79 @@ export class GroupService {
 		}
 
 		return post;
+	}
+
+	async removeMemberFromGroup(
+		groupId: string,
+		userId: string,
+		adminUserId: string,
+		i18n: I18nContext,
+	): Promise<void> {
+		try {
+			if (!groupId || groupId.trim().length === 0) {
+				throw new BadRequestException(i18n.t('group.INVALID_GROUP_ID'));
+			}
+			if (!userId || userId.trim().length === 0) {
+				throw new BadRequestException(i18n.t('group.INVALID_USER_ID'));
+			}
+			const isAdmin = await this.groupRepository.isUserAdmin(groupId, adminUserId);
+			if (!isAdmin) {
+				throw new ForbiddenException(i18n.t('group.UNAUTHORIZED_TO_MODIFY'));
+			}
+			const isMember = await this.groupRepository.isUserMember(groupId, userId);
+			if (!isMember) {
+				throw new BadRequestException(i18n.t('group.NOT_MEMBER'));
+			}
+			await this.groupRepository.removeMember(groupId, userId);
+		} catch (error) {
+			if (error instanceof BadRequestException || error instanceof ForbiddenException) {
+				throw error;
+			}
+			if (error.message === 'Group not found') {
+				throw new NotFoundException(i18n.t('group.GROUP_NOT_FOUND'));
+			}
+			throw new BadRequestException(i18n.t('group.GROUP_UPDATE_FAILED'));
+		}
+	}
+
+	async cancelGroupInvitation(
+		groupId: string,
+		userId: string,
+		adminUserId: string,
+		i18n: I18nContext,
+	): Promise<void> {
+		try {
+			if (!groupId || groupId.trim().length === 0) {
+				throw new BadRequestException(i18n.t('group.INVALID_GROUP_ID'));
+			}
+			if (!userId || userId.trim().length === 0) {
+				throw new BadRequestException(i18n.t('group.INVALID_USER_ID'));
+			}
+			const isAdmin = await this.groupRepository.isUserAdmin(groupId, adminUserId);
+			if (!isAdmin) {
+				throw new ForbiddenException(i18n.t('group.UNAUTHORIZED_TO_MODIFY'));
+			}
+			const isInInviteList = await this.groupRepository.isUserInInviteList(groupId, userId);
+			if (!isInInviteList) {
+				throw new BadRequestException(i18n.t('group.NOT_IN_INVITE_LIST'));
+			}
+			await this.groupRepository.removeFromInviteList(groupId, userId);
+
+			// Xóa notification lời mời nếu có
+			await this.notificationService.deleteByCondition({
+				recipient: new Types.ObjectId(userId),
+				type: NotificationType.GROUP_INVITATION,
+				referenceId: new Types.ObjectId(groupId),
+				referenceModel: ReferenceModel.GROUP,
+			});
+		} catch (error) {
+			if (error instanceof BadRequestException || error instanceof ForbiddenException) {
+				throw error;
+			}
+			if (error.message === 'Group not found') {
+				throw new NotFoundException(i18n.t('group.GROUP_NOT_FOUND'));
+			}
+			throw new BadRequestException(i18n.t('group.GROUP_UPDATE_FAILED'));
+		}
 	}
 }

@@ -17,6 +17,8 @@ export interface INotificationRepository {
 	clearAll(userId: string): Promise<any>;
 
 	createNotification(data: any): Promise<any>;
+
+	deleteByCondition(condition: any): Promise<any>;
 }
 
 export const INotificationRepository = Symbol('INotificationRepository');

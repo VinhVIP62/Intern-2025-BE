@@ -100,7 +100,6 @@ export class PostService {
 		currentUserId?: string,
 	): Promise<PaginatedPostsResponseDto> {
 		let accessLevels = [PostAccessLevel.PUBLIC];
-		console.log(currentUserId, userId);
 		if (currentUserId && (await this.userService.isFriend(currentUserId, userId))) {
 			accessLevels = [PostAccessLevel.PUBLIC, PostAccessLevel.PROTECTED];
 		}

@@ -898,4 +898,100 @@ export class GroupController {
 			message: i18n.t('group.GROUP_POST_CREATED_SUCCESS'),
 		};
 	}
+
+	@Version('1')
+	@Delete(':groupId/members/:userId')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Xóa thành viên khỏi nhóm (chỉ admin)' })
+	@ApiParam({
+		name: 'groupId',
+		description: 'ID của nhóm',
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiParam({
+		name: 'userId',
+		description: 'ID của thành viên cần xóa',
+		example: '507f1f77bcf86cd799439012',
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Xóa thành viên thành công',
+	})
+	@ApiResponse({
+		status: 400,
+		description: 'Dữ liệu không hợp lệ',
+	})
+	@ApiResponse({
+		status: 401,
+		description: 'Không có quyền truy cập',
+	})
+	@ApiResponse({
+		status: 403,
+		description: 'Không có quyền xóa thành viên',
+	})
+	@ApiResponse({
+		status: 404,
+		description: 'Không tìm thấy nhóm hoặc thành viên',
+	})
+	async removeMemberFromGroup(
+		@Request() req,
+		@Param('groupId') groupId: string,
+		@Param('userId') userId: string,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<null>> {
+		await this.groupService.removeMemberFromGroup(groupId, userId, req.user.id, i18n);
+		return {
+			success: true,
+			message: i18n.t('group.MEMBER_REMOVED_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Delete(':groupId/invite/:userId')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Hủy lời mời tham gia nhóm (chỉ admin)' })
+	@ApiParam({
+		name: 'groupId',
+		description: 'ID của nhóm',
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiParam({
+		name: 'userId',
+		description: 'ID của người dùng được mời',
+		example: '507f1f77bcf86cd799439012',
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Hủy lời mời thành công',
+	})
+	@ApiResponse({
+		status: 400,
+		description: 'Dữ liệu không hợp lệ',
+	})
+	@ApiResponse({
+		status: 401,
+		description: 'Không có quyền truy cập',
+	})
+	@ApiResponse({
+		status: 403,
+		description: 'Không có quyền hủy lời mời',
+	})
+	@ApiResponse({
+		status: 404,
+		description: 'Không tìm thấy nhóm hoặc lời mời',
+	})
+	async cancelGroupInvitation(
+		@Request() req,
+		@Param('groupId') groupId: string,
+		@Param('userId') userId: string,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<null>> {
+		await this.groupService.cancelGroupInvitation(groupId, userId, req.user.id, i18n);
+		return {
+			success: true,
+			message: i18n.t('group.INVITATION_CANCELLED_SUCCESS'),
+		};
+	}
 }
