@@ -46,4 +46,8 @@ export class NotificationService {
 		await this.notificationRepository.clearAll(userId);
 		return true;
 	}
+
+	async deleteByCondition(condition: any) {
+		return this.notificationRepository.deleteByCondition(condition);
+	}
 }

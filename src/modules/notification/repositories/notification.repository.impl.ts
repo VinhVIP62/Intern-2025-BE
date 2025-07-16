@@ -164,7 +164,34 @@ export class NotificationRepositoryImpl implements INotificationRepository {
 		return this.notificationModel.deleteMany({ recipient: userId, isActive: true });
 	}
 
+	async deleteByCondition(condition: any) {
+		const cond = { ...condition };
+		if (cond.recipient && typeof cond.recipient === 'string') {
+			cond.recipient = new Types.ObjectId(cond.recipient);
+		}
+		if (cond.referenceId && typeof cond.referenceId === 'string') {
+			cond.referenceId = new Types.ObjectId(cond.referenceId);
+		}
+		if (Array.isArray(cond.recipient)) {
+			cond.recipient = cond.recipient.map((id: any) =>
+				typeof id === 'string' ? new Types.ObjectId(id) : id,
+			);
+		}
+		if (Array.isArray(cond.referenceId)) {
+			cond.referenceId = cond.referenceId.map((id: any) =>
+				typeof id === 'string' ? new Types.ObjectId(id) : id,
+			);
+		}
+		return this.notificationModel.deleteMany(cond);
+	}
+
 	async createNotification(data: any) {
+		if (data.recipient && !(data.recipient instanceof Types.ObjectId)) {
+			data.recipient = Types.ObjectId.createFromHexString(data.recipient);
+		}
+		if (data.sender && !(data.sender instanceof Types.ObjectId)) {
+			data.sender = Types.ObjectId.createFromHexString(data.sender);
+		}
 		if (data.referenceId && !(data.referenceId instanceof Types.ObjectId)) {
 			data.referenceId = Types.ObjectId.createFromHexString(data.referenceId);
 		}

@@ -27,6 +27,8 @@
 	"NOT_ADMIN": "Người dùng không phải là quản trị viên của nhóm này",
 	"ALREADY_IN_WAITING_LIST": "Người dùng đã có trong danh sách chờ",
 	"NOT_IN_WAITING_LIST": "Người dùng không có trong danh sách chờ",
+	"ALREADY_IN_INVITE_LIST": "Người dùng đã có trong danh sách mời",
+	"NOT_IN_INVITE_LIST": "Người dùng không có trong danh sách mời",
 	"MEMBER_ADDED_SUCCESS": "Thêm thành viên thành công",
 	"MEMBER_REMOVED_SUCCESS": "Xóa thành viên thành công",
 	"ADMIN_ADDED_SUCCESS": "Thêm quản trị viên thành công",
@@ -68,5 +70,6 @@
 	"POST_CREATED_SUCCESS": "Bài viết đã được tạo thành công",
 	"NO_SKILL_LEVELS_DEFINED": "Bạn chưa định nghĩa mức độ kỹ năng cho bất kỳ môn thể thao nào",
 	"NO_SKILL_LEVEL_FOR_SPORT": "Bạn chưa có mức độ kỹ năng cho môn thể thao {sport}",
-	"INSUFFICIENT_SKILL_LEVEL": "Mức độ kỹ năng của bạn cho môn {sport} ({current}) thấp hơn yêu cầu ({required})"
+	"INSUFFICIENT_SKILL_LEVEL": "Mức độ kỹ năng của bạn cho môn {sport} ({current}) thấp hơn yêu cầu ({required})",
+	"INVITATION_CANCELLED_SUCCESS": "Hủy lời mời thành công"
 }

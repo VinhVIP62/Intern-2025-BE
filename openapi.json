@@ -3489,6 +3489,102 @@
         ]
       }
     },
+    "/api/v1/groups/{groupId}/members/{userId}": {
+      "delete": {
+        "operationId": "GroupController_removeMemberFromGroup_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "ID của thành viên cần xóa",
+            "schema": {
+              "example": "507f1f77bcf86cd799439012",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Xóa thành viên thành công"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền xóa thành viên"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm hoặc thành viên"
+          }
+        },
+        "summary": "Xóa thành viên khỏi nhóm (chỉ admin)",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/invite/{userId}": {
+      "delete": {
+        "operationId": "GroupController_cancelGroupInvitation_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "ID của người dùng được mời",
+            "schema": {
+              "example": "507f1f77bcf86cd799439012",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hủy lời mời thành công"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền hủy lời mời"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm hoặc lời mời"
+          }
+        },
+        "summary": "Hủy lời mời tham gia nhóm (chỉ admin)",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
     "/api/v1/friends/requests": {
       "post": {
         "operationId": "FriendRequestController_createFriendRequest_v1",
