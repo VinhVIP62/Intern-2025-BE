@@ -1065,7 +1065,14 @@
         ],
         "responses": {
           "200": {
-            "description": "Lấy danh sách thông báo thành công"
+            "description": "Lấy danh sách thông báo thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationPaginationResponseDto"
+                }
+              }
+            }
           }
         },
         "summary": "Lấy danh sách thông báo của người dùng hiện tại",
@@ -1101,7 +1108,14 @@
         ],
         "responses": {
           "200": {
-            "description": "Lấy số lượng và danh sách thông báo chưa đọc thành công"
+            "description": "Lấy số lượng và danh sách thông báo chưa đọc thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationResponseDto"
+                }
+              }
+            }
           }
         },
         "summary": "Lấy số lượng và danh sách thông báo chưa đọc",
@@ -4673,6 +4687,192 @@
           "messageId",
           "accepted",
           "rejected"
+        ]
+      },
+      "NotificationRelatedUserDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "name"
+        ]
+      },
+      "NotificationRelatedGroupDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "name"
+        ]
+      },
+      "NotificationRelatedEventDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "name"
+        ]
+      },
+      "NotificationRelatedPostDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "title"
+        ]
+      },
+      "NotificationRelatedCommentDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "content"
+        ]
+      },
+      "NotificationResponseDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "friend_request",
+              "event_invitation",
+              "group_invitation",
+              "group_invitation_accepted",
+              "group_invitation_rejected",
+              "group_join_request",
+              "like",
+              "comment",
+              "post_approved",
+              "post_rejected",
+              "achievement_unlocked",
+              "mention",
+              "follow",
+              "share",
+              "request_approve_post"
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "isRead": {
+            "type": "boolean"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "sender": {
+            "$ref": "#/components/schemas/NotificationRelatedUserDto"
+          },
+          "recipient": {
+            "$ref": "#/components/schemas/NotificationRelatedUserDto"
+          },
+          "group": {
+            "$ref": "#/components/schemas/NotificationRelatedGroupDto"
+          },
+          "event": {
+            "$ref": "#/components/schemas/NotificationRelatedEventDto"
+          },
+          "post": {
+            "$ref": "#/components/schemas/NotificationRelatedPostDto"
+          },
+          "comment": {
+            "$ref": "#/components/schemas/NotificationRelatedCommentDto"
+          }
+        },
+        "required": [
+          "_id",
+          "type",
+          "message",
+          "isRead",
+          "isActive",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "NotificationPaginationResponseDto": {
+        "type": "object",
+        "properties": {
+          "notifications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NotificationResponseDto"
+            }
+          },
+          "total": {
+            "type": "number"
+          },
+          "page": {
+            "type": "number"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "totalPages": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "notifications",
+          "total",
+          "page",
+          "limit",
+          "totalPages"
         ]
       },
       "CreatePostDto": {

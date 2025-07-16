@@ -645,8 +645,8 @@ export class GroupService {
 				sender: userId,
 				type: NotificationType.REQUEST_APPROVE_POST,
 				message: `@${userId} MESSAGE_NEW_POST_IN_GROUP`,
-				referenceId: groupId,
-				referenceModel: ReferenceModel.GROUP,
+				referenceId: post._id,
+				referenceModel: ReferenceModel.POST,
 				relatedUsers: [userId],
 			}));
 
@@ -659,23 +659,5 @@ export class GroupService {
 		}
 
 		return post;
-	}
-
-	async notifyPostOwner(
-		postOwnerId: string,
-		adminId: string,
-		groupId: string,
-		approved: boolean,
-		i18n: I18nContext,
-	): Promise<void> {
-		await this.notificationService.createNotification({
-			recipient: postOwnerId,
-			sender: adminId,
-			type: approved ? NotificationType.POST_APPROVED : NotificationType.POST_REJECTED,
-			message: approved ? 'MESSAGE_POST_APPROVED' : 'MESSAGE_POST_REJECTED',
-			referenceId: groupId,
-			referenceModel: ReferenceModel.GROUP,
-			relatedUsers: [adminId],
-		});
 	}
 }
