@@ -24,6 +24,7 @@ import { IReactCommentRepository } from '@modules/post/repositories/react.commen
 import { ReactCommentRepositoryImpl } from '@modules/post/repositories/react.comment.repository.impl';
 import { IReactRepository } from '@modules/post/repositories/react.repository';
 import { ReactRepositoryImpl } from '@modules/post/repositories/react.repository.impl';
+import { TaggedUserMapper } from '@modules/post/mapper/taggedUser.mapper';
 
 @Module({
 	imports: [
@@ -69,6 +70,7 @@ import { ReactRepositoryImpl } from '@modules/post/repositories/react.repository
 		},
 		PostMapper,
 		EventMapper,
+		TaggedUserMapper,
 	],
 	exports: [
 		MongooseModule,
@@ -79,6 +81,7 @@ import { ReactRepositoryImpl } from '@modules/post/repositories/react.repository
 		IEventRepository,
 		PostMapper,
 		EventMapper,
+		TaggedUserMapper,
 	],
 })
 export class SharedModule {}

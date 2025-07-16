@@ -4,6 +4,7 @@ import { IPostRepository } from '../repositories/post.repository';
 import { CreateCommentDto } from '../dto/createComment.dto';
 import { CmtMapper } from '../mapper/cmt.mapper';
 import { Comment } from '../entities/comment.schema';
+import { MentionHelper } from '@common/utils/mention.util';
 
 @Injectable()
 export class CommentService {
@@ -19,6 +20,7 @@ export class CommentService {
 
 		const parentId = body.parentId ? body.parentId : null;
 		let cmt: Comment;
+		const taggedUserIds = MentionHelper.extractUserIdsFromContent(body.content);
 		if (parentId) {
 			const isExistParentCmt = await this.commentRepo.existParent(parentId);
 			console.log(isExistParentCmt);
@@ -30,12 +32,14 @@ export class CommentService {
 				postId: body.postId,
 				parentId: body.parentId,
 				content: body.content,
+				taggedUserIds: taggedUserIds,
 			});
 		} else {
 			cmt = await this.commentRepo.create({
 				userId,
 				postId: body.postId,
 				content: body.content,
+				taggedUserIds: taggedUserIds,
 			});
 		}
 		await this.postRepo.updatePost(body.postId, {

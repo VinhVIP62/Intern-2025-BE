@@ -6,6 +6,7 @@ import { IFriendRepository } from '@modules/friend/repositories/friend.repositor
 import { PostMapper } from '../mapper/post.mapper';
 import { SearchService } from '@modules/search/search.service';
 import { PostState } from '@common/enum/post.state.enum';
+import { MentionHelper } from '@common/utils/mention.util';
 
 @Injectable()
 export class PostService {
@@ -19,6 +20,7 @@ export class PostService {
 	async getNewsfeed(userId: string, updatedBefore?: string) {
 		const friend = await this.friendRepo.getAccepted(userId);
 		const friendIds = friend.map(f => (f.toUserId === userId ? f.fromUserId : f.toUserId)); // Lấy danh sách bạn bè
+		friendIds.unshift(userId);
 		const feedFromFriend = await this.postRepo.findByUserIds_InfiniteScroll(
 			10,
 			friendIds,
@@ -45,13 +47,14 @@ export class PostService {
 	}
 
 	async createPost(userId: string, dto: CreatePostDto) {
+		const taggedUserIds = MentionHelper.extractUserIdsFromContent(dto.title + ' ' + dto.content);
 		const newPost = await this.postRepo.create({
 			userId: userId,
 			title: dto.title,
 			content: dto.content,
 			state: dto.state,
 			mediaUrls: dto.mediaUrls || [],
-			taggedUserIds: dto.taggedUserIds || [],
+			taggedUserIds: taggedUserIds,
 		});
 
 		const response = await this.postMapper.toResponse(newPost, userId);

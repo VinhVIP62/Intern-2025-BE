@@ -26,6 +26,7 @@ import { Comment, CommentSchema } from './entities/comment.schema';
 import { CommentController } from './controllers/comment.controller';
 import { PostMapper } from './mapper/post.mapper';
 import { SearchModule } from '@modules/search/search.module';
+import { TaggedUserMapper } from './mapper/taggedUser.mapper';
 
 @Module({
 	imports: [
@@ -50,6 +51,7 @@ import { SearchModule } from '@modules/search/search.module';
 		CommentService,
 		CmtMapper,
 		PostMapper,
+		TaggedUserMapper,
 	],
 	controllers: [PostController, ReactController, ReactCmtController, CommentController],
 	exports: [PostService, ReactService, ReactCmtService],

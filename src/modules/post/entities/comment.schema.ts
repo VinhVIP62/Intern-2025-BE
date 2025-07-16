@@ -17,6 +17,9 @@ export class Comment {
 	@Prop({ required: true })
 	postId: string;
 
+	@Prop({ type: [String], default: [] })
+	taggedUserIds: string[]; // UUID của user được tag
+
 	@Prop({ required: false, default: null })
 	parentId?: string;
 
