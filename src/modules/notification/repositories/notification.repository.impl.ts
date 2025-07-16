@@ -28,6 +28,9 @@ export class NotificationRepositoryImpl implements INotificationRepository {
 		isRead?: boolean,
 	) {
 		const filter: any = { recipient: userId, isActive: true };
+		if (typeof filter.recipient === 'string') {
+			filter.recipient = new Types.ObjectId(filter.recipient);
+		}
 		if (typeof isRead === 'boolean' && isRead !== undefined) filter.isRead = isRead;
 
 		const [notifications, total] = await Promise.all([
@@ -143,10 +146,11 @@ export class NotificationRepositoryImpl implements INotificationRepository {
 	}
 
 	async markAllAsRead(userId: string) {
-		return this.notificationModel.updateMany(
-			{ recipient: userId, isActive: true, isRead: false },
-			{ $set: { isRead: true } },
-		);
+		const filter: any = { recipient: userId, isActive: true, isRead: false };
+		if (typeof filter.recipient === 'string') {
+			filter.recipient = new Types.ObjectId(filter.recipient);
+		}
+		return this.notificationModel.updateMany(filter, { $set: { isRead: true } });
 	}
 
 	async markAsUnread(notificationId: string) {
@@ -161,7 +165,11 @@ export class NotificationRepositoryImpl implements INotificationRepository {
 	}
 
 	async clearAll(userId: string) {
-		return this.notificationModel.deleteMany({ recipient: userId, isActive: true });
+		const filter: any = { recipient: userId, isActive: true };
+		if (typeof filter.recipient === 'string') {
+			filter.recipient = new Types.ObjectId(filter.recipient);
+		}
+		return this.notificationModel.deleteMany(filter);
 	}
 
 	async deleteByCondition(condition: any) {
