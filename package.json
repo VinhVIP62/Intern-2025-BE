@@ -38,6 +38,7 @@
 		"cloudinary": "^2.7.0",
 		"dayjs": "^1.11.13",
 		"joi": "^17.13.3",
+		"moment-timezone": "^0.6.0",
 		"mongoose-lean-virtuals": "^2.0.0",
 		"multer": "^2.0.1",
 		"nest-winston": "^1.10.2",

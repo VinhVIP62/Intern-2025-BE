@@ -8,6 +8,7 @@ import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
 import { AppLoggerService } from '@common/logger/logger.service';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as fs from 'fs';
+import { VietnamTimezoneInterceptor } from './common/interceptors/vietnam-timezone.interceptor';
 
 async function bootstrap() {
 	const app = await NestFactory.create<NestExpressApplication>(AppModule, {
@@ -44,6 +45,8 @@ async function bootstrap() {
 			transform: true,
 		}),
 	);
+
+	app.useGlobalInterceptors(new VietnamTimezoneInterceptor());
 
 	const swaggerConfig = new DocumentBuilder()
 		.setTitle('API Documentation')
