@@ -5614,6 +5614,11 @@
             "type": "boolean",
             "description": "Auto approve admin posts",
             "example": true
+          },
+          "autoApproveJoinGroup": {
+            "type": "boolean",
+            "description": "Auto approve join group",
+            "example": true
           }
         },
         "required": [
@@ -5727,6 +5732,11 @@
             "description": "Auto approve admin posts",
             "example": true
           },
+          "autoApproveJoinGroup": {
+            "type": "boolean",
+            "description": "Auto approve join group",
+            "example": true
+          },
           "createdAt": {
             "format": "date-time",
             "type": "string",
@@ -5752,6 +5762,7 @@
           "memberCount",
           "requirePostApproval",
           "autoApproveAdminPosts",
+          "autoApproveJoinGroup",
           "createdAt",
           "updatedAt"
         ]
@@ -5945,6 +5956,11 @@
           "autoApproveAdminPosts": {
             "type": "boolean",
             "description": "Auto approve admin posts",
+            "example": true
+          },
+          "autoApproveJoinGroup": {
+            "type": "boolean",
+            "description": "Auto approve join group",
             "example": true
           }
         }

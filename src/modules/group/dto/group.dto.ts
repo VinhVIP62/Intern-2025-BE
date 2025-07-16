@@ -80,6 +80,11 @@ export class CreateGroupDto {
 	@IsOptional()
 	@IsBoolean()
 	autoApproveAdminPosts?: boolean;
+
+	@ApiPropertyOptional({ description: 'Auto approve join group', example: true })
+	@IsOptional()
+	@IsBoolean()
+	autoApproveJoinGroup?: boolean;
 }
 
 export class UpdateGroupDto {
@@ -137,6 +142,11 @@ export class UpdateGroupDto {
 	@IsOptional()
 	@IsBoolean()
 	autoApproveAdminPosts?: boolean;
+
+	@ApiPropertyOptional({ description: 'Auto approve join group', example: true })
+	@IsOptional()
+	@IsBoolean()
+	autoApproveJoinGroup?: boolean;
 }
 
 export class GroupResponseDto {
@@ -190,6 +200,9 @@ export class GroupResponseDto {
 
 	@ApiProperty({ description: 'Auto approve admin posts', example: true })
 	autoApproveAdminPosts: boolean;
+
+	@ApiProperty({ description: 'Auto approve join group', example: true })
+	autoApproveJoinGroup: boolean;
 
 	@ApiProperty({ description: 'Created at', example: '2024-01-01T00:00:00.000Z' })
 	createdAt: Date;

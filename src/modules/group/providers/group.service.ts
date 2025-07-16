@@ -18,6 +18,7 @@ import { NotificationService } from '../../notification/providers/notification.s
 import { NotificationType, ReferenceModel } from '../../notification/entities/notification.enum';
 import { CreatePostDto } from '@modules/post/dto/post.dto';
 import { PostService } from '@modules/post/providers/post.service';
+import { PostStatus } from '@modules/post/entities/post.enum';
 
 @Injectable()
 export class GroupService {
@@ -235,6 +236,13 @@ export class GroupService {
 				throw new BadRequestException(i18n.t('group.INVALID_GROUP_ID'));
 			}
 
+			// Lấy thông tin group để kiểm tra autoApproveJoinGroup
+			const group = await this.groupRepository.getGroupById(groupId);
+			if (group.autoApproveJoinGroup) {
+				await this.groupRepository.addMember(groupId, userId);
+				return;
+			}
+
 			// Check if user is already a member
 			const isMember = await this.groupRepository.isUserMember(groupId, userId);
 			if (isMember) {
@@ -252,8 +260,6 @@ export class GroupService {
 			// Send notifications to group admins
 			try {
 				const adminIds = await this.groupRepository.getGroupAdmins(groupId);
-				const group = await this.groupRepository.getGroupById(groupId);
-
 				// Send notification to each admin (except the user requesting to join)
 				const notifications = adminIds
 					.filter(adminId => adminId !== userId)
@@ -266,7 +272,6 @@ export class GroupService {
 						referenceModel: ReferenceModel.GROUP,
 						relatedUsers: [userId],
 					}));
-
 				// Create notifications in parallel
 				await Promise.all(
 					notifications.map(notification =>
@@ -633,30 +638,46 @@ export class GroupService {
 		if (!groupId) {
 			throw new BadRequestException(i18n.t('group.GROUP_ID_REQUIRED'));
 		}
-		// Inject groupId into DTO
-		const post = await postService.createPost(createPostDto, userId, files, i18n);
 
-		// Notify all group admins except the creator
-		const adminIds = await this.groupRepository.getGroupAdmins(groupId);
+		// Lấy thông tin group
+		const group = await this.groupRepository.getGroupById(groupId);
+		const isAdmin = group.admins.includes(userId);
 
-		const notifications = adminIds
-			.filter(adminId => adminId !== userId)
-			.map(adminId => ({
-				recipient: adminId,
-				sender: userId,
-				type: NotificationType.REQUEST_APPROVE_POST,
-				message: `@${userId} MESSAGE_NEW_POST_IN_GROUP`,
-				referenceId: post._id,
-				referenceModel: ReferenceModel.POST,
-				relatedUsers: [userId],
-			}));
+		// Xác định trạng thái duyệt bài
+		let approvalStatus: PostStatus | undefined = undefined;
+		let needApproval = false;
+		if (!group.requirePostApproval) {
+			approvalStatus = PostStatus.APPROVED;
+		} else if (isAdmin && group.autoApproveAdminPosts) {
+			approvalStatus = PostStatus.APPROVED;
+		} else {
+			approvalStatus = PostStatus.PENDING;
+			needApproval = true;
+		}
 
-		if (notifications.length > 0) {
-			await Promise.all(
-				notifications.map(notification =>
-					this.notificationService.createNotification(notification),
-				),
-			);
+		// Inject trạng thái duyệt vào DTO
+		const postDtoWithStatus = { ...createPostDto, approvalStatus };
+		const post = await postService.createPost(postDtoWithStatus, userId, files, i18n);
+
+		// Chỉ gửi notification nếu cần phê duyệt
+		if (needApproval) {
+			const adminIds = group.admins.filter(adminId => adminId !== userId);
+			if (adminIds.length > 0) {
+				const notifications = adminIds.map(adminId => ({
+					recipient: adminId,
+					sender: userId,
+					type: NotificationType.REQUEST_APPROVE_POST,
+					message: `@${userId} MESSAGE_NEW_POST_IN_GROUP`,
+					referenceId: post._id,
+					referenceModel: ReferenceModel.POST,
+					relatedUsers: [userId],
+				}));
+				await Promise.all(
+					notifications.map(notification =>
+						this.notificationService.createNotification(notification),
+					),
+				);
+			}
 		}
 
 		return post;
