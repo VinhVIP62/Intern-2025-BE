@@ -11,9 +11,10 @@ import {
 	Max,
 	MaxLength,
 	MinLength,
+	IsObject,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { SportType } from '@modules/user/enums/user.enum';
+import { SportType, ActivityLevel } from '@modules/user/enums/user.enum';
 
 export class LocationDto {
 	@ApiPropertyOptional({ description: 'City name', example: 'Ho Chi Minh City' })
@@ -80,6 +81,16 @@ export class CreateGroupDto {
 	@IsOptional()
 	@IsBoolean()
 	autoApproveJoinGroup?: boolean;
+
+	@ApiPropertyOptional({
+		description: 'Join conditions for different sports',
+		example: { [SportType.FOOTBALL]: ActivityLevel.INTERMEDIATE },
+		type: 'object',
+		additionalProperties: { enum: Object.values(ActivityLevel) },
+	})
+	@IsOptional()
+	@IsObject()
+	joinConditions?: Record<SportType, ActivityLevel>;
 }
 
 export class UpdateGroupDto {
@@ -137,6 +148,16 @@ export class UpdateGroupDto {
 	@IsOptional()
 	@IsBoolean()
 	autoApproveJoinGroup?: boolean;
+
+	@ApiPropertyOptional({
+		description: 'Join conditions for different sports',
+		example: { [SportType.FOOTBALL]: ActivityLevel.INTERMEDIATE },
+		type: 'object',
+		additionalProperties: { enum: Object.values(ActivityLevel) },
+	})
+	@IsOptional()
+	@IsObject()
+	joinConditions?: Record<SportType, ActivityLevel>;
 }
 
 export class GroupResponseDto {
@@ -190,6 +211,14 @@ export class GroupResponseDto {
 
 	@ApiProperty({ description: 'Auto approve join group', example: true })
 	autoApproveJoinGroup: boolean;
+
+	@ApiPropertyOptional({
+		description: 'Join conditions for different sports',
+		example: { [SportType.FOOTBALL]: ActivityLevel.INTERMEDIATE },
+		type: 'object',
+		additionalProperties: { enum: Object.values(ActivityLevel) },
+	})
+	joinConditions?: Record<SportType, ActivityLevel>;
 
 	@ApiProperty({ description: 'Created at', example: '2024-01-01T00:00:00.000Z' })
 	createdAt: Date;

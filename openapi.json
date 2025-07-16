@@ -5614,6 +5614,21 @@
             "type": "boolean",
             "description": "Auto approve join group",
             "example": true
+          },
+          "joinConditions": {
+            "type": "object",
+            "description": "Join conditions for different sports",
+            "example": {
+              "football": "intermediate"
+            },
+            "additionalProperties": {
+              "enum": [
+                "beginner",
+                "intermediate",
+                "advanced",
+                "professional"
+              ]
+            }
           }
         },
         "required": [
@@ -5726,6 +5741,21 @@
             "type": "boolean",
             "description": "Auto approve join group",
             "example": true
+          },
+          "joinConditions": {
+            "type": "object",
+            "description": "Join conditions for different sports",
+            "example": {
+              "football": "intermediate"
+            },
+            "additionalProperties": {
+              "enum": [
+                "beginner",
+                "intermediate",
+                "advanced",
+                "professional"
+              ]
+            }
           },
           "createdAt": {
             "format": "date-time",
@@ -5946,6 +5976,21 @@
             "type": "boolean",
             "description": "Auto approve join group",
             "example": true
+          },
+          "joinConditions": {
+            "type": "object",
+            "description": "Join conditions for different sports",
+            "example": {
+              "football": "intermediate"
+            },
+            "additionalProperties": {
+              "enum": [
+                "beginner",
+                "intermediate",
+                "advanced",
+                "professional"
+              ]
+            }
           }
         }
       },

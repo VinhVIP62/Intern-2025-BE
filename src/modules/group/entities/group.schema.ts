@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { SportType } from '@modules/user/enums/user.enum';
+import { SportType, ActivityLevel } from '@modules/user/enums/user.enum';
 
 // Group Schema
 @Schema({ timestamps: true })
@@ -55,6 +55,14 @@ export class Group extends Document {
 
 	@Prop({ default: true })
 	autoApproveJoinGroup: boolean;
+
+	@Prop({
+		type: Map,
+		of: String,
+		enum: ActivityLevel,
+		default: null,
+	})
+	joinConditions: Map<SportType, ActivityLevel>;
 
 	// Remove duplicate index declarations since timestamps: true handles them
 	createdAt?: Date;
