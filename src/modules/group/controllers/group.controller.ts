@@ -162,6 +162,12 @@ export class GroupController {
 		description: 'Tìm kiếm theo tên nhóm (có thể là 1 phần tên)',
 		example: 'football',
 	})
+	@ApiQuery({
+		name: 'role',
+		required: false,
+		enum: ['admin', 'member', 'waiting'],
+		description: 'Lọc theo vai trò thành viên',
+	})
 	@ApiResponse({
 		status: 200,
 		description: 'Lấy danh sách nhóm của người dùng thành công',
@@ -173,8 +179,16 @@ export class GroupController {
 		@Query('page') page: number = 1,
 		@Query('limit') limit: number = 10,
 		@Query('key') key?: string,
+		@Query('role') role?: string,
 	): Promise<ResponseEntity<PaginatedSimpleGroupsResponseDto>> {
-		const result = await this.groupService.getSimpleGroupsByUserId(userId, i18n, page, limit, key);
+		const result = await this.groupService.getSimpleGroupsByUserId(
+			userId,
+			i18n,
+			page,
+			limit,
+			key,
+			role,
+		);
 
 		return {
 			success: true,

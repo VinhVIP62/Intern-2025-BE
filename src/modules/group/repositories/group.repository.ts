@@ -30,6 +30,7 @@ export interface IGroupRepository {
 		page: number,
 		limit: number,
 		key?: string,
+		role?: string,
 	): Promise<PaginatedSimpleGroupsResponseDto>;
 	addMember(groupId: string, userId: string): Promise<void>;
 	removeMember(groupId: string, userId: string): Promise<void>;

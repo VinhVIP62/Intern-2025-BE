@@ -2735,6 +2735,20 @@
               "example": "football",
               "type": "string"
             }
+          },
+          {
+            "name": "role",
+            "required": false,
+            "in": "query",
+            "description": "Lọc theo vai trò thành viên",
+            "schema": {
+              "enum": [
+                "admin",
+                "member",
+                "waiting"
+              ],
+              "type": "string"
+            }
           }
         ],
         "responses": {

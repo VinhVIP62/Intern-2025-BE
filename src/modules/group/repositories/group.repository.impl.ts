@@ -268,11 +268,19 @@ export class GroupRepositoryImpl implements IGroupRepository {
 		page: number,
 		limit: number,
 		key?: string,
+		role?: string,
 	): Promise<PaginatedSimpleGroupsResponseDto> {
 		const skip = (page - 1) * limit;
-		const filter: any = {
-			$or: [{ admins: new Types.ObjectId(userId) }, { members: new Types.ObjectId(userId) }],
-		};
+		let filter: any = {};
+		if (role === 'admin') {
+			filter = { admins: new Types.ObjectId(userId) };
+		} else if (role === 'member') {
+			filter = { members: new Types.ObjectId(userId), admins: { $ne: new Types.ObjectId(userId) } };
+		} else {
+			filter = {
+				$or: [{ admins: new Types.ObjectId(userId) }, { members: new Types.ObjectId(userId) }],
+			};
+		}
 		if (key) {
 			filter.name = { $regex: key, $options: 'i' };
 		}
@@ -296,13 +304,13 @@ export class GroupRepositoryImpl implements IGroupRepository {
 					.select('createdAt')
 					.lean();
 
-				let role: 'admin' | 'member' = 'member';
+				let groupRole: 'admin' | 'member' = 'member';
 				if (group.admins && group.admins.some((id: any) => id.toString() === userId)) {
-					role = 'admin';
+					groupRole = 'admin';
 				}
 
 				return {
-					...this.mapToSimpleResponseDto(group, role),
+					...this.mapToSimpleResponseDto(group, groupRole),
 					latestPostTime: latestPost && 'createdAt' in latestPost ? latestPost.createdAt : null,
 				};
 			}),
