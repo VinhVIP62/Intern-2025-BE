@@ -19,6 +19,8 @@ export interface INotificationRepository {
 	softDelete(notificationId: string): Promise<any>;
 
 	clearAll(userId: string): Promise<any>;
+
+	createNotification(data: any): Promise<any>;
 }
 
 export const INotificationRepository = Symbol('INotificationRepository');

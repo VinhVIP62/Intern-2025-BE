@@ -9,14 +9,10 @@ import { CreateNotificationDto } from '../dto/notification.dto';
 
 @Injectable()
 export class NotificationService {
-	constructor(
-		@InjectModel(Notification.name) private notificationModel: Model<Notification>,
-		private readonly notificationRepository: INotificationRepository,
-	) {}
+	constructor(private readonly notificationRepository: INotificationRepository) {}
 
 	async createNotification(data: CreateNotificationDto) {
-		const notification = new this.notificationModel(data);
-		return await notification.save();
+		return await this.notificationRepository.createNotification(data);
 	}
 
 	async getNotifications(userId: string, page: number, limit: number, isRead: boolean | undefined) {
