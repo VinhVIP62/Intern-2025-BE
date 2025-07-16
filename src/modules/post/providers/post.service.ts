@@ -223,14 +223,17 @@ export class PostService {
 				createPostDto.taggedUsers
 					.filter(taggedUserId => taggedUserId !== authorId) // Không gửi notification cho chính mình
 					.map(taggedUserId =>
-						this.notificationService.createNotification({
-							recipient: taggedUserId,
-							sender: authorId,
-							type: NotificationType.MENTION,
-							message: `MESSAGE_TAGGED_IN_POST @${authorId}`,
-							referenceId: (post as any)._id.toString(),
-							referenceModel: ReferenceModel.POST,
-						}),
+						this.notificationService.createNotification(
+							{
+								recipient: taggedUserId,
+								sender: authorId,
+								type: NotificationType.MENTION,
+								message: `MESSAGE_TAGGED_IN_POST @${authorId}`,
+								referenceId: (post as any)._id.toString(),
+								referenceModel: ReferenceModel.POST,
+							},
+							i18n,
+						),
 					),
 			);
 		}
@@ -312,14 +315,17 @@ export class PostService {
 				if (newTagged.length > 0) {
 					await Promise.all(
 						newTagged.map(taggedUserId =>
-							this.notificationService.createNotification({
-								recipient: taggedUserId,
-								sender: userId,
-								type: NotificationType.MENTION,
-								message: `MESSAGE_TAGGED_IN_POST @${userId}`,
-								referenceId: postId,
-								referenceModel: ReferenceModel.POST,
-							}),
+							this.notificationService.createNotification(
+								{
+									recipient: taggedUserId,
+									sender: userId,
+									type: NotificationType.MENTION,
+									message: `MESSAGE_TAGGED_IN_POST @${userId}`,
+									referenceId: postId,
+									referenceModel: ReferenceModel.POST,
+								},
+								i18n,
+							),
 						),
 					);
 				}
@@ -565,14 +571,17 @@ export class PostService {
 		const newTagged = friendIds.filter(id => !oldTagged.includes(id) && id !== userId);
 		await Promise.all(
 			newTagged.map(friendId =>
-				this.notificationService.createNotification({
-					recipient: friendId,
-					sender: userId,
-					type: NotificationType.MENTION,
-					message: `MESSAGE_TAGGED_IN_POST @${userId}`,
-					referenceId: postId,
-					referenceModel: ReferenceModel.POST,
-				}),
+				this.notificationService.createNotification(
+					{
+						recipient: friendId,
+						sender: userId,
+						type: NotificationType.MENTION,
+						message: `MESSAGE_TAGGED_IN_POST @${userId}`,
+						referenceId: postId,
+						referenceModel: ReferenceModel.POST,
+					},
+					i18n,
+				),
 			),
 		);
 
@@ -585,14 +594,17 @@ export class PostService {
 
 			// Gửi notification cho chủ bài viết (trừ khi người like chính là chủ bài viết)
 			if (post.author.toString() !== userId) {
-				await this.notificationService.createNotification({
-					recipient: post.author.toString(),
-					sender: userId,
-					type: NotificationType.LIKE,
-					message: `@${userId} MESSAGE_LIKE_POST`,
-					referenceId: postId,
-					referenceModel: ReferenceModel.POST,
-				});
+				await this.notificationService.createNotification(
+					{
+						recipient: post.author.toString(),
+						sender: userId,
+						type: NotificationType.LIKE,
+						message: `@${userId} MESSAGE_LIKE_POST`,
+						referenceId: postId,
+						referenceModel: ReferenceModel.POST,
+					},
+					i18n,
+				);
 			}
 
 			return post as PostResponseDto;
