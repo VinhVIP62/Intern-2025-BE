@@ -474,4 +474,24 @@ export class UserController {
 			message: i18n.t('user.BASIC_INFO_RETRIEVED_SUCCESS'),
 		};
 	}
+
+	@Version('1')
+	@Put('fcm-token')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Cập nhật FCM token cho user' })
+	@ApiBody({ schema: { type: 'object', properties: { fcmToken: { type: 'string' } } } })
+	@ApiResponse({ status: 200, description: 'Cập nhật FCM token thành công' })
+	async updateFcmToken(
+		@Request() req,
+		@Body('fcmToken') fcmToken: string,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<null>> {
+		const userId = req.user.id;
+		await this.userService.updateFcmToken(userId, fcmToken);
+		return {
+			success: true,
+			message: i18n.t('user.FCM_TOKEN_UPDATED_SUCCESS'),
+		};
+	}
 }

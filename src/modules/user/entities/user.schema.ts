@@ -32,6 +32,9 @@ export class User extends Document {
 	@Prop({ default: null })
 	bio: string;
 
+	@Prop({ default: null })
+	fcmToken: string;
+
 	@Prop({ type: Date, default: null })
 	dateOfBirth: Date;
 

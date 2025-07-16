@@ -217,4 +217,8 @@ export class UserService {
 
 		return user.skillLevels || null;
 	}
+
+	async updateFcmToken(userId: string, fcmToken: string): Promise<void> {
+		await this.userRepository.update(userId, { fcmToken });
+	}
 }
