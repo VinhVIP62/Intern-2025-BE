@@ -77,8 +77,8 @@ export class CommentService {
 				sender: authorId,
 				type: NotificationType.COMMENT,
 				message: `@${authorId} MESSAGE_COMMENT_ON_POST`,
-				referenceId: postId,
-				referenceModel: ReferenceModel.POST,
+				referenceId: (comment as any)._id.toString(),
+				referenceModel: ReferenceModel.COMMENT,
 			});
 		}
 
@@ -91,7 +91,7 @@ export class CommentService {
 					sender: authorId,
 					type: NotificationType.COMMENT,
 					message: `@${authorId} MESSAGE_REPLY_ON_COMMENT`,
-					referenceId: createCommentDto.parentId,
+					referenceId: (comment as any)._id.toString(),
 					referenceModel: ReferenceModel.COMMENT,
 				});
 			}

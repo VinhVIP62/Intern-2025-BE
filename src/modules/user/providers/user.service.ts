@@ -6,6 +6,7 @@ import { UpdateProfileDto } from '../dto/update-profile.dto';
 import { plainToClass } from 'class-transformer';
 import { I18nContext } from 'nestjs-i18n';
 import * as bcrypt from 'bcrypt';
+import { SportType, ActivityLevel } from '../enums/user.enum';
 
 @Injectable()
 export class UserService {
@@ -192,5 +193,28 @@ export class UserService {
 
 	async getBlockedUsers(userId: string, i18n?: I18nContext): Promise<any[]> {
 		return this.userRepository.getBlockedUsers(userId);
+	}
+
+	async removeFollower(
+		currentUserId: string,
+		followerId: string,
+		i18n?: I18nContext,
+	): Promise<void> {
+		if (currentUserId === followerId)
+			throw new Error(i18n?.t('user.CANNOT_REMOVE_SELF') || 'Cannot remove yourself');
+		await this.userRepository.removeFollower(currentUserId, followerId);
+	}
+
+	async getSkillLevelsByUserId(
+		userId: string,
+		i18n?: I18nContext,
+	): Promise<Map<SportType, ActivityLevel> | null> {
+		const user = await this.userRepository.findOneById(userId);
+		if (!user) {
+			const message = i18n ? i18n.t('user.USER_NOT_FOUND') : 'User not found';
+			throw new NotFoundException(message);
+		}
+
+		return user.skillLevels || null;
 	}
 }

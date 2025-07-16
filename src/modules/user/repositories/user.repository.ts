@@ -21,4 +21,5 @@ export abstract class IUserRepository {
 	abstract blockUser(currentUserId: string, targetUserId: string): Promise<void>;
 	abstract unblockUser(currentUserId: string, targetUserId: string): Promise<void>;
 	abstract getBlockedUsers(userId: string): Promise<any[]>;
+	abstract removeFollower(currentUserId: string, followerId: string): Promise<void>;
 }

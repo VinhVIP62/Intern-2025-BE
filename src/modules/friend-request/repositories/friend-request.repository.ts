@@ -27,6 +27,8 @@ export interface IFriendRequestRepository {
 
 	updateFriendRequestStatus(requestId: string, status: FriendRequestStatus): Promise<any>;
 
+	updateFriendRequestMessage(requestId: string, message: string): Promise<any>;
+
 	checkExistingFriendRequest(senderId: Types.ObjectId, recipientId: Types.ObjectId): Promise<any>;
 
 	deleteFriendRequest(requestId: string): Promise<any>;
@@ -37,6 +39,8 @@ export interface IFriendRequestRepository {
 	): Promise<{
 		areFriends: boolean;
 		friendRequestStatus?: FriendRequestStatus;
+		friendRequestId?: string;
+		friendRequestMessage?: string;
 		currentUser?: any;
 		targetUser?: any;
 	}>;

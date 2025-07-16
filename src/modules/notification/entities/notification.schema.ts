@@ -82,7 +82,6 @@ NotificationSchema.virtual('referencedPost', {
 	localField: 'referenceId',
 	foreignField: '_id',
 	justOne: true,
-	match: { referenceModel: ReferenceModel.POST },
 });
 
 NotificationSchema.virtual('referencedEvent', {
@@ -90,7 +89,6 @@ NotificationSchema.virtual('referencedEvent', {
 	localField: 'referenceId',
 	foreignField: '_id',
 	justOne: true,
-	match: { referenceModel: ReferenceModel.EVENT },
 });
 
 NotificationSchema.virtual('referencedGroup', {
@@ -98,7 +96,6 @@ NotificationSchema.virtual('referencedGroup', {
 	localField: 'referenceId',
 	foreignField: '_id',
 	justOne: true,
-	match: { referenceModel: ReferenceModel.GROUP },
 });
 
 NotificationSchema.virtual('referencedComment', {
@@ -106,7 +103,27 @@ NotificationSchema.virtual('referencedComment', {
 	localField: 'referenceId',
 	foreignField: '_id',
 	justOne: true,
-	match: { referenceModel: ReferenceModel.COMMENT },
+});
+
+NotificationSchema.virtual('referencedUser', {
+	ref: 'User',
+	localField: 'referenceId',
+	foreignField: '_id',
+	justOne: true,
+});
+
+NotificationSchema.virtual('referencedAchievement', {
+	ref: 'Achievement',
+	localField: 'referenceId',
+	foreignField: '_id',
+	justOne: true,
+});
+
+NotificationSchema.virtual('referencedFriendRequest', {
+	ref: 'FriendRequest',
+	localField: 'referenceId',
+	foreignField: '_id',
+	justOne: true,
 });
 
 // Ensure virtual fields are included when converting to JSON

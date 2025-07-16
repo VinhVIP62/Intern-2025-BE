@@ -18,6 +18,10 @@ import { Role } from '@common/enum';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { ResponseEntity } from '@common/types';
 import { NOTIFICATION_MESSAGE_KEYS } from '@common/constants/message-key.constant';
+import {
+	NotificationResponseDto,
+	NotificationPaginationResponseDto,
+} from '../dto/notification.dto';
 
 @ApiTags('Notification')
 @Controller('notifications')
@@ -59,14 +63,18 @@ export class NotificationController {
 		type: Boolean,
 		description: 'Lọc theo đã đọc/chưa đọc (nếu không truyền thì lấy tất cả)',
 	})
-	@ApiResponse({ status: 200, description: 'Lấy danh sách thông báo thành công' })
+	@ApiResponse({
+		status: 200,
+		description: 'Lấy danh sách thông báo thành công',
+		type: NotificationPaginationResponseDto,
+	})
 	async getNotifications(
 		@Request() req,
 		@I18n() i18n: I18nContext,
 		@Query('page') page: number = 1,
 		@Query('limit') limit: number = 10,
 		@Query('isRead') isRead?: string,
-	): Promise<ResponseEntity<any>> {
+	): Promise<ResponseEntity<NotificationPaginationResponseDto>> {
 		const userId = req.user.id;
 		const isReadBool = isRead === undefined ? undefined : isRead === 'true';
 		const { notifications, total } = await this.notificationService.getNotifications(
@@ -76,7 +84,7 @@ export class NotificationController {
 			isReadBool,
 		);
 
-		// Dịch message cho từng notification
+		// Dịch message cho từng notification (nếu cần)
 		const translatedNotifications = notifications.map(notification => ({
 			...notification,
 			message: this.translateNotificationMessage(notification.message, i18n),
@@ -85,56 +93,14 @@ export class NotificationController {
 		const totalPages = Math.ceil(total / limit);
 		return {
 			success: true,
-			data: { notifications: translatedNotifications, total, page, limit, totalPages },
+			data: {
+				notifications: translatedNotifications as NotificationResponseDto[],
+				total,
+				page,
+				limit,
+				totalPages,
+			},
 			message: i18n.t('notification.LIST_RETRIEVED_SUCCESS'),
-		};
-	}
-
-	@Version('1')
-	@Get('unread-count')
-	@UseGuards(RolesGuard)
-	@Roles(Role.USER, Role.ADMIN)
-	@ApiOperation({ summary: 'Lấy số lượng và danh sách thông báo chưa đọc' })
-	@ApiQuery({
-		name: 'page',
-		required: false,
-		type: Number,
-		example: 1,
-		description: 'Trang thông báo chưa đọc muốn lấy (không bắt buộc)',
-	})
-	@ApiQuery({
-		name: 'limit',
-		required: false,
-		type: Number,
-		example: 10,
-		description: 'Số lượng thông báo chưa đọc muốn lấy (không bắt buộc)',
-	})
-	@ApiResponse({
-		status: 200,
-		description: 'Lấy số lượng và danh sách thông báo chưa đọc thành công',
-	})
-	async getUnreadCount(
-		@Request() req,
-		@I18n() i18n: I18nContext,
-		@Query('page') page?: number,
-		@Query('limit') limit?: number,
-	): Promise<ResponseEntity<{ count: number; notifications: any[] }>> {
-		const { count, notifications } = await this.notificationService.getUnreadNotificationsWithCount(
-			req.user.id,
-			page,
-			limit,
-		);
-
-		// Dịch message cho từng notification
-		const translatedNotifications = notifications.map(notification => ({
-			...notification,
-			message: this.translateNotificationMessage(notification.message, i18n),
-		}));
-
-		return {
-			success: true,
-			data: { count, notifications: translatedNotifications },
-			message: i18n.t('notification.UNREAD_COUNT_SUCCESS'),
 		};
 	}
 

@@ -21,5 +21,9 @@
 	"FRIEND_REMOVED_SUCCESS": "Xóa bạn bè thành công",
 	"FRIEND_REMOVED_FAILED": "Xóa bạn bè thất bại",
 	"MUTUAL_FRIENDS_RETRIEVED_SUCCESS": "Lấy danh sách bạn bè chung thành công",
-	"MUTUAL_FRIENDS_RETRIEVED_FAILED": "Lấy danh sách bạn bè chung thất bại"
+	"MUTUAL_FRIENDS_RETRIEVED_FAILED": "Lấy danh sách bạn bè chung thất bại",
+	"MESSAGE_EDITED_SUCCESS": "Chỉnh sửa lời nhắn thành công",
+	"MESSAGE_EDITED_FAILED": "Chỉnh sửa lời nhắn thất bại",
+	"REQUEST_CANCELLED_SUCCESS": "Hủy lời mời kết bạn thành công",
+	"REQUEST_CANCELLED_FAILED": "Hủy lời mời kết bạn thất bại"
 }

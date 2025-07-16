@@ -98,4 +98,23 @@ export class FollowController {
 			message: i18n.t('user.FOLLOWING_RETRIEVED_SUCCESS'),
 		};
 	}
+
+	@Version('1')
+	@Delete('followers/:followerId')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Xóa follower khỏi tài khoản của bạn' })
+	@ApiParam({ name: 'followerId', description: 'ID của follower cần xóa' })
+	@ApiResponse({ status: 200, description: 'Xóa follower thành công' })
+	async removeFollower(
+		@Request() req,
+		@Param('followerId') followerId: string,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<null>> {
+		await this.userService.removeFollower(req.user.id, followerId, i18n);
+		return {
+			success: true,
+			message: i18n.t('user.REMOVE_FOLLOWER_SUCCESS'),
+		};
+	}
 }

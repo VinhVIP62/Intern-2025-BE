@@ -10,6 +10,8 @@ import {
 	UseGuards,
 	BadRequestException,
 	Put,
+	NotFoundException,
+	ForbiddenException,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody } from '@nestjs/swagger';
 import { FriendRequestService } from '../providers/friend-request.service';
@@ -218,17 +220,12 @@ export class FriendRequestController {
 		@Request() req,
 		@Param('requestId') requestId: string,
 		@I18n() i18n: I18nContext,
-	): Promise<ResponseEntity<FriendRequestResponseDto>> {
+	): Promise<ResponseEntity<null>> {
 		try {
-			const friendRequest = await this.friendRequestService.acceptFriendRequest(
-				requestId,
-				req.user.id,
-				i18n,
-			);
+			await this.friendRequestService.acceptFriendRequest(requestId, req.user.id, i18n);
 
 			return {
 				success: true,
-				data: friendRequest,
 				message: i18n.t('friend-request.REQUEST_ACCEPTED_SUCCESS'),
 			};
 		} catch (error) {
@@ -274,17 +271,12 @@ export class FriendRequestController {
 		@Request() req,
 		@Param('requestId') requestId: string,
 		@I18n() i18n: I18nContext,
-	): Promise<ResponseEntity<FriendRequestResponseDto>> {
+	): Promise<ResponseEntity<null>> {
 		try {
-			const friendRequest = await this.friendRequestService.declineFriendRequest(
-				requestId,
-				req.user.id,
-				i18n,
-			);
+			await this.friendRequestService.declineFriendRequest(requestId, req.user.id, i18n);
 
 			return {
 				success: true,
-				data: friendRequest,
 				message: i18n.t('friend-request.REQUEST_DECLINED_SUCCESS'),
 			};
 		} catch (error) {
@@ -292,6 +284,94 @@ export class FriendRequestController {
 				throw error;
 			}
 			throw new BadRequestException(i18n.t('friend-request.REQUEST_DECLINED_FAILED'));
+		}
+	}
+
+	@Version('1')
+	@Put(':requestId/message')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Chỉnh sửa lời nhắn của lời mời kết bạn (chỉ sender, khi pending)' })
+	@ApiParam({
+		name: 'requestId',
+		description: 'ID của lời mời kết bạn',
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiBody({
+		schema: {
+			properties: { message: { type: 'string', example: 'Xin chào, mình muốn kết bạn!' } },
+		},
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Chỉnh sửa lời nhắn thành công',
+		type: FriendRequestResponseDto,
+	})
+	@ApiResponse({ status: 400, description: 'Dữ liệu không hợp lệ hoặc không thể chỉnh sửa' })
+	@ApiResponse({ status: 401, description: 'Không có quyền truy cập' })
+	@ApiResponse({ status: 403, description: 'Không có quyền chỉnh sửa lời mời này' })
+	@ApiResponse({ status: 404, description: 'Không tìm thấy lời mời kết bạn' })
+	async editFriendRequestMessage(
+		@Request() req,
+		@Param('requestId') requestId: string,
+		@Body('message') message: string,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<FriendRequestResponseDto>> {
+		try {
+			const updated = await this.friendRequestService.editFriendRequestMessage(
+				requestId,
+				req.user.id,
+				message,
+				i18n,
+			);
+			return {
+				success: true,
+				data: updated,
+				message: i18n.t('friend-request.MESSAGE_EDITED_SUCCESS'),
+			};
+		} catch (error) {
+			// console.error('Edit friend request message error:', error);
+			if (error instanceof BadRequestException) throw error;
+			if (error instanceof NotFoundException) throw new NotFoundException(error.message);
+			if (error instanceof ForbiddenException) throw new ForbiddenException(error.message);
+			throw new BadRequestException(i18n.t('friend-request.MESSAGE_EDITED_FAILED'));
+		}
+	}
+
+	@Version('1')
+	@Put(':requestId/cancel')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Hủy lời mời kết bạn (chỉ sender, khi pending)' })
+	@ApiParam({
+		name: 'requestId',
+		description: 'ID của lời mời kết bạn',
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Hủy lời mời kết bạn thành công',
+		schema: { example: { success: true, message: '...' } },
+	})
+	@ApiResponse({ status: 400, description: 'Dữ liệu không hợp lệ hoặc không thể hủy' })
+	@ApiResponse({ status: 401, description: 'Không có quyền truy cập' })
+	@ApiResponse({ status: 403, description: 'Không có quyền hủy lời mời này' })
+	@ApiResponse({ status: 404, description: 'Không tìm thấy lời mời kết bạn' })
+	async cancelFriendRequest(
+		@Request() req,
+		@Param('requestId') requestId: string,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<any>> {
+		try {
+			await this.friendRequestService.cancelFriendRequest(requestId, req.user.id, i18n);
+			return {
+				success: true,
+				data: null,
+				message: i18n.t('friend-request.REQUEST_CANCELLED_SUCCESS'),
+			};
+		} catch (error) {
+			if (error instanceof BadRequestException) throw error;
+			throw new BadRequestException(i18n.t('friend-request.REQUEST_CANCELLED_FAILED'));
 		}
 	}
 }

@@ -9,30 +9,14 @@ import { CreateNotificationDto } from '../dto/notification.dto';
 
 @Injectable()
 export class NotificationService {
-	constructor(
-		@InjectModel(Notification.name) private notificationModel: Model<Notification>,
-		private readonly notificationRepository: INotificationRepository,
-	) {}
+	constructor(private readonly notificationRepository: INotificationRepository) {}
 
 	async createNotification(data: CreateNotificationDto) {
-		const notification = new this.notificationModel(data);
-		return await notification.save();
+		return await this.notificationRepository.createNotification(data);
 	}
 
 	async getNotifications(userId: string, page: number, limit: number, isRead: boolean | undefined) {
 		return this.notificationRepository.findNotificationsByUser(userId, page, limit, isRead);
-	}
-
-	async getUnreadCount(userId: string) {
-		return this.notificationRepository.countUnreadNotifications(userId);
-	}
-
-	async getUnreadNotificationsWithCount(userId: string, page?: number, limit?: number) {
-		const [count, notifications] = await Promise.all([
-			this.notificationRepository.countUnreadNotifications(userId),
-			this.notificationRepository.getUnreadNotifications(userId, page, limit),
-		]);
-		return { count, notifications };
 	}
 
 	async markAsRead(notificationId: string, i18n: I18nContext) {

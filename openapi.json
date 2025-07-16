@@ -760,6 +760,31 @@
         ]
       }
     },
+    "/api/v1/users/followers/{followerId}": {
+      "delete": {
+        "operationId": "FollowController_removeFollower_v1",
+        "parameters": [
+          {
+            "name": "followerId",
+            "required": true,
+            "in": "path",
+            "description": "ID của follower cần xóa",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Xóa follower thành công"
+          }
+        },
+        "summary": "Xóa follower khỏi tài khoản của bạn",
+        "tags": [
+          "User Follow"
+        ]
+      }
+    },
     "/api/v1/file/upload": {
       "post": {
         "operationId": "FileController_uploadFile_v1",
@@ -1040,46 +1065,17 @@
         ],
         "responses": {
           "200": {
-            "description": "Lấy danh sách thông báo thành công"
+            "description": "Lấy danh sách thông báo thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/NotificationPaginationResponseDto"
+                }
+              }
+            }
           }
         },
         "summary": "Lấy danh sách thông báo của người dùng hiện tại",
-        "tags": [
-          "Notification"
-        ]
-      }
-    },
-    "/api/v1/notifications/unread-count": {
-      "get": {
-        "operationId": "NotificationController_getUnreadCount_v1",
-        "parameters": [
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Trang thông báo chưa đọc muốn lấy (không bắt buộc)",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Số lượng thông báo chưa đọc muốn lấy (không bắt buộc)",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Lấy số lượng và danh sách thông báo chưa đọc thành công"
-          }
-        },
-        "summary": "Lấy số lượng và danh sách thông báo chưa đọc",
         "tags": [
           "Notification"
         ]
@@ -2729,6 +2725,16 @@
               "example": 10,
               "type": "number"
             }
+          },
+          {
+            "name": "key",
+            "required": false,
+            "in": "query",
+            "description": "Tìm kiếm theo tên nhóm (có thể là 1 phần tên)",
+            "schema": {
+              "example": "football",
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -3707,6 +3713,114 @@
         ]
       }
     },
+    "/api/v1/friends/requests/{requestId}/message": {
+      "put": {
+        "operationId": "FriendRequestController_editFriendRequestMessage_v1",
+        "parameters": [
+          {
+            "name": "requestId",
+            "required": true,
+            "in": "path",
+            "description": "ID của lời mời kết bạn",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Xin chào, mình muốn kết bạn!"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Chỉnh sửa lời nhắn thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FriendRequestResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ hoặc không thể chỉnh sửa"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền chỉnh sửa lời mời này"
+          },
+          "404": {
+            "description": "Không tìm thấy lời mời kết bạn"
+          }
+        },
+        "summary": "Chỉnh sửa lời nhắn của lời mời kết bạn (chỉ sender, khi pending)",
+        "tags": [
+          "Friend Request"
+        ]
+      }
+    },
+    "/api/v1/friends/requests/{requestId}/cancel": {
+      "put": {
+        "operationId": "FriendRequestController_cancelFriendRequest_v1",
+        "parameters": [
+          {
+            "name": "requestId",
+            "required": true,
+            "in": "path",
+            "description": "ID của lời mời kết bạn",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hủy lời mời kết bạn thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "success": true,
+                    "message": "..."
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ hoặc không thể hủy"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền hủy lời mời này"
+          },
+          "404": {
+            "description": "Không tìm thấy lời mời kết bạn"
+          }
+        },
+        "summary": "Hủy lời mời kết bạn (chỉ sender, khi pending)",
+        "tags": [
+          "Friend Request"
+        ]
+      }
+    },
     "/api/v1/friends": {
       "get": {
         "operationId": "FriendsController_getFriendsList_v1",
@@ -4542,6 +4656,192 @@
           "rejected"
         ]
       },
+      "NotificationRelatedUserDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "name"
+        ]
+      },
+      "NotificationRelatedGroupDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "name"
+        ]
+      },
+      "NotificationRelatedEventDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "name"
+        ]
+      },
+      "NotificationRelatedPostDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "title"
+        ]
+      },
+      "NotificationRelatedCommentDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "content"
+        ]
+      },
+      "NotificationResponseDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "friend_request",
+              "event_invitation",
+              "group_invitation",
+              "group_invitation_accepted",
+              "group_invitation_rejected",
+              "group_join_request",
+              "like",
+              "comment",
+              "post_approved",
+              "post_rejected",
+              "achievement_unlocked",
+              "mention",
+              "follow",
+              "share",
+              "request_approve_post"
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "isRead": {
+            "type": "boolean"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "sender": {
+            "$ref": "#/components/schemas/NotificationRelatedUserDto"
+          },
+          "recipient": {
+            "$ref": "#/components/schemas/NotificationRelatedUserDto"
+          },
+          "group": {
+            "$ref": "#/components/schemas/NotificationRelatedGroupDto"
+          },
+          "event": {
+            "$ref": "#/components/schemas/NotificationRelatedEventDto"
+          },
+          "post": {
+            "$ref": "#/components/schemas/NotificationRelatedPostDto"
+          },
+          "comment": {
+            "$ref": "#/components/schemas/NotificationRelatedCommentDto"
+          }
+        },
+        "required": [
+          "_id",
+          "type",
+          "message",
+          "isRead",
+          "isActive",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "NotificationPaginationResponseDto": {
+        "type": "object",
+        "properties": {
+          "notifications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NotificationResponseDto"
+            }
+          },
+          "total": {
+            "type": "number"
+          },
+          "page": {
+            "type": "number"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "totalPages": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "notifications",
+          "total",
+          "page",
+          "limit",
+          "totalPages"
+        ]
+      },
       "CreatePostDto": {
         "type": "object",
         "properties": {
@@ -5310,10 +5610,25 @@
             "description": "Require post approval",
             "example": false
           },
-          "autoApproveAdminPosts": {
+          "autoApproveJoinGroup": {
             "type": "boolean",
-            "description": "Auto approve admin posts",
+            "description": "Auto approve join group",
             "example": true
+          },
+          "joinConditions": {
+            "type": "object",
+            "description": "Join conditions for different sports",
+            "example": {
+              "football": "intermediate"
+            },
+            "additionalProperties": {
+              "enum": [
+                "beginner",
+                "intermediate",
+                "advanced",
+                "professional"
+              ]
+            }
           }
         },
         "required": [
@@ -5422,10 +5737,25 @@
             "description": "Require post approval",
             "example": false
           },
-          "autoApproveAdminPosts": {
+          "autoApproveJoinGroup": {
             "type": "boolean",
-            "description": "Auto approve admin posts",
+            "description": "Auto approve join group",
             "example": true
+          },
+          "joinConditions": {
+            "type": "object",
+            "description": "Join conditions for different sports",
+            "example": {
+              "football": "intermediate"
+            },
+            "additionalProperties": {
+              "enum": [
+                "beginner",
+                "intermediate",
+                "advanced",
+                "professional"
+              ]
+            }
           },
           "createdAt": {
             "format": "date-time",
@@ -5451,7 +5781,7 @@
           "isPrivate",
           "memberCount",
           "requirePostApproval",
-          "autoApproveAdminPosts",
+          "autoApproveJoinGroup",
           "createdAt",
           "updatedAt"
         ]
@@ -5523,11 +5853,21 @@
             "type": "string",
             "description": "Latest post time in this group",
             "example": "2024-01-01T00:00:00.000Z"
+          },
+          "role": {
+            "type": "string",
+            "description": "Role of the user in this group",
+            "example": "admin",
+            "enum": [
+              "admin",
+              "member"
+            ]
           }
         },
         "required": [
           "_id",
-          "name"
+          "name",
+          "role"
         ]
       },
       "PaginatedSimpleGroupsResponseDto": {
@@ -5632,10 +5972,25 @@
             "description": "Require post approval",
             "example": false
           },
-          "autoApproveAdminPosts": {
+          "autoApproveJoinGroup": {
             "type": "boolean",
-            "description": "Auto approve admin posts",
+            "description": "Auto approve join group",
             "example": true
+          },
+          "joinConditions": {
+            "type": "object",
+            "description": "Join conditions for different sports",
+            "example": {
+              "football": "intermediate"
+            },
+            "additionalProperties": {
+              "enum": [
+                "beginner",
+                "intermediate",
+                "advanced",
+                "professional"
+              ]
+            }
           }
         }
       },
@@ -5813,6 +6168,16 @@
             ],
             "example": "pending"
           },
+          "friendRequestId": {
+            "type": "string",
+            "description": "ID của lời mời kết bạn (nếu có)",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "friendRequestMessage": {
+            "type": "string",
+            "description": "Tin nhắn kèm theo lời mời kết bạn (nếu có)",
+            "example": "Xin chào! Tôi muốn kết bạn với bạn."
+          },
           "currentUser": {
             "type": "object",
             "description": "Thông tin người dùng hiện tại",
@@ -5830,12 +6195,18 @@
               "fullName": "Tran Thi B",
               "avatar": "https://example.com/avatar2.jpg"
             }
+          },
+          "isFollowing": {
+            "type": "boolean",
+            "description": "Bạn đã follow người này chưa",
+            "example": false
           }
         },
         "required": [
           "currentUserId",
           "targetUserId",
-          "areFriends"
+          "areFriends",
+          "isFollowing"
         ]
       },
       "FriendResponseDto": {

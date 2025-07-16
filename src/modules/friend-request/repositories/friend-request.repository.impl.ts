@@ -86,6 +86,14 @@ export class FriendRequestRepositoryImpl implements IFriendRequestRepository {
 			.lean({ virtuals: true });
 	}
 
+	async updateFriendRequestMessage(requestId: string, message: string): Promise<any> {
+		return await this.friendRequestModel
+			.findByIdAndUpdate(requestId, { message }, { new: true })
+			.populate('senderUser', 'firstName lastName avatar fullName')
+			.populate('recipientUser', 'firstName lastName avatar fullName')
+			.lean({ virtuals: true });
+	}
+
 	async checkExistingFriendRequest(
 		senderId: Types.ObjectId,
 		recipientId: Types.ObjectId,
@@ -108,6 +116,8 @@ export class FriendRequestRepositoryImpl implements IFriendRequestRepository {
 	): Promise<{
 		areFriends: boolean;
 		friendRequestStatus?: FriendRequestStatus;
+		friendRequestId?: string;
+		friendRequestMessage?: string;
 		currentUser?: any;
 		targetUser?: any;
 	}> {
@@ -115,11 +125,11 @@ export class FriendRequestRepositoryImpl implements IFriendRequestRepository {
 		const [currentUser, targetUser] = await Promise.all([
 			this.userModel
 				.findById(currentUserId)
-				.select('friends fullName avatar')
+				.select('friends firstName lastName avatar fullName')
 				.lean({ virtuals: true }),
 			this.userModel
 				.findById(targetUserId)
-				.select('friends fullName avatar')
+				.select('friends firstName lastName avatar fullName')
 				.lean({ virtuals: true }),
 		]);
 
@@ -164,6 +174,8 @@ export class FriendRequestRepositoryImpl implements IFriendRequestRepository {
 		return {
 			areFriends: false,
 			friendRequestStatus: friendRequest?.status,
+			friendRequestId: friendRequest?._id?.toString(),
+			friendRequestMessage: friendRequest?.message,
 			currentUser: {
 				_id: currentUser._id,
 				fullName: currentUser.fullName,
