@@ -333,7 +333,6 @@ export class GroupRepositoryImpl implements IGroupRepository {
 			isPrivate: group.isPrivate,
 			memberCount: group.memberCount,
 			requirePostApproval: group.requirePostApproval,
-			autoApproveAdminPosts: group.autoApproveAdminPosts,
 			autoApproveJoinGroup: group.autoApproveJoinGroup,
 			createdAt: group.createdAt,
 			updatedAt: group.updatedAt,

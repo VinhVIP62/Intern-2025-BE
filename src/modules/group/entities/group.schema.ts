@@ -54,9 +54,6 @@ export class Group extends Document {
 	requirePostApproval: boolean;
 
 	@Prop({ default: true })
-	autoApproveAdminPosts: boolean;
-
-	@Prop({ default: true })
 	autoApproveJoinGroup: boolean;
 
 	// Remove duplicate index declarations since timestamps: true handles them

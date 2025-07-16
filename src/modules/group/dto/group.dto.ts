@@ -76,11 +76,6 @@ export class CreateGroupDto {
 	@IsBoolean()
 	requirePostApproval?: boolean;
 
-	@ApiPropertyOptional({ description: 'Auto approve admin posts', example: true })
-	@IsOptional()
-	@IsBoolean()
-	autoApproveAdminPosts?: boolean;
-
 	@ApiPropertyOptional({ description: 'Auto approve join group', example: true })
 	@IsOptional()
 	@IsBoolean()
@@ -138,11 +133,6 @@ export class UpdateGroupDto {
 	@IsBoolean()
 	requirePostApproval?: boolean;
 
-	@ApiPropertyOptional({ description: 'Auto approve admin posts', example: true })
-	@IsOptional()
-	@IsBoolean()
-	autoApproveAdminPosts?: boolean;
-
 	@ApiPropertyOptional({ description: 'Auto approve join group', example: true })
 	@IsOptional()
 	@IsBoolean()
@@ -197,9 +187,6 @@ export class GroupResponseDto {
 
 	@ApiProperty({ description: 'Require post approval', example: false })
 	requirePostApproval: boolean;
-
-	@ApiProperty({ description: 'Auto approve admin posts', example: true })
-	autoApproveAdminPosts: boolean;
 
 	@ApiProperty({ description: 'Auto approve join group', example: true })
 	autoApproveJoinGroup: boolean;
