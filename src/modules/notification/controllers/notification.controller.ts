@@ -105,55 +105,6 @@ export class NotificationController {
 	}
 
 	@Version('1')
-	@Get('unread-count')
-	@UseGuards(RolesGuard)
-	@Roles(Role.USER, Role.ADMIN)
-	@ApiOperation({ summary: 'Lấy số lượng và danh sách thông báo chưa đọc' })
-	@ApiQuery({
-		name: 'page',
-		required: false,
-		type: Number,
-		example: 1,
-		description: 'Trang thông báo chưa đọc muốn lấy (không bắt buộc)',
-	})
-	@ApiQuery({
-		name: 'limit',
-		required: false,
-		type: Number,
-		example: 10,
-		description: 'Số lượng thông báo chưa đọc muốn lấy (không bắt buộc)',
-	})
-	@ApiResponse({
-		status: 200,
-		description: 'Lấy số lượng và danh sách thông báo chưa đọc thành công',
-		type: NotificationResponseDto,
-	})
-	async getUnreadCount(
-		@Request() req,
-		@I18n() i18n: I18nContext,
-		@Query('page') page?: number,
-		@Query('limit') limit?: number,
-	): Promise<ResponseEntity<{ count: number; notifications: any[] }>> {
-		const { count, notifications } = await this.notificationService.getUnreadNotificationsWithCount(
-			req.user.id,
-			page,
-			limit,
-		);
-
-		// Dịch message cho từng notification
-		const translatedNotifications = notifications.map(notification => ({
-			...notification,
-			message: this.translateNotificationMessage(notification.message, i18n),
-		}));
-
-		return {
-			success: true,
-			data: { count, notifications: translatedNotifications as NotificationResponseDto[] },
-			message: i18n.t('notification.UNREAD_COUNT_SUCCESS'),
-		};
-	}
-
-	@Version('1')
 	@Put(':notificationId/read')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)

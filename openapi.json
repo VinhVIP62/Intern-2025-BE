@@ -1081,49 +1081,6 @@
         ]
       }
     },
-    "/api/v1/notifications/unread-count": {
-      "get": {
-        "operationId": "NotificationController_getUnreadCount_v1",
-        "parameters": [
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Trang thông báo chưa đọc muốn lấy (không bắt buộc)",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Số lượng thông báo chưa đọc muốn lấy (không bắt buộc)",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Lấy số lượng và danh sách thông báo chưa đọc thành công",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/NotificationResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Lấy số lượng và danh sách thông báo chưa đọc",
-        "tags": [
-          "Notification"
-        ]
-      }
-    },
     "/api/v1/notifications/{notificationId}/read": {
       "put": {
         "operationId": "NotificationController_markAsRead_v1",

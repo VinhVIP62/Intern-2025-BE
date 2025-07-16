@@ -19,18 +19,6 @@ export class NotificationService {
 		return this.notificationRepository.findNotificationsByUser(userId, page, limit, isRead);
 	}
 
-	async getUnreadCount(userId: string) {
-		return this.notificationRepository.countUnreadNotifications(userId);
-	}
-
-	async getUnreadNotificationsWithCount(userId: string, page?: number, limit?: number) {
-		const [count, notifications] = await Promise.all([
-			this.notificationRepository.countUnreadNotifications(userId),
-			this.notificationRepository.getUnreadNotifications(userId, page, limit),
-		]);
-		return { count, notifications };
-	}
-
 	async markAsRead(notificationId: string, i18n: I18nContext) {
 		const result = await this.notificationRepository.markAsRead(notificationId);
 		if (result.modifiedCount === 0) throw new Error(i18n.t('notification.NOT_FOUND'));

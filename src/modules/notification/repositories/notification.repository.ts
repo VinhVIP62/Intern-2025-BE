@@ -6,10 +6,6 @@ export interface INotificationRepository {
 		isRead?: boolean,
 	): Promise<{ notifications: any[]; total: number }>;
 
-	countUnreadNotifications(userId: string): Promise<number>;
-
-	getUnreadNotifications(userId: string, page?: number, limit?: number): Promise<any[]>;
-
 	markAsRead(notificationId: string): Promise<any>;
 
 	markAllAsRead(userId: string): Promise<any>;

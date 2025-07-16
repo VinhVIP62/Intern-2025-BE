@@ -135,34 +135,6 @@ export class NotificationRepositoryImpl implements INotificationRepository {
 		return { notifications: populatedNotifications, total };
 	}
 
-	async countUnreadNotifications(userId: string) {
-		return this.notificationModel.countDocuments({
-			recipient: userId,
-			isRead: false,
-			isActive: true,
-		});
-	}
-
-	async getUnreadNotifications(userId: string, page?: number, limit?: number) {
-		const query = this.notificationModel
-			.find({
-				recipient: userId,
-				isRead: false,
-				isActive: true,
-			})
-			.sort({ createdAt: -1 });
-
-		if (page && limit) {
-			query.skip((page - 1) * limit);
-		}
-
-		if (limit) {
-			query.limit(limit);
-		}
-
-		return query.lean();
-	}
-
 	async markAsRead(notificationId: string) {
 		return this.notificationModel.updateOne(
 			{ _id: new Types.ObjectId(notificationId) },
