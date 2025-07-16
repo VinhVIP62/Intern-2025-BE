@@ -569,6 +569,36 @@
         ]
       }
     },
+    "/api/v1/user/fcm-token": {
+      "put": {
+        "operationId": "UserController_updateFcmToken_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fcmToken": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cập nhật FCM token thành công"
+          }
+        },
+        "summary": "Cập nhật FCM token cho user",
+        "tags": [
+          "User"
+        ]
+      }
+    },
     "/api/v1/users/{userId}/block": {
       "post": {
         "operationId": "UserManagementController_blockUser_v1",
