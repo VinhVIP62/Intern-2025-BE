@@ -6,6 +6,7 @@
 	"ALL_GROUPS_RETRIEVED_SUCCESS": "All groups retrieved successfully",
 	"USER_GROUPS_RETRIEVED_SUCCESS": "User groups retrieved successfully",
 	"GROUP_NOT_FOUND": "Group not found",
+	"USER_NOT_FOUND": "User not found",
 	"INVALID_GROUP_ID": "Invalid group ID",
 	"INVALID_USER_ID": "Invalid user ID",
 	"INVALID_SPORT_TYPE": "Invalid sport type",
@@ -66,5 +67,8 @@
 	"GROUP_POST_RETRIEVED_SUCCESS": "Group posts retrieved successfully",
 	"POST_REJECTED_SUCCESS": "Post rejected successfully",
 	"POST_APPROVED_SUCCESS": "Post approved successfully",
-	"POST_CREATED_SUCCESS": "Post created successfully"
+	"POST_CREATED_SUCCESS": "Post created successfully",
+	"NO_SKILL_LEVELS_DEFINED": "You have not defined skill levels for any sports",
+	"NO_SKILL_LEVEL_FOR_SPORT": "You do not have a skill level for {sport}",
+	"INSUFFICIENT_SKILL_LEVEL": "Your skill level for {sport} ({current}) is lower than required ({required})"
 }

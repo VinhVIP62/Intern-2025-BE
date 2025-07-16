@@ -6,6 +6,7 @@
 	"ALL_GROUPS_RETRIEVED_SUCCESS": "Lấy danh sách tất cả nhóm thành công",
 	"USER_GROUPS_RETRIEVED_SUCCESS": "Lấy danh sách nhóm của người dùng thành công",
 	"GROUP_NOT_FOUND": "Không tìm thấy nhóm",
+	"USER_NOT_FOUND": "Không tìm thấy người dùng",
 	"INVALID_GROUP_ID": "ID nhóm không hợp lệ",
 	"INVALID_USER_ID": "ID người dùng không hợp lệ",
 	"INVALID_SPORT_TYPE": "Loại môn thể thao không hợp lệ",
@@ -64,5 +65,8 @@
 	"GROUP_POST_RETRIEVED_SUCCESS": "Lấy bài viết nhóm thành công",
 	"POST_REJECTED_SUCCESS": "Bài viết đã được từ chối thành công",
 	"POST_APPROVED_SUCCESS": "Bài viết đã được phê duyệt thành công",
-	"POST_CREATED_SUCCESS": "Bài viết đã được tạo thành công"
+	"POST_CREATED_SUCCESS": "Bài viết đã được tạo thành công",
+	"NO_SKILL_LEVELS_DEFINED": "Bạn chưa định nghĩa mức độ kỹ năng cho bất kỳ môn thể thao nào",
+	"NO_SKILL_LEVEL_FOR_SPORT": "Bạn chưa có mức độ kỹ năng cho môn thể thao {sport}",
+	"INSUFFICIENT_SKILL_LEVEL": "Mức độ kỹ năng của bạn cho môn {sport} ({current}) thấp hơn yêu cầu ({required})"
 }

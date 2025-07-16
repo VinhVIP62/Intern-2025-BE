@@ -13,18 +13,20 @@ import {
 	GroupResponseDto,
 	PaginatedSimpleGroupsResponseDto,
 } from '../dto/group.dto';
-import { SportType } from '@modules/user/enums/user.enum';
+import { SportType, ActivityLevel } from '@modules/user/enums/user.enum';
 import { NotificationService } from '../../notification/providers/notification.service';
 import { NotificationType, ReferenceModel } from '../../notification/entities/notification.enum';
 import { CreatePostDto } from '@modules/post/dto/post.dto';
 import { PostService } from '@modules/post/providers/post.service';
 import { PostStatus } from '@modules/post/entities/post.enum';
+import { UserService } from '@modules/user/providers/user.service';
 
 @Injectable()
 export class GroupService {
 	constructor(
 		private readonly groupRepository: IGroupRepository,
 		private readonly notificationService: NotificationService,
+		private readonly userService: UserService,
 	) {}
 
 	async createGroup(
@@ -236,8 +238,52 @@ export class GroupService {
 				throw new BadRequestException(i18n.t('group.INVALID_GROUP_ID'));
 			}
 
-			// Lấy thông tin group để kiểm tra autoApproveJoinGroup
+			// Lấy thông tin group để kiểm tra autoApproveJoinGroup và joinConditions
 			const group = await this.groupRepository.getGroupById(groupId);
+
+			// Kiểm tra điều kiện tham gia (joinConditions)
+			if (group.joinConditions && Object.keys(group.joinConditions).length > 0) {
+				// Lấy thông tin skill levels của user
+				const userSkillLevels = await this.userService.getSkillLevelsByUserId(userId, i18n);
+
+				// Kiểm tra tất cả điều kiện trong joinConditions
+				for (const [sport, requiredLevel] of Object.entries(group.joinConditions)) {
+					if (!userSkillLevels) {
+						throw new BadRequestException(i18n.t('group.NO_SKILL_LEVELS_DEFINED'));
+					}
+
+					const userLevel = userSkillLevels.get(sport as SportType);
+					if (!userLevel) {
+						throw new BadRequestException(
+							i18n.t('group.NO_SKILL_LEVEL_FOR_SPORT', { args: { sport: sport } }),
+						);
+					}
+
+					// So sánh mức độ kỹ năng (giả sử enum có thứ tự tăng dần)
+					const levelOrder = {
+						[ActivityLevel.BEGINNER]: 1,
+						[ActivityLevel.INTERMEDIATE]: 2,
+						[ActivityLevel.ADVANCED]: 3,
+						[ActivityLevel.PROFESSIONAL]: 4,
+					};
+
+					const userLevelOrder = levelOrder[userLevel];
+					const requiredLevelOrder = levelOrder[requiredLevel];
+
+					if (userLevelOrder < requiredLevelOrder) {
+						throw new BadRequestException(
+							i18n.t('group.INSUFFICIENT_SKILL_LEVEL', {
+								args: {
+									sport,
+									required: requiredLevel,
+									current: userLevel,
+								},
+							}),
+						);
+					}
+				}
+			}
+
 			if (group.autoApproveJoinGroup) {
 				await this.groupRepository.addMember(groupId, userId);
 				return;
@@ -288,6 +334,9 @@ export class GroupService {
 			}
 			if (error.message === 'Group not found') {
 				throw new NotFoundException(i18n.t('group.GROUP_NOT_FOUND'));
+			}
+			if (error.message === 'User not found') {
+				throw new NotFoundException(i18n.t('group.USER_NOT_FOUND'));
 			}
 			throw new BadRequestException(i18n.t('group.JOIN_GROUP_FAILED'));
 		}
