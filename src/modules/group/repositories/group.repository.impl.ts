@@ -334,6 +334,7 @@ export class GroupRepositoryImpl implements IGroupRepository {
 			memberCount: group.memberCount,
 			requirePostApproval: group.requirePostApproval,
 			autoApproveJoinGroup: group.autoApproveJoinGroup,
+			joinConditions: group.joinConditions,
 			createdAt: group.createdAt,
 			updatedAt: group.updatedAt,
 		};
