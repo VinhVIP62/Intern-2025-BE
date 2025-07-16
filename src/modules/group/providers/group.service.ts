@@ -646,9 +646,9 @@ export class GroupService {
 		// Xác định trạng thái duyệt bài
 		let approvalStatus: PostStatus | undefined = undefined;
 		let needApproval = false;
-		if (!group.requirePostApproval) {
+		if (isAdmin) {
 			approvalStatus = PostStatus.APPROVED;
-		} else if (isAdmin && group.autoApproveAdminPosts) {
+		} else if (!group.requirePostApproval) {
 			approvalStatus = PostStatus.APPROVED;
 		} else {
 			approvalStatus = PostStatus.PENDING;
