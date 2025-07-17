@@ -33,5 +33,16 @@ declare namespace NodeJS {
 		readonly CLOUDINARY_API_KEY: string;
 		readonly CLOUDINARY_API_SECRET: string;
 		readonly CORS_ORIGINS?: string;
+		// Firebase configuration
+		readonly FIREBASE_PROJECT_ID: string;
+		readonly FIREBASE_PRIVATE_KEY_ID: string;
+		readonly FIREBASE_PRIVATE_KEY: string;
+		readonly FIREBASE_CLIENT_EMAIL: string;
+		readonly FIREBASE_CLIENT_ID: string;
+		readonly FIREBASE_AUTH_URI?: string;
+		readonly FIREBASE_TOKEN_URI?: string;
+		readonly FIREBASE_AUTH_PROVIDER_X509_CERT_URL?: string;
+		readonly FIREBASE_CLIENT_X509CERT_URL: string;
+		readonly FIREBASE_UNIVERSE_DOMAIN?: string;
 	}
 }
