@@ -142,8 +142,8 @@ export class SearchService {
 						limit,
 						userId,
 					);
-					data.push({ type: SearchFilterType.HASHTAGS, results: res.posts, total: res.total });
-					if (res.total > maxTotal) maxTotal = res.total;
+					data.push({ type: SearchFilterType.HASHTAGS, results: res.posts, total: res.total || 0 });
+					if ((res.total || 0) > maxTotal) maxTotal = res.total || 0;
 					break;
 				}
 				case SearchFilterType.LOCATION: {

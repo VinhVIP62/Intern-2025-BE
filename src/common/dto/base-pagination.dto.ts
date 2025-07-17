@@ -4,8 +4,8 @@ import { ApiProperty } from '@nestjs/swagger';
  * Base pagination metadata DTO containing common pagination fields
  */
 export class BasePaginationMetaDto {
-	@ApiProperty({ description: 'Tổng số items', example: 100 })
-	total: number;
+	@ApiProperty({ description: 'Tổng số items', example: 100, required: false })
+	total?: number;
 
 	@ApiProperty({ description: 'Trang hiện tại', example: 1 })
 	page: number;
@@ -14,13 +14,13 @@ export class BasePaginationMetaDto {
 	limit: number;
 
 	@ApiProperty({ description: 'Tổng số trang', example: 10 })
-	totalPages: number;
+	totalPages?: number;
 
 	@ApiProperty({ description: 'Có trang tiếp theo không', example: true })
-	hasNextPage: boolean;
+	hasNextPage?: boolean;
 
 	@ApiProperty({ description: 'Có trang trước không', example: false })
-	hasPrevPage: boolean;
+	hasPrevPage?: boolean;
 }
 
 /**

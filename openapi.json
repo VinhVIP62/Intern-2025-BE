@@ -4993,7 +4993,6 @@
           }
         },
         "required": [
-          "total",
           "page",
           "limit",
           "totalPages",
@@ -5380,7 +5379,6 @@
           }
         },
         "required": [
-          "total",
           "page",
           "limit",
           "totalPages",
@@ -5524,7 +5522,6 @@
           }
         },
         "required": [
-          "total",
           "page",
           "limit",
           "totalPages",
@@ -5716,7 +5713,6 @@
           }
         },
         "required": [
-          "total",
           "page",
           "limit",
           "totalPages",
@@ -6006,7 +6002,6 @@
           }
         },
         "required": [
-          "total",
           "page",
           "limit",
           "totalPages",
@@ -6102,7 +6097,6 @@
           }
         },
         "required": [
-          "total",
           "page",
           "limit",
           "totalPages",
@@ -6333,7 +6327,6 @@
           }
         },
         "required": [
-          "total",
           "page",
           "limit",
           "totalPages",
@@ -6504,7 +6497,6 @@
           }
         },
         "required": [
-          "total",
           "page",
           "limit",
           "totalPages",
@@ -6565,7 +6557,6 @@
           }
         },
         "required": [
-          "total",
           "page",
           "limit",
           "totalPages",
@@ -6651,7 +6642,6 @@
           }
         },
         "required": [
-          "total",
           "page",
           "limit",
           "totalPages",
@@ -6842,7 +6832,6 @@
           }
         },
         "required": [
-          "total",
           "page",
           "limit",
           "totalPages",
