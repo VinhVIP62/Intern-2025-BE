@@ -16,8 +16,18 @@ export abstract class IUserRepository {
 	): Promise<User[]>;
 	abstract followUser(currentUserId: string, targetUserId: string): Promise<void>;
 	abstract unfollowUser(currentUserId: string, targetUserId: string): Promise<void>;
-	abstract getFollowers(userId: string): Promise<any[]>;
-	abstract getFollowing(userId: string): Promise<any[]>;
+	abstract getFollowers(
+		userId: string,
+		key: string,
+		page: number,
+		limit: number,
+	): Promise<{ total: number; data: any[] }>;
+	abstract getFollowing(
+		userId: string,
+		key: string,
+		page: number,
+		limit: number,
+	): Promise<{ total: number; data: any[] }>;
 	abstract blockUser(currentUserId: string, targetUserId: string): Promise<void>;
 	abstract unblockUser(currentUserId: string, targetUserId: string): Promise<void>;
 	abstract getBlockedUsers(userId: string): Promise<any[]>;

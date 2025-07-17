@@ -21,5 +21,7 @@
 	"CANNOT_UNFOLLOW_SELF": "You cannot unfollow yourself",
 	"CANNOT_BLOCK_SELF": "You cannot block yourself",
 	"CANNOT_UNBLOCK_SELF": "You cannot unblock yourself",
-	"REMOVE_FOLLOWER_SUCCESS": "Removed follower successfully"
+	"REMOVE_FOLLOWER_SUCCESS": "Removed follower successfully",
+	"GET_FOLLOWERS_SUCCESS": "Followers retrieved successfully",
+	"GET_FOLLOWING_SUCCESS": "Following retrieved successfully"
 }

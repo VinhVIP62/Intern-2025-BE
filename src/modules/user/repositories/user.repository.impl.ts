@@ -66,36 +66,50 @@ export class UserRepositoryImpl implements IUserRepository {
 		await this.userModel.findByIdAndUpdate(targetUserId, { $pull: { followers: currentUserId } });
 	}
 
-	async getFollowers(userId: string): Promise<any> {
+	async getFollowers(
+		userId: string,
+		key: string,
+		page: number,
+		limit: number,
+	): Promise<{ total: number; data: any[] }> {
 		const user = await this.userModel
 			.findById(userId)
 			.populate('followers', 'firstName lastName avatar fullName')
 			.lean({ virtuals: true });
 		if (!user) return { total: 0, data: [] };
-		const data = (user.followers || []).map((u: any) => ({
-			_id: u._id,
-			fullName: u.fullName,
-			firstName: u.firstName,
-			lastName: u.lastName,
-			avatar: u.avatar,
-		}));
-		return { total: data.length, data };
+		let followers = user.followers || [];
+		if (key) {
+			const regex = new RegExp(key, 'i');
+			followers = followers.filter(
+				(u: any) => regex.test(u.fullName) || regex.test(u.firstName) || regex.test(u.lastName),
+			);
+		}
+		const total = followers.length;
+		const data = followers.slice((page - 1) * limit, (page - 1) * limit + limit);
+		return { total, data };
 	}
 
-	async getFollowing(userId: string): Promise<any> {
+	async getFollowing(
+		userId: string,
+		key: string,
+		page: number,
+		limit: number,
+	): Promise<{ total: number; data: any[] }> {
 		const user = await this.userModel
 			.findById(userId)
 			.populate('following', 'firstName lastName avatar fullName')
 			.lean({ virtuals: true });
 		if (!user) return { total: 0, data: [] };
-		const data = (user.following || []).map((u: any) => ({
-			_id: u._id,
-			fullName: u.fullName,
-			firstName: u.firstName,
-			lastName: u.lastName,
-			avatar: u.avatar,
-		}));
-		return { total: data.length, data };
+		let following = user.following || [];
+		if (key) {
+			const regex = new RegExp(key, 'i');
+			following = following.filter(
+				(u: any) => regex.test(u.fullName) || regex.test(u.firstName) || regex.test(u.lastName),
+			);
+		}
+		const total = following.length;
+		const data = following.slice((page - 1) * limit, (page - 1) * limit + limit);
+		return { total, data };
 	}
 
 	// BLOCK/UNBLOCK

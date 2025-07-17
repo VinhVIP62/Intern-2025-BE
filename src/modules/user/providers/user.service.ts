@@ -7,6 +7,8 @@ import { plainToClass } from 'class-transformer';
 import { I18nContext } from 'nestjs-i18n';
 import * as bcrypt from 'bcrypt';
 import { SportType, ActivityLevel } from '../enums/user.enum';
+import { PaginatedUserBasicInfoResponseDto } from '../dto/user-response.dto';
+import { UserBasicInfoDto } from '../dto/user-basic-info.dto';
 
 @Injectable()
 export class UserService {
@@ -161,12 +163,50 @@ export class UserService {
 		await this.userRepository.unfollowUser(currentUserId, targetUserId);
 	}
 
-	async getFollowers(userId: string, i18n?: I18nContext): Promise<any[]> {
-		return this.userRepository.getFollowers(userId);
+	async getFollowers(
+		userId: string,
+		key = '',
+		page = 1,
+		limit = 10,
+		i18n?: I18nContext,
+	): Promise<PaginatedUserBasicInfoResponseDto> {
+		const { total, data } = await this.userRepository.getFollowers(userId, key, page, limit);
+		return {
+			total,
+			page,
+			limit,
+			totalPages: Math.ceil(total / limit),
+			hasNextPage: page * limit < total,
+			hasPrevPage: page > 1,
+			data: data.map((u: any) => ({
+				userId: u._id?.toString?.() || u.userId || '',
+				fullName: u.fullName,
+				avatar: u.avatar ?? null,
+			})),
+		};
 	}
 
-	async getFollowing(userId: string, i18n?: I18nContext): Promise<any[]> {
-		return this.userRepository.getFollowing(userId);
+	async getFollowing(
+		userId: string,
+		key = '',
+		page = 1,
+		limit = 10,
+		i18n?: I18nContext,
+	): Promise<PaginatedUserBasicInfoResponseDto> {
+		const { total, data } = await this.userRepository.getFollowing(userId, key, page, limit);
+		return {
+			total,
+			page,
+			limit,
+			totalPages: Math.ceil(total / limit),
+			hasNextPage: page * limit < total,
+			hasPrevPage: page > 1,
+			data: data.map((u: any) => ({
+				userId: u._id?.toString?.() || u.userId || '',
+				fullName: u.fullName,
+				avatar: u.avatar ?? null,
+			})),
+		};
 	}
 
 	// BLOCK/UNBLOCK

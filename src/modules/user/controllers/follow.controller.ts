@@ -17,6 +17,7 @@ import { Role } from '@common/enum';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { ResponseEntity } from '@common/types';
 import { UserBasicInfoDto } from '../dto/user-basic-info.dto';
+import { PaginatedUserBasicInfoResponseDto } from '../dto/user-response.dto';
 
 @ApiTags('User Follow')
 @Controller('users')
@@ -64,38 +65,88 @@ export class FollowController {
 	@Version('1')
 	@Get('followers')
 	@ApiOperation({ summary: 'Lấy danh sách người theo dõi' })
-	@ApiQuery({ name: 'userId', description: 'ID của người dùng', required: true })
-	@ApiResponse({ status: 200, description: 'Danh sách followers', type: [UserBasicInfoDto] })
+	@ApiQuery({
+		name: 'userId',
+		description: 'ID của người dùng (default = current user)',
+		required: true,
+	})
+	@ApiQuery({
+		name: 'key',
+		description:
+			'Từ khóa tìm kiếm theo tên (nếu không truyền thì tương đương với get toàn bộ followers)',
+		required: false,
+	})
+	@ApiQuery({ name: 'page', description: 'Trang', required: false, type: Number, example: 1 })
+	@ApiQuery({
+		name: 'limit',
+		description: 'Số lượng mỗi trang',
+		required: false,
+		type: Number,
+		example: 10,
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Danh sách followers',
+		type: PaginatedUserBasicInfoResponseDto,
+	})
 	async getFollowers(
 		@Query('userId') userId: string,
+		@Query('key') key: string,
+		@Query('page') page = 1,
+		@Query('limit') limit = 10,
 		@Request() req,
 		@I18n() i18n: I18nContext,
-	): Promise<ResponseEntity<UserBasicInfoDto[]>> {
+	): Promise<ResponseEntity<PaginatedUserBasicInfoResponseDto>> {
 		const id = userId || req.user.id;
-		const data = await this.userService.getFollowers(id, i18n);
+		const followers = await this.userService.getFollowers(id, key, page, limit, i18n);
 		return {
 			success: true,
-			data,
-			message: i18n.t('user.FOLLOWERS_RETRIEVED_SUCCESS'),
+			message: i18n.t('user.GET_FOLLOWERS_SUCCESS'),
+			data: followers,
 		};
 	}
 
 	@Version('1')
 	@Get('following')
 	@ApiOperation({ summary: 'Lấy danh sách đang theo dõi' })
-	@ApiQuery({ name: 'userId', description: 'ID của người dùng', required: false })
-	@ApiResponse({ status: 200, description: 'Danh sách following', type: [UserBasicInfoDto] })
+	@ApiQuery({
+		name: 'userId',
+		description: 'ID của người dùng (default = current user)',
+		required: false,
+	})
+	@ApiQuery({
+		name: 'key',
+		description:
+			'Từ khóa tìm kiếm theo tên (nếu không truyền thì tương đương với get toàn bộ following)',
+		required: false,
+	})
+	@ApiQuery({ name: 'page', description: 'Trang', required: false, type: Number, example: 1 })
+	@ApiQuery({
+		name: 'limit',
+		description: 'Số lượng mỗi trang',
+		required: false,
+		type: Number,
+		example: 10,
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Danh sách following',
+		type: PaginatedUserBasicInfoResponseDto,
+	})
 	async getFollowing(
 		@Query('userId') userId: string,
+		@Query('key') key: string,
+		@Query('page') page = 1,
+		@Query('limit') limit = 10,
 		@Request() req,
 		@I18n() i18n: I18nContext,
-	): Promise<ResponseEntity<UserBasicInfoDto[]>> {
+	): Promise<ResponseEntity<PaginatedUserBasicInfoResponseDto>> {
 		const id = userId || req.user.id;
-		const data = await this.userService.getFollowing(id, i18n);
+		const following = await this.userService.getFollowing(id, key, page, limit, i18n);
 		return {
 			success: true,
-			data,
-			message: i18n.t('user.FOLLOWING_RETRIEVED_SUCCESS'),
+			message: i18n.t('user.GET_FOLLOWING_SUCCESS'),
+			data: following,
 		};
 	}
 
