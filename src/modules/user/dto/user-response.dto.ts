@@ -1,4 +1,6 @@
+import { BasePaginatedResponseDto } from '@common/dto/base-pagination.dto';
 import { ApiProperty } from '@nestjs/swagger';
+import { UserBasicInfoDto } from './user-basic-info.dto';
 import { Exclude, Expose } from 'class-transformer';
 
 export class ResponseUserDto {
@@ -29,4 +31,11 @@ export class ResponseUserDto {
 	@ApiProperty({ description: 'Ngày cập nhật', type: String, format: 'date-time', required: false })
 	@Expose()
 	updatedAt?: Date;
+}
+
+export class PaginatedUserBasicInfoResponseDto extends BasePaginatedResponseDto<
+	UserBasicInfoDto[]
+> {
+	@ApiProperty({ type: [UserBasicInfoDto], description: 'Danh sách user' })
+	declare data: UserBasicInfoDto[];
 }

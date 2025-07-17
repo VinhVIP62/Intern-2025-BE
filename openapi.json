@@ -475,7 +475,7 @@
     },
     "/api/v1/user/friends/search": {
       "get": {
-        "operationId": "UserController_getFriendsByName_v1",
+        "operationId": "UserController_getFriendsByKey_v1",
         "parameters": [
           {
             "name": "key",
@@ -528,7 +528,7 @@
             }
           }
         },
-        "summary": "Tìm kiếm bạn bè theo tên (fullname, không phân biệt hoa thường, có phân trang)",
+        "summary": "Tìm kiếm bạn bè theo tên (key trong fullname, không phân biệt hoa thường, có phân trang)",
         "tags": [
           "User"
         ]
@@ -728,9 +728,38 @@
             "name": "userId",
             "required": true,
             "in": "query",
-            "description": "ID của người dùng",
+            "description": "ID của người dùng (default = current user)",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "key",
+            "required": false,
+            "in": "query",
+            "description": "Từ khóa tìm kiếm theo tên (nếu không truyền thì tương đương với get toàn bộ followers)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng mỗi trang",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Trang",
+            "schema": {
+              "example": 1,
+              "type": "number"
             }
           }
         ],
@@ -740,10 +769,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UserBasicInfoDto"
-                  }
+                  "$ref": "#/components/schemas/PaginatedUserBasicInfoResponseDto"
                 }
               }
             }
@@ -763,9 +789,38 @@
             "name": "userId",
             "required": false,
             "in": "query",
-            "description": "ID của người dùng",
+            "description": "ID của người dùng (default = current user)",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "key",
+            "required": false,
+            "in": "query",
+            "description": "Từ khóa tìm kiếm theo tên (nếu không truyền thì tương đương với get toàn bộ following)",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng mỗi trang",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Trang",
+            "schema": {
+              "example": 1,
+              "type": "number"
             }
           }
         ],
@@ -775,10 +830,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UserBasicInfoDto"
-                  }
+                  "$ref": "#/components/schemas/PaginatedUserBasicInfoResponseDto"
                 }
               }
             }
@@ -4713,6 +4765,56 @@
           "userId",
           "fullName",
           "avatar"
+        ]
+      },
+      "PaginatedUserBasicInfoResponseDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "Tổng số items",
+            "example": 100
+          },
+          "page": {
+            "type": "number",
+            "description": "Trang hiện tại",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Số lượng items trên mỗi trang",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Tổng số trang",
+            "example": 10
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Có trang tiếp theo không",
+            "example": true
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Có trang trước không",
+            "example": false
+          },
+          "data": {
+            "description": "Danh sách user",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserBasicInfoDto"
+            }
+          }
+        },
+        "required": [
+          "page",
+          "limit",
+          "totalPages",
+          "hasNextPage",
+          "hasPrevPage",
+          "data"
         ]
       },
       "DeleteFilesDto": {
