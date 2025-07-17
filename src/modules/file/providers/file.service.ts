@@ -32,12 +32,6 @@ export class FileService {
 
 			if (FILE_TYPE_CONSTANTS.ALLOWED_VIDEO_MIME_TYPES.includes(file.mimetype as any)) {
 				resourceType = FILE_TYPE_CONSTANTS.CLOUDINARY_RESOURCE_TYPES.VIDEO;
-				// Tối ưu video với ffmpeg
-				try {
-					buffer = await optimizeVideoWithFfmpeg(file.buffer);
-				} catch (err) {
-					return reject(err);
-				}
 			} else if (FILE_TYPE_CONSTANTS.ALLOWED_IMAGE_MIME_TYPES.includes(file.mimetype as any)) {
 				resourceType = FILE_TYPE_CONSTANTS.CLOUDINARY_RESOURCE_TYPES.IMAGE;
 				// Nếu là JPEG/JPG thì nén bằng mozjpeg và loại bỏ metadata
@@ -75,21 +69,28 @@ export class FileService {
 			const originalName = file.originalname.replace(/\.[^/.]+$/, '');
 			const publicId = `user_${userId}/${originalName}_${timestamp}_${uuid}`;
 
-			const uploadStream = cloudinary.uploader.upload_stream(
-				{
-					public_id: publicId,
-					resource_type: resourceType,
-					use_filename: true,
-					unique_filename: false,
-					overwrite: false,
-				},
-				(error, result) => {
-					if (error) {
-						return reject(error);
-					}
-					resolve(result as UploadApiResponse);
-				},
-			);
+			const uploadOptions: any = {
+				public_id: publicId,
+				resource_type: resourceType,
+				use_filename: true,
+				unique_filename: false,
+				overwrite: false,
+			};
+
+			if (resourceType === FILE_TYPE_CONSTANTS.CLOUDINARY_RESOURCE_TYPES.VIDEO) {
+				uploadOptions.transformation = [
+					{ width: 720, crop: 'limit' },
+					{ quality: 'auto' },
+					{ fetch_format: 'mp4' },
+				];
+			}
+
+			const uploadStream = cloudinary.uploader.upload_stream(uploadOptions, (error, result) => {
+				if (error) {
+					return reject(error);
+				}
+				resolve(result as UploadApiResponse);
+			});
 			uploadStream.end(buffer);
 		});
 	}
@@ -155,27 +156,4 @@ export class FileService {
 			return null;
 		}
 	}
-}
-
-function optimizeVideoWithFfmpeg(inputBuffer: Buffer): Promise<Buffer> {
-	return new Promise((resolve, reject) => {
-		const inputStream = new PassThrough();
-		inputStream.end(inputBuffer);
-
-		const outputStream = new PassThrough();
-		const chunks: Buffer[] = [];
-
-		outputStream.on('data', chunk => chunks.push(chunk));
-		outputStream.on('end', () => resolve(Buffer.concat(chunks)));
-		outputStream.on('error', reject);
-
-		ffmpeg(inputStream)
-			.videoCodec('libx264')
-			.audioCodec('aac')
-			.size('?x720') // resize về 720p
-			.outputOptions('-preset veryfast', '-crf 28', '-movflags +faststart') // nén video
-			.format('mp4')
-			.on('error', reject)
-			.pipe(outputStream, { end: true });
-	});
 }
