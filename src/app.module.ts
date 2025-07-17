@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConditionalModule, ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -15,6 +15,7 @@ import {
 } from '@common/filters';
 import { RolesGuard } from '@common/guards';
 import { ResponseTransformInterceptor } from '@common/interceptors';
+import { CustomRequestContextInitMiddleware } from '@common/middlewares';
 
 import { Config, DatabaseConfig } from '@configs';
 
@@ -27,7 +28,6 @@ import { EventModule } from '@modules/event';
 import { LoggerModule } from '@modules/logger';
 import { NotificationModule } from '@modules/notification';
 import { PostModule } from '@modules/post';
-import { PostCommentModule } from '@modules/post-comment';
 import { RouteModule } from '@modules/router';
 import { UserModule } from '@modules/user';
 
@@ -76,7 +76,6 @@ import { CustomRequestCtxModule } from '@shared/modules';
 		EventModule,
 		NotificationModule,
 		PostModule,
-		PostCommentModule,
 		CommentModule,
 		UserModule,
 	],
@@ -119,4 +118,8 @@ import { CustomRequestCtxModule } from '@shared/modules';
 		},
 	],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+	configure(consumer: MiddlewareConsumer) {
+		consumer.apply(CustomRequestContextInitMiddleware).forRoutes('*');
+	}
+}

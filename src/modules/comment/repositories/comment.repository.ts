@@ -14,7 +14,9 @@ export interface ICommentRepository extends IBaseRepository<Comment> {
 		targetId: string,
 		options?: CursorPaginationOption<string>,
 	): Promise<WithPopulated<Comment>[]>;
-	deleteSelfAndDescendants(options: Partial<Comment>): Promise<number>;
+
+	// findDescendants()
+	deleteSelfAndDescendants(options: Partial<Comment>): Promise<string[]>;
 }
 
 export const ICommentRepositoryToken = Symbol('ICommentRepository');

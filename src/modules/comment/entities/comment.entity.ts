@@ -4,6 +4,7 @@ export class Comment implements ISoftDeletableEntity {
 	id!: string;
 	userId!: string;
 
+	postId!: string;
 	targetId!: string;
 
 	content!: string;

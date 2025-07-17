@@ -7,7 +7,6 @@ import { DevModule } from '@modules/dev';
 import { EventModule } from '@modules/event';
 import { NotificationModule } from '@modules/notification';
 import { PostModule } from '@modules/post';
-import { PostCommentModule } from '@modules/post-comment';
 import { UserModule } from '@modules/user';
 
 @Module({
@@ -26,7 +25,6 @@ import { UserModule } from '@modules/user';
 					{
 						path: '/posts',
 						module: PostModule,
-						children: [{ path: '/', module: PostCommentModule }],
 					},
 					{ path: '/users', module: UserModule },
 				],

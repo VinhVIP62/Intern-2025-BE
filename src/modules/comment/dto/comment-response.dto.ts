@@ -4,7 +4,7 @@ import { WithPopulated } from '@common/crud/entities';
 
 import { User } from '@modules/user/entities';
 
-import { Comment } from '../../comment/entities';
+import { Comment } from '../entities';
 
 @Exclude()
 export class ResponseCommentDto {
@@ -14,6 +14,14 @@ export class ResponseCommentDto {
 	@Expose()
 	@Type(() => String)
 	userId!: string;
+
+	@Expose()
+	@Type(() => String)
+	targetId!: string;
+
+	@Expose()
+	@Type(() => String)
+	postId!: string;
 
 	@Expose()
 	@Transform(({ obj }) => {

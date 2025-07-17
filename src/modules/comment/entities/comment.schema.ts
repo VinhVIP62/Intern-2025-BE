@@ -4,6 +4,7 @@ import mongoose, { HydratedDocument } from 'mongoose';
 import { WithPopulated } from '@common/crud/entities';
 import { Complete } from '@common/types/utils';
 
+import { SocialPost } from '@modules/post/entities';
 import { User } from '@modules/user/entities';
 
 import { Comment } from './comment.entity';
@@ -35,6 +36,9 @@ export class CommentSchemaDef implements WithPopulated<Complete<Comment>> {
 		},
 	})
 	userIdPopulated!: User;
+
+	@Prop({ type: mongoose.Schema.Types.ObjectId, index: true, ref: SocialPost.name, required: true })
+	postId!: string;
 
 	@Prop({ type: mongoose.Schema.Types.ObjectId, index: true, required: true })
 	targetId!: string;

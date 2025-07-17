@@ -1,15 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model } from 'mongoose';
+import mongoose, { Model, PipelineStage } from 'mongoose';
 
 import { WithPopulated } from '@common/crud/entities';
 import { MongooseRepositoryImpl } from '@common/crud/repos';
 import { SORT } from '@common/enums';
-import { EntityNotFound } from '@common/exceptions';
-import { CursorPaginationOption } from '@common/types/data';
+import { CursorPaginationOption, CustomRequestCtx } from '@common/types/data';
 
 import { Comment } from '../entities';
 import { ICommentRepository } from './comment.repository';
+
+type DescendantResult = { descendants: { _id: mongoose.Types.ObjectId }[] };
 
 @Injectable()
 export class CommentRepositoryImpl
@@ -26,21 +27,25 @@ export class CommentRepositoryImpl
 		targetId: string,
 		options?: CursorPaginationOption<string>,
 	): Promise<WithPopulated<Comment>[]> {
+		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
 		const foundEntities: WithPopulated<Comment>[] = [];
+		const filterOptions = {
+			targetId,
+			...(options?.cursor && this.transformFilter({ _id: { $gt: options?.cursor } })),
+		};
+		const sortOptions = this.transformSort({
+			customRepoOptions: {
+				sort: { createdAt: SORT.ASC },
+			},
+		});
+		const limitOptions = options?.limit || 10;
+		const populateOptions = this.transformPopulate();
 		const query = this.commentModel
-			.find({
-				targetId,
-				...(options?.cursor && this.transformFilter({ id: options?.cursor })),
-			})
-			.sort(
-				this.transformSort({
-					customRepoOptions: {
-						sort: { createdAt: SORT.ASC },
-					},
-				}),
-			)
-			.limit(options?.limit || 10)
-			.populate(this.transformPopulate());
+			.find(filterOptions)
+			.sort(sortOptions)
+			.limit(limitOptions)
+			.populate(populateOptions)
+			.session(session);
 		const cursor = query.cursor();
 
 		for await (const comment of cursor) {
@@ -50,43 +55,43 @@ export class CommentRepositoryImpl
 		return foundEntities;
 	}
 
-	async deleteSelfAndDescendants(options: Partial<Comment> & Pick<Comment, 'id'>): Promise<number> {
+	async deleteSelfAndDescendants(
+		options: Partial<Comment> & Pick<Comment, 'id'>,
+	): Promise<string[]> {
 		const where = this.transformFilter(options);
-		const session = await this.commentModel.startSession();
-		const deleteResult = session
-			.withTransaction(async () => {
-				const result = await this.commentModel
-					.aggregate([
-						{ $match: { ...where } },
-						{
-							$graphLookup: {
-								from: this.commentModel.collection.name,
-								startWith: '$_id',
-								connectFromField: '_id',
-								connectToField: 'targetId',
-								as: 'descendants',
-							},
-						},
-						{
-							$project: {
-								'descendants._id': 1,
-							},
-						},
-					])
-					.session(session);
+		const globalSession = CustomRequestCtx.get().req.db.mongoose.session || null;
+		const session = globalSession ?? (await this.commentModel.startSession());
 
-				if (!result.length) throw new EntityNotFound(Comment);
-				const descendants = (
-					result as { descendants: { _id: mongoose.Types.ObjectId }[] }[]
-				)[0].descendants.map(d => d._id);
-				return await this.commentModel
-					.deleteMany({ _id: { $in: descendants.concat([where._id]) } }, { session })
-					.exec();
-			})
-			.then(async comment => {
-				await session.endSession();
-				return comment;
-			});
-		return (await deleteResult).deletedCount;
+		const matchStage: PipelineStage.Match = { $match: { ...where } };
+		// get ancestors of self (not including self)
+		const graphLookupStage: PipelineStage.GraphLookup = {
+			$graphLookup: {
+				from: this.commentModel.collection.name,
+				startWith: '$_id',
+				connectFromField: '_id',
+				connectToField: 'targetId',
+				as: 'descendants',
+			},
+		};
+		// match projection with DescendantResult
+		const projectStage: PipelineStage.Project = {
+			$project: {
+				'descendants._id': 1,
+			},
+		};
+
+		const descendantsResArr = await this.commentModel
+			.aggregate<DescendantResult>([matchStage, graphLookupStage, projectStage])
+			.session(session);
+		// appending self to list of descendants
+		const descendants =
+			descendantsResArr.length ?
+				descendantsResArr[0].descendants.map(d => d._id).concat([where._id])
+			:	[where._id];
+		const descendantsFilter = { _id: { $in: descendants } };
+		await this.commentModel.deleteMany(descendantsFilter).session(session).exec();
+		// if this was just local, end the session, else the global session must end elsewhere
+		if (!globalSession) await session.endSession();
+		return descendants.map(id => id.toString());
 	}
 }

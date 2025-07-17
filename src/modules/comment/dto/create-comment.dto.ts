@@ -1,5 +1,5 @@
 import { Expose, Type } from 'class-transformer';
-import { IsArray, IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { HasExtension, HasMimeType, IsFile, MemoryStoredFile } from 'nestjs-form-data';
 
 export class CreateCommentDto {
@@ -10,16 +10,10 @@ export class CreateCommentDto {
 
 	@Expose()
 	@Type(() => MemoryStoredFile)
-	@HasExtension(['png', 'jpg', 'jpeg', 'gif', 'ogg', 'mp4'], { each: true })
+	@HasExtension(['png', 'jpg', 'jpeg', 'gif', 'ogg', 'mp4', 'webp'], { each: true })
 	@HasMimeType(['image/*', 'video/*'], { each: true })
 	@IsArray()
 	@IsFile({ each: true })
 	@IsOptional()
 	files!: MemoryStoredFile[];
-
-	@Expose()
-	@IsMongoId()
-	@IsNotEmpty()
-	@IsString()
-	targetId!: string;
 }

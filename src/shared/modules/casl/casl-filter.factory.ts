@@ -1,6 +1,5 @@
 import { accessibleBy } from '@casl/mongoose';
 import { Injectable } from '@nestjs/common';
-import util from 'util';
 
 import { Action } from '@common/enums';
 import { CustomRequestCtx } from '@common/types/data';
@@ -20,9 +19,6 @@ export class CaslFilterFactory {
 		if (!user) return { $expr: { $eq: [0, 1] } };
 		const ability = this.caslAbilityFactory.createForUser(user);
 		const filter = accessibleBy(ability, action).ofType(forType);
-
-		console.log(util.inspect({ action, filter }, { colors: true, depth: null, compact: false }));
-
 		return filter;
 	}
 }
