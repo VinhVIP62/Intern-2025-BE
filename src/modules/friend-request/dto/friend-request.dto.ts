@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString, IsOptional, IsEnum, IsArray, IsNumber } from 'class-validator';
 import { FriendRequestStatus } from '../entities/friend-request.enum';
+import { BasePaginatedResponseDto } from '@common/dto/base-pagination.dto';
+import { BasePaginationMetaDto } from '@common/dto/base-pagination.dto';
 
 export class CreateFriendRequestDto {
 	@ApiProperty({
@@ -98,48 +100,12 @@ export class FriendRequestResponseDto {
 	updatedAt: Date;
 }
 
-export class PaginatedFriendRequestsResponseDto {
+export class PaginatedFriendRequestsResponseDto extends BasePaginationMetaDto {
 	@ApiProperty({
 		description: 'Danh sách lời mời kết bạn',
 		type: [FriendRequestResponseDto],
 	})
 	friendRequests: FriendRequestResponseDto[];
-
-	@ApiProperty({
-		description: 'Tổng số lời mời kết bạn',
-		example: 100,
-	})
-	total: number;
-
-	@ApiProperty({
-		description: 'Số trang hiện tại',
-		example: 1,
-	})
-	page: number;
-
-	@ApiProperty({
-		description: 'Số lượng lời mời kết bạn trên mỗi trang',
-		example: 10,
-	})
-	limit: number;
-
-	@ApiProperty({
-		description: 'Tổng số trang',
-		example: 10,
-	})
-	totalPages: number;
-
-	@ApiProperty({
-		description: 'Có trang tiếp theo hay không',
-		example: true,
-	})
-	hasNextPage: boolean;
-
-	@ApiProperty({
-		description: 'Có trang trước đó hay không',
-		example: false,
-	})
-	hasPrevPage: boolean;
 }
 
 export class FriendshipStatusResponseDto {
@@ -265,51 +231,15 @@ export class FriendResponseDto {
 	favoritesSports?: string[];
 }
 
-export class PaginatedFriendsResponseDto {
+export class PaginatedFriendsResponseDto extends BasePaginationMetaDto {
 	@ApiProperty({
 		description: 'Danh sách bạn bè',
 		type: [FriendResponseDto],
 	})
 	friends: FriendResponseDto[];
-
-	@ApiProperty({
-		description: 'Tổng số bạn bè',
-		example: 100,
-	})
-	total: number;
-
-	@ApiProperty({
-		description: 'Số trang hiện tại',
-		example: 1,
-	})
-	page: number;
-
-	@ApiProperty({
-		description: 'Số lượng bạn bè trên mỗi trang',
-		example: 10,
-	})
-	limit: number;
-
-	@ApiProperty({
-		description: 'Tổng số trang',
-		example: 10,
-	})
-	totalPages: number;
-
-	@ApiProperty({
-		description: 'Có trang tiếp theo hay không',
-		example: true,
-	})
-	hasNextPage: boolean;
-
-	@ApiProperty({
-		description: 'Có trang trước đó hay không',
-		example: false,
-	})
-	hasPrevPage: boolean;
 }
 
-export class MutualFriendsResponseDto {
+export class MutualFriendsResponseDto extends BasePaginationMetaDto {
 	@ApiProperty({
 		description: 'ID của người dùng hiện tại',
 		example: '507f1f77bcf86cd799439011',
@@ -327,40 +257,4 @@ export class MutualFriendsResponseDto {
 		type: [FriendResponseDto],
 	})
 	mutualFriends: FriendResponseDto[];
-
-	@ApiProperty({
-		description: 'Tổng số bạn bè chung',
-		example: 5,
-	})
-	total: number;
-
-	@ApiProperty({
-		description: 'Số trang hiện tại',
-		example: 1,
-	})
-	page: number;
-
-	@ApiProperty({
-		description: 'Số lượng bạn bè chung trên mỗi trang',
-		example: 10,
-	})
-	limit: number;
-
-	@ApiProperty({
-		description: 'Tổng số trang',
-		example: 1,
-	})
-	totalPages: number;
-
-	@ApiProperty({
-		description: 'Có trang tiếp theo hay không',
-		example: false,
-	})
-	hasNextPage: boolean;
-
-	@ApiProperty({
-		description: 'Có trang trước đó hay không',
-		example: false,
-	})
-	hasPrevPage: boolean;
 }

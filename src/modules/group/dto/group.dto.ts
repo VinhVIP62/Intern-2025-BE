@@ -15,6 +15,8 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { SportType, ActivityLevel } from '@modules/user/enums/user.enum';
+import { BasePaginatedResponseDto } from '@common/dto/base-pagination.dto';
+import { BasePaginationMetaDto } from '@common/dto/base-pagination.dto';
 
 export class LocationDto {
 	@ApiPropertyOptional({ description: 'City name', example: 'Ho Chi Minh City' })
@@ -257,36 +259,12 @@ export class SimpleGroupResponseDto {
 	role: 'admin' | 'member';
 }
 
-export class PaginatedGroupsResponseDto {
-	@ApiProperty({ description: 'Total number of groups', example: 100 })
-	total: number;
-
-	@ApiProperty({ description: 'Current page', example: 1 })
-	page: number;
-
-	@ApiProperty({ description: 'Items per page', example: 10 })
-	limit: number;
-
-	@ApiProperty({ description: 'Total pages', example: 10 })
-	totalPages: number;
-
+export class PaginatedGroupsResponseDto extends BasePaginationMetaDto {
 	@ApiProperty({ description: 'Groups data', type: [GroupResponseDto] })
 	data: GroupResponseDto[];
 }
 
-export class PaginatedSimpleGroupsResponseDto {
-	@ApiProperty({ description: 'Total number of groups', example: 100 })
-	total: number;
-
-	@ApiProperty({ description: 'Current page', example: 1 })
-	page: number;
-
-	@ApiProperty({ description: 'Items per page', example: 10 })
-	limit: number;
-
-	@ApiProperty({ description: 'Total pages', example: 10 })
-	totalPages: number;
-
+export class PaginatedSimpleGroupsResponseDto extends BasePaginationMetaDto {
 	@ApiProperty({ description: 'Groups data', type: [SimpleGroupResponseDto] })
 	data: SimpleGroupResponseDto[];
 }

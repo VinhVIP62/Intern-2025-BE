@@ -4955,31 +4955,51 @@
       "NotificationPaginationResponseDto": {
         "type": "object",
         "properties": {
+          "total": {
+            "type": "number",
+            "description": "Tổng số items",
+            "example": 100
+          },
+          "page": {
+            "type": "number",
+            "description": "Trang hiện tại",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Số lượng items trên mỗi trang",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Tổng số trang",
+            "example": 10
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Có trang tiếp theo không",
+            "example": true
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Có trang trước không",
+            "example": false
+          },
           "notifications": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/NotificationResponseDto"
             }
-          },
-          "total": {
-            "type": "number"
-          },
-          "page": {
-            "type": "number"
-          },
-          "limit": {
-            "type": "number"
-          },
-          "totalPages": {
-            "type": "number"
           }
         },
         "required": [
-          "notifications",
           "total",
           "page",
           "limit",
-          "totalPages"
+          "totalPages",
+          "hasNextPage",
+          "hasPrevPage",
+          "notifications"
         ]
       },
       "CreatePostDto": {
@@ -5321,46 +5341,52 @@
       "PaginatedPostsResponseDto": {
         "type": "object",
         "properties": {
+          "total": {
+            "type": "number",
+            "description": "Tổng số items",
+            "example": 100
+          },
+          "page": {
+            "type": "number",
+            "description": "Trang hiện tại",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Số lượng items trên mỗi trang",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Tổng số trang",
+            "example": 10
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Có trang tiếp theo không",
+            "example": true
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Có trang trước không",
+            "example": false
+          },
           "posts": {
             "description": "Danh sách bài đăng",
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/PostResponseDto"
             }
-          },
-          "total": {
-            "type": "number",
-            "description": "Tổng số bài đăng"
-          },
-          "page": {
-            "type": "number",
-            "description": "Trang hiện tại"
-          },
-          "limit": {
-            "type": "number",
-            "description": "Số lượng bài đăng trên mỗi trang"
-          },
-          "totalPages": {
-            "type": "number",
-            "description": "Tổng số trang"
-          },
-          "hasNextPage": {
-            "type": "boolean",
-            "description": "Có trang tiếp theo không"
-          },
-          "hasPrevPage": {
-            "type": "boolean",
-            "description": "Có trang trước không"
           }
         },
         "required": [
-          "posts",
           "total",
           "page",
           "limit",
           "totalPages",
           "hasNextPage",
-          "hasPrevPage"
+          "hasPrevPage",
+          "posts"
         ]
       },
       "UpdatePostDto": {
@@ -5459,46 +5485,52 @@
       "TrendingHashtagsResponseDto": {
         "type": "object",
         "properties": {
+          "total": {
+            "type": "number",
+            "description": "Tổng số items",
+            "example": 100
+          },
+          "page": {
+            "type": "number",
+            "description": "Trang hiện tại",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Số lượng items trên mỗi trang",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Tổng số trang",
+            "example": 10
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Có trang tiếp theo không",
+            "example": true
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Có trang trước không",
+            "example": false
+          },
           "hashtags": {
             "description": "Danh sách hashtag trending",
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/HashtagTrendingDto"
             }
-          },
-          "total": {
-            "type": "number",
-            "description": "Tổng số hashtag"
-          },
-          "page": {
-            "type": "number",
-            "description": "Trang hiện tại"
-          },
-          "limit": {
-            "type": "number",
-            "description": "Số lượng hashtag trên mỗi trang"
-          },
-          "totalPages": {
-            "type": "number",
-            "description": "Tổng số trang"
-          },
-          "hasNextPage": {
-            "type": "boolean",
-            "description": "Có trang tiếp theo không"
-          },
-          "hasPrevPage": {
-            "type": "boolean",
-            "description": "Có trang trước không"
           }
         },
         "required": [
-          "hashtags",
           "total",
           "page",
           "limit",
           "totalPages",
           "hasNextPage",
-          "hasPrevPage"
+          "hasPrevPage",
+          "hashtags"
         ]
       },
       "ClearUrlDto": {
@@ -5645,46 +5677,52 @@
       "PaginatedCommentsResponseDto": {
         "type": "object",
         "properties": {
+          "total": {
+            "type": "number",
+            "description": "Tổng số items",
+            "example": 100
+          },
+          "page": {
+            "type": "number",
+            "description": "Trang hiện tại",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Số lượng items trên mỗi trang",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Tổng số trang",
+            "example": 10
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Có trang tiếp theo không",
+            "example": true
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Có trang trước không",
+            "example": false
+          },
           "comments": {
             "description": "Danh sách comment",
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/CommentResponseDto"
             }
-          },
-          "total": {
-            "type": "number",
-            "description": "Tổng số comment"
-          },
-          "page": {
-            "type": "number",
-            "description": "Trang hiện tại"
-          },
-          "limit": {
-            "type": "number",
-            "description": "Số lượng comment trên mỗi trang"
-          },
-          "totalPages": {
-            "type": "number",
-            "description": "Tổng số trang"
-          },
-          "hasNextPage": {
-            "type": "boolean",
-            "description": "Có trang tiếp theo không"
-          },
-          "hasPrevPage": {
-            "type": "boolean",
-            "description": "Có trang trước không"
           }
         },
         "required": [
-          "comments",
           "total",
           "page",
           "limit",
           "totalPages",
           "hasNextPage",
-          "hasPrevPage"
+          "hasPrevPage",
+          "comments"
         ]
       },
       "CreateGroupDto": {
@@ -5931,23 +5969,33 @@
         "properties": {
           "total": {
             "type": "number",
-            "description": "Total number of groups",
+            "description": "Tổng số items",
             "example": 100
           },
           "page": {
             "type": "number",
-            "description": "Current page",
+            "description": "Trang hiện tại",
             "example": 1
           },
           "limit": {
             "type": "number",
-            "description": "Items per page",
+            "description": "Số lượng items trên mỗi trang",
             "example": 10
           },
           "totalPages": {
             "type": "number",
-            "description": "Total pages",
+            "description": "Tổng số trang",
             "example": 10
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Có trang tiếp theo không",
+            "example": true
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Có trang trước không",
+            "example": false
           },
           "data": {
             "description": "Groups data",
@@ -5962,6 +6010,8 @@
           "page",
           "limit",
           "totalPages",
+          "hasNextPage",
+          "hasPrevPage",
           "data"
         ]
       },
@@ -6015,23 +6065,33 @@
         "properties": {
           "total": {
             "type": "number",
-            "description": "Total number of groups",
+            "description": "Tổng số items",
             "example": 100
           },
           "page": {
             "type": "number",
-            "description": "Current page",
+            "description": "Trang hiện tại",
             "example": 1
           },
           "limit": {
             "type": "number",
-            "description": "Items per page",
+            "description": "Số lượng items trên mỗi trang",
             "example": 10
           },
           "totalPages": {
             "type": "number",
-            "description": "Total pages",
+            "description": "Tổng số trang",
             "example": 10
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Có trang tiếp theo không",
+            "example": true
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Có trang trước không",
+            "example": false
           },
           "data": {
             "description": "Groups data",
@@ -6046,6 +6106,8 @@
           "page",
           "limit",
           "totalPages",
+          "hasNextPage",
+          "hasPrevPage",
           "data"
         ]
       },
@@ -6232,26 +6294,19 @@
       "PaginatedFriendRequestsResponseDto": {
         "type": "object",
         "properties": {
-          "friendRequests": {
-            "description": "Danh sách lời mời kết bạn",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/FriendRequestResponseDto"
-            }
-          },
           "total": {
             "type": "number",
-            "description": "Tổng số lời mời kết bạn",
+            "description": "Tổng số items",
             "example": 100
           },
           "page": {
             "type": "number",
-            "description": "Số trang hiện tại",
+            "description": "Trang hiện tại",
             "example": 1
           },
           "limit": {
             "type": "number",
-            "description": "Số lượng lời mời kết bạn trên mỗi trang",
+            "description": "Số lượng items trên mỗi trang",
             "example": 10
           },
           "totalPages": {
@@ -6261,23 +6316,30 @@
           },
           "hasNextPage": {
             "type": "boolean",
-            "description": "Có trang tiếp theo hay không",
+            "description": "Có trang tiếp theo không",
             "example": true
           },
           "hasPrevPage": {
             "type": "boolean",
-            "description": "Có trang trước đó hay không",
+            "description": "Có trang trước không",
             "example": false
+          },
+          "friendRequests": {
+            "description": "Danh sách lời mời kết bạn",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FriendRequestResponseDto"
+            }
           }
         },
         "required": [
-          "friendRequests",
           "total",
           "page",
           "limit",
           "totalPages",
           "hasNextPage",
-          "hasPrevPage"
+          "hasPrevPage",
+          "friendRequests"
         ]
       },
       "FriendshipStatusResponseDto": {
@@ -6403,26 +6465,19 @@
       "PaginatedFriendsResponseDto": {
         "type": "object",
         "properties": {
-          "friends": {
-            "description": "Danh sách bạn bè",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/FriendResponseDto"
-            }
-          },
           "total": {
             "type": "number",
-            "description": "Tổng số bạn bè",
+            "description": "Tổng số items",
             "example": 100
           },
           "page": {
             "type": "number",
-            "description": "Số trang hiện tại",
+            "description": "Trang hiện tại",
             "example": 1
           },
           "limit": {
             "type": "number",
-            "description": "Số lượng bạn bè trên mỗi trang",
+            "description": "Số lượng items trên mỗi trang",
             "example": 10
           },
           "totalPages": {
@@ -6432,28 +6487,65 @@
           },
           "hasNextPage": {
             "type": "boolean",
-            "description": "Có trang tiếp theo hay không",
+            "description": "Có trang tiếp theo không",
             "example": true
           },
           "hasPrevPage": {
             "type": "boolean",
-            "description": "Có trang trước đó hay không",
+            "description": "Có trang trước không",
             "example": false
+          },
+          "friends": {
+            "description": "Danh sách bạn bè",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FriendResponseDto"
+            }
           }
         },
         "required": [
-          "friends",
           "total",
           "page",
           "limit",
           "totalPages",
           "hasNextPage",
-          "hasPrevPage"
+          "hasPrevPage",
+          "friends"
         ]
       },
       "MutualFriendsResponseDto": {
         "type": "object",
         "properties": {
+          "total": {
+            "type": "number",
+            "description": "Tổng số items",
+            "example": 100
+          },
+          "page": {
+            "type": "number",
+            "description": "Trang hiện tại",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Số lượng items trên mỗi trang",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Tổng số trang",
+            "example": 10
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Có trang tiếp theo không",
+            "example": true
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Có trang trước không",
+            "example": false
+          },
           "currentUserId": {
             "type": "string",
             "description": "ID của người dùng hiện tại",
@@ -6470,48 +6562,18 @@
             "items": {
               "$ref": "#/components/schemas/FriendResponseDto"
             }
-          },
-          "total": {
-            "type": "number",
-            "description": "Tổng số bạn bè chung",
-            "example": 5
-          },
-          "page": {
-            "type": "number",
-            "description": "Số trang hiện tại",
-            "example": 1
-          },
-          "limit": {
-            "type": "number",
-            "description": "Số lượng bạn bè chung trên mỗi trang",
-            "example": 10
-          },
-          "totalPages": {
-            "type": "number",
-            "description": "Tổng số trang",
-            "example": 1
-          },
-          "hasNextPage": {
-            "type": "boolean",
-            "description": "Có trang tiếp theo hay không",
-            "example": false
-          },
-          "hasPrevPage": {
-            "type": "boolean",
-            "description": "Có trang trước đó hay không",
-            "example": false
           }
         },
         "required": [
-          "currentUserId",
-          "targetUserId",
-          "mutualFriends",
           "total",
           "page",
           "limit",
           "totalPages",
           "hasNextPage",
-          "hasPrevPage"
+          "hasPrevPage",
+          "currentUserId",
+          "targetUserId",
+          "mutualFriends"
         ]
       },
       "SearchResultDto": {
@@ -6550,41 +6612,52 @@
       "PaginatedSearchResultDto": {
         "type": "object",
         "properties": {
+          "total": {
+            "type": "number",
+            "description": "Tổng số items",
+            "example": 100
+          },
+          "page": {
+            "type": "number",
+            "description": "Trang hiện tại",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Số lượng items trên mỗi trang",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Tổng số trang",
+            "example": 10
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Có trang tiếp theo không",
+            "example": true
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Có trang trước không",
+            "example": false
+          },
           "data": {
             "description": "Danh sách kết quả theo loại",
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/SearchResultDto"
             }
-          },
-          "page": {
-            "type": "number",
-            "description": "Trang hiện tại"
-          },
-          "limit": {
-            "type": "number",
-            "description": "Số lượng trên mỗi trang"
-          },
-          "totalPages": {
-            "type": "number",
-            "description": "Tổng số trang"
-          },
-          "hasNextPage": {
-            "type": "boolean",
-            "description": "Có trang tiếp theo không"
-          },
-          "hasPrevPage": {
-            "type": "boolean",
-            "description": "Có trang trước không"
           }
         },
         "required": [
-          "data",
+          "total",
           "page",
           "limit",
           "totalPages",
           "hasNextPage",
-          "hasPrevPage"
+          "hasPrevPage",
+          "data"
         ]
       },
       "SearchQueryDto": {
@@ -6731,35 +6804,51 @@
       "PaginatedEnhancedSearchHistoryResultDto": {
         "type": "object",
         "properties": {
+          "total": {
+            "type": "number",
+            "description": "Tổng số items",
+            "example": 100
+          },
+          "page": {
+            "type": "number",
+            "description": "Trang hiện tại",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Số lượng items trên mỗi trang",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Tổng số trang",
+            "example": 10
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Có trang tiếp theo không",
+            "example": true
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Có trang trước không",
+            "example": false
+          },
           "data": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/EnhancedSearchHistoryResultDto"
             }
-          },
-          "page": {
-            "type": "number"
-          },
-          "limit": {
-            "type": "number"
-          },
-          "totalPages": {
-            "type": "number"
-          },
-          "hasNextPage": {
-            "type": "boolean"
-          },
-          "hasPrevPage": {
-            "type": "boolean"
           }
         },
         "required": [
-          "data",
+          "total",
           "page",
           "limit",
           "totalPages",
           "hasNextPage",
-          "hasPrevPage"
+          "hasPrevPage",
+          "data"
         ]
       },
       "CreateSearchHistoryDto": {

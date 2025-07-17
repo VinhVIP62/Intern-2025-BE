@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import { IsOptional, IsString, IsMongoId, IsNumber, IsBoolean, IsArray } from 'class-validator';
+import { BasePaginatedResponseDto } from '@common/dto/base-pagination.dto';
+import { BasePaginationMetaDto } from '@common/dto/base-pagination.dto';
 
 export class CreateSearchHistoryDto {
 	@ApiProperty({ type: String, required: false, description: 'Text hoặc hashtag mà user nhập' })
@@ -130,28 +132,7 @@ export class EnhancedSearchHistoryResultDto {
 	createdAt: string;
 }
 
-export class PaginatedEnhancedSearchHistoryResultDto {
+export class PaginatedEnhancedSearchHistoryResultDto extends BasePaginationMetaDto {
 	@ApiProperty({ type: [EnhancedSearchHistoryResultDto] })
-	@IsArray()
 	data: EnhancedSearchHistoryResultDto[];
-
-	@ApiProperty()
-	@IsNumber()
-	page: number;
-
-	@ApiProperty()
-	@IsNumber()
-	limit: number;
-
-	@ApiProperty()
-	@IsNumber()
-	totalPages: number;
-
-	@ApiProperty()
-	@IsBoolean()
-	hasNextPage: boolean;
-
-	@ApiProperty()
-	@IsBoolean()
-	hasPrevPage: boolean;
 }

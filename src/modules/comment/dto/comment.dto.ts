@@ -9,6 +9,8 @@ import {
 	IsBoolean,
 	IsArray,
 } from 'class-validator';
+import { BasePaginatedResponseDto } from '@common/dto/base-pagination.dto';
+import { BasePaginationMetaDto } from '@common/dto/base-pagination.dto';
 
 export class CommentResponseDto {
 	@ApiProperty({ description: 'ID của comment' })
@@ -106,27 +108,9 @@ export class CommentResponseDto {
 	replies?: CommentResponseDto[];
 }
 
-export class PaginatedCommentsResponseDto {
+export class PaginatedCommentsResponseDto extends BasePaginationMetaDto {
 	@ApiProperty({ type: [CommentResponseDto], description: 'Danh sách comment' })
 	comments: CommentResponseDto[];
-
-	@ApiProperty({ description: 'Tổng số comment' })
-	total: number;
-
-	@ApiProperty({ description: 'Trang hiện tại' })
-	page: number;
-
-	@ApiProperty({ description: 'Số lượng comment trên mỗi trang' })
-	limit: number;
-
-	@ApiProperty({ description: 'Tổng số trang' })
-	totalPages: number;
-
-	@ApiProperty({ description: 'Có trang tiếp theo không' })
-	hasNextPage: boolean;
-
-	@ApiProperty({ description: 'Có trang trước không' })
-	hasPrevPage: boolean;
 }
 
 export class CreateCommentDto {

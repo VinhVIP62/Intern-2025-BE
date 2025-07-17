@@ -12,6 +12,7 @@ import {
 	MaxLength,
 } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { BasePaginationMetaDto } from '@common/dto/base-pagination.dto';
 
 export class PostResponseDto {
 	@ApiProperty({ description: 'ID của bài đăng' })
@@ -109,27 +110,9 @@ export class PostResponseDto {
 	taggedUsersList?: any[];
 }
 
-export class PaginatedPostsResponseDto {
+export class PaginatedPostsResponseDto extends BasePaginationMetaDto {
 	@ApiProperty({ type: [PostResponseDto], description: 'Danh sách bài đăng' })
 	posts: PostResponseDto[];
-
-	@ApiProperty({ description: 'Tổng số bài đăng' })
-	total: number;
-
-	@ApiProperty({ description: 'Trang hiện tại' })
-	page: number;
-
-	@ApiProperty({ description: 'Số lượng bài đăng trên mỗi trang' })
-	limit: number;
-
-	@ApiProperty({ description: 'Tổng số trang' })
-	totalPages: number;
-
-	@ApiProperty({ description: 'Có trang tiếp theo không' })
-	hasNextPage: boolean;
-
-	@ApiProperty({ description: 'Có trang trước không' })
-	hasPrevPage: boolean;
 }
 
 export class CreatePostDto {
@@ -336,27 +319,9 @@ export class HashtagTrendingDto {
 	usageCount: number;
 }
 
-export class TrendingHashtagsResponseDto {
+export class TrendingHashtagsResponseDto extends BasePaginationMetaDto {
 	@ApiProperty({ type: [HashtagTrendingDto], description: 'Danh sách hashtag trending' })
 	hashtags: HashtagTrendingDto[];
-
-	@ApiProperty({ description: 'Tổng số hashtag' })
-	total: number;
-
-	@ApiProperty({ description: 'Trang hiện tại' })
-	page: number;
-
-	@ApiProperty({ description: 'Số lượng hashtag trên mỗi trang' })
-	limit: number;
-
-	@ApiProperty({ description: 'Tổng số trang' })
-	totalPages: number;
-
-	@ApiProperty({ description: 'Có trang tiếp theo không' })
-	hasNextPage: boolean;
-
-	@ApiProperty({ description: 'Có trang trước không' })
-	hasPrevPage: boolean;
 }
 
 export class ClearUrlDto {

@@ -1,6 +1,7 @@
 import { IsString, IsEnum, IsOptional, IsArray, IsMongoId } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { NotificationType, ReferenceModel } from '../entities/notification.enum';
+import { BasePaginatedResponseDto, BasePaginationMetaDto } from '@common/dto/base-pagination.dto';
 
 export class CreateNotificationDto {
 	@ApiProperty({ description: 'ID của người nhận thông báo' })
@@ -118,19 +119,7 @@ export class NotificationResponseDto {
 	comment?: NotificationRelatedCommentDto;
 }
 
-export class NotificationPaginationResponseDto {
+export class NotificationPaginationResponseDto extends BasePaginationMetaDto {
 	@ApiProperty({ type: [NotificationResponseDto] })
 	notifications: NotificationResponseDto[];
-
-	@ApiProperty()
-	total: number;
-
-	@ApiProperty()
-	page: number;
-
-	@ApiProperty()
-	limit: number;
-
-	@ApiProperty()
-	totalPages: number;
 }

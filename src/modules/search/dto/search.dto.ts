@@ -2,6 +2,7 @@ import { ApiProperty, ApiQuery } from '@nestjs/swagger';
 import { IsEnum, IsOptional, IsString, IsNumber, IsArray } from 'class-validator';
 import { Type } from 'class-transformer';
 import { SportType, ActivityLevel } from '@modules/user/enums/user.enum';
+import { BasePaginationMetaDto } from '@common/dto/base-pagination.dto';
 
 export enum SearchFilterType {
 	USER = 'user',
@@ -90,22 +91,7 @@ export class SearchResultDto {
 	total: number;
 }
 
-export class PaginatedSearchResultDto {
+export class PaginatedSearchResultDto extends BasePaginationMetaDto {
 	@ApiProperty({ type: [SearchResultDto], description: 'Danh sách kết quả theo loại' })
 	data: SearchResultDto[];
-
-	@ApiProperty({ description: 'Trang hiện tại' })
-	page: number;
-
-	@ApiProperty({ description: 'Số lượng trên mỗi trang' })
-	limit: number;
-
-	@ApiProperty({ description: 'Tổng số trang' })
-	totalPages: number;
-
-	@ApiProperty({ description: 'Có trang tiếp theo không' })
-	hasNextPage: boolean;
-
-	@ApiProperty({ description: 'Có trang trước không' })
-	hasPrevPage: boolean;
 }
