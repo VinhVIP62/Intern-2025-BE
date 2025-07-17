@@ -184,7 +184,7 @@ export class PostService {
 			// Store original filenames before upload to maintain consistency
 			const fileNames = files.map(file => file.originalname);
 
-			const uploadResults = await this.fileService.uploadFiles(files);
+			const uploadResults = await this.fileService.uploadFiles(files, authorId);
 
 			for (let i = 0; i < uploadResults.length; i++) {
 				const result = uploadResults[i];
@@ -273,7 +273,7 @@ export class PostService {
 			// Store original filenames before upload to maintain consistency
 			const fileNames = files.map(file => file.originalname);
 
-			const uploadResults = await this.fileService.uploadFiles(files);
+			const uploadResults = await this.fileService.uploadFiles(files, userId);
 
 			for (let i = 0; i < uploadResults.length; i++) {
 				const result = uploadResults[i];

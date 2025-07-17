@@ -9,6 +9,7 @@ import {
 	UseGuards,
 	UseInterceptors,
 	Version,
+	Req,
 } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { FileService } from '../providers/file.service';
@@ -66,9 +67,11 @@ export class FileController {
 	async uploadFile(
 		@UploadedFile() file: Express.Multer.File,
 		@I18n() i18n: I18nContext,
+		@Req() req,
 	): Promise<ResponseEntity<UploadApiResponse>> {
 		try {
-			const result = await this.fileService.uploadFile(file);
+			const userId = req.user.id;
+			const result = await this.fileService.uploadFile(file, userId);
 			return {
 				success: true,
 				data: result,
@@ -123,9 +126,11 @@ export class FileController {
 	async uploadMultipleFiles(
 		@UploadedFiles() files: Express.Multer.File[],
 		@I18n() i18n: I18nContext,
+		@Req() req,
 	): Promise<ResponseEntity<UploadApiResponse[]>> {
 		try {
-			const result = await this.fileService.uploadFiles(files);
+			const userId = req.user.id;
+			const result = await this.fileService.uploadFiles(files, userId);
 			return {
 				success: true,
 				data: result,

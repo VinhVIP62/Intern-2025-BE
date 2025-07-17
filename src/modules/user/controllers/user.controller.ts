@@ -224,7 +224,7 @@ export class UserController {
 		@I18n() i18n: I18nContext,
 	): Promise<ResponseEntity<UploadApiResponse>> {
 		try {
-			const result = await this.fileService.uploadFile(file);
+			const result = await this.fileService.uploadFile(file, req.user.id);
 			await this.userService.update(req.user.id, { avatar: result.secure_url });
 			return {
 				success: true,
@@ -278,7 +278,7 @@ export class UserController {
 		@I18n() i18n: I18nContext,
 	): Promise<ResponseEntity<UploadApiResponse>> {
 		try {
-			const result = await this.fileService.uploadFile(file);
+			const result = await this.fileService.uploadFile(file, req.user.id);
 			await this.userService.update(req.user.id, { coverImage: result.secure_url });
 			return {
 				success: true,
