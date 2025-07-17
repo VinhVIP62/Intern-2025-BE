@@ -25,5 +25,6 @@
 	"MESSAGE_REJECTED_INVITATION": "rejected your group invitation",
 	"MESSAGE_NEW_POST_IN_GROUP": "has posted in your group",
 	"MESSAGE_POST_APPROVED": "Your post has been approved",
-	"MESSAGE_POST_REJECTED": "Your post has been rejected"
+	"MESSAGE_POST_REJECTED": "Your post has been rejected",
+	"NEW_NOTIFICATION": "New Notification"
 }

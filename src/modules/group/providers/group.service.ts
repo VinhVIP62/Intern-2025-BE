@@ -322,7 +322,7 @@ export class GroupService {
 				// Create notifications in parallel
 				await Promise.all(
 					notifications.map(notification =>
-						this.notificationService.createNotification(notification),
+						this.notificationService.createNotification(notification, i18n),
 					),
 				);
 			} catch (notificationError) {
@@ -541,14 +541,17 @@ export class GroupService {
 				validUserIds
 					.filter(invitedUserId => invitedUserId !== senderId) // Không gửi notification cho chính mình
 					.map(invitedUserId =>
-						this.notificationService.createNotification({
-							recipient: invitedUserId,
-							sender: senderId,
-							type: NotificationType.GROUP_INVITATION,
-							message: `@${senderId} MESSAGE_INVITED_TO_GROUP @${groupId}`,
-							referenceId: groupId,
-							referenceModel: ReferenceModel.GROUP,
-						}),
+						this.notificationService.createNotification(
+							{
+								recipient: invitedUserId,
+								sender: senderId,
+								type: NotificationType.GROUP_INVITATION,
+								message: `@${senderId} MESSAGE_INVITED_TO_GROUP @${groupId}`,
+								referenceId: groupId,
+								referenceModel: ReferenceModel.GROUP,
+							},
+							i18n,
+						),
 					),
 			);
 		} catch (error) {
@@ -605,7 +608,7 @@ export class GroupService {
 				// Create notifications in parallel
 				await Promise.all(
 					notifications.map(notification =>
-						this.notificationService.createNotification(notification),
+						this.notificationService.createNotification(notification, i18n),
 					),
 				);
 			} catch (notificationError) {
@@ -659,7 +662,7 @@ export class GroupService {
 				// Create notifications in parallel
 				await Promise.all(
 					notifications.map(notification =>
-						this.notificationService.createNotification(notification),
+						this.notificationService.createNotification(notification, i18n),
 					),
 				);
 			} catch (notificationError) {
@@ -724,7 +727,7 @@ export class GroupService {
 				}));
 				await Promise.all(
 					notifications.map(notification =>
-						this.notificationService.createNotification(notification),
+						this.notificationService.createNotification(notification, i18n),
 					),
 				);
 			}

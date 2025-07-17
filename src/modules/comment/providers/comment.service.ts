@@ -72,28 +72,34 @@ export class CommentService {
 
 		// Gửi notification cho chủ bài viết (trừ khi người comment chính là chủ bài viết)
 		if (post.author.toString() !== authorId) {
-			await this.notificationService.createNotification({
-				recipient: post.author.toString(),
-				sender: authorId,
-				type: NotificationType.COMMENT,
-				message: `@${authorId} MESSAGE_COMMENT_ON_POST`,
-				referenceId: (comment as any)._id.toString(),
-				referenceModel: ReferenceModel.COMMENT,
-			});
+			await this.notificationService.createNotification(
+				{
+					recipient: post.author.toString(),
+					sender: authorId,
+					type: NotificationType.COMMENT,
+					message: `@${authorId} MESSAGE_COMMENT_ON_POST`,
+					referenceId: (comment as any)._id.toString(),
+					referenceModel: ReferenceModel.COMMENT,
+				},
+				i18n,
+			);
 		}
 
 		// Nếu là reply, gửi notification cho chủ comment gốc
 		if (createCommentDto.parentId) {
 			const parentComment = await this.commentRepository.findCommentById(createCommentDto.parentId);
 			if (parentComment && parentComment.author.toString() !== authorId) {
-				await this.notificationService.createNotification({
-					recipient: parentComment.author.toString(),
-					sender: authorId,
-					type: NotificationType.COMMENT,
-					message: `@${authorId} MESSAGE_REPLY_ON_COMMENT`,
-					referenceId: (comment as any)._id.toString(),
-					referenceModel: ReferenceModel.COMMENT,
-				});
+				await this.notificationService.createNotification(
+					{
+						recipient: parentComment.author.toString(),
+						sender: authorId,
+						type: NotificationType.COMMENT,
+						message: `@${authorId} MESSAGE_REPLY_ON_COMMENT`,
+						referenceId: (comment as any)._id.toString(),
+						referenceModel: ReferenceModel.COMMENT,
+					},
+					i18n,
+				);
 			}
 		}
 
@@ -201,14 +207,17 @@ export class CommentService {
 
 		// Gửi notification cho chủ comment gốc (trừ khi người reply chính là chủ comment gốc)
 		if (parentComment.author.toString() !== authorId) {
-			await this.notificationService.createNotification({
-				recipient: parentComment.author.toString(),
-				sender: authorId,
-				type: NotificationType.COMMENT,
-				message: `@${authorId} MESSAGE_REPLY_ON_COMMENT`,
-				referenceId: commentId,
-				referenceModel: ReferenceModel.COMMENT,
-			});
+			await this.notificationService.createNotification(
+				{
+					recipient: parentComment.author.toString(),
+					sender: authorId,
+					type: NotificationType.COMMENT,
+					message: `@${authorId} MESSAGE_REPLY_ON_COMMENT`,
+					referenceId: commentId,
+					referenceModel: ReferenceModel.COMMENT,
+				},
+				i18n,
+			);
 		}
 
 		return reply;
@@ -279,14 +288,17 @@ export class CommentService {
 
 			// Gửi notification cho chủ comment (trừ khi người like chính là chủ comment)
 			if (comment.author.toString() !== userId) {
-				await this.notificationService.createNotification({
-					recipient: comment.author.toString(),
-					sender: userId,
-					type: NotificationType.LIKE,
-					message: `@${userId} MESSAGE_LIKE_COMMENT`,
-					referenceId: commentId,
-					referenceModel: ReferenceModel.COMMENT,
-				});
+				await this.notificationService.createNotification(
+					{
+						recipient: comment.author.toString(),
+						sender: userId,
+						type: NotificationType.LIKE,
+						message: `@${userId} MESSAGE_LIKE_COMMENT`,
+						referenceId: commentId,
+						referenceModel: ReferenceModel.COMMENT,
+					},
+					i18n,
+				);
 			}
 
 			return updatedComment;
@@ -363,14 +375,17 @@ export class CommentService {
 		if (newTagged.length > 0) {
 			await Promise.all(
 				newTagged.map(taggedUserId =>
-					this.notificationService.createNotification({
-						recipient: taggedUserId,
-						sender: authorId,
-						type: NotificationType.MENTION,
-						message: `MESSAGE_TAGGED_IN_COMMENT @${authorId}`,
-						referenceId: commentId,
-						referenceModel: ReferenceModel.COMMENT,
-					}),
+					this.notificationService.createNotification(
+						{
+							recipient: taggedUserId,
+							sender: authorId,
+							type: NotificationType.MENTION,
+							message: `MESSAGE_TAGGED_IN_COMMENT @${authorId}`,
+							referenceId: commentId,
+							referenceModel: ReferenceModel.COMMENT,
+						},
+						i18n,
+					),
 				),
 			);
 		}
@@ -414,14 +429,17 @@ export class CommentService {
 		if (newTagged.length > 0) {
 			await Promise.all(
 				newTagged.map(taggedUserId =>
-					this.notificationService.createNotification({
-						recipient: taggedUserId,
-						sender: authorId,
-						type: NotificationType.MENTION,
-						message: `MESSAGE_TAGGED_IN_COMMENT @${authorId}`,
-						referenceId: commentId,
-						referenceModel: ReferenceModel.COMMENT,
-					}),
+					this.notificationService.createNotification(
+						{
+							recipient: taggedUserId,
+							sender: authorId,
+							type: NotificationType.MENTION,
+							message: `MESSAGE_TAGGED_IN_COMMENT @${authorId}`,
+							referenceId: commentId,
+							referenceModel: ReferenceModel.COMMENT,
+						},
+						i18n,
+					),
 				),
 			);
 		}

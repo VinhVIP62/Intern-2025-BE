@@ -54,3 +54,6 @@ pids
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Firebase service account key
+alobo-sport-hub-firebase-adminsdk-fbsvc-c28bb97abe.json

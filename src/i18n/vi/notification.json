@@ -25,5 +25,6 @@
 	"MESSAGE_REJECTED_INVITATION": "đã từ chối lời mời tham gia nhóm của bạn",
 	"MESSAGE_NEW_POST_IN_GROUP": "đã đăng bài viết trong nhóm của bạn",
 	"MESSAGE_POST_APPROVED": "Bài viết của bạn đã được phê duyệt",
-	"MESSAGE_POST_REJECTED": "Bài viết của bạn đã được từ chối"
+	"MESSAGE_POST_REJECTED": "Bài viết của bạn đã được từ chối",
+	"NEW_NOTIFICATION": "Thông báo mới"
 }

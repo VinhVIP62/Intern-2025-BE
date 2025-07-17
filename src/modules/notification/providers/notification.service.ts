@@ -1,18 +1,34 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { Notification } from '../entities/notification.schema';
-import { NotificationType, ReferenceModel } from '../entities/notification.enum';
 import { INotificationRepository } from '../repositories/notification.repository';
 import { I18nContext } from 'nestjs-i18n';
 import { CreateNotificationDto } from '../dto/notification.dto';
+import admin from '../../../firebase';
+import { IUserRepository } from '../../user/repositories/user.repository';
 
 @Injectable()
 export class NotificationService {
-	constructor(private readonly notificationRepository: INotificationRepository) {}
+	constructor(
+		private readonly notificationRepository: INotificationRepository,
+		private readonly userRepository: IUserRepository,
+	) {}
 
-	async createNotification(data: CreateNotificationDto) {
-		return await this.notificationRepository.createNotification(data);
+	async createNotification(data: CreateNotificationDto, i18n?: I18nContext) {
+		const notification = await this.notificationRepository.createNotification(data);
+		// Lấy FCM token của user nhận qua repository
+		const recipient = await this.userRepository.findOneById(data.recipient);
+		if (recipient?.fcmToken) {
+			await admin.messaging().send({
+				token: recipient.fcmToken,
+				notification: {
+					title: i18n ? i18n.t('notification.NEW_NOTIFICATION') : 'New Notification',
+					body: data.message,
+				},
+				data: {
+					notificationId: notification._id.toString(),
+				},
+			});
+		}
+		return notification;
 	}
 
 	async getNotifications(userId: string, page: number, limit: number, isRead: boolean | undefined) {

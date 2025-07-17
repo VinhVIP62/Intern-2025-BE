@@ -37,6 +37,7 @@
 		"class-validator": "^0.14.2",
 		"cloudinary": "^2.7.0",
 		"dayjs": "^1.11.13",
+		"firebase-admin": "^13.4.0",
 		"joi": "^17.13.3",
 		"moment-timezone": "^0.6.0",
 		"mongoose-lean-virtuals": "^2.0.0",
