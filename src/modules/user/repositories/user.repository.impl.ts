@@ -28,9 +28,9 @@ export class UserRepositoryImpl implements IUserRepository {
 		return await this.userModel.findById(id);
 	}
 
-	async findFriendsByFullName(
+	async findFriendsByKey(
 		userId: string,
-		fullName: string,
+		key: string,
 		page: number,
 		limit: number,
 	): Promise<User[]> {
@@ -39,8 +39,8 @@ export class UserRepositoryImpl implements IUserRepository {
 		if (!user) return [];
 		const friendIds = user.friends.map((f: any) => (f._id ? f._id : f));
 
-		// Tìm bạn bè theo fullname (không phân biệt hoa thường)
-		const regex = new RegExp(fullName, 'i');
+		// Tìm bạn bè theo key (không phân biệt hoa thường)
+		const regex = new RegExp(key, 'i');
 		return this.userModel
 			.find({
 				_id: { $in: friendIds },
@@ -130,5 +130,9 @@ export class UserRepositoryImpl implements IUserRepository {
 	async removeFollower(currentUserId: string, followerId: string): Promise<void> {
 		await this.userModel.findByIdAndUpdate(currentUserId, { $pull: { followers: followerId } });
 		await this.userModel.findByIdAndUpdate(followerId, { $pull: { following: currentUserId } });
+	}
+
+	async getFriendsByKey(userId: string, key: string, page: number, limit: number): Promise<User[]> {
+		return this.findFriendsByKey(userId, key, page, limit);
 	}
 }

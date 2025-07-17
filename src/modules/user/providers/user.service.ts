@@ -112,13 +112,8 @@ export class UserService {
 		return this.getProfile(userId, i18n);
 	}
 
-	async getFriendsByFullName(
-		userId: string,
-		fullName: string,
-		page: number,
-		limit: number,
-	): Promise<User[]> {
-		return this.userRepository.findFriendsByFullName(userId, fullName, page, limit);
+	async getFriendsByKey(userId: string, key: string, page: number, limit: number): Promise<User[]> {
+		return this.userRepository.findFriendsByKey(userId, key, page, limit);
 	}
 
 	async isFriend(userId: string, otherUserId: string): Promise<boolean> {

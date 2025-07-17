@@ -475,7 +475,7 @@
     },
     "/api/v1/user/friends/search": {
       "get": {
-        "operationId": "UserController_getFriendsByName_v1",
+        "operationId": "UserController_getFriendsByKey_v1",
         "parameters": [
           {
             "name": "key",
@@ -528,7 +528,7 @@
             }
           }
         },
-        "summary": "Tìm kiếm bạn bè theo tên (fullname, không phân biệt hoa thường, có phân trang)",
+        "summary": "Tìm kiếm bạn bè theo tên (key trong fullname, không phân biệt hoa thường, có phân trang)",
         "tags": [
           "User"
         ]

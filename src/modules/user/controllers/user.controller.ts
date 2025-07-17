@@ -414,7 +414,8 @@ export class UserController {
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({
-		summary: 'Tìm kiếm bạn bè theo tên (fullname, không phân biệt hoa thường, có phân trang)',
+		summary:
+			'Tìm kiếm bạn bè theo tên (key trong fullname, không phân biệt hoa thường, có phân trang)',
 	})
 	@ApiOkResponse({
 		description: 'Danh sách bạn bè phù hợp',
@@ -430,7 +431,7 @@ export class UserController {
 			},
 		},
 	})
-	async getFriendsByName(
+	async getFriendsByKey(
 		@Request() req,
 		@I18n() i18n: I18nContext,
 		@Query('key') key: string,
@@ -438,7 +439,7 @@ export class UserController {
 		@Query('limit') limit: number = 10,
 	): Promise<ResponseEntity<FriendSimpleDto[]>> {
 		const userId = req.user.id;
-		const friends = await this.userService.getFriendsByFullName(userId, key, page, limit);
+		const friends = await this.userService.getFriendsByKey(userId, key, page, limit);
 		const data = plainToInstance(FriendSimpleDto, friends, { excludeExtraneousValues: true });
 		return {
 			success: true,
