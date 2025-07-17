@@ -139,7 +139,6 @@ export class NotificationService {
 				translatedMessage = translatedMessage.replace(`@${id}`, name);
 			}
 		}
-		console.log('translatedMessage', translatedMessage);
 		return translatedMessage;
 	}
 
