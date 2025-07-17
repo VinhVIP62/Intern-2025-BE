@@ -17,7 +17,6 @@ import { Roles } from '@common/decorators';
 import { Role } from '@common/enum';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { ResponseEntity } from '@common/types';
-import { NOTIFICATION_MESSAGE_KEYS } from '@common/constants/message-key.constant';
 import {
 	NotificationResponseDto,
 	NotificationPaginationResponseDto,
@@ -27,28 +26,6 @@ import {
 @Controller('notifications')
 export class NotificationController {
 	constructor(private readonly notificationService: NotificationService) {}
-
-	/**
-	 * Helper function to translate notification message
-	 */
-	private translateNotificationMessage(message: string, i18n: I18nContext): string {
-		let translatedMessage = message;
-
-		// Tìm và thay thế các i18n key trong message
-		NOTIFICATION_MESSAGE_KEYS.forEach(key => {
-			if (translatedMessage.includes(key)) {
-				try {
-					const translatedValue = i18n.t(`notification.${key}`);
-					translatedMessage = translatedMessage.replace(key, translatedValue);
-				} catch (error) {
-					// Nếu key không tồn tại, giữ nguyên key gốc
-					console.warn(`Translation key not found: notification.${key}`);
-				}
-			}
-		});
-
-		return translatedMessage;
-	}
 
 	@Version('1')
 	@Get()
@@ -85,10 +62,15 @@ export class NotificationController {
 		);
 
 		// Dịch message cho từng notification (nếu cần)
-		const translatedNotifications = notifications.map(notification => ({
-			...notification,
-			message: this.translateNotificationMessage(notification.message, i18n),
-		}));
+		const translatedNotifications = await Promise.all(
+			notifications.map(async notification => ({
+				...notification,
+				message: await this.notificationService.translateNotificationMessage(
+					notification.message,
+					i18n,
+				),
+			})),
+		);
 
 		const totalPages = Math.ceil(total / limit);
 		return {
