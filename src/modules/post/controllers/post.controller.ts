@@ -14,13 +14,15 @@ import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 
 import { WithPopulated } from '@common/crud/entities';
-import { ResponseTransform } from '@common/decorators';
+import { ResponseTransform, Roles } from '@common/decorators';
+import { Role } from '@common/enums';
 import { AuthenticatedRequest, CursorPaginatedData } from '@common/types/data';
 import { plainToInstanceStrict } from '@common/utils';
 
 import { CreatePostDto, FeedPostDto, ResponsePostDto, UpdatePostDto } from '../dto';
 import { PostService } from '../providers';
 
+@Roles(Role.USER)
 @Controller()
 export class PostController {
 	constructor(private readonly postService: PostService) {}
@@ -37,27 +39,22 @@ export class PostController {
 	}
 
 	@Version('1')
-	@Delete(':id')
+	@Delete(':postid')
 	async deletePost(
-		@Param('id', ParseObjectIdPipe) id: string,
-		@Req() request: AuthenticatedRequest,
+		@Param('postid', ParseObjectIdPipe) postId: string,
 	): Promise<WithPopulated<ResponsePostDto>> {
-		const deletedPost = await this.postService.deletePost(id, request.user.id);
+		const deletedPost = await this.postService.deletePost(postId);
 		return plainToInstanceStrict(ResponsePostDto, deletedPost);
 	}
 
 	@Version('1')
-	@Patch(':id')
+	@Patch(':postid')
 	@FormDataRequest({ storage: MemoryStoredFile })
 	async updatePost(
-		@Param('id', ParseObjectIdPipe) id: string,
-		@Req() request: AuthenticatedRequest,
+		@Param('postid', ParseObjectIdPipe) postId: string,
 		@Body() body: UpdatePostDto,
 	): Promise<WithPopulated<ResponsePostDto>> {
-		const updatedPost = await this.postService.updatePost(id, request.user.id, {
-			...body,
-			userId: request.user.id,
-		});
+		const updatedPost = await this.postService.updatePost(postId, body);
 		return plainToInstanceStrict(ResponsePostDto, updatedPost);
 	}
 
@@ -76,14 +73,11 @@ export class PostController {
 	}
 
 	@Version('1')
-	@Get(':id')
+	@Get(':postid')
 	async getPost(
-		@Param('id', ParseObjectIdPipe) id: string,
-		@Req() request: AuthenticatedRequest,
+		@Param('postid', ParseObjectIdPipe) postId: string,
 	): Promise<WithPopulated<ResponsePostDto>> {
-		const foundPost = await this.postService.getPost(id, request.user.id);
+		const foundPost = await this.postService.getPost(postId);
 		return plainToInstanceStrict(ResponsePostDto, foundPost);
 	}
-
-	// async getPosts();
 }

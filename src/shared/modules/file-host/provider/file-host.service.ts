@@ -71,4 +71,9 @@ export class FileHostService {
 
 		return data.url;
 	}
+
+	async files2Urls(files: MemoryStoredFile[]): Promise<string[]> {
+		const urls = await Promise.all(files.map(f => this.file2Url(f)));
+		return urls;
+	}
 }

@@ -8,7 +8,7 @@ export type SortOptions<T> = Partial<Record<keyof WithPopulated<T>, SORT>>;
 /** will be appended to each repo methods */
 export type RepoOptions<T> = {
 	filter?: Partial<T>;
-	/** array of path */
+	/** Array of path, if you don't want the path transformed to fit the type WithPopulated, add an underscore after the path. (eg. `PathName_`) */
 	populate?: string[];
 	sort?: SortOptions<T>;
 };
@@ -38,12 +38,10 @@ export interface IBaseRepository<T extends IBaseEntity> {
 		where: Partial<T>,
 		data: Partial<T>,
 		queryOptions?: QueryOptions<T>,
-	): Promise<WithPopulated<T> | null>;
-	findOneByAndDelete(
-		where: Partial<T>,
-		queryOptions?: QueryOptions<T>,
-	): Promise<WithPopulated<T> | null>;
+	): Promise<WithPopulated<T>>;
+	findOneByAndDelete(where: Partial<T>, queryOptions?: QueryOptions<T>): Promise<WithPopulated<T>>;
 	count(where: Partial<T>, queryOptions?: QueryOptions<T>): Promise<number>;
+	exists(where: Partial<T>, queryOptions?: QueryOptions<T>): Promise<boolean>;
 }
 
 export interface ISoftDeleteBaseRepository<

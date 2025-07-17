@@ -2,11 +2,12 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { NestjsFormDataModule } from 'nestjs-form-data';
 
-import { UserModule } from '@modules/user';
+import { CommentModule } from '@modules/comment';
+import { ReactionModule } from '@modules/reaction';
 
-import { FileHostModule } from '@shared/modules';
+import { CaslModule, FileHostModule } from '@shared/modules';
 
-import { PostController } from './controllers';
+import { PostCommentController, PostController, PostReactionController } from './controllers';
 import { SocialPost, SocialPostSchema } from './entities';
 import { PostService } from './providers';
 import { IPostRepositoryToken, PostRepositoryImpl } from './repositories';
@@ -21,9 +22,11 @@ import { IPostRepositoryToken, PostRepositoryImpl } from './repositories';
 		]),
 		NestjsFormDataModule,
 		FileHostModule,
-		UserModule,
+		CommentModule,
+		ReactionModule,
+		CaslModule,
 	],
-	controllers: [PostController],
+	controllers: [PostController, PostReactionController, PostCommentController],
 	providers: [
 		PostService,
 		{
@@ -31,6 +34,6 @@ import { IPostRepositoryToken, PostRepositoryImpl } from './repositories';
 			useClass: PostRepositoryImpl,
 		},
 	],
-	exports: [PostService],
+	exports: [PostService, IPostRepositoryToken],
 })
 export class PostModule {}

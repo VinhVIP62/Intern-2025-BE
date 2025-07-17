@@ -9,8 +9,8 @@ import { IS_RES_TRANSFORM_KEY, ResponseTransformOptions } from '@common/decorato
 import {
 	CursorPaginatedData,
 	CursorPaginatedResponseEntity,
-	PaginatedData,
-	PaginatedResponseEntity,
+	OffsetPaginatedData,
+	OffsetPaginatedResponseEntity,
 	ResponseEntity,
 } from '@common/types/data';
 
@@ -33,13 +33,13 @@ export class ResponseTransformInterceptor implements NestInterceptor {
 
 		const responseTransformer = <T>(
 			data: T,
-		): ResponseEntity<T> | PaginatedResponseEntity<T> | CursorPaginatedResponseEntity<T> => {
+		): ResponseEntity<T> | OffsetPaginatedResponseEntity<T> | CursorPaginatedResponseEntity<T> => {
 			if (transformOptions?.pagination == true) {
 				// if paginated data
-				const paginatedError = validateSync(plainToInstance(PaginatedData<any>, data));
+				const paginatedError = validateSync(plainToInstance(OffsetPaginatedData<any>, data));
 				if (!paginatedError.length) {
-					const paginatedData = data as PaginatedData<T>;
-					return new PaginatedResponseEntity<T>(request.url, statusCode, paginatedData);
+					const paginatedData = data as OffsetPaginatedData<T>;
+					return new OffsetPaginatedResponseEntity<T>(request.url, statusCode, paginatedData);
 				}
 				// if cursor paginated data
 				const cursorPaginatedError = validateSync(plainToInstance(CursorPaginatedData<any>, data));

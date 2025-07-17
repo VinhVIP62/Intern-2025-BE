@@ -1,4 +1,4 @@
-import { CursorPaginatedData, PaginatedData } from './paginated-data.type';
+import { CursorPaginatedData, OffsetPaginatedData } from './paginated-data.type';
 
 export interface ErrorMessage {
 	[key: string]: string;
@@ -36,8 +36,13 @@ export class ResponseEntity<T> {
 	data: T | null;
 }
 
-export class PaginatedResponseEntity<T> extends ResponseEntity<T[]> {
-	constructor(path: string, statusCode: number, paginatedData: PaginatedData<T>, error?: string) {
+export class OffsetPaginatedResponseEntity<T> extends ResponseEntity<T[]> {
+	constructor(
+		path: string,
+		statusCode: number,
+		paginatedData: OffsetPaginatedData<T>,
+		error?: string,
+	) {
 		super(path, statusCode, paginatedData.data, error);
 		this.page = paginatedData.page;
 		this.amount = paginatedData.data.length;

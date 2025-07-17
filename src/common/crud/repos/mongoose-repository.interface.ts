@@ -1,7 +1,8 @@
-import { Model, PopulateOptions, SortOrder } from 'mongoose';
+import mongoose, { Model, PopulateOptions, SortOrder } from 'mongoose';
 
 import { SORT } from '@common/enums';
 import { EntityNotFound } from '@common/exceptions';
+import { CustomRequestCtx } from '@common/types/data/request-ctx.js';
 import { Class, LowerBound } from '@common/types/utils/';
 
 import { IBaseEntity } from '../entities/base-entity.interface.js';
@@ -32,10 +33,24 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 	constructor(
 		protected readonly entityModel: Model<T>,
 		protected readonly entityClass: Class<T>,
-	) {}
+		repoOptions: RepoOptions<T> = {},
+	) {
+		// merge the merfed base and subclass with the user set Options
+		// since this is the BASE class, field initializer came before constructor is called
+		this.repoOptions = {};
+		this.mergeRepoOptions(repoOptions);
+	}
 
-	repoOptions: RepoOptions<T> = {};
+	repoOptions: RepoOptions<T>;
 
+	protected mergeRepoOptions(repoOptions: RepoOptions<T>) {
+		const filter = this.mergeFilter({ ...repoOptions.filter } as Partial<T>);
+		const populate = this.mergePopulate([...(repoOptions.populate ?? [])]);
+		const sort = this.mergeSort({ ...repoOptions.sort } as unknown as Record<keyof T, SORT>);
+		this.repoOptions = { filter, populate, sort };
+	}
+
+	//#region TRANSFORMER
 	/** To apply middleware transformation for all class methods */
 	protected mergeFilter(filter: Partial<T> = {}) {
 		const repoOptions: Partial<T> = this.repoOptions.filter ?? {};
@@ -66,11 +81,24 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 		return merged;
 	}
 
+	// overload 1
+	protected transformFilter<TWhere>(
+		this: MongooseRepositoryImpl<T>,
+		where: { id: string } & TWhere,
+		queryOptions?: QueryOptions<T>,
+	): { _id: mongoose.Types.ObjectId } & Omit<TWhere, 'id'>;
+	// overload 2
 	protected transformFilter<TWhere>(
 		this: MongooseRepositoryImpl<T>,
 		where: { id?: string } & TWhere,
 		queryOptions?: QueryOptions<T>,
-	): { _id?: string } & Omit<TWhere, 'id'> {
+	): { _id?: mongoose.Types.ObjectId } & Omit<TWhere, 'id'>;
+	// implementation
+	protected transformFilter<TWhere>(
+		this: MongooseRepositoryImpl<T>,
+		where: { id?: string } & TWhere,
+		queryOptions?: QueryOptions<T>,
+	): { _id?: mongoose.Types.ObjectId } & Omit<TWhere, 'id'> {
 		const repoOptions: Partial<T> =
 			(
 				queryOptions?.doNotUseRepoOptions === true ||
@@ -97,7 +125,7 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 		const transformed = {
 			...defaultFindOptions,
 			...cleanedFindOptions,
-			...(where.id && { _id: where.id }),
+			...(where.id && { _id: new mongoose.Types.ObjectId(where.id) }),
 		};
 		delete transformed.id;
 		return transformed;
@@ -141,9 +169,10 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 		const merged: string[] = Array.from(new Set([...repoOptions, ...queryRepoOptions]));
 		/** string transformation, appending  'Populated' postfix to values
 		 * (.eg userId.deletedBy => userIdPopulated.deletedByPopulated)*/
-		merged.forEach(
-			(v, i) =>
-				(merged[i] = v
+		merged.forEach((v, i) =>
+			v.endsWith('_') ?
+				(merged[i] = v.slice(0, -1))
+			:	(merged[i] = v
 					.split('.')
 					.map(vsegment => vsegment + 'Populated')
 					.join('.')),
@@ -151,26 +180,37 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 		const transformed: PopulateOptions[] = merged.map(p => buildPopulateObject(p));
 		return transformed;
 	}
+	//#endregion
 
+	//#region MAIN
 	async create(data: Partial<T>, queryOptions?: QueryOptions<T>): Promise<T> {
-		const createdEntity = await this.entityModel.create(data);
-		const populatedEntity = await createdEntity.populate(this.transformPopulate(queryOptions));
+		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
+		const populateOptions = this.transformPopulate(queryOptions);
+		const createdEntity = new this.entityModel(data);
+		const savedEntity = await createdEntity.save({ session });
+		const populatedEntity = await savedEntity.populate(populateOptions);
 		return populatedEntity.toObject();
 	}
 
 	async update(id: string, data: Partial<T>, queryOptions?: QueryOptions<T>): Promise<T> {
-		return this.findOneByAndUpdate({ id } as unknown as Partial<T>, data, queryOptions);
+		const filterOptions = { id } as unknown as Partial<T>;
+		return this.findOneByAndUpdate(filterOptions, data, queryOptions);
 	}
 
 	async delete(id: string, queryOptions?: QueryOptions<T>): Promise<T> {
-		return this.findOneByAndDelete({ id } as unknown as Partial<T>, queryOptions);
+		const filterOptions = { id } as unknown as Partial<T>;
+		return this.findOneByAndDelete(filterOptions, queryOptions);
 	}
 
 	async findOneById(id: string, queryOptions?: QueryOptions<T>): Promise<WithPopulated<T> | null> {
+		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
+		const filterOptions = this.transformFilter({ id }, queryOptions);
+		const populateOptions = this.transformPopulate(queryOptions);
 		const foundEntity = (
 			await this.entityModel
-				.findOne(this.transformFilter({ id }, queryOptions))
-				.populate(this.transformPopulate(queryOptions))
+				.findOne(filterOptions)
+				.populate(populateOptions)
+				.session(session)
 				.exec()
 		)?.toObject();
 		return foundEntity || null;
@@ -186,10 +226,14 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 		where: Partial<T>,
 		queryOptions?: QueryOptions<T>,
 	): Promise<WithPopulated<T> | null> {
+		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
+		const filterOptions = this.transformFilter(where, queryOptions);
+		const populateOptions = this.transformPopulate(queryOptions);
 		const foundEntity = (
 			await this.entityModel
-				.findOne(this.transformFilter(where, queryOptions))
-				.populate(this.transformPopulate(queryOptions))
+				.findOne(filterOptions)
+				.populate(populateOptions)
+				.session(session)
 				.exec()
 		)?.toObject();
 		return foundEntity || null;
@@ -209,13 +253,17 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 		data: Partial<T>,
 		queryOptions?: QueryOptions<T>,
 	): Promise<WithPopulated<T>> {
+		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
+		const filterOptions = this.transformFilter(where, queryOptions);
+		const populateOptions = this.transformPopulate(queryOptions);
 		const updatedEntity = (
 			await this.entityModel
-				.findOneAndUpdate(this.transformFilter(where, queryOptions), data, {
+				.findOneAndUpdate(filterOptions, data, {
 					new: true,
 					runValidators: true,
 				})
-				.populate(this.transformPopulate(queryOptions))
+				.populate(populateOptions)
+				.session(session)
 				.exec()
 		)?.toObject();
 		if (!updatedEntity) throw new EntityNotFound(this.entityClass);
@@ -226,10 +274,14 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 		where: Partial<T>,
 		queryOptions?: QueryOptions<T>,
 	): Promise<WithPopulated<T>> {
+		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
+		const filterOptions = this.transformFilter(where, queryOptions);
+		const populateOptions = this.transformPopulate(queryOptions);
 		const deletedEntity = (
 			await this.entityModel
-				.findOneAndDelete(this.transformFilter(where, queryOptions))
-				.populate(this.transformPopulate(queryOptions))
+				.findOneAndDelete(filterOptions)
+				.populate(populateOptions)
+				.session(session)
 				.exec()
 		)?.toObject();
 		if (!deletedEntity) throw new EntityNotFound(this.entityClass);
@@ -237,24 +289,44 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 	}
 
 	async find(where: Partial<T>, queryOptions?: QueryOptions<T>): Promise<WithPopulated<T>[]> {
-		const foundEntities = (
-			await this.entityModel
-				.find(this.transformFilter(where, queryOptions))
-				.sort(this.transformSort(queryOptions))
-				.skip(queryOptions?.skip || 0)
-				.limit(queryOptions?.limit || 0)
-				.populate(this.transformPopulate(queryOptions))
-				.exec()
-		).map(e => e.toObject());
+		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
+		const filterOptions = this.transformFilter(where, queryOptions);
+		const sortOptions = this.transformSort(queryOptions);
+		const skipOptions = queryOptions?.skip || 0;
+		const limitOptions = queryOptions?.limit || 0;
+		const populateOptions = this.transformPopulate(queryOptions);
+		const foundEntities: WithPopulated<T>[] = [];
+		const query = this.entityModel
+			.find(filterOptions)
+			.sort(sortOptions)
+			.skip(skipOptions)
+			.limit(limitOptions)
+			.session(session)
+			.populate(populateOptions);
+		const cursor = query.cursor();
+		for await (const doc of cursor) {
+			foundEntities.push(doc.toObject());
+		}
 		return foundEntities;
 	}
 
 	async count(where: Partial<T>, queryOptions?: QueryOptions<T>): Promise<number> {
-		const count = this.entityModel.countDocuments(this.transformFilter(where, queryOptions));
+		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
+		const filterOptions = this.transformFilter(where, queryOptions);
+		const count = this.entityModel.countDocuments(filterOptions).session(session);
 		return count;
 	}
+
+	async exists(where: Partial<T>, queryOptions?: QueryOptions<T>): Promise<boolean> {
+		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
+		const filterOptions = this.transformFilter(where, queryOptions);
+		const existing = await this.entityModel.exists(filterOptions).session(session);
+		return existing ? true : false;
+	}
+	//#endregion
 }
 
+//#region SOFTDELETE REPO
 /**
  * @see
  * T extending ISoftDeletable means it has a narrower typing so we can't just assign as is.
@@ -271,26 +343,20 @@ export class MongooseSoftDeleteRepositoryImpl<
 	constructor(
 		protected readonly entityModel: Model<T>,
 		protected readonly entityClass: Class<T>,
-		repoOptions: RepoOptions<T>,
+		repoOptions: RepoOptions<T> = {},
 	) {
+		/**
+		 * this is a sub class so the field initializers came after super is called,
+		 * calling super here would just merge with the options in the baseclass.
+		 *
+		 * init base -> set repoOptions for THIS subclass -> merge
+		 */
 		super(entityModel, entityClass);
-		// set class-scoped default constructor value here
-		const filter = { deleted: false };
-		const populate = ['deletedBy'];
-		const sort = { username: -1 } as unknown as Record<keyof T, SORT>;
-		// end of class-scoped default cons value
-		// merge the base repo Options with the subclass Options
 		this.repoOptions = {
-			filter: this.mergeFilter({ ...filter } as Partial<T>),
-			populate: this.mergePopulate([...populate]),
-			sort: this.mergeSort({ ...sort }),
+			filter: { deleted: false } as Partial<T>,
+			populate: ['deletedBy'],
 		};
-		// merge the merfed base and subclass with the user set Options
-		this.repoOptions = {
-			filter: this.mergeFilter({ ...repoOptions.filter } as Partial<T>),
-			populate: this.mergePopulate([...(repoOptions.populate ?? [])]),
-			sort: this.mergeSort({ ...repoOptions.sort } as unknown as Record<keyof T, SORT>),
-		};
+		this.mergeRepoOptions(repoOptions);
 	}
 
 	/** [PLA] not finished as this does not soft delete related entities */
@@ -300,7 +366,8 @@ export class MongooseSoftDeleteRepositoryImpl<
 		queryOptions?: QueryOptions<T>,
 	): Promise<WithPopulated<T>> {
 		// Still have to assert type, but dw we already have a check above
-		return this.findOneByAndSoftDelete({ id } as unknown as Partial<T>, deletedBy, queryOptions);
+		const filterOptions = { id } as unknown as Partial<T>;
+		return this.findOneByAndSoftDelete(filterOptions, deletedBy, queryOptions);
 	}
 
 	/** [PLA] not finished as this does not soft delete related entities */
@@ -329,3 +396,4 @@ export class MongooseSoftDeleteRepositoryImpl<
 		);
 	}
 }
+//#endregion
