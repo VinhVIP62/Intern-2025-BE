@@ -12,10 +12,10 @@ import {
 } from 'class-validator';
 import { HasExtension, HasMimeType, IsFile, MemoryStoredFile } from 'nestjs-form-data';
 
-import { Level } from '@common/enums';
 import { str2bool } from '@common/utils';
 
 import { Location, Sport } from '../entities';
+import { Level } from '../enums';
 import { CreateUserDto } from './create-user.dto';
 
 export class LocationDto implements Location {
