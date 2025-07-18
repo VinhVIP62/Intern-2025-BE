@@ -678,11 +678,13 @@ export class PostRepositoryImpl implements IPostRepository {
 		groupId: string,
 		page: number,
 		limit: number,
+		userId?: string,
+		status?: PostStatus,
 	): Promise<{ posts: Post[]; total: number }> {
 		const skip = (page - 1) * limit;
 		const filter: any = { groupId: new Types.ObjectId(groupId) };
-		filter.approvalStatus = PostStatus.APPROVED;
-
+		if (userId) filter.author = new Types.ObjectId(userId);
+		if (status) filter.approvalStatus = status;
 		const [posts, total] = await Promise.all([
 			this.postModel
 				.find(filter)

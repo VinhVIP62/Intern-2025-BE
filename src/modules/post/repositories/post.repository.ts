@@ -2,6 +2,7 @@ import { Post } from '../entities/post.schema';
 import { Types } from 'mongoose';
 import { CreatePostDto, UpdatePostDto } from '../dto/post.dto';
 import { PostAccessLevel } from '../entities/post.enum';
+import { PostStatus } from '../entities/post.enum';
 export interface IPostRepository {
 	findAll(
 		page: number,
@@ -101,6 +102,8 @@ export interface IPostRepository {
 		groupId: string,
 		page: number,
 		limit: number,
+		userId?: string,
+		status?: PostStatus,
 	): Promise<{ posts: Post[]; total: number }>;
 
 	approvePost(postId: string, approved: boolean, adminId: string, reason?: string): Promise<Post>;
