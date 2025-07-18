@@ -24,6 +24,7 @@ import { User } from '../../user/entities/user.schema';
 import { UserService } from '../../user/providers/user.service';
 import { CommentService } from '../../comment/providers/comment.service';
 import { FILE_TYPE_CONSTANTS } from '@common/constants/file-types.constant';
+import { PostStatus } from '../entities/post.enum';
 
 @Injectable()
 export class PostService {
@@ -715,9 +716,17 @@ export class PostService {
 		i18n: I18nContext,
 		page: number = 1,
 		limit: number = 10,
+		userId?: string,
+		status?: PostStatus,
 	): Promise<PaginatedPostsResponseDto> {
 		try {
-			const { posts, total } = await this.postRepository.findByGroupId(groupId, page, limit);
+			const { posts, total } = await this.postRepository.findByGroupId(
+				groupId,
+				page,
+				limit,
+				userId,
+				status,
+			);
 			const totalPages = Math.ceil(total / limit);
 			const hasNextPage = page < totalPages;
 			const hasPrevPage = page > 1;

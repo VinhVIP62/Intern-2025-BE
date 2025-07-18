@@ -12,6 +12,7 @@ import {
 	Version,
 	UploadedFiles,
 	UseInterceptors,
+	BadRequestException,
 } from '@nestjs/common';
 import {
 	ApiTags,
@@ -39,7 +40,8 @@ import { Roles } from '@common/decorators';
 import { Role } from '@common/enum';
 import { PostService } from '@modules/post/providers/post.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { CreatePostDto } from '@modules/post/dto/post.dto';
+import { CreatePostDto, PaginatedPostsResponseDto } from '@modules/post/dto/post.dto';
+import { PostStatus } from '@modules/post/entities/post.enum';
 
 @ApiTags('Group')
 @Controller('groups')
@@ -1006,6 +1008,81 @@ export class GroupController {
 		return {
 			success: true,
 			message: i18n.t('group.INVITATION_CANCELLED_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Get('posts/user')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Lấy danh sách bài đăng của user trong group, có thể lọc theo status' })
+	@ApiQuery({
+		name: 'groupId',
+		type: String,
+		description: 'ID nhóm',
+		required: true,
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiQuery({
+		name: 'userId',
+		type: String,
+		description: 'ID người dùng, nếu không truyền -> current user',
+		required: false,
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiQuery({
+		name: 'status',
+		enum: Object.values(PostStatus),
+		required: false,
+		description: 'Trạng thái duyệt bài (nếu không truyền sẽ lấy tất cả)',
+	})
+	@ApiQuery({
+		name: 'page',
+		required: false,
+		type: Number,
+		description: 'Số trang (mặc định: 1)',
+		example: 1,
+	})
+	@ApiQuery({
+		name: 'limit',
+		required: false,
+		type: Number,
+		description: 'Số lượng bài đăng trên mỗi trang (mặc định: 10)',
+		example: 10,
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Lấy danh sách bài đăng thành công',
+		type: PaginatedPostsResponseDto,
+	})
+	async getPostsOfUserInGroup(
+		@I18n() i18n: I18nContext,
+		@Query('groupId') groupId: string,
+		@Query('userId') userId: string,
+		@Query('status') status: string,
+		@Query('page') page: number = 1,
+		@Query('limit') limit: number = 10,
+		@Request() req,
+	): Promise<ResponseEntity<PaginatedPostsResponseDto>> {
+		if (status && !Object.values(PostStatus).includes(status as PostStatus)) {
+			throw new BadRequestException(
+				`Invalid status value. Allowed: ${Object.values(PostStatus).join(', ')}`,
+			);
+		}
+		const statusEnum = status ? (status as PostStatus) : undefined;
+
+		const result = await this.postService.getPostsByGroupId(
+			groupId,
+			i18n,
+			Number(page),
+			Number(limit),
+			userId ? userId : req.user.id,
+			statusEnum,
+		);
+		return {
+			success: true,
+			data: result,
+			message: i18n.t('post.GROUP_USER_POSTS_RETRIEVED_SUCCESS'),
 		};
 	}
 }

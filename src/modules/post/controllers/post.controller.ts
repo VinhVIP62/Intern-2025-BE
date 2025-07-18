@@ -214,6 +214,8 @@ export class PostController {
 
 	@Version('1')
 	@Get(':postId')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Lấy thông tin chi tiết bài đăng theo ID' })
 	@ApiParam({
 		name: 'postId',
@@ -245,6 +247,8 @@ export class PostController {
 
 	@Version('1')
 	@Get('user/:userId')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Lấy danh sách bài đăng của người dùng theo ID' })
 	@ApiParam({
 		name: 'userId',
