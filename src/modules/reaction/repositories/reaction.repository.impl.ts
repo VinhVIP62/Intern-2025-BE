@@ -7,10 +7,8 @@ import { MongooseRepositoryImpl } from '@common/crud/repos';
 import { SORT } from '@common/enums';
 import { CursorPaginationOption, CustomRequestCtx } from '@common/types/data';
 
-import { User } from '@modules/user/entities';
-
 import { Reaction } from '../entities';
-import { IReactionRepository, ReactionCount, ReactionUser } from './reaction.repository';
+import { IReactionRepository, ReactionCount } from './reaction.repository';
 
 @Injectable()
 export class ReactionRepositoryImpl
@@ -82,7 +80,7 @@ export class ReactionRepositoryImpl
 		targetId: string,
 		reactionValue: number,
 		options?: CursorPaginationOption<string>,
-	): Promise<ReactionUser[]> {
+	): Promise<Reaction[]> {
 		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
 		const filterOptions = this.transformFilter({
 			targetId,
@@ -92,19 +90,19 @@ export class ReactionRepositoryImpl
 		const sortOptions = { userId: SORT.ASC };
 		const limitOptions = options?.limit || 10;
 		const populateOptions = this.transformPopulate({ customRepoOptions: { populate: ['userId'] } });
-		const userFields: (keyof User)[] = ['avatarUrl', 'username'];
-		const fieldMap = Object.fromEntries(userFields.map(f => [`user.${f}`, `userIdPopulated.${f}`]));
 
-		const foundUsers = await this.reactionModel
+		const query = this.reactionModel
 			.find(filterOptions)
 			.sort(sortOptions)
 			.limit(limitOptions)
 			.populate(populateOptions)
-			.select<ReactionUser>(fieldMap)
-			.session(session)
-			.exec();
-
-		return foundUsers.map(o => o.toObject());
+			.session(session);
+		const cursor = query.cursor();
+		const foundReactions: Reaction[] = [];
+		for await (const doc of cursor) {
+			foundReactions.push(doc.toObject());
+		}
+		return foundReactions;
 	}
 
 	async deleteManyOf(targetIds: string[]): Promise<number> {

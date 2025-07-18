@@ -21,7 +21,10 @@ export class ResponseCommentDto {
 
 	@Expose()
 	@Type(() => String)
-	postId!: string;
+	rootId!: string;
+
+	@Expose()
+	rootType!: string;
 
 	@Expose()
 	@Transform(({ obj }) => {

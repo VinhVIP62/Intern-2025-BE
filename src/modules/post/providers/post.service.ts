@@ -5,7 +5,7 @@ import { WithPopulated } from '@common/crud/entities';
 import { Action } from '@common/enums';
 import { CursorPaginationOption, CustomRequestCtx } from '@common/types/data';
 
-import { CaslFilterFactory, FileHostService } from '@shared/modules';
+import { CaslFilterFactory, FileHostService, UserAbilityOptions } from '@shared/modules';
 
 import { SocialPost } from '../entities';
 import { IPostRepository, IPostRepositoryToken } from '../repositories';
@@ -18,11 +18,16 @@ export class PostService {
 		private readonly caslFilterFactory: CaslFilterFactory,
 	) {}
 
-	async checkAccessTo(id: string, action: Action): Promise<void> {
-		const filter = this.caslFilterFactory.createFilterForUser(SocialPost, action);
-		await this.postRepository.findOneByOrFail({ id, ...filter }).catch(() => {
+	async checkAccessTo(
+		id: string,
+		action: Action,
+		options?: UserAbilityOptions,
+	): Promise<SocialPost> {
+		const filter = this.caslFilterFactory.createFilterForUser(SocialPost, action, options);
+		const foundPost = await this.postRepository.findOneByOrFail({ id, ...filter }).catch(() => {
 			throw new ForbiddenException();
 		});
+		return foundPost;
 	}
 
 	async createPost(

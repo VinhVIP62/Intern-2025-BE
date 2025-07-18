@@ -1,9 +1,9 @@
-import { Body, Controller, Delete, Get, Param, Put, Query, Version } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put, Query, Req, Version } from '@nestjs/common';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
 
-import { Roles } from '@common/decorators';
+import { ResponseTransform, Roles } from '@common/decorators';
 import { Action, Role } from '@common/enums';
-import { CursorPaginatedData, CustomRequestCtx } from '@common/types/data';
+import { AuthenticatedRequest, CursorPaginatedData } from '@common/types/data';
 import { plainToInstanceStrict } from '@common/utils';
 
 import { ReactCommentDto } from '@modules/comment/dto';
@@ -25,19 +25,20 @@ export class PostReactionController {
 
 	@Version('1')
 	@Get(':postid/reactions/list')
+	@ResponseTransform({ pagination: true })
 	async getCommentReactionUsersList(
 		@Param('postid', ParseObjectIdPipe) postId: string,
 		@Query() query: GetReactionUsersDto,
-	) {
+	): Promise<CursorPaginatedData<ResponseReactionUsersDto>> {
 		await this.postService.checkAccessTo(postId, Action.READ);
-		const users = await this.reactionService.getReactionUsersList(
+		const usersListResponse = await this.reactionService.getReactionUsersList(
 			postId,
 			query.reactionValue,
 			query,
 		);
 		return new CursorPaginatedData(
-			users.nextCursor,
-			plainToInstanceStrict(ResponseReactionUsersDto, users.foundUsers),
+			usersListResponse.nextCursor,
+			plainToInstanceStrict(ResponseReactionUsersDto, usersListResponse.foundUsers),
 		);
 	}
 
@@ -45,12 +46,12 @@ export class PostReactionController {
 	@Put(':postid/reactions')
 	async reactComment(
 		@Param('postid', ParseObjectIdPipe) postId: string,
+		@Req() request: AuthenticatedRequest,
 		@Body() body: ReactCommentDto,
 	): Promise<ResponseReactionDto> {
 		await this.postService.checkAccessTo(postId, Action.READ);
-		const user = CustomRequestCtx.getAuthenticated().req.user;
 		const reaction = this.reactionService.upsertReaction(
-			{ userId: user.id, targetId: postId },
+			{ userId: request.user.id, targetId: postId },
 			body.reactionValue,
 		);
 		return plainToInstanceStrict(ResponseReactionDto, reaction);
@@ -60,10 +61,10 @@ export class PostReactionController {
 	@Delete(':postid/reactions')
 	async unreactComment(
 		@Param('postid', ParseObjectIdPipe) postId: string,
+		@Req() request: AuthenticatedRequest,
 	): Promise<ResponseReactionDto> {
 		await this.postService.checkAccessTo(postId, Action.READ);
-		const user = CustomRequestCtx.getAuthenticated().req.user;
-		const reaction = this.reactionService.delete({ userId: user.id, targetId: postId });
+		const reaction = this.reactionService.delete({ userId: request.user.id, targetId: postId });
 		return plainToInstanceStrict(ResponseReactionDto, reaction);
 	}
 }

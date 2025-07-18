@@ -61,6 +61,9 @@ export class CommentRepositoryImpl
 		const where = this.transformFilter(options);
 		const globalSession = CustomRequestCtx.get().req.db.mongoose.session || null;
 		const session = globalSession ?? (await this.commentModel.startSession());
+		if (!globalSession) {
+			session.startTransaction();
+		}
 
 		const matchStage: PipelineStage.Match = { $match: { ...where } };
 		// get ancestors of self (not including self)
@@ -91,7 +94,10 @@ export class CommentRepositoryImpl
 		const descendantsFilter = { _id: { $in: descendants } };
 		await this.commentModel.deleteMany(descendantsFilter).session(session).exec();
 		// if this was just local, end the session, else the global session must end elsewhere
-		if (!globalSession) await session.endSession();
+		if (!globalSession) {
+			await session.commitTransaction();
+			await session.endSession();
+		}
 		return descendants.map(id => id.toString());
 	}
 }

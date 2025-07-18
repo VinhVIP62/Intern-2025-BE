@@ -5,7 +5,7 @@ import { Action } from '@common/enums';
 import { CustomRequestCtx } from '@common/types/data';
 import { ConcreteClass } from '@common/types/utils';
 
-import { CaslAbilityFactory } from './casl-ability.factory';
+import { CaslAbilityFactory, UserAbilityOptions } from './casl-ability.factory';
 
 @Injectable()
 export class CaslFilterFactory {
@@ -14,10 +14,10 @@ export class CaslFilterFactory {
 	/**
 	 * returns { $expr: { $eq: [0, 1] } } if undefined rule or if user doesn't exist
 	 */
-	createFilterForUser(forType: ConcreteClass<any>, action: Action) {
+	createFilterForUser(forType: ConcreteClass<any>, action: Action, options?: UserAbilityOptions) {
 		const user = CustomRequestCtx.get().req.user;
 		if (!user) return { $expr: { $eq: [0, 1] } };
-		const ability = this.caslAbilityFactory.createForUser(user);
+		const ability = this.caslAbilityFactory.createForUser(user, options);
 		const filter = accessibleBy(ability, action).ofType(forType);
 		return filter;
 	}

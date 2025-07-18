@@ -1,9 +1,11 @@
 import {
 	AbilityBuilder,
 	ExtractSubjectType,
+	ForcedSubject,
 	InferSubjects,
 	MongoAbility,
 	createMongoAbility,
+	subject,
 } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
 import mongoose from 'mongoose';
@@ -11,34 +13,43 @@ import mongoose from 'mongoose';
 import { Action, Role, Visibility } from '@common/enums';
 
 import { Sub } from '@modules/auth/types';
-import { Comment } from '@modules/comment/entities';
+import { Comment, CommentRootType } from '@modules/comment/entities';
 import { SocialPost } from '@modules/post/entities';
 import { User } from '@modules/user/entities';
+
+export const subjectTypeMap = {
+	User,
+	SocialPost,
+	Comment,
+};
 
 type Subjects = InferSubjects<typeof User | typeof SocialPost | typeof Comment> | 'all';
 
 export type AppAbility = MongoAbility<[Action, Subjects]>;
 
+export type UserAbilityOptions = {
+	post?: SocialPost;
+};
+
 @Injectable()
 export class CaslAbilityFactory {
-	createForUser(user: Sub) {
+	createForUser(user: Sub, options?: UserAbilityOptions) {
 		const { can, cannot, build } = new AbilityBuilder(createMongoAbility);
-
 		if (user.roles.includes(Role.ADMIN) || user.roles.includes(Role.MODERATOR)) {
 			can(Action.MANAGE, User);
 			can(Action.MANAGE, SocialPost);
 			can(Action.MANAGE, Comment);
 		} else {
 			// user on USERS
-			cannot(Action.CREATE, User);
-			can(Action.READ, User);
-			can([Action.UPDATE, Action.DELETE], User, {
-				id: new mongoose.Types.ObjectId(user.id) as unknown as string,
-			});
+			{
+				cannot(Action.CREATE, User);
+				can(Action.READ, User);
+				can([Action.UPDATE, Action.DELETE], User, {
+					id: new mongoose.Types.ObjectId(user.id) as unknown as string,
+				});
+			}
 			// user on SOCIAL POSTS
 			{
-				// cant interact with deleted post
-				cannot(Action.MANAGE, SocialPost, { deleted: true });
 				// can manage own post
 				can(Action.MANAGE, SocialPost, {
 					userId: new mongoose.Types.ObjectId(user.id) as unknown as string,
@@ -57,6 +68,8 @@ export class CaslAbilityFactory {
 				cannot([Action.UPDATE, Action.DELETE], SocialPost, {
 					userId: { $ne: new mongoose.Types.ObjectId(user.id) as unknown as string },
 				});
+				// cant interact with deleted post
+				cannot(Action.MANAGE, SocialPost, { deleted: true });
 			}
 			// user on COMMENTS
 			{
@@ -71,10 +84,38 @@ export class CaslAbilityFactory {
 					userId: { $ne: new mongoose.Types.ObjectId(user.id) as unknown as string },
 				});
 			}
+			// user on POST COMMENTS
+			if (options?.post) {
+				// cannot access comment on post user doesn't have access to
+				const ability = this.createForUser(user);
+				const canReadPost = ability.can(Action.READ, subject(SocialPost.name, options.post));
+				// if can read post
+				if (canReadPost)
+					// cannot do anything with comment not belonging to post
+					cannot(Action.MANAGE, Comment, {
+						rootId: { $ne: new mongoose.Types.ObjectId(options.post.id) as unknown as string },
+						rootType: { $ne: CommentRootType.POST },
+					});
+				// cannot do anything with comment on post with no read access
+				else cannot(Action.MANAGE, Comment);
+			}
 		}
 
+		// https://github.com/microsoft/TypeScript/issues/3841
+		// returns a class btw
 		return build({
-			detectSubjectType: item => item.constructor as ExtractSubjectType<Subjects>,
+			detectSubjectType: item => {
+				const typeString = (item as ForcedSubject<string>).__caslSubjectType__;
+
+				// no need to return .constructor() of this
+				if (typeString && typeString in subjectTypeMap) {
+					return subjectTypeMap[
+						typeString as keyof typeof subjectTypeMap
+					] as ExtractSubjectType<Subjects>;
+				}
+
+				return item.constructor as ExtractSubjectType<Subjects>;
+			},
 		});
 	}
 }

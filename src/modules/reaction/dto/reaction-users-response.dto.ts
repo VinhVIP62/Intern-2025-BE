@@ -1,6 +1,10 @@
 import { Exclude, Expose, Transform } from 'class-transformer';
 
-import { ReactionUser } from '../repositories';
+import { WithPopulated } from '@common/crud/entities';
+
+import { User } from '@modules/user/entities';
+
+import { Reaction } from '../entities';
 
 @Exclude()
 export class ResponseReactionUsersDto {
@@ -8,10 +12,10 @@ export class ResponseReactionUsersDto {
 	id!: string;
 
 	@Expose()
-	@Transform(({ obj }) => (obj as ReactionUser).user?.avatarUrl, { toClassOnly: true })
+	@Transform(({ obj }) => ((obj as WithPopulated<Reaction>).userIdPopulated as User)?.avatarUrl)
 	avatarUrl!: string;
 
 	@Expose()
-	@Transform(({ obj }) => (obj as ReactionUser).user?.username, { toClassOnly: true })
+	@Transform(({ obj }) => ((obj as WithPopulated<Reaction>).userIdPopulated as User)?.username)
 	username!: string;
 }

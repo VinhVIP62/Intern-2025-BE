@@ -28,6 +28,7 @@ import {
 	ResponseCommentDto,
 	UpdateCommentDto,
 } from '@modules/comment/dto';
+import { CommentRootType } from '@modules/comment/entities';
 import { PostService } from '@modules/post/providers';
 import {
 	GetReactionUsersDto,
@@ -58,7 +59,8 @@ export class PostCommentController {
 		await this.postService.checkAccessTo(postId, Action.READ);
 		const createdComment = await this.commentService.createComment({
 			...body,
-			postId,
+			rootId: postId,
+			rootType: CommentRootType.POST,
 			targetId: postId,
 			userId: request.user.id,
 		});
@@ -73,10 +75,10 @@ export class PostCommentController {
 		@Query() query: GetCommentsDto,
 	): Promise<CursorPaginatedData<WithPopulated<ResponseCommentDto>>> {
 		await this.postService.checkAccessTo(postId, Action.READ);
-		const comments = await this.commentService.getCommentsOf(postId, query);
+		const foundComments = await this.commentService.getCommentsOf(postId, query);
 		return new CursorPaginatedData(
-			comments.nextCursor,
-			plainToInstanceStrict(ResponseCommentDetailedDto, comments.foundComments),
+			foundComments.nextCursor,
+			plainToInstanceStrict(ResponseCommentDetailedDto, foundComments.foundComments),
 		);
 	}
 
@@ -84,8 +86,28 @@ export class PostCommentController {
 	@Get(':postid/comments/count')
 	async getCommentsCount(@Param('postid', ParseObjectIdPipe) postId: string): Promise<number> {
 		await this.postService.checkAccessTo(postId, Action.READ);
-		const count = await this.commentService.getCommentsCountOfTarget(postId);
-		return count;
+		const commentsCount = await this.commentService.getCommentsCountOf(postId);
+		return commentsCount;
+	}
+
+	@Version('1')
+	@Post(':postid/comments/:commentid')
+	@FormDataRequest({ storage: MemoryStoredFile })
+	async createReply(
+		@Body() body: CreateCommentDto,
+		@Req() request: AuthenticatedRequest,
+		@Param('postid', ParseObjectIdPipe) postId: string,
+		@Param('commentid', ParseObjectIdPipe) commentId: string,
+	): Promise<ResponseCommentDto> {
+		await this.postService.checkAccessTo(postId, Action.READ);
+		const createdComment = await this.commentService.createComment({
+			...body,
+			rootId: postId,
+			rootType: CommentRootType.POST,
+			targetId: commentId,
+			userId: request.user.id,
+		});
+		return plainToInstanceStrict(ResponseCommentDto, createdComment);
 	}
 
 	@Version('1')
@@ -96,12 +118,12 @@ export class PostCommentController {
 		@Param('commentid', ParseObjectIdPipe) commentId: string,
 		@Query() query: GetCommentsDto,
 	): Promise<CursorPaginatedData<WithPopulated<ResponseCommentDto>>> {
-		await this.postService.checkAccessTo(postId, Action.READ);
-		await this.commentService.checkAccessTo(commentId, Action.READ);
-		const comments = await this.commentService.getCommentsOf(commentId, query);
+		const post = await this.postService.checkAccessTo(postId, Action.READ);
+		await this.commentService.checkAccessTo(commentId, Action.READ, { post });
+		const foundReplies = await this.commentService.getCommentsOf(commentId, query);
 		return new CursorPaginatedData(
-			comments.nextCursor,
-			plainToInstanceStrict(ResponseCommentDto, comments.foundComments),
+			foundReplies.nextCursor,
+			plainToInstanceStrict(ResponseCommentDto, foundReplies.foundComments),
 		);
 	}
 
@@ -113,8 +135,8 @@ export class PostCommentController {
 		@Param('commentid', ParseObjectIdPipe) commentId: string,
 		@Body() body: UpdateCommentDto,
 	): Promise<ResponseCommentDto> {
-		await this.postService.checkAccessTo(postId, Action.READ);
-		await this.commentService.checkAccessTo(commentId, Action.UPDATE);
+		const post = await this.postService.checkAccessTo(postId, Action.READ);
+		await this.commentService.checkAccessTo(commentId, Action.UPDATE, { post });
 		const updatedComment = await this.commentService.updateComment(commentId, body);
 		return plainToInstanceStrict(ResponseCommentDto, updatedComment);
 	}
@@ -125,29 +147,30 @@ export class PostCommentController {
 		@Param('postid', ParseObjectIdPipe) postId: string,
 		@Param('commentid', ParseObjectIdPipe) commentId: string,
 	): Promise<DeletedCommentsSummary> {
-		await this.postService.checkAccessTo(postId, Action.READ);
-		await this.commentService.checkAccessTo(commentId, Action.DELETE);
+		const post = await this.postService.checkAccessTo(postId, Action.READ);
+		await this.commentService.checkAccessTo(commentId, Action.DELETE, { post });
 		const deletedComment = await this.commentService.deleteComment(commentId);
 		return deletedComment;
 	}
 
 	@Version('1')
 	@Get(':postid/comments/:commentid/reactions/list')
+	@ResponseTransform({ pagination: true })
 	async getCommentReactionUsersList(
 		@Param('postid', ParseObjectIdPipe) postId: string,
 		@Param('commentid', ParseObjectIdPipe) commentId: string,
 		@Query() query: GetReactionUsersDto,
-	) {
-		await this.postService.checkAccessTo(postId, Action.READ);
-		await this.commentService.checkAccessTo(commentId, Action.READ);
-		const users = await this.reactionService.getReactionUsersList(
+	): Promise<CursorPaginatedData<ResponseReactionUsersDto>> {
+		const post = await this.postService.checkAccessTo(postId, Action.READ);
+		await this.commentService.checkAccessTo(commentId, Action.READ, { post });
+		const usersListResponse = await this.reactionService.getReactionUsersList(
 			commentId,
 			query.reactionValue,
 			query,
 		);
 		return new CursorPaginatedData(
-			users.nextCursor,
-			plainToInstanceStrict(ResponseReactionUsersDto, users.foundUsers),
+			usersListResponse.nextCursor,
+			plainToInstanceStrict(ResponseReactionUsersDto, usersListResponse.foundUsers),
 		);
 	}
 
@@ -158,8 +181,8 @@ export class PostCommentController {
 		@Param('commentid', ParseObjectIdPipe) commentId: string,
 		@Body() body: ReactCommentDto,
 	): Promise<ResponseReactionDto> {
-		await this.postService.checkAccessTo(postId, Action.READ);
-		await this.commentService.checkAccessTo(commentId, Action.READ);
+		const post = await this.postService.checkAccessTo(postId, Action.READ);
+		await this.commentService.checkAccessTo(commentId, Action.READ, { post });
 		const user = CustomRequestCtx.getAuthenticated().req.user;
 		const reaction = this.reactionService.upsertReaction(
 			{ userId: user.id, targetId: commentId },
@@ -173,11 +196,14 @@ export class PostCommentController {
 	async unreactComment(
 		@Param('postid', ParseObjectIdPipe) postId: string,
 		@Param('commentid', ParseObjectIdPipe) commentId: string,
+		@Req() request: AuthenticatedRequest,
 	): Promise<ResponseReactionDto> {
-		await this.postService.checkAccessTo(postId, Action.READ);
-		await this.commentService.checkAccessTo(commentId, Action.READ);
-		const user = CustomRequestCtx.getAuthenticated().req.user;
-		const reaction = this.reactionService.delete({ userId: user.id, targetId: commentId });
+		const post = await this.postService.checkAccessTo(postId, Action.READ);
+		await this.commentService.checkAccessTo(commentId, Action.READ, { post });
+		const reaction = await this.reactionService.delete({
+			userId: request.user.id,
+			targetId: commentId,
+		});
 		return plainToInstanceStrict(ResponseReactionDto, reaction);
 	}
 }
