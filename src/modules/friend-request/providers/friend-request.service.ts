@@ -10,12 +10,14 @@ import { IFriendRequestRepository } from '../repositories/friend-request.reposit
 import { FriendRequestStatus } from '../entities/friend-request.enum';
 import { CreateFriendRequestDto } from '../dto/friend-request.dto';
 import { IUserRepository } from '@modules/user/repositories/user.repository';
+import { UserService } from '@modules/user/providers/user.service';
 
 @Injectable()
 export class FriendRequestService {
 	constructor(
 		private readonly friendRequestRepository: IFriendRequestRepository,
 		private readonly userRepository: IUserRepository,
+		private readonly userService: UserService,
 	) {}
 
 	async createFriendRequest(
@@ -49,6 +51,9 @@ export class FriendRequestService {
 			new Types.ObjectId(recipientId),
 			message,
 		);
+
+		// Auto-follow recipient after sending friend request
+		await this.userService.followUser(senderId, recipientId, i18n);
 
 		return await this.friendRequestRepository.getFriendRequestById(friendRequest._id.toString());
 	}
@@ -259,6 +264,9 @@ export class FriendRequestService {
 			throw new BadRequestException(i18n.t('friend-request.REQUEST_NOT_PENDING'));
 		}
 		await this.friendRequestRepository.deleteFriendRequest(requestId);
+
+		// Auto-unfollow recipient after cancelling friend request
+		await this.userService.unfollowUser(senderId, friendRequest.recipient.toString(), i18n);
 		return { success: true };
 	}
 
