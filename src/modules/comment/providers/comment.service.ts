@@ -8,8 +8,13 @@ import { CursorPaginationOption } from '@common/types/data';
 import { ReactionService } from '@modules/reaction/providers';
 import { ReactionCount } from '@modules/reaction/repositories';
 
-import { CaslFilterFactory, FileHostService, UserAbilityOptions } from '@shared/modules';
-import { ISessionService, ISessionServiceToken } from '@shared/modules/data-service';
+import {
+	CaslFilterFactory,
+	FileHostService,
+	ISessionService,
+	ISessionServiceToken,
+	UserAbilityOptions,
+} from '@shared/modules';
 
 import { Comment } from '../entities';
 import { ICommentRepository, ICommentRepositoryToken } from '../repositories';

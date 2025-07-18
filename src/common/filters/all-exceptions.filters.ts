@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 
 import { ResponseEntity } from '@common/types/data';
 
-import { AppLoggerService } from '@modules/logger';
+import { AppLoggerService } from '@shared/modules/logger';
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {

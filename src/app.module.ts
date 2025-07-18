@@ -25,13 +25,12 @@ import { JwtAuthGuard } from '@modules/auth/guards';
 import { CommentModule } from '@modules/comment';
 import { DevModule } from '@modules/dev';
 import { EventModule } from '@modules/event';
-import { LoggerModule } from '@modules/logger';
 import { NotificationModule } from '@modules/notification';
 import { PostModule } from '@modules/post';
 import { RouteModule } from '@modules/router';
 import { UserModule } from '@modules/user';
 
-import { CustomRequestCtxModule } from '@shared/modules';
+import { CustomRequestCtxModule, LoggerModule } from '@shared/modules';
 
 @Module({
 	imports: [

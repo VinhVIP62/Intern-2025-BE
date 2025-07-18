@@ -10,7 +10,7 @@ import * as swaggerUi from 'swagger-ui-express';
 
 import { IEnvVars } from '@configs/config';
 
-import { AppLoggerService } from '@modules/logger';
+import { AppLoggerService } from '@shared/modules/logger';
 
 import { AppModule } from './app.module';
 

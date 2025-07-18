@@ -5,7 +5,7 @@ import { MongoError } from 'mongodb';
 import { DuplicateKeyError } from '@common/exceptions';
 import { ErrorMessage, ResponseEntity } from '@common/types/data';
 
-import { AppLoggerService } from '@modules/logger';
+import { AppLoggerService } from '@shared/modules/logger';
 
 @Catch(MongoError)
 export class MongoExceptionFilter implements ExceptionFilter {

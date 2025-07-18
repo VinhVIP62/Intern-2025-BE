@@ -4,7 +4,7 @@ import { Error, MongooseError } from 'mongoose';
 
 import { ErrorMessage, ResponseEntity } from '@common/types/data';
 
-import { AppLoggerService } from '@modules/logger';
+import { AppLoggerService } from '@shared/modules/logger';
 
 @Catch(MongooseError)
 export class MongooseExceptionFilter implements ExceptionFilter {

@@ -4,8 +4,7 @@ import { NestjsFormDataModule } from 'nestjs-form-data';
 
 import { ReactionModule } from '@modules/reaction';
 
-import { CaslModule, FileHostModule } from '@shared/modules';
-import { DataServiceModule } from '@shared/modules/data-service';
+import { CaslModule, DataServiceModule, FileHostModule } from '@shared/modules';
 
 import { Comment, CommentSchema } from './entities';
 import { CommentService } from './providers';
