@@ -2,7 +2,7 @@ import { Injectable, Scope } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { ClientSession, Connection } from 'mongoose';
 
-import { CustomRequestCtx } from '@common/types/data';
+import { CustomRequestCtx } from '@shared/modules/request-ctx/types';
 
 import { ISessionService } from './session.service';
 

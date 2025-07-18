@@ -5,7 +5,9 @@ import mongoose, { Model, PipelineStage } from 'mongoose';
 import { WithPopulated } from '@common/crud/entities';
 import { MongooseRepositoryImpl } from '@common/crud/repos';
 import { SORT } from '@common/enums';
-import { CursorPaginationOption, CustomRequestCtx } from '@common/types/data';
+import { CursorPaginationOption } from '@common/types/data';
+
+import { CustomRequestCtx } from '@shared/modules/request-ctx/types';
 
 import { Reaction } from '../entities';
 import { IReactionRepository, ReactionCount } from './reaction.repository';

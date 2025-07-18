@@ -3,7 +3,7 @@ import { MemoryStoredFile } from 'nestjs-form-data';
 
 import { WithPopulated } from '@common/crud/entities';
 import { Action } from '@common/enums';
-import { CursorPaginationOption, CustomRequestCtx } from '@common/types/data';
+import { CursorPaginationOption } from '@common/types/data';
 
 import { CaslFilterFactory, FileHostService, UserAbilityOptions } from '@shared/modules';
 
@@ -48,12 +48,12 @@ export class PostService {
 		return createdPost;
 	}
 
-	async deletePost(id: string): Promise<WithPopulated<SocialPost>> {
+	async deletePost(
+		id: string,
+		deletedById: string | null = null,
+	): Promise<WithPopulated<SocialPost>> {
 		const filter = this.caslFilterFactory.createFilterForUser(SocialPost, Action.DELETE);
-		const deletedPost = this.postRepository.findOneByAndSoftDelete(
-			{ id, ...filter },
-			CustomRequestCtx.getAuthenticated().req.user.id,
-		);
+		const deletedPost = this.postRepository.findOneByAndSoftDelete({ id, ...filter }, deletedById);
 		return deletedPost;
 	}
 

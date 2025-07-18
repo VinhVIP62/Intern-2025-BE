@@ -2,8 +2,9 @@ import { accessibleBy } from '@casl/mongoose';
 import { Injectable } from '@nestjs/common';
 
 import { Action } from '@common/enums';
-import { CustomRequestCtx } from '@common/types/data';
 import { ConcreteClass } from '@common/types/utils';
+
+import { CustomRequestCtx } from '@shared/modules/request-ctx/types';
 
 import { CaslAbilityFactory, UserAbilityOptions } from './casl-ability.factory';
 

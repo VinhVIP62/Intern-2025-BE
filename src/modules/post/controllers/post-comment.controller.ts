@@ -17,7 +17,7 @@ import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 import { WithPopulated } from '@common/crud/entities';
 import { ResponseTransform, Roles } from '@common/decorators';
 import { Action, Role } from '@common/enums';
-import { AuthenticatedRequest, CursorPaginatedData, CustomRequestCtx } from '@common/types/data';
+import { AuthenticatedRequest, CursorPaginatedData } from '@common/types/data';
 import { plainToInstanceStrict } from '@common/utils';
 
 import {
@@ -179,13 +179,13 @@ export class PostCommentController {
 	async reactComment(
 		@Param('postid', ParseObjectIdPipe) postId: string,
 		@Param('commentid', ParseObjectIdPipe) commentId: string,
+		@Req() request: AuthenticatedRequest,
 		@Body() body: ReactCommentDto,
 	): Promise<ResponseReactionDto> {
 		const post = await this.postService.checkAccessTo(postId, Action.READ);
 		await this.commentService.checkAccessTo(commentId, Action.READ, { post });
-		const user = CustomRequestCtx.getAuthenticated().req.user;
 		const reaction = this.reactionService.upsertReaction(
-			{ userId: user.id, targetId: commentId },
+			{ userId: request.user.id, targetId: commentId },
 			body.reactionValue,
 		);
 		return plainToInstanceStrict(ResponseReactionDto, reaction);
