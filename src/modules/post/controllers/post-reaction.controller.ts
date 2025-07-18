@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Put, Query, Req, Version } from '@nestjs/common';
 import { ParseObjectIdPipe } from '@nestjs/mongoose';
 
-import { ResponseTransform, Roles } from '@common/decorators';
+import { PriorityRole, ResponseTransform } from '@common/decorators';
 import { Action, Role } from '@common/enums';
 import { AuthenticatedRequest, CursorPaginatedData } from '@common/types/data';
 import { plainToInstanceStrict } from '@common/utils';
@@ -15,7 +15,7 @@ import {
 } from '@modules/reaction/dto';
 import { ReactionService } from '@modules/reaction/providers';
 
-@Roles(Role.USER)
+@PriorityRole(Role.USER)
 @Controller()
 export class PostReactionController {
 	constructor(

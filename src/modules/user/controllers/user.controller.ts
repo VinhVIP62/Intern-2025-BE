@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 
-import { Roles } from '@common/decorators';
+import { PriorityRole, Roles } from '@common/decorators';
 import { Role } from '@common/enums';
 import { EntityNotFound } from '@common/exceptions';
 import { AuthenticatedRequest } from '@common/types/data';
@@ -31,7 +31,7 @@ import {
 import { User } from '../entities';
 import { UserService } from '../providers';
 
-@Roles(Role.USER)
+@PriorityRole(Role.USER)
 @Controller()
 export class UserController {
 	constructor(
@@ -41,7 +41,7 @@ export class UserController {
 
 	@Version('1')
 	@Get('me')
-	@Roles()
+	@PriorityRole()
 	async profile(@Req() request: AuthenticatedRequest): Promise<ResponseProfileDto> {
 		const profile = await this.userService.findOneById(request.user.id);
 		if (!profile) throw new EntityNotFound(User);

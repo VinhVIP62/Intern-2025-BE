@@ -15,7 +15,7 @@ import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 
 import { WithPopulated } from '@common/crud/entities';
-import { ResponseTransform, Roles } from '@common/decorators';
+import { PriorityRole, ResponseTransform } from '@common/decorators';
 import { Action, Role } from '@common/enums';
 import { AuthenticatedRequest, CursorPaginatedData } from '@common/types/data';
 import { plainToInstanceStrict } from '@common/utils';
@@ -39,7 +39,7 @@ import { ReactionService } from '@modules/reaction/providers';
 
 import { CommentService, DeletedCommentsSummary } from '../../comment/providers';
 
-@Roles(Role.USER)
+@PriorityRole(Role.USER)
 @Controller()
 export class PostCommentController {
 	constructor(

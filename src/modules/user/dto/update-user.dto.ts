@@ -60,6 +60,10 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
 	location?: LocationDto;
 
 	@Expose()
+	@Transform(({ value }) => {
+		if (value === '[]') return [];
+		return value as [];
+	})
 	@Type(() => SportDto)
 	@IsArray()
 	@IsOptional()

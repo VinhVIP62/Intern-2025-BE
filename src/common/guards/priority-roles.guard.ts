@@ -25,10 +25,10 @@ export class PriorityRoleGuard implements CanActivate {
 			return true;
 		}
 
-		const roleRequiredForRoute = this.reflector.getAllAndOverride<Role>(PRIORITY_ROLES_KEY, [
-			context.getHandler(),
-			context.getClass(),
-		]);
+		const roleRequiredForRoute = this.reflector.getAllAndOverride<Role | undefined>(
+			PRIORITY_ROLES_KEY,
+			[context.getHandler(), context.getClass()],
+		);
 
 		if (!roleRequiredForRoute) {
 			return true;

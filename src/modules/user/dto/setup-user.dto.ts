@@ -1,4 +1,4 @@
-import { Expose, Type } from 'class-transformer';
+import { Expose, Transform, Type } from 'class-transformer';
 import { ArrayUnique, IsArray, IsDefined, IsNotEmpty, ValidateNested } from 'class-validator';
 import { HasExtension, HasMimeType, IsFile, MemoryStoredFile } from 'nestjs-form-data';
 
@@ -8,7 +8,7 @@ export class SetupUserDto {
 	@Expose()
 	@Type(() => MemoryStoredFile)
 	@HasExtension(['png', 'jpg', 'jpeg', 'gif', 'webp'])
-	@HasMimeType(['image/png', 'image/jpeg', 'image/jpg', 'image/gif'])
+	@HasMimeType(['image/*'])
 	@IsDefined()
 	@IsFile()
 	declare avatar: MemoryStoredFile;
@@ -20,6 +20,10 @@ export class SetupUserDto {
 	declare location: LocationDto;
 
 	@Expose()
+	@Transform(({ value }) => {
+		if (value === '[]') return [];
+		return value as [];
+	})
 	@Type(() => SportDto)
 	@IsArray()
 	@ValidateNested({ each: true })
