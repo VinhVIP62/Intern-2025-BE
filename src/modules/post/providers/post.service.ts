@@ -24,7 +24,7 @@ export class PostService {
 		options?: UserAbilityOptions,
 	): Promise<SocialPost> {
 		const filter = this.caslFilterFactory.createFilterForUser(SocialPost, action, options);
-		const foundPost = await this.postRepository.findOneByOrFail({ id, ...filter }).catch(() => {
+		const foundPost = this.postRepository.findOneByOrFail({ id, ...filter }).catch(() => {
 			throw new ForbiddenException();
 		});
 		return foundPost;
@@ -59,7 +59,7 @@ export class PostService {
 
 	async getPost(id: string): Promise<WithPopulated<SocialPost> | null> {
 		const filter = this.caslFilterFactory.createFilterForUser(SocialPost, Action.READ);
-		const foundPost = await this.postRepository.findOneBy({ id, ...filter });
+		const foundPost = this.postRepository.findOneBy({ id, ...filter });
 		return foundPost;
 	}
 

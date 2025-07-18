@@ -29,32 +29,18 @@ export class CommentRepositoryImpl
 		targetId: string,
 		options?: CursorPaginationOption<string>,
 	): Promise<WithPopulated<Comment>[]> {
-		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
-		const foundEntities: WithPopulated<Comment>[] = [];
 		const filterOptions = {
 			targetId,
 			...(options?.cursor && this.transformFilter({ _id: { $gt: options?.cursor } })),
 		};
-		const sortOptions = this.transformSort({
-			customRepoOptions: {
-				sort: { createdAt: SORT.ASC },
-			},
-		});
+		const sortOptions = { createdAt: SORT.ASC };
 		const limitOptions = options?.limit || 10;
-		const populateOptions = this.transformPopulate();
-		const query = this.commentModel
-			.find(filterOptions)
-			.sort(sortOptions)
-			.limit(limitOptions)
-			.populate(populateOptions)
-			.session(session);
-		const cursor = query.cursor();
+		const foundComments = this.find(filterOptions, {
+			customRepoOptions: { sort: sortOptions },
+			limit: limitOptions,
+		});
 
-		for await (const comment of cursor) {
-			foundEntities.push(comment.toObject());
-		}
-
-		return foundEntities;
+		return foundComments;
 	}
 
 	async deleteSelfAndDescendants(

@@ -33,11 +33,9 @@ export class CommentService {
 
 	async checkAccessTo(id: string, action: Action, options?: UserAbilityOptions): Promise<Comment> {
 		const filter = this.caslFilterFactory.createFilterForUser(Comment, action, options);
-		const foundComment = await this.commentRepository
-			.findOneByOrFail({ id, ...filter })
-			.catch(() => {
-				throw new ForbiddenException();
-			});
+		const foundComment = this.commentRepository.findOneByOrFail({ id, ...filter }).catch(() => {
+			throw new ForbiddenException();
+		});
 		return foundComment;
 	}
 
