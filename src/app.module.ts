@@ -13,7 +13,7 @@ import {
 	MongoExceptionFilter,
 	MongooseExceptionFilter,
 } from '@common/filters';
-import { RolesGuard } from '@common/guards';
+import { PriorityRoleGuard, RolesGuard } from '@common/guards';
 import { ResponseTransformInterceptor } from '@common/interceptors';
 import { CustomRequestContextInitMiddleware } from '@common/middlewares';
 
@@ -111,6 +111,10 @@ import { CustomRequestCtxModule } from '@shared/modules';
 		{
 			provide: APP_GUARD,
 			useClass: RolesGuard,
+		},
+		{
+			provide: APP_GUARD,
+			useClass: PriorityRoleGuard,
 		},
 		{
 			provide: APP_INTERCEPTOR,

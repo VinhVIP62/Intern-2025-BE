@@ -1,12 +1,18 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
-import { IS_PUBLIC_KEY, ROLES_KEY } from '@common/decorators';
+import { IS_PUBLIC_KEY, PRIORITY_ROLES_KEY } from '@common/decorators';
 import { Role } from '@common/enums';
 import { AuthenticatedRequest } from '@common/types/data';
 
+const rolePriorityMap: Record<Role, number> = {
+	[Role.ADMIN]: 99,
+	[Role.MODERATOR]: 98,
+	[Role.USER]: 1,
+};
+
 @Injectable()
-export class RolesGuard implements CanActivate {
+export class PriorityRoleGuard implements CanActivate {
 	constructor(private readonly reflector: Reflector) {}
 
 	canActivate(context: ExecutionContext): boolean {
@@ -19,24 +25,21 @@ export class RolesGuard implements CanActivate {
 			return true;
 		}
 
-		const rolesRequiredForRoute = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
+		const roleRequiredForRoute = this.reflector.getAllAndOverride<Role>(PRIORITY_ROLES_KEY, [
 			context.getHandler(),
 			context.getClass(),
 		]);
 
-		if (!rolesRequiredForRoute || rolesRequiredForRoute.length == 0) {
+		if (!roleRequiredForRoute) {
 			return true;
 		}
 
 		const { user } = context.switchToHttp().getRequest<AuthenticatedRequest>();
 
-		const hasRequiredRoles = rolesRequiredForRoute.some(role => user.roles?.includes(role));
-
-		if (!hasRequiredRoles) {
-			const rolesList = rolesRequiredForRoute.join(', ');
-			throw new ForbiddenException(`Access denied. Allowed role(s): ${rolesList}`);
-		}
-
-		return hasRequiredRoles;
+		if (user.roles.some(role => rolePriorityMap[role] >= rolePriorityMap[roleRequiredForRoute]))
+			return true;
+		throw new ForbiddenException(
+			`Must have a role with higher priority than ${roleRequiredForRoute}`,
+		);
 	}
 }

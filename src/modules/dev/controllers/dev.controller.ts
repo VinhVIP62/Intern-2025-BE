@@ -1,6 +1,6 @@
 import { Controller, Get, UseGuards, Version } from '@nestjs/common';
 
-import { Roles } from '@common/decorators';
+import { PriorityRole, Roles } from '@common/decorators';
 import { Role } from '@common/enums';
 import { RolesGuard } from '@common/guards';
 
@@ -36,5 +36,12 @@ export class DevController {
 	@Roles()
 	allUsersRoute() {
 		return { message: 'This route is accessible to all authenticated users' };
+	}
+
+	@Version('1')
+	@Get('gte-moderator')
+	@PriorityRole(Role.MODERATOR)
+	gteModeratorRoute() {
+		return { message: 'This route is accessible to moderators and above' };
 	}
 }
