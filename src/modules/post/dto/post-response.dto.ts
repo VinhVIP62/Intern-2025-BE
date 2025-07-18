@@ -1,4 +1,4 @@
-import { Expose, Transform, Type } from 'class-transformer';
+import { Exclude, Expose, Transform, Type } from 'class-transformer';
 
 import { WithPopulated } from '@common/crud/entities';
 import { Visibility } from '@common/enums';
@@ -7,6 +7,7 @@ import { User } from '@modules/user/entities';
 
 import { SocialPost } from '../entities';
 
+@Exclude()
 export class ResponsePostDto {
 	@Expose()
 	id!: string;
