@@ -32,6 +32,6 @@ import { UserRepositoryImpl } from './repositories/user.repository.impl';
 			useClass: UserRepositoryImpl,
 		},
 	],
-	exports: [UserService],
+	exports: [UserService, IUserRepositoryToken],
 })
 export class UserModule {}
