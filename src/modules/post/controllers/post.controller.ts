@@ -15,13 +15,14 @@ import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 
 import { WithPopulated } from '@common/crud/entities';
 import { PriorityRole, ResponseTransform } from '@common/decorators';
-import { Role } from '@common/enums';
+import { Action, Role } from '@common/enums';
 import { UnionValidationPipe } from '@common/pipes';
 import { AuthenticatedRequest, CursorPaginatedData } from '@common/types/data';
 import { plainToInstanceStrict } from '@common/utils';
 
 import {
 	CreateFilePostDto,
+	CreateSharePostDto,
 	FeedPostDto,
 	ResponsePostDto,
 	UpdateEventPostDto,
@@ -52,6 +53,7 @@ export class PostController {
 	async deletePost(
 		@Param('postid', ParseObjectIdPipe) postId: string,
 	): Promise<WithPopulated<ResponsePostDto>> {
+		await this.postService.checkAccessTo(postId, Action.DELETE);
 		const deletedPost = await this.postService.deletePost(postId);
 		return plainToInstanceStrict(ResponsePostDto, deletedPost);
 	}
@@ -73,6 +75,7 @@ export class PostController {
 		)
 		body: UpdateEventPostDto | UpdateFilePostDto | UpdateSharePostDto,
 	): Promise<WithPopulated<ResponsePostDto>> {
+		await this.postService.checkAccessTo(postId, Action.UPDATE);
 		const updatedPost = await this.postService.updatePost(postId, body.postType, body);
 		return plainToInstanceStrict(ResponsePostDto, updatedPost);
 	}
@@ -96,7 +99,24 @@ export class PostController {
 	async getPost(
 		@Param('postid', ParseObjectIdPipe) postId: string,
 	): Promise<WithPopulated<ResponsePostDto>> {
+		await this.postService.checkAccessTo(postId, Action.READ);
 		const foundPost = await this.postService.getPost(postId);
 		return plainToInstanceStrict(ResponsePostDto, foundPost);
+	}
+
+	@Version('1')
+	@Post(':postid/share')
+	async sharePost(
+		@Param('postid', ParseObjectIdPipe) postId: string,
+		@Req() request: AuthenticatedRequest,
+		@Body() body: CreateSharePostDto,
+	): Promise<WithPopulated<ResponsePostDto>> {
+		await this.postService.checkAccessTo(postId, Action.READ);
+		const createdPost = await this.postService.createPost({
+			...body,
+			parentPostId: postId,
+			userId: request.user.id,
+		});
+		return plainToInstanceStrict(ResponsePostDto, createdPost);
 	}
 }

@@ -61,12 +61,6 @@ export class CreateFilePostDto extends CreatePostDto {
 
 export class CreateSharePostDto extends CreatePostDto {
 	@Expose()
-	@Type(() => String)
-	@IsMongoId()
-	@IsString()
-	parentPostId!: string;
-
-	@Expose()
 	@Transform(() => PostType.SHARED)
 	@IsEnum(PostType)
 	declare postType: PostType.SHARED;

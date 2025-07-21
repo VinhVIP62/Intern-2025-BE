@@ -30,9 +30,6 @@ export class ResponsePostDto {
 	@Expose()
 	parentPostId!: any;
 
-	@Expose({ name: 'parentPostIdPopulated' })
-	parentPost!: any;
-
 	@Expose()
 	@Type(() => String)
 	userId!: string;

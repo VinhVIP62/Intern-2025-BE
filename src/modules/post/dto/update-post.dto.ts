@@ -17,7 +17,5 @@ function UpdatePostDto<T extends CreatePostDto>(CreatePostDto: ConcreteClass<T>)
 }
 
 export class UpdateFilePostDto extends UpdatePostDto(CreateFilePostDto) {}
-export class UpdateSharePostDto extends OmitType(UpdatePostDto(CreateSharePostDto), [
-	'parentPostId',
-]) {}
+export class UpdateSharePostDto extends UpdatePostDto(CreateSharePostDto) {}
 export class UpdateEventPostDto extends UpdatePostDto(CreateEventPostDto) {}
