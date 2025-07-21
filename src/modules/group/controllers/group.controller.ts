@@ -1149,4 +1149,101 @@ export class GroupController {
 			message: i18n.t('group.PENDING_POSTS_RETRIEVED_SUCCESS'),
 		};
 	}
+
+	@Version('1')
+	@Get(':groupId/waiting-list')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Lấy danh sách user chờ duyệt vào group (chỉ admin)' })
+	@ApiParam({ name: 'groupId', description: 'ID của nhóm', example: '507f1f77bcf86cd799439011' })
+	@ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+	@ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+	@ApiResponse({ status: 200, description: 'Lấy danh sách chờ duyệt thành công' })
+	@ApiResponse({ status: 403, description: 'Không có quyền truy cập' })
+	@ApiResponse({ status: 404, description: 'Không tìm thấy nhóm' })
+	async getWaitingList(
+		@Request() req,
+		@Param('groupId') groupId: string,
+		@I18n() i18n: I18nContext,
+		@Query('page') page: number = 1,
+		@Query('limit') limit: number = 10,
+	): Promise<ResponseEntity<any>> {
+		const result = await this.groupService.getWaitingListUsers(
+			groupId,
+			Number(page),
+			Number(limit),
+			i18n,
+			req.user.id,
+		);
+		return {
+			success: true,
+			data: result,
+			message: i18n.t('group.WAITING_LIST_RETRIEVED_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Get('users/groups-waiting')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Lấy danh sách group user đã gửi yêu cầu tham gia' })
+	@ApiParam({
+		name: 'userId',
+		description: 'ID của user, nếu không truyền -> current user',
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+	@ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+	@ApiResponse({ status: 200, description: 'Lấy danh sách nhóm đã gửi yêu cầu thành công' })
+	async getUserWaitingGroups(
+		@Request() req,
+		@Query('userId') userId: string,
+		@I18n() i18n: I18nContext,
+		@Query('page') page: number = 1,
+		@Query('limit') limit: number = 10,
+	): Promise<ResponseEntity<any>> {
+		const result = await this.groupService.getGroupsUserIsWaiting(
+			userId ? userId : req.user.id,
+			Number(page),
+			Number(limit),
+			i18n,
+		);
+		return {
+			success: true,
+			data: result,
+			message: i18n.t('group.USER_WAITING_GROUPS_RETRIEVED_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Get(':groupId/invite-list')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Lấy danh sách user được mời vào group (chỉ admin được xem)' })
+	@ApiParam({ name: 'groupId', description: 'ID của nhóm', example: '507f1f77bcf86cd799439011' })
+	@ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+	@ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+	@ApiResponse({ status: 200, description: 'Lấy danh sách người được mời thành công' })
+	@ApiResponse({ status: 403, description: 'Không có quyền truy cập' })
+	@ApiResponse({ status: 404, description: 'Không tìm thấy nhóm' })
+	async getInviteList(
+		@Request() req,
+		@Param('groupId') groupId: string,
+		@I18n() i18n: I18nContext,
+		@Query('page') page: number = 1,
+		@Query('limit') limit: number = 10,
+	): Promise<ResponseEntity<any>> {
+		const result = await this.groupService.getInviteListUsers(
+			groupId,
+			Number(page),
+			Number(limit),
+			i18n,
+			req.user.id,
+		);
+		return {
+			success: true,
+			data: result,
+			message: i18n.t('group.INVITE_LIST_RETRIEVED_SUCCESS'),
+		};
+	}
 }

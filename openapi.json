@@ -3816,6 +3816,150 @@
         ]
       }
     },
+    "/api/v1/groups/{groupId}/waiting-list": {
+      "get": {
+        "operationId": "GroupController_getWaitingList_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách chờ duyệt thành công"
+          },
+          "403": {
+            "description": "Không có quyền truy cập"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "Lấy danh sách user chờ duyệt vào group (chỉ admin)",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/users/groups-waiting": {
+      "get": {
+        "operationId": "GroupController_getUserWaitingGroups_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "ID của user, nếu không truyền -> current user",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách nhóm đã gửi yêu cầu thành công"
+          }
+        },
+        "summary": "Lấy danh sách group user đã gửi yêu cầu tham gia",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/invite-list": {
+      "get": {
+        "operationId": "GroupController_getInviteList_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách người được mời thành công"
+          },
+          "403": {
+            "description": "Không có quyền truy cập"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "Lấy danh sách user được mời vào group (chỉ admin được xem)",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
     "/api/v1/friends/requests": {
       "post": {
         "operationId": "FriendRequestController_createFriendRequest_v1",

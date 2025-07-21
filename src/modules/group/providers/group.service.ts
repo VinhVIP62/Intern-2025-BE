@@ -802,4 +802,57 @@ export class GroupService {
 			throw new BadRequestException(i18n.t('group.GROUP_UPDATE_FAILED'));
 		}
 	}
+
+	async getWaitingListUsers(
+		groupId: string,
+		page: number = 1,
+		limit: number = 10,
+		i18n: I18nContext,
+		adminUserId?: string,
+	) {
+		if (adminUserId) {
+			const isAdmin = await this.groupRepository.isUserAdmin(groupId, adminUserId);
+			if (!isAdmin) throw new ForbiddenException(i18n.t('group.UNAUTHORIZED_TO_MODIFY'));
+		}
+		try {
+			return await this.groupRepository.getWaitingListUsers(groupId, page, limit);
+		} catch (error) {
+			if (error.message === 'Group not found')
+				throw new NotFoundException(i18n.t('group.GROUP_NOT_FOUND'));
+			throw error;
+		}
+	}
+
+	async getInviteListUsers(
+		groupId: string,
+		page: number = 1,
+		limit: number = 10,
+		i18n: I18nContext,
+		adminUserId?: string,
+	) {
+		if (adminUserId) {
+			const isAdmin = await this.groupRepository.isUserAdmin(groupId, adminUserId);
+			if (!isAdmin) throw new ForbiddenException(i18n.t('group.UNAUTHORIZED_TO_MODIFY'));
+		}
+		try {
+			return await this.groupRepository.getInviteListUsers(groupId, page, limit);
+		} catch (error) {
+			if (error.message === 'Group not found')
+				throw new NotFoundException(i18n.t('group.GROUP_NOT_FOUND'));
+			throw error;
+		}
+	}
+
+	async getGroupsUserIsWaiting(
+		userId: string,
+		page: number = 1,
+		limit: number = 10,
+		i18n: I18nContext,
+	) {
+		try {
+			return await this.groupRepository.getGroupsUserIsWaiting(userId, page, limit);
+		} catch (error) {
+			throw error;
+		}
+	}
 }

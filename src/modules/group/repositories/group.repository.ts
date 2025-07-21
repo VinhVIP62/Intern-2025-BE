@@ -58,6 +58,21 @@ export interface IGroupRepository {
 		totalPages: number;
 		data: any[];
 	}>;
+	getWaitingListUsers(
+		groupId: string,
+		page: number,
+		limit: number,
+	): Promise<{ total: number; page: number; limit: number; totalPages: number; data: any[] }>;
+	getInviteListUsers(
+		groupId: string,
+		page: number,
+		limit: number,
+	): Promise<{ total: number; page: number; limit: number; totalPages: number; data: any[] }>;
+	getGroupsUserIsWaiting(
+		userId: string,
+		page: number,
+		limit: number,
+	): Promise<{ total: number; page: number; limit: number; totalPages: number; data: any[] }>;
 }
 
 export const IGroupRepository = Symbol('IGroupRepository');
