@@ -57,12 +57,30 @@ export class Group extends Document {
 	autoApproveJoinGroup: boolean;
 
 	@Prop({
-		type: Map,
-		of: String,
-		enum: ActivityLevel,
-		default: null,
+		type: {
+			sport: {
+				type: Map,
+				of: String,
+				enum: ActivityLevel,
+				default: undefined,
+			},
+			location: {
+				city: String,
+				district: String,
+				address: String,
+			},
+			age: {
+				min: Number,
+				max: Number,
+			},
+		},
+		default: undefined,
 	})
-	joinConditions: Map<SportType, ActivityLevel>;
+	joinConditions?: {
+		sport?: Map<SportType, ActivityLevel>;
+		location?: { city?: string; district?: string; address?: string };
+		age?: { min?: number; max?: number };
+	};
 
 	// Remove duplicate index declarations since timestamps: true handles them
 	createdAt?: Date;

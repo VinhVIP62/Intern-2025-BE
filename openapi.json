@@ -6134,6 +6134,76 @@
           "comments"
         ]
       },
+      "JoinConditionSportDto": {
+        "type": "object",
+        "properties": {
+          "sport": {
+            "type": "object",
+            "description": "Sport conditions",
+            "example": {
+              "football": "intermediate",
+              "tennis": "beginner"
+            },
+            "additionalProperties": {
+              "enum": [
+                "beginner",
+                "intermediate",
+                "advanced",
+                "professional"
+              ]
+            }
+          }
+        }
+      },
+      "JoinConditionLocationDto": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "City name",
+            "example": "Ho Chi Minh City"
+          },
+          "district": {
+            "type": "string",
+            "description": "District name",
+            "example": "District 1"
+          },
+          "address": {
+            "type": "string",
+            "description": "Address",
+            "example": "123 Main St"
+          }
+        }
+      },
+      "JoinConditionAgeDto": {
+        "type": "object",
+        "properties": {
+          "min": {
+            "type": "number",
+            "description": "Minimum age",
+            "example": 18
+          },
+          "max": {
+            "type": "number",
+            "description": "Maximum age",
+            "example": 30
+          }
+        }
+      },
+      "JoinConditionsDto": {
+        "type": "object",
+        "properties": {
+          "sport": {
+            "$ref": "#/components/schemas/JoinConditionSportDto"
+          },
+          "location": {
+            "$ref": "#/components/schemas/JoinConditionLocationDto"
+          },
+          "age": {
+            "$ref": "#/components/schemas/JoinConditionAgeDto"
+          }
+        }
+      },
       "CreateGroupDto": {
         "type": "object",
         "properties": {
@@ -6203,19 +6273,27 @@
             "example": true
           },
           "joinConditions": {
-            "type": "object",
-            "description": "Join conditions for different sports",
+            "description": "Join conditions for group (sport, location, age)",
             "example": {
-              "football": "intermediate"
+              "sport": {
+                "football": "beginner",
+                "tennis": "beginner",
+                "badminton": "beginner"
+              },
+              "location": {
+                "city": "Hồ Chí Minh",
+                "district": "Quận 7"
+              },
+              "age": {
+                "min": 10,
+                "max": 60
+              }
             },
-            "additionalProperties": {
-              "enum": [
-                "beginner",
-                "intermediate",
-                "advanced",
-                "professional"
-              ]
-            }
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JoinConditionsDto"
+              }
+            ]
           }
         },
         "required": [
@@ -6330,19 +6408,27 @@
             "example": true
           },
           "joinConditions": {
-            "type": "object",
-            "description": "Join conditions for different sports",
+            "description": "Join conditions for group (sport, location, age)",
             "example": {
-              "football": "intermediate"
+              "sport": {
+                "football": "beginner",
+                "tennis": "beginner",
+                "badminton": "beginner"
+              },
+              "location": {
+                "city": "Hồ Chí Minh",
+                "district": "Quận 7"
+              },
+              "age": {
+                "min": 10,
+                "max": 60
+              }
             },
-            "additionalProperties": {
-              "enum": [
-                "beginner",
-                "intermediate",
-                "advanced",
-                "professional"
-              ]
-            }
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JoinConditionsDto"
+              }
+            ]
           },
           "createdAt": {
             "format": "date-time",
@@ -6587,19 +6673,27 @@
             "example": true
           },
           "joinConditions": {
-            "type": "object",
-            "description": "Join conditions for different sports",
+            "description": "Join conditions for group (sport, location, age)",
             "example": {
-              "football": "intermediate"
+              "sport": {
+                "football": "beginner",
+                "tennis": "beginner",
+                "badminton": "beginner"
+              },
+              "location": {
+                "city": "Hồ Chí Minh",
+                "district": "Quận 7"
+              },
+              "age": {
+                "min": 10,
+                "max": 60
+              }
             },
-            "additionalProperties": {
-              "enum": [
-                "beginner",
-                "intermediate",
-                "advanced",
-                "professional"
-              ]
-            }
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JoinConditionsDto"
+              }
+            ]
           }
         }
       },

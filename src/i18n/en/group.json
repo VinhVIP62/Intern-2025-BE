@@ -77,5 +77,12 @@
 	"INVITE_LIST_RETRIEVED_SUCCESS": "Invite list retrieved successfully",
 	"USER_WAITING_GROUPS_RETRIEVED_SUCCESS": "Groups user is waiting to join retrieved successfully",
 	"REQUEST_CANCEL_FAILED": "Failed to cancel join request",
-	"REQUEST_CANCEL_SUCCESS": "Join request cancelled successfully"
+	"REQUEST_CANCEL_SUCCESS": "Join request cancelled successfully",
+	"INVALID_ACTIVITY_LEVEL": "Invalid activity level in joinConditions for sport {sport}: {level}",
+	"INVALID_LOCATION_CITY": "You do not meet the city requirement to join this group (required: {required}, current: {current})",
+	"INVALID_LOCATION_DISTRICT": "You do not meet the district requirement to join this group (required: {required}, current: {current})",
+	"INVALID_LOCATION_ADDRESS": "You do not meet the address requirement to join this group (required: {required}, current: {current})",
+	"INVALID_AGE_MIN": "Your age ({current}) does not meet the minimum requirement ({required}) to join this group",
+	"INVALID_AGE_MAX": "Your age ({current}) exceeds the maximum allowed ({required}) to join this group",
+	"INVALID_AGE_RANGE": "Invalid age condition for joining group (min must be less than or equal to max)"
 }

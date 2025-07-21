@@ -18,6 +18,68 @@ import { SportType, ActivityLevel } from '@modules/user/enums/user.enum';
 import { BasePaginatedResponseDto } from '@common/dto/base-pagination.dto';
 import { BasePaginationMetaDto } from '@common/dto/base-pagination.dto';
 
+// ===== Move join condition DTOs to top to fix linter error =====
+export class JoinConditionLocationDto {
+	@ApiPropertyOptional({ description: 'City name', example: 'Ho Chi Minh City' })
+	@IsOptional()
+	@IsString()
+	city?: string;
+
+	@ApiPropertyOptional({ description: 'District name', example: 'District 1' })
+	@IsOptional()
+	@IsString()
+	district?: string;
+
+	@ApiPropertyOptional({ description: 'Address', example: '123 Main St' })
+	@IsOptional()
+	@IsString()
+	address?: string;
+}
+
+export class JoinConditionAgeDto {
+	@ApiPropertyOptional({ description: 'Minimum age', example: 18 })
+	@IsOptional()
+	@IsNumber()
+	min?: number;
+
+	@ApiPropertyOptional({ description: 'Maximum age', example: 30 })
+	@IsOptional()
+	@IsNumber()
+	max?: number;
+}
+
+export class JoinConditionSportDto {
+	@ApiPropertyOptional({
+		description: 'Sport conditions',
+		example: { football: 'intermediate', tennis: 'beginner' },
+		type: 'object',
+		additionalProperties: { enum: Object.values(ActivityLevel) },
+	})
+	@IsOptional()
+	@IsObject()
+	sport?: Record<SportType, ActivityLevel>;
+}
+
+export class JoinConditionsDto {
+	@ApiPropertyOptional({ type: JoinConditionSportDto })
+	@IsOptional()
+	@IsObject()
+	sport?: Record<SportType, ActivityLevel>;
+
+	@ApiPropertyOptional({ type: JoinConditionLocationDto })
+	@IsOptional()
+	@ValidateNested()
+	@Type(() => JoinConditionLocationDto)
+	location?: JoinConditionLocationDto;
+
+	@ApiPropertyOptional({ type: JoinConditionAgeDto })
+	@IsOptional()
+	@ValidateNested()
+	@Type(() => JoinConditionAgeDto)
+	age?: JoinConditionAgeDto;
+}
+// ===== End move =====
+
 export class LocationDto {
 	@ApiPropertyOptional({ description: 'City name', example: 'Ho Chi Minh City' })
 	@IsOptional()
@@ -85,14 +147,28 @@ export class CreateGroupDto {
 	autoApproveJoinGroup?: boolean;
 
 	@ApiPropertyOptional({
-		description: 'Join conditions for different sports',
-		example: { [SportType.FOOTBALL]: ActivityLevel.INTERMEDIATE },
-		type: 'object',
-		additionalProperties: { enum: Object.values(ActivityLevel) },
+		description: 'Join conditions for group (sport, location, age)',
+		type: JoinConditionsDto,
+		example: {
+			sport: {
+				football: 'beginner',
+				tennis: 'beginner',
+				badminton: 'beginner',
+			},
+			location: {
+				city: 'Hồ Chí Minh',
+				district: 'Quận 7',
+			},
+			age: {
+				min: 10,
+				max: 60,
+			},
+		},
 	})
 	@IsOptional()
-	@IsObject()
-	joinConditions?: Record<SportType, ActivityLevel>;
+	@ValidateNested()
+	@Type(() => JoinConditionsDto)
+	joinConditions?: JoinConditionsDto;
 }
 
 export class UpdateGroupDto {
@@ -152,14 +228,28 @@ export class UpdateGroupDto {
 	autoApproveJoinGroup?: boolean;
 
 	@ApiPropertyOptional({
-		description: 'Join conditions for different sports',
-		example: { [SportType.FOOTBALL]: ActivityLevel.INTERMEDIATE },
-		type: 'object',
-		additionalProperties: { enum: Object.values(ActivityLevel) },
+		description: 'Join conditions for group (sport, location, age)',
+		type: JoinConditionsDto,
+		example: {
+			sport: {
+				football: 'beginner',
+				tennis: 'beginner',
+				badminton: 'beginner',
+			},
+			location: {
+				city: 'Hồ Chí Minh',
+				district: 'Quận 7',
+			},
+			age: {
+				min: 10,
+				max: 60,
+			},
+		},
 	})
 	@IsOptional()
-	@IsObject()
-	joinConditions?: Record<SportType, ActivityLevel>;
+	@ValidateNested()
+	@Type(() => JoinConditionsDto)
+	joinConditions?: JoinConditionsDto;
 }
 
 export class GroupResponseDto {
@@ -215,12 +305,28 @@ export class GroupResponseDto {
 	autoApproveJoinGroup: boolean;
 
 	@ApiPropertyOptional({
-		description: 'Join conditions for different sports',
-		example: { [SportType.FOOTBALL]: ActivityLevel.INTERMEDIATE },
-		type: 'object',
-		additionalProperties: { enum: Object.values(ActivityLevel) },
+		description: 'Join conditions for group (sport, location, age)',
+		type: JoinConditionsDto,
+		example: {
+			sport: {
+				football: 'beginner',
+				tennis: 'beginner',
+				badminton: 'beginner',
+			},
+			location: {
+				city: 'Hồ Chí Minh',
+				district: 'Quận 7',
+			},
+			age: {
+				min: 10,
+				max: 60,
+			},
+		},
 	})
-	joinConditions?: Record<SportType, ActivityLevel>;
+	@IsOptional()
+	@ValidateNested()
+	@Type(() => JoinConditionsDto)
+	joinConditions?: JoinConditionsDto;
 
 	@ApiProperty({ description: 'Created at', example: '2024-01-01T00:00:00.000Z' })
 	createdAt: Date;
