@@ -71,5 +71,6 @@
 	"NO_SKILL_LEVELS_DEFINED": "You have not defined skill levels for any sports",
 	"NO_SKILL_LEVEL_FOR_SPORT": "You do not have a skill level for {sport}",
 	"INSUFFICIENT_SKILL_LEVEL": "Your skill level for {sport} ({current}) is lower than required ({required})",
-	"INVITATION_CANCELLED_SUCCESS": "Group invitation cancelled successfully"
+	"INVITATION_CANCELLED_SUCCESS": "Group invitation cancelled successfully",
+	"PENDING_POSTS_RETRIEVED_SUCCESS": "Pending posts retrieved successfully"
 }

@@ -13,6 +13,7 @@ import {
 	UploadedFiles,
 	UseInterceptors,
 	BadRequestException,
+	ForbiddenException,
 } from '@nestjs/common';
 import {
 	ApiTags,
@@ -1083,6 +1084,69 @@ export class GroupController {
 			success: true,
 			data: result,
 			message: i18n.t('post.GROUP_USER_POSTS_RETRIEVED_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Get(':groupId/posts/pending')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Lấy danh sách bài viết đang chờ duyệt (pending) trong nhóm' })
+	@ApiParam({
+		name: 'groupId',
+		description: 'ID của nhóm',
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiQuery({
+		name: 'page',
+		required: false,
+		type: Number,
+		description: 'Số trang (mặc định: 1)',
+		example: 1,
+	})
+	@ApiQuery({
+		name: 'limit',
+		required: false,
+		type: Number,
+		description: 'Số lượng bài viết trên mỗi trang (mặc định: 10)',
+		example: 10,
+	})
+	@ApiResponse({
+		status: 200,
+		description: 'Lấy danh sách bài viết pending thành công',
+		type: PaginatedPostsResponseDto,
+	})
+	@ApiResponse({
+		status: 403,
+		description: 'Không có quyền truy cập',
+	})
+	@ApiResponse({
+		status: 404,
+		description: 'Không tìm thấy nhóm hoặc bài viết',
+	})
+	async getPendingPostsInGroup(
+		@Request() req,
+		@Param('groupId') groupId: string,
+		@I18n() i18n: I18nContext,
+		@Query('page') page: number = 1,
+		@Query('limit') limit: number = 10,
+	): Promise<ResponseEntity<PaginatedPostsResponseDto>> {
+		const isAdmin = await this.groupService['groupRepository'].isUserAdmin(groupId, req.user.id);
+		if (!isAdmin) {
+			throw new ForbiddenException(i18n.t('group.UNAUTHORIZED_TO_MODIFY'));
+		}
+		const result = await this.postService.getPostsByGroupId(
+			groupId,
+			i18n,
+			Number(page),
+			Number(limit),
+			undefined,
+			PostStatus.PENDING,
+		);
+		return {
+			success: true,
+			data: result,
+			message: i18n.t('group.PENDING_POSTS_RETRIEVED_SUCCESS'),
 		};
 	}
 }

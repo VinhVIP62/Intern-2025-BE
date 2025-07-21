@@ -71,5 +71,6 @@
 	"NO_SKILL_LEVELS_DEFINED": "Bạn chưa định nghĩa mức độ kỹ năng cho bất kỳ môn thể thao nào",
 	"NO_SKILL_LEVEL_FOR_SPORT": "Bạn chưa có mức độ kỹ năng cho môn thể thao {sport}",
 	"INSUFFICIENT_SKILL_LEVEL": "Mức độ kỹ năng của bạn cho môn {sport} ({current}) thấp hơn yêu cầu ({required})",
-	"INVITATION_CANCELLED_SUCCESS": "Hủy lời mời thành công"
+	"INVITATION_CANCELLED_SUCCESS": "Hủy lời mời thành công",
+	"PENDING_POSTS_RETRIEVED_SUCCESS": "Lấy danh sách bài viết chờ duyệt thành công"
 }
