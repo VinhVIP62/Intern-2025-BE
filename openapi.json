@@ -3960,6 +3960,38 @@
         ]
       }
     },
+    "/api/v1/groups/{groupId}/waiting-list/cancel": {
+      "delete": {
+        "operationId": "GroupController_cancelJoinRequest_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hủy yêu cầu tham gia nhóm thành công"
+          },
+          "400": {
+            "description": "Không hợp lệ hoặc không có trong waitingList"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "User hủy yêu cầu tham gia nhóm (rút khỏi waitingList)",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
     "/api/v1/friends/requests": {
       "post": {
         "operationId": "FriendRequestController_createFriendRequest_v1",

@@ -855,4 +855,28 @@ export class GroupService {
 			throw error;
 		}
 	}
+
+	async cancelJoinRequest(groupId: string, userId: string, i18n: I18nContext): Promise<void> {
+		try {
+			if (!groupId || groupId.trim().length === 0) {
+				throw new BadRequestException(i18n.t('group.INVALID_GROUP_ID'));
+			}
+			if (!userId || userId.trim().length === 0) {
+				throw new BadRequestException(i18n.t('group.INVALID_USER_ID'));
+			}
+			const isInWaitingList = await this.groupRepository.isUserInWaitingList(groupId, userId);
+			if (!isInWaitingList) {
+				throw new BadRequestException(i18n.t('group.NOT_IN_WAITING_LIST'));
+			}
+			await this.groupRepository.removeFromWaitingList(groupId, userId);
+		} catch (error) {
+			if (error instanceof BadRequestException) {
+				throw error;
+			}
+			if (error.message === 'Group not found') {
+				throw new NotFoundException(i18n.t('group.GROUP_NOT_FOUND'));
+			}
+			throw new BadRequestException(i18n.t('group.REQUEST_CANCEL_FAILED'));
+		}
+	}
 }

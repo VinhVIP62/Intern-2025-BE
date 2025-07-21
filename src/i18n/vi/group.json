@@ -75,5 +75,7 @@
 	"PENDING_POSTS_RETRIEVED_SUCCESS": "Lấy danh sách bài viết chờ duyệt thành công",
 	"WAITING_LIST_RETRIEVED_SUCCESS": "Lấy danh sách chờ duyệt thành viên thành công",
 	"INVITE_LIST_RETRIEVED_SUCCESS": "Lấy danh sách người được mời thành công",
-	"USER_WAITING_GROUPS_RETRIEVED_SUCCESS": "Lấy danh sách nhóm đã gửi yêu cầu tham gia thành công"
+	"USER_WAITING_GROUPS_RETRIEVED_SUCCESS": "Lấy danh sách nhóm đã gửi yêu cầu tham gia thành công",
+	"REQUEST_CANCEL_FAILED": "Hủy yêu cầu tham gia nhóm thất bại",
+	"REQUEST_CANCEL_SUCCESS": "Hủy yêu cầu tham gia nhóm thành công"
 }

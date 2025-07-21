@@ -1246,4 +1246,25 @@ export class GroupController {
 			message: i18n.t('group.INVITE_LIST_RETRIEVED_SUCCESS'),
 		};
 	}
+
+	@Version('1')
+	@Delete(':groupId/waiting-list/cancel')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'User hủy yêu cầu tham gia nhóm (rút khỏi waitingList)' })
+	@ApiParam({ name: 'groupId', description: 'ID của nhóm', example: '507f1f77bcf86cd799439011' })
+	@ApiResponse({ status: 200, description: 'Hủy yêu cầu tham gia nhóm thành công' })
+	@ApiResponse({ status: 400, description: 'Không hợp lệ hoặc không có trong waitingList' })
+	@ApiResponse({ status: 404, description: 'Không tìm thấy nhóm' })
+	async cancelJoinRequest(
+		@Request() req,
+		@Param('groupId') groupId: string,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<null>> {
+		await this.groupService.cancelJoinRequest(groupId, req.user.id, i18n);
+		return {
+			success: true,
+			message: i18n.t('group.REQUEST_CANCEL_SUCCESS'),
+		};
+	}
 }
