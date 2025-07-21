@@ -430,19 +430,12 @@ export class GroupService {
 			if (limit < 1 || limit > 50) limit = 10;
 
 			// Validate role filter
-			if (role && !['admin', 'member', 'waiting'].includes(role)) {
+			if (role && !['admin', 'member'].includes(role)) {
 				throw new BadRequestException(i18n.t('group.INVALID_ROLE_FILTER'));
 			}
 
-			// TODO: Implement getGroupMembers in repository
-			// For now, return a placeholder response
-			return {
-				total: 0,
-				page,
-				limit,
-				totalPages: 0,
-				data: [],
-			};
+			const validRole = role === 'admin' || role === 'member' ? role : undefined;
+			return await this.groupRepository.getGroupMembers(groupId, page, limit, validRole);
 		} catch (error) {
 			if (error instanceof BadRequestException) {
 				throw error;

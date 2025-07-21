@@ -9,12 +9,14 @@ import { Post, PostSchema } from '@modules/post/entities/post.schema';
 import { NotificationModule } from '@modules/notification/notification.module';
 import { PostModule } from '@modules/post/post.module';
 import { UserModule } from '@modules/user/user.module';
+import { User, UserSchema } from '@modules/user/entities/user.schema';
 
 @Module({
 	imports: [
 		MongooseModule.forFeature([
 			{ name: Group.name, schema: GroupSchema },
 			{ name: Post.name, schema: PostSchema },
+			{ name: User.name, schema: UserSchema },
 		]),
 		NotificationModule,
 		PostModule,

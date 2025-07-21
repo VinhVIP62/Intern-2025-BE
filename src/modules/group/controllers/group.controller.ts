@@ -486,7 +486,7 @@ export class GroupController {
 	@ApiQuery({
 		name: 'role',
 		required: false,
-		enum: ['admin', 'member', 'waiting'],
+		enum: ['admin', 'member'],
 		description: 'Lọc theo vai trò',
 	})
 	@ApiResponse({

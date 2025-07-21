@@ -46,6 +46,18 @@ export interface IGroupRepository {
 	isUserInWaitingList(groupId: string, userId: string): Promise<boolean>;
 	isUserInInviteList(groupId: string, userId: string): Promise<boolean>;
 	getGroupAdmins(groupId: string): Promise<string[]>;
+	getGroupMembers(
+		groupId: string,
+		page: number,
+		limit: number,
+		role?: 'admin' | 'member',
+	): Promise<{
+		total: number;
+		page: number;
+		limit: number;
+		totalPages: number;
+		data: any[];
+	}>;
 }
 
 export const IGroupRepository = Symbol('IGroupRepository');

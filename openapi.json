@@ -3158,8 +3158,7 @@
             "schema": {
               "enum": [
                 "admin",
-                "member",
-                "waiting"
+                "member"
               ],
               "type": "string"
             }

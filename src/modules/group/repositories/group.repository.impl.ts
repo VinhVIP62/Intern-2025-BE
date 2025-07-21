@@ -12,12 +12,14 @@ import {
 	SimpleGroupResponseDto,
 } from '../dto/group.dto';
 import { SportType } from '@modules/user/enums/user.enum';
+import { User } from '../../user/entities/user.schema';
 
 @Injectable()
 export class GroupRepositoryImpl implements IGroupRepository {
 	constructor(
 		@InjectModel(Group.name) private readonly groupModel: Model<Group>,
 		@InjectModel('Post') private readonly postModel: Model<any>,
+		@InjectModel(User.name) private readonly userModel: Model<User>,
 	) {}
 
 	async createGroup(createGroupDto: CreateGroupDto, creatorId: string): Promise<GroupResponseDto> {
@@ -322,6 +324,51 @@ export class GroupRepositoryImpl implements IGroupRepository {
 			limit,
 			totalPages,
 			data: groupsWithLatestPostAndRole,
+		};
+	}
+
+	async getGroupMembers(
+		groupId: string,
+		page: number,
+		limit: number,
+		role?: 'admin' | 'member',
+	): Promise<{
+		total: number;
+		page: number;
+		limit: number;
+		totalPages: number;
+		data: any[];
+	}> {
+		const group = await this.groupModel.findById(groupId).lean();
+		if (!group) {
+			throw new Error('Group not found');
+		}
+		let userIds: string[] = [];
+		if (role === 'admin') {
+			userIds = (group.admins || []).map((id: any) => id.toString());
+		} else {
+			const adminIds = (group.admins || []).map((id: any) => id.toString());
+			userIds = (group.members || [])
+				.map((id: any) => id.toString())
+				.filter(id => !adminIds.includes(id));
+		}
+		const total = userIds.length;
+		const totalPages = Math.ceil(total / limit);
+		const skip = (page - 1) * limit;
+		const pagedUserIds = userIds.slice(skip, skip + limit);
+		if (pagedUserIds.length === 0) {
+			return { total, page, limit, totalPages, data: [] };
+		}
+		const users = await this.userModel
+			.find({ _id: { $in: pagedUserIds.map(id => new Types.ObjectId(id)) } })
+			.select('_id email firstName lastName avatar fullName')
+			.lean({ virtuals: true });
+		return {
+			total,
+			page,
+			limit,
+			totalPages,
+			data: users,
 		};
 	}
 
