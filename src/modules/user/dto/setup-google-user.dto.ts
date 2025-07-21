@@ -1,39 +1,11 @@
-import { OmitType } from '@nestjs/mapped-types';
-import { Expose, Type } from 'class-transformer';
-import {
-	IsEmail,
-	IsNotEmpty,
-	IsOptional,
-	IsPhoneNumber,
-	IsString,
-	IsStrongPassword,
-} from 'class-validator';
-import { MemoryStoredFile } from 'nestjs-form-data';
+import { PickType } from '@nestjs/mapped-types';
 
-import { SetupUserDto } from './setup-user.dto';
+import { UpdateUserDto } from './update-user.dto';
 
-export class SetupGoogleUserDto extends OmitType(SetupUserDto, ['avatar']) {
-	@Expose()
-	@Type(() => MemoryStoredFile)
-	@IsOptional()
-	avatar?: MemoryStoredFile;
-
-	@Expose()
-	@IsNotEmpty()
-	@IsOptional()
-	@IsString()
-	username?: string;
-
-	@Expose()
-	@IsStrongPassword()
-	password!: string;
-
-	@Expose()
-	@IsEmail()
-	@IsOptional()
-	mail?: string;
-
-	@Expose()
-	@IsPhoneNumber()
-	phone!: string;
-}
+export class SetupGoogleUserDto extends PickType(UpdateUserDto, [
+	'avatar',
+	'username',
+	'password',
+	'mail',
+	'phone',
+]) {}

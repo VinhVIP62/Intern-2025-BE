@@ -7,7 +7,7 @@ import { Complete } from '@common/types/utils';
 
 import { User } from '@modules/user/entities';
 
-import { PostType } from '../types';
+import { PostType } from '../enums';
 import { SocialPost } from './social-post.entity';
 
 @Schema({
@@ -41,6 +41,19 @@ export class SocialPostSchemaDef implements WithPopulated<Complete<SocialPost>> 
 	// [PLA] not implemented
 	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Event', default: null })
 	embeddedEventId!: string | null;
+
+	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: SocialPost.name, default: null })
+	parentPostId!: string | null;
+
+	@Virtual({
+		options: {
+			ref: SocialPost.name,
+			localField: 'parentPostId',
+			foreignField: '_id',
+			justOne: true,
+		},
+	})
+	parentPostIdPopulated!: Partial<SocialPost> | null;
 
 	@Prop({ type: String, enum: PostType, required: true, default: PostType.FILES })
 	postType!: PostType;

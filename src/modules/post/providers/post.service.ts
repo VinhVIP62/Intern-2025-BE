@@ -8,6 +8,7 @@ import { CursorPaginationOption } from '@common/types/data';
 import { CaslFilterFactory, FileHostService, UserAbilityOptions } from '@shared/modules';
 
 import { SocialPost } from '../entities';
+import { PostType } from '../enums';
 import { IPostRepository, IPostRepositoryToken } from '../repositories';
 
 @Injectable()
@@ -40,11 +41,12 @@ export class PostService {
 
 	async updatePost(
 		id: string,
+		postType: PostType,
 		data: Partial<SocialPost> & { files?: MemoryStoredFile[] },
 	): Promise<WithPopulated<SocialPost> | null> {
 		const filter = this.caslFilterFactory.createFilterForUser(SocialPost, Action.UPDATE);
 		if (data.files) data.fileUrls = await this.fileHostService.files2Urls(data.files);
-		const createdPost = this.postRepository.findOneByAndUpdate({ id, ...filter }, data);
+		const createdPost = this.postRepository.findOneByAndUpdate({ id, postType, ...filter }, data);
 		return createdPost;
 	}
 

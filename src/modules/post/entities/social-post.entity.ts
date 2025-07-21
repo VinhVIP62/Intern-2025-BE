@@ -1,7 +1,7 @@
 import { ISoftDeletableEntity } from '@common/crud/entities';
 import { Visibility } from '@common/enums';
 
-import { PostType } from '../types';
+import { PostType } from '../enums';
 
 export class SocialPost implements ISoftDeletableEntity {
 	id!: string;
@@ -11,8 +11,12 @@ export class SocialPost implements ISoftDeletableEntity {
 
 	userId!: string;
 	// if there's event, file is set to null
+	// PostType.FILES
 	fileUrls!: string[] | null;
+	// PostType.EVENT
 	embeddedEventId!: string | null;
+	// PostType.SHARED
+	parentPostId!: string | null;
 	postType!: PostType;
 
 	createdAt!: Date;

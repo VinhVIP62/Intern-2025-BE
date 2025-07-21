@@ -16,7 +16,7 @@ export class PostRepositoryImpl
 {
 	constructor(@InjectModel(SocialPost.name) private readonly postModel: Model<SocialPost>) {
 		super(postModel, SocialPost, {
-			populate: ['userId', 'deletedBy', 'visibleToUsersIds', 'invisibleToUsersIds'],
+			populate: ['userId', 'deletedBy', 'visibleToUsersIds', 'invisibleToUsersIds', 'parentPostId'],
 		});
 	}
 

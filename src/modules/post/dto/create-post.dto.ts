@@ -4,7 +4,7 @@ import { HasExtension, HasMimeType, IsFile, MemoryStoredFile } from 'nestjs-form
 
 import { Visibility } from '@common/enums';
 
-import { PostType } from '../types';
+import { PostType } from '../enums';
 
 export class CreatePostDto {
 	@Expose()
@@ -22,13 +22,29 @@ export class CreatePostDto {
 	visibility!: Visibility;
 
 	@Expose()
-	@Transform(({ obj }) => {
-		const o = obj as CreatePostDto;
-		if (o.eventId) {
-			delete o.files;
-		}
-		return o.files;
-	})
+	@IsEnum(PostType)
+	postType!: PostType;
+
+	@Expose()
+	@IsMongoId()
+	@IsOptional()
+	visibleToCommunityId?: string;
+
+	@Expose()
+	@IsArray()
+	@IsMongoId({ each: true })
+	@IsOptional()
+	visibleToUsersIds?: string[];
+
+	@Expose()
+	@IsArray()
+	@IsMongoId({ each: true })
+	@IsOptional()
+	invisibleToUsersIds?: string[];
+}
+
+export class CreateFilePostDto extends CreatePostDto {
+	@Expose()
 	@Type(() => MemoryStoredFile)
 	@HasExtension(['png', 'jpg', 'jpeg', 'gif', 'ogg', 'mp4', 'webp'], { each: true })
 	@HasMimeType(['image/*', 'video/*'], { each: true })
@@ -38,45 +54,33 @@ export class CreatePostDto {
 	files?: MemoryStoredFile[];
 
 	@Expose()
-	@IsMongoId()
-	@IsOptional()
-	@IsString()
-	eventId?: string;
-
-	@Expose()
-	@Transform(({ obj }) => {
-		return (obj as CreatePostDto).eventId ? PostType.EVENT : PostType.FILES;
-	})
+	@Transform(() => PostType.FILES)
 	@IsEnum(PostType)
-	@IsOptional()
-	postType?: PostType;
+	declare postType: PostType.FILES;
+}
 
+export class CreateSharePostDto extends CreatePostDto {
 	@Expose()
-	@Transform(({ obj, value }) => {
-		const o = obj as CreatePostDto;
-		return o.visibility === Visibility.LIMITED ? (value as string) : undefined;
-	})
+	@Type(() => String)
 	@IsMongoId()
-	@IsOptional()
-	visibleToCommunityId?: string;
+	@IsString()
+	parentPostId!: string;
 
 	@Expose()
-	@Transform(({ obj, value }) => {
-		const o = obj as CreatePostDto;
-		return o.visibility === Visibility.LIMITED ? (value as string) : undefined;
-	})
-	@IsArray()
-	@IsMongoId({ each: true })
-	@IsOptional()
-	visibleToUsersIds?: string[];
+	@Transform(() => PostType.SHARED)
+	@IsEnum(PostType)
+	declare postType: PostType.SHARED;
+}
+
+export class CreateEventPostDto extends CreatePostDto {
+	@Expose()
+	@Type(() => String)
+	@IsMongoId()
+	@IsString()
+	eventId!: string;
 
 	@Expose()
-	@Transform(({ obj, value }) => {
-		const o = obj as CreatePostDto;
-		return o.visibility === Visibility.LIMITED ? (value as string) : undefined;
-	})
-	@IsArray()
-	@IsMongoId({ each: true })
-	@IsOptional()
-	invisibleToUsersIds?: string[];
+	@Transform(() => PostType.EVENT)
+	@IsEnum(PostType)
+	declare postType: PostType.EVENT;
 }

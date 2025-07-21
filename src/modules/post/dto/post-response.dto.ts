@@ -25,6 +25,15 @@ export class ResponsePostDto {
 	fileUrls!: string[] | null;
 
 	@Expose()
+	embeddedEventId!: any;
+
+	@Expose()
+	parentPostId!: any;
+
+	@Expose({ name: 'parentPostIdPopulated' })
+	parentPost!: any;
+
+	@Expose()
 	@Type(() => String)
 	userId!: string;
 
@@ -77,7 +86,4 @@ export class ResponsePostDto {
 	@Expose()
 	@Type(() => String)
 	invisibleToUsersIds!: string[];
-
-	// [PLA] possible fields for future
-	// embeddedEventId: string
 }

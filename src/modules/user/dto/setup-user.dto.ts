@@ -1,8 +1,46 @@
 import { Expose, Transform, Type } from 'class-transformer';
-import { ArrayUnique, IsArray, IsDefined, IsNotEmpty, ValidateNested } from 'class-validator';
+import {
+	ArrayUnique,
+	IsArray,
+	IsBoolean,
+	IsDefined,
+	IsEnum,
+	IsNotEmpty,
+	IsString,
+	ValidateNested,
+} from 'class-validator';
 import { HasExtension, HasMimeType, IsFile, MemoryStoredFile } from 'nestjs-form-data';
 
-import { LocationDto, SportDto } from './update-user.dto';
+import { str2bool } from '@common/utils';
+
+import { Location, Sport } from '../entities';
+import { Level } from '../enums';
+
+export class LocationDto implements Location {
+	@Expose()
+	@IsString()
+	province!: string;
+
+	@Expose()
+	@IsString()
+	city!: string;
+
+	@Expose()
+	@Transform(({ value }) => (typeof value === 'string' ? str2bool(value) : (value as boolean)))
+	@IsBoolean()
+	hidden!: boolean;
+}
+
+export class SportDto implements Sport {
+	@Expose()
+	@IsEnum(Level)
+	level!: Level;
+
+	@Expose()
+	@IsNotEmpty()
+	@IsString()
+	name!: string;
+}
 
 export class SetupUserDto {
 	@Expose()

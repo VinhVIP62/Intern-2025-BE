@@ -16,10 +16,19 @@ import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 import { WithPopulated } from '@common/crud/entities';
 import { PriorityRole, ResponseTransform } from '@common/decorators';
 import { Role } from '@common/enums';
+import { UnionValidationPipe } from '@common/pipes';
 import { AuthenticatedRequest, CursorPaginatedData } from '@common/types/data';
 import { plainToInstanceStrict } from '@common/utils';
 
-import { CreatePostDto, FeedPostDto, ResponsePostDto, UpdatePostDto } from '../dto';
+import {
+	CreateFilePostDto,
+	FeedPostDto,
+	ResponsePostDto,
+	UpdateEventPostDto,
+	UpdateFilePostDto,
+	UpdateSharePostDto,
+} from '../dto';
+import { PostType } from '../enums';
 import { PostService } from '../providers';
 
 @PriorityRole(Role.USER)
@@ -32,7 +41,7 @@ export class PostController {
 	@FormDataRequest({ storage: MemoryStoredFile })
 	async createPost(
 		@Req() request: AuthenticatedRequest,
-		@Body() body: CreatePostDto,
+		@Body() body: CreateFilePostDto,
 	): Promise<WithPopulated<ResponsePostDto>> {
 		const createdPost = await this.postService.createPost({ ...body, userId: request.user.id });
 		return plainToInstanceStrict(ResponsePostDto, createdPost);
@@ -52,9 +61,19 @@ export class PostController {
 	@FormDataRequest({ storage: MemoryStoredFile })
 	async updatePost(
 		@Param('postid', ParseObjectIdPipe) postId: string,
-		@Body() body: UpdatePostDto,
+		@Body(
+			new UnionValidationPipe<UpdateEventPostDto | UpdateFilePostDto | UpdateSharePostDto>({
+				discriminator: 'postType',
+				types: {
+					[PostType.EVENT]: UpdateEventPostDto,
+					[PostType.FILES]: UpdateFilePostDto,
+					[PostType.SHARED]: UpdateSharePostDto,
+				},
+			}),
+		)
+		body: UpdateEventPostDto | UpdateFilePostDto | UpdateSharePostDto,
 	): Promise<WithPopulated<ResponsePostDto>> {
-		const updatedPost = await this.postService.updatePost(postId, body);
+		const updatedPost = await this.postService.updatePost(postId, body.postType, body);
 		return plainToInstanceStrict(ResponsePostDto, updatedPost);
 	}
 
