@@ -71,5 +71,18 @@
 	"NO_SKILL_LEVELS_DEFINED": "Bạn chưa định nghĩa mức độ kỹ năng cho bất kỳ môn thể thao nào",
 	"NO_SKILL_LEVEL_FOR_SPORT": "Bạn chưa có mức độ kỹ năng cho môn thể thao {sport}",
 	"INSUFFICIENT_SKILL_LEVEL": "Mức độ kỹ năng của bạn cho môn {sport} ({current}) thấp hơn yêu cầu ({required})",
-	"INVITATION_CANCELLED_SUCCESS": "Hủy lời mời thành công"
+	"INVITATION_CANCELLED_SUCCESS": "Hủy lời mời thành công",
+	"PENDING_POSTS_RETRIEVED_SUCCESS": "Lấy danh sách bài viết chờ duyệt thành công",
+	"WAITING_LIST_RETRIEVED_SUCCESS": "Lấy danh sách chờ duyệt thành viên thành công",
+	"INVITE_LIST_RETRIEVED_SUCCESS": "Lấy danh sách người được mời thành công",
+	"USER_WAITING_GROUPS_RETRIEVED_SUCCESS": "Lấy danh sách nhóm đã gửi yêu cầu tham gia thành công",
+	"REQUEST_CANCEL_FAILED": "Hủy yêu cầu tham gia nhóm thất bại",
+	"REQUEST_CANCEL_SUCCESS": "Hủy yêu cầu tham gia nhóm thành công",
+	"INVALID_ACTIVITY_LEVEL": "Mức độ kỹ năng không hợp lệ trong joinConditions cho môn {sport}: {level}",
+	"INVALID_LOCATION_CITY": "Bạn không đáp ứng điều kiện về thành phố khi tham gia nhóm (yêu cầu: {required}, hiện tại: {current})",
+	"INVALID_LOCATION_DISTRICT": "Bạn không đáp ứng điều kiện về quận/huyện khi tham gia nhóm (yêu cầu: {required}, hiện tại: {current})",
+	"INVALID_LOCATION_ADDRESS": "Bạn không đáp ứng điều kiện về địa chỉ khi tham gia nhóm (yêu cầu: {required}, hiện tại: {current})",
+	"INVALID_AGE_MIN": "Tuổi của bạn ({current}) chưa đủ điều kiện tối thiểu ({required}) để tham gia nhóm",
+	"INVALID_AGE_MAX": "Tuổi của bạn ({current}) vượt quá điều kiện tối đa ({required}) để tham gia nhóm",
+	"INVALID_AGE_RANGE": "Điều kiện tuổi tham gia nhóm không hợp lệ (min phải nhỏ hơn hoặc bằng max)"
 }

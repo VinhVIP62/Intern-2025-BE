@@ -3757,6 +3757,241 @@
         ]
       }
     },
+    "/api/v1/groups/{groupId}/posts/pending": {
+      "get": {
+        "operationId": "GroupController_getPendingPostsInGroup_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng bài viết trên mỗi trang (mặc định: 10)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách bài viết pending thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedPostsResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Không có quyền truy cập"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm hoặc bài viết"
+          }
+        },
+        "summary": "Lấy danh sách bài viết đang chờ duyệt (pending) trong nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/waiting-list": {
+      "get": {
+        "operationId": "GroupController_getWaitingList_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách chờ duyệt thành công"
+          },
+          "403": {
+            "description": "Không có quyền truy cập"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "Lấy danh sách user chờ duyệt vào group (chỉ admin)",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/users/groups-waiting": {
+      "get": {
+        "operationId": "GroupController_getUserWaitingGroups_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "ID của user, nếu không truyền -> current user",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách nhóm đã gửi yêu cầu thành công"
+          }
+        },
+        "summary": "Lấy danh sách group user đã gửi yêu cầu tham gia",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/invite-list": {
+      "get": {
+        "operationId": "GroupController_getInviteList_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách người được mời thành công"
+          },
+          "403": {
+            "description": "Không có quyền truy cập"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "Lấy danh sách user được mời vào group (chỉ admin được xem)",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/waiting-list/cancel": {
+      "delete": {
+        "operationId": "GroupController_cancelJoinRequest_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hủy yêu cầu tham gia nhóm thành công"
+          },
+          "400": {
+            "description": "Không hợp lệ hoặc không có trong waitingList"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "User hủy yêu cầu tham gia nhóm (rút khỏi waitingList)",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
     "/api/v1/friends/requests": {
       "post": {
         "operationId": "FriendRequestController_createFriendRequest_v1",
@@ -5979,6 +6214,76 @@
           "comments"
         ]
       },
+      "JoinConditionSportDto": {
+        "type": "object",
+        "properties": {
+          "sport": {
+            "type": "object",
+            "description": "Sport conditions",
+            "example": {
+              "football": "intermediate",
+              "tennis": "beginner"
+            },
+            "additionalProperties": {
+              "enum": [
+                "beginner",
+                "intermediate",
+                "advanced",
+                "professional"
+              ]
+            }
+          }
+        }
+      },
+      "JoinConditionLocationDto": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "City name",
+            "example": "Ho Chi Minh City"
+          },
+          "district": {
+            "type": "string",
+            "description": "District name",
+            "example": "District 1"
+          },
+          "address": {
+            "type": "string",
+            "description": "Address",
+            "example": "123 Main St"
+          }
+        }
+      },
+      "JoinConditionAgeDto": {
+        "type": "object",
+        "properties": {
+          "min": {
+            "type": "number",
+            "description": "Minimum age",
+            "example": 18
+          },
+          "max": {
+            "type": "number",
+            "description": "Maximum age",
+            "example": 30
+          }
+        }
+      },
+      "JoinConditionsDto": {
+        "type": "object",
+        "properties": {
+          "sport": {
+            "$ref": "#/components/schemas/JoinConditionSportDto"
+          },
+          "location": {
+            "$ref": "#/components/schemas/JoinConditionLocationDto"
+          },
+          "age": {
+            "$ref": "#/components/schemas/JoinConditionAgeDto"
+          }
+        }
+      },
       "CreateGroupDto": {
         "type": "object",
         "properties": {
@@ -6048,19 +6353,27 @@
             "example": true
           },
           "joinConditions": {
-            "type": "object",
-            "description": "Join conditions for different sports",
+            "description": "Join conditions for group (sport, location, age)",
             "example": {
-              "football": "intermediate"
+              "sport": {
+                "football": "beginner",
+                "tennis": "beginner",
+                "badminton": "beginner"
+              },
+              "location": {
+                "city": "Hồ Chí Minh",
+                "district": "Quận 7"
+              },
+              "age": {
+                "min": 10,
+                "max": 60
+              }
             },
-            "additionalProperties": {
-              "enum": [
-                "beginner",
-                "intermediate",
-                "advanced",
-                "professional"
-              ]
-            }
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JoinConditionsDto"
+              }
+            ]
           }
         },
         "required": [
@@ -6175,19 +6488,27 @@
             "example": true
           },
           "joinConditions": {
-            "type": "object",
-            "description": "Join conditions for different sports",
+            "description": "Join conditions for group (sport, location, age)",
             "example": {
-              "football": "intermediate"
+              "sport": {
+                "football": "beginner",
+                "tennis": "beginner",
+                "badminton": "beginner"
+              },
+              "location": {
+                "city": "Hồ Chí Minh",
+                "district": "Quận 7"
+              },
+              "age": {
+                "min": 10,
+                "max": 60
+              }
             },
-            "additionalProperties": {
-              "enum": [
-                "beginner",
-                "intermediate",
-                "advanced",
-                "professional"
-              ]
-            }
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JoinConditionsDto"
+              }
+            ]
           },
           "createdAt": {
             "format": "date-time",
@@ -6432,19 +6753,27 @@
             "example": true
           },
           "joinConditions": {
-            "type": "object",
-            "description": "Join conditions for different sports",
+            "description": "Join conditions for group (sport, location, age)",
             "example": {
-              "football": "intermediate"
+              "sport": {
+                "football": "beginner",
+                "tennis": "beginner",
+                "badminton": "beginner"
+              },
+              "location": {
+                "city": "Hồ Chí Minh",
+                "district": "Quận 7"
+              },
+              "age": {
+                "min": 10,
+                "max": 60
+              }
             },
-            "additionalProperties": {
-              "enum": [
-                "beginner",
-                "intermediate",
-                "advanced",
-                "professional"
-              ]
-            }
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/JoinConditionsDto"
+              }
+            ]
           }
         }
       },

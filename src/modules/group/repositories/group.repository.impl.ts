@@ -376,6 +376,59 @@ export class GroupRepositoryImpl implements IGroupRepository {
 		return this.groupModel.find({ _id: { $in: ids } }).lean();
 	}
 
+	async getWaitingListUsers(groupId: string, page: number, limit: number) {
+		const group = await this.groupModel.findById(groupId).lean();
+		if (!group) throw new Error('Group not found');
+		const userIds = (group.waitingList || []).map((id: any) => id.toString());
+		const total = userIds.length;
+		const totalPages = Math.ceil(total / limit);
+		const skip = (page - 1) * limit;
+		const pagedUserIds = userIds.slice(skip, skip + limit);
+		if (pagedUserIds.length === 0) {
+			return { total, page, limit, totalPages, data: [] };
+		}
+		const users = await this.userModel
+			.find({ _id: { $in: pagedUserIds.map(id => new Types.ObjectId(id)) } })
+			.select('_id email firstName lastName avatar fullName')
+			.lean({ virtuals: true });
+		return { total, page, limit, totalPages, data: users };
+	}
+
+	async getInviteListUsers(groupId: string, page: number, limit: number) {
+		const group = await this.groupModel.findById(groupId).lean();
+		if (!group) throw new Error('Group not found');
+		const userIds = (group.inviteList || []).map((id: any) => id.toString());
+		const total = userIds.length;
+		const totalPages = Math.ceil(total / limit);
+		const skip = (page - 1) * limit;
+		const pagedUserIds = userIds.slice(skip, skip + limit);
+		if (pagedUserIds.length === 0) {
+			return { total, page, limit, totalPages, data: [] };
+		}
+		const users = await this.userModel
+			.find({ _id: { $in: pagedUserIds.map(id => new Types.ObjectId(id)) } })
+			.select('_id email firstName lastName avatar fullName')
+			.lean({ virtuals: true });
+		return { total, page, limit, totalPages, data: users };
+	}
+
+	async getGroupsUserIsWaiting(userId: string, page: number, limit: number) {
+		const skip = (page - 1) * limit;
+		const filter = { waitingList: new Types.ObjectId(userId) };
+		const [groups, total] = await Promise.all([
+			this.groupModel.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+			this.groupModel.countDocuments(filter),
+		]);
+		const totalPages = Math.ceil(total / limit);
+		return {
+			total,
+			page,
+			limit,
+			totalPages,
+			data: groups.map(group => this.mapToResponseDto(group)),
+		};
+	}
+
 	private mapToResponseDto(group: any): GroupResponseDto {
 		return {
 			_id: group._id.toString(),
