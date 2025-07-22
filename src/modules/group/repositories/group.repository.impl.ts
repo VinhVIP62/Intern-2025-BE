@@ -480,6 +480,7 @@ export class GroupRepositoryImpl implements IGroupRepository {
 			description: group.description,
 			avatar: group.avatar,
 			role,
+			coverImage: group.coverImage,
 		};
 	}
 }

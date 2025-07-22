@@ -7045,6 +7045,11 @@
               "admin",
               "member"
             ]
+          },
+          "coverImage": {
+            "type": "string",
+            "description": "Group cover image URL",
+            "example": "https://example.com/cover.jpg"
           }
         },
         "required": [

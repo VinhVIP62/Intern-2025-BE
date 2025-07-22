@@ -363,6 +363,12 @@ export class SimpleGroupResponseDto {
 		enum: ['admin', 'member'],
 	})
 	role: 'admin' | 'member';
+
+	@ApiPropertyOptional({
+		description: 'Group cover image URL',
+		example: 'https://example.com/cover.jpg',
+	})
+	coverImage?: string;
 }
 
 export class PaginatedGroupsResponseDto extends BasePaginationMetaDto {
