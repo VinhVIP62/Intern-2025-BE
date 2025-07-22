@@ -256,4 +256,8 @@ export class UserService {
 	async updateFcmToken(userId: string, fcmToken: string): Promise<void> {
 		await this.userRepository.update(userId, { fcmToken });
 	}
+
+	async getUserById(userId: string): Promise<User | null> {
+		return this.userRepository.findOneById(userId);
+	}
 }

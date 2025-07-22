@@ -21,6 +21,7 @@ import { PostService } from '@modules/post/providers/post.service';
 import { PostStatus } from '@modules/post/entities/post.enum';
 import { UserService } from '@modules/user/providers/user.service';
 import { Types } from 'mongoose';
+
 @Injectable()
 export class GroupService {
 	constructor(
@@ -53,6 +54,9 @@ export class GroupService {
 			if (createGroupDto.description && createGroupDto.description.length > 500) {
 				throw new BadRequestException(i18n.t('group.DESCRIPTION_TOO_LONG'));
 			}
+
+			// Validate joinConditions
+			validateJoinConditionsOrThrow(createGroupDto.joinConditions, i18n);
 
 			return await this.groupRepository.createGroup(createGroupDto, creatorId);
 		} catch (error) {
@@ -146,6 +150,9 @@ export class GroupService {
 					throw new BadRequestException(i18n.t('group.DESCRIPTION_TOO_LONG'));
 				}
 			}
+
+			// Validate joinConditions
+			validateJoinConditionsOrThrow(updateGroupDto.joinConditions, i18n);
 
 			return await this.groupRepository.updateGroup(groupId, updateGroupDto);
 		} catch (error) {
@@ -244,50 +251,15 @@ export class GroupService {
 
 			// Kiểm tra điều kiện tham gia (joinConditions)
 			if (group.joinConditions && Object.keys(group.joinConditions).length > 0) {
-				// Lấy thông tin skill levels của user
 				const userSkillLevels = await this.userService.getSkillLevelsByUserId(userId, i18n);
+				checkSkillLevelCondition(userSkillLevels, group.joinConditions, i18n);
 
-				// Kiểm tra tất cả điều kiện trong joinConditions
-				for (const [sport, requiredLevel] of Object.entries(group.joinConditions)) {
-					if (!userSkillLevels) {
-						throw new BadRequestException(i18n.t('group.NO_SKILL_LEVELS_DEFINED'));
-					}
-
-					const userLevel = userSkillLevels.get(sport as SportType);
-					if (!userLevel) {
-						throw new BadRequestException(
-							i18n.t('group.NO_SKILL_LEVEL_FOR_SPORT', { args: { sport: sport } }),
-						);
-					}
-
-					// So sánh mức độ kỹ năng (giả sử enum có thứ tự tăng dần)
-					const levelOrder = {
-						[ActivityLevel.BEGINNER]: 1,
-						[ActivityLevel.INTERMEDIATE]: 2,
-						[ActivityLevel.ADVANCED]: 3,
-						[ActivityLevel.PROFESSIONAL]: 4,
-					};
-
-					const userLevelOrder = levelOrder[userLevel];
-					const requiredLevelOrder = levelOrder[requiredLevel];
-
-					if (userLevelOrder < requiredLevelOrder) {
-						throw new BadRequestException(
-							i18n.t('group.INSUFFICIENT_SKILL_LEVEL', {
-								args: {
-									sport,
-									required: requiredLevel,
-									current: userLevel,
-								},
-							}),
-						);
-					}
+				const user = await this.userService.getUserById(userId);
+				if (!user) {
+					throw new BadRequestException(i18n.t('user.USER_NOT_FOUND'));
 				}
-			}
-
-			if (group.autoApproveJoinGroup) {
-				await this.groupRepository.addMember(groupId, userId);
-				return;
+				checkLocationCondition(user, group.joinConditions, i18n);
+				checkAgeCondition(user, group.joinConditions, i18n);
 			}
 
 			// Check if user is already a member
@@ -337,7 +309,7 @@ export class GroupService {
 				throw new NotFoundException(i18n.t('group.GROUP_NOT_FOUND'));
 			}
 			if (error.message === 'User not found') {
-				throw new NotFoundException(i18n.t('group.USER_NOT_FOUND'));
+				throw new NotFoundException(i18n.t('user.USER_NOT_FOUND'));
 			}
 			throw new BadRequestException(i18n.t('group.JOIN_GROUP_FAILED'));
 		}
@@ -800,6 +772,206 @@ export class GroupService {
 				throw new NotFoundException(i18n.t('group.GROUP_NOT_FOUND'));
 			}
 			throw new BadRequestException(i18n.t('group.GROUP_UPDATE_FAILED'));
+		}
+	}
+
+	async getWaitingListUsers(
+		groupId: string,
+		page: number = 1,
+		limit: number = 10,
+		i18n: I18nContext,
+		adminUserId?: string,
+	) {
+		if (adminUserId) {
+			const isAdmin = await this.groupRepository.isUserAdmin(groupId, adminUserId);
+			if (!isAdmin) throw new ForbiddenException(i18n.t('group.UNAUTHORIZED_TO_MODIFY'));
+		}
+		try {
+			return await this.groupRepository.getWaitingListUsers(groupId, page, limit);
+		} catch (error) {
+			if (error.message === 'Group not found')
+				throw new NotFoundException(i18n.t('group.GROUP_NOT_FOUND'));
+			throw error;
+		}
+	}
+
+	async getInviteListUsers(
+		groupId: string,
+		page: number = 1,
+		limit: number = 10,
+		i18n: I18nContext,
+		adminUserId?: string,
+	) {
+		if (adminUserId) {
+			const isAdmin = await this.groupRepository.isUserAdmin(groupId, adminUserId);
+			if (!isAdmin) throw new ForbiddenException(i18n.t('group.UNAUTHORIZED_TO_MODIFY'));
+		}
+		try {
+			return await this.groupRepository.getInviteListUsers(groupId, page, limit);
+		} catch (error) {
+			if (error.message === 'Group not found')
+				throw new NotFoundException(i18n.t('group.GROUP_NOT_FOUND'));
+			throw error;
+		}
+	}
+
+	async getGroupsUserIsWaiting(
+		userId: string,
+		page: number = 1,
+		limit: number = 10,
+		i18n: I18nContext,
+	) {
+		try {
+			return await this.groupRepository.getGroupsUserIsWaiting(userId, page, limit);
+		} catch (error) {
+			throw error;
+		}
+	}
+
+	async cancelJoinRequest(groupId: string, userId: string, i18n: I18nContext): Promise<void> {
+		try {
+			if (!groupId || groupId.trim().length === 0) {
+				throw new BadRequestException(i18n.t('group.INVALID_GROUP_ID'));
+			}
+			if (!userId || userId.trim().length === 0) {
+				throw new BadRequestException(i18n.t('group.INVALID_USER_ID'));
+			}
+			const isInWaitingList = await this.groupRepository.isUserInWaitingList(groupId, userId);
+			if (!isInWaitingList) {
+				throw new BadRequestException(i18n.t('group.NOT_IN_WAITING_LIST'));
+			}
+			await this.groupRepository.removeFromWaitingList(groupId, userId);
+		} catch (error) {
+			if (error instanceof BadRequestException) {
+				throw error;
+			}
+			if (error.message === 'Group not found') {
+				throw new NotFoundException(i18n.t('group.GROUP_NOT_FOUND'));
+			}
+			throw new BadRequestException(i18n.t('group.REQUEST_CANCEL_FAILED'));
+		}
+	}
+}
+
+/* FUNCTIONS */
+function validateJoinConditionsOrThrow(joinConditions: any, i18n: any) {
+	if (!joinConditions) return;
+	// sport
+	if (joinConditions.sport) {
+		for (const [sport, level] of Object.entries(joinConditions.sport)) {
+			if (!Object.values(SportType).includes(sport as SportType)) {
+				throw new BadRequestException(i18n.t('group.INVALID_SPORT_TYPE', { args: { sport } }));
+			}
+			if (!Object.values(ActivityLevel).includes(level as ActivityLevel)) {
+				throw new BadRequestException(
+					i18n.t('group.INVALID_ACTIVITY_LEVEL', { args: { sport, level } }),
+				);
+			}
+		}
+	}
+	// location
+	if (joinConditions.location) {
+		const loc = joinConditions.location;
+		if (loc.city && typeof loc.city !== 'string') {
+			throw new BadRequestException(i18n.t('group.INVALID_LOCATION_CITY'));
+		}
+		if (loc.district && typeof loc.district !== 'string') {
+			throw new BadRequestException(i18n.t('group.INVALID_LOCATION_DISTRICT'));
+		}
+		if (loc.address && typeof loc.address !== 'string') {
+			throw new BadRequestException(i18n.t('group.INVALID_LOCATION_ADDRESS'));
+		}
+	}
+	// age
+	if (joinConditions.age) {
+		const age = joinConditions.age;
+		if (age.min !== undefined && (typeof age.min !== 'number' || age.min < 0)) {
+			throw new BadRequestException(i18n.t('group.INVALID_AGE_MIN'));
+		}
+		if (age.max !== undefined && (typeof age.max !== 'number' || age.max < 0)) {
+			throw new BadRequestException(i18n.t('group.INVALID_AGE_MAX'));
+		}
+		if (age.min !== undefined && age.max !== undefined && age.min > age.max) {
+			throw new BadRequestException(i18n.t('group.INVALID_AGE_RANGE'));
+		}
+	}
+}
+
+function checkSkillLevelCondition(
+	userSkillLevels: Map<string, string> | null,
+	cond: any,
+	i18n: any,
+) {
+	for (const [sport, requiredLevel] of Object.entries(cond.sport || {})) {
+		if (!userSkillLevels) {
+			throw new BadRequestException(i18n.t('group.NO_SKILL_LEVELS_DEFINED'));
+		}
+		const userLevel = userSkillLevels.get(sport as string);
+		if (!userLevel) {
+			throw new BadRequestException(i18n.t('group.NO_SKILL_LEVEL_FOR_SPORT', { args: { sport } }));
+		}
+		const levelOrder = {
+			beginner: 1,
+			intermediate: 2,
+			advanced: 3,
+			professional: 4,
+		};
+		const userLevelOrder = levelOrder[String(userLevel)];
+		const requiredLevelOrder = levelOrder[String(requiredLevel)];
+		if (userLevelOrder < requiredLevelOrder) {
+			throw new BadRequestException(
+				i18n.t('group.INSUFFICIENT_SKILL_LEVEL', {
+					args: { sport, required: requiredLevel, current: userLevel },
+				}),
+			);
+		}
+	}
+}
+
+function checkLocationCondition(user: any, cond: any, i18n: any) {
+	if (cond.location) {
+		if (cond.location.city && user.location?.city !== cond.location.city) {
+			throw new BadRequestException(
+				i18n.t('group.INVALID_LOCATION_CITY', {
+					args: { required: cond.location.city, current: user.location?.city },
+				}),
+			);
+		}
+		if (cond.location.district && user.location?.district !== cond.location.district) {
+			throw new BadRequestException(
+				i18n.t('group.INVALID_LOCATION_DISTRICT', {
+					args: { required: cond.location.district, current: user.location?.district },
+				}),
+			);
+		}
+		if (cond.location.address && user.location?.address !== cond.location.address) {
+			throw new BadRequestException(
+				i18n.t('group.INVALID_LOCATION_ADDRESS', {
+					args: { required: cond.location.address, current: user.location?.address },
+				}),
+			);
+		}
+	}
+}
+
+function checkAgeCondition(user: any, cond: any, i18n: any) {
+	if (cond.age && user.dateOfBirth) {
+		const now = new Date();
+		const dob = new Date(user.dateOfBirth);
+		let age = now.getFullYear() - dob.getFullYear();
+		const m = now.getMonth() - dob.getMonth();
+		if (m < 0 || (m === 0 && now.getDate() < dob.getDate())) {
+			age--;
+		}
+		if (cond.age.min && age < cond.age.min) {
+			throw new BadRequestException(
+				i18n.t('group.INVALID_AGE_MIN', { args: { required: cond.age.min, current: age } }),
+			);
+		}
+		if (cond.age.max && age > cond.age.max) {
+			throw new BadRequestException(
+				i18n.t('group.INVALID_AGE_MAX', { args: { required: cond.age.max, current: age } }),
+			);
 		}
 	}
 }
