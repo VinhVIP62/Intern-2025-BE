@@ -104,16 +104,16 @@ export class NotificationRepositoryImpl implements INotificationRepository {
 
 						case 'Achievement':
 							// TODO: Implement achievement reference
-							// const AchievementModel = this.notificationModel.db.model(
-							// 	'Achievement',
-							// 	AchievementSchema,
-							// );
-							// referencedDoc = await AchievementModel.findById(notification.referenceId)
-							// 	.select('name _id')
-							// 	.lean();
-							// if (referencedDoc) {
-							// 	(notification as any).referencedAchievement = referencedDoc;
-							// }
+							const AchievementModel = this.notificationModel.db.model(
+								'Achievement',
+								AchievementSchema,
+							);
+							referencedDoc = await AchievementModel.findById(notification.referenceId)
+								.select('name _id')
+								.lean();
+							if (referencedDoc) {
+								(notification as any).referencedAchievement = referencedDoc;
+							}
 							break;
 
 						case 'FriendRequest':

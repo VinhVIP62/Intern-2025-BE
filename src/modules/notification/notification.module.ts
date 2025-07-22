@@ -17,6 +17,20 @@ import { IPostRepository } from '@modules/post/repositories/post.repository';
 import { PostRepositoryImpl } from '@modules/post/repositories/post.repository.impl';
 import { ICommentRepository } from '@modules/comment/repositories/comment.repository';
 import { CommentRepositoryImpl } from '@modules/comment/repositories/comment.repository.impl';
+import { IEventRepository } from '@modules/event/repositories/event.repository';
+import { EventRepositoryImpl } from '@modules/event/repositories/event.repository.impl';
+import { IAchievementRepository } from '@modules/achievement/repositories/achievement.repository';
+import { AchievementRepositoryImpl } from '@modules/achievement/repositories/achievement.repository.impl';
+import { IFriendRequestRepository } from '@modules/friend-request/repositories/friend-request.repository';
+import { FriendRequestRepositoryImpl } from '@modules/friend-request/repositories/friend-request.repository.impl';
+import { Achievement, AchievementSchema } from '@modules/achievement/entities/achievement.schema';
+import {
+	FriendRequest,
+	FriendRequestSchema,
+} from '@modules/friend-request/entities/friend-request.schema';
+import { Event, EventSchema } from '@modules/event/entities/event.schema';
+import { EventInvitation } from '@modules/event/entities/event-invitation.schema';
+import { EventInvitationSchema } from '@modules/event/entities/event-invitation.schema';
 @Module({
 	imports: [
 		MongooseModule.forFeature([{ name: Notification.name, schema: NotificationSchema }]),
@@ -24,6 +38,10 @@ import { CommentRepositoryImpl } from '@modules/comment/repositories/comment.rep
 		MongooseModule.forFeature([{ name: Group.name, schema: GroupSchema }]),
 		MongooseModule.forFeature([{ name: Post.name, schema: PostSchema }]),
 		MongooseModule.forFeature([{ name: Comment.name, schema: CommentSchema }]),
+		MongooseModule.forFeature([{ name: Event.name, schema: EventSchema }]),
+		MongooseModule.forFeature([{ name: Achievement.name, schema: AchievementSchema }]),
+		MongooseModule.forFeature([{ name: FriendRequest.name, schema: FriendRequestSchema }]),
+		MongooseModule.forFeature([{ name: EventInvitation.name, schema: EventInvitationSchema }]),
 	],
 	controllers: [NotificationController],
 	providers: [
@@ -33,6 +51,9 @@ import { CommentRepositoryImpl } from '@modules/comment/repositories/comment.rep
 		{ provide: IGroupRepository, useClass: GroupRepositoryImpl },
 		{ provide: IPostRepository, useClass: PostRepositoryImpl },
 		{ provide: ICommentRepository, useClass: CommentRepositoryImpl },
+		{ provide: IEventRepository, useClass: EventRepositoryImpl },
+		{ provide: IAchievementRepository, useClass: AchievementRepositoryImpl },
+		{ provide: IFriendRequestRepository, useClass: FriendRequestRepositoryImpl },
 	],
 	exports: [NotificationService],
 })
