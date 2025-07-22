@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
-import { EventStatus } from './event.enum';
+import { EventStatus, OrganizerType, RSVPStatus } from './event.enum';
 import { SportType } from '@modules/user/enums/user.enum';
 
 // Event Schema
@@ -15,8 +15,11 @@ export class Event extends Document {
 	@Prop({ default: null })
 	image: string;
 
-	@Prop({ type: Types.ObjectId, ref: 'User', required: true })
+	@Prop({ type: Types.ObjectId, required: true, refPath: 'organizerType' })
 	organizer: Types.ObjectId;
+
+	@Prop({ type: String, enum: OrganizerType, required: true })
+	organizerType: OrganizerType;
 
 	@Prop({ type: String, enum: SportType, required: true })
 	sport: SportType;
@@ -57,6 +60,18 @@ export class Event extends Document {
 
 	@Prop({ default: 0 })
 	participantCount: number;
+
+	// RSVP status for users
+	@Prop({
+		type: [
+			{
+				userId: { type: Types.ObjectId, ref: 'User', required: true },
+				status: { type: String, enum: Object.values(RSVPStatus), required: true },
+			},
+		],
+		default: [],
+	})
+	rsvps: { userId: Types.ObjectId; status: RSVPStatus }[];
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);
