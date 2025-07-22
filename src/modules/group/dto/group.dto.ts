@@ -90,6 +90,11 @@ export class LocationDto {
 	@IsOptional()
 	@IsString()
 	district?: string;
+
+	@ApiPropertyOptional({ description: 'Address', example: '123 Main St' })
+	@IsOptional()
+	@IsString()
+	address?: string;
 }
 
 export class CreateGroupDto {
@@ -158,6 +163,7 @@ export class CreateGroupDto {
 			location: {
 				city: 'Hồ Chí Minh',
 				district: 'Quận 7',
+				address: '123 Main St',
 			},
 			age: {
 				min: 10,
@@ -239,6 +245,7 @@ export class UpdateGroupDto {
 			location: {
 				city: 'Hồ Chí Minh',
 				district: 'Quận 7',
+				address: '123 Main St',
 			},
 			age: {
 				min: 10,
@@ -316,6 +323,7 @@ export class GroupResponseDto {
 			location: {
 				city: 'Hồ Chí Minh',
 				district: 'Quận 7',
+				address: '123 Main St',
 			},
 			age: {
 				min: 10,

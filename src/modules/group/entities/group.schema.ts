@@ -36,12 +36,14 @@ export class Group extends Document {
 		type: {
 			city: String,
 			district: String,
+			address: String,
 		},
 		default: null,
 	})
 	location: {
 		city: string;
 		district: string;
+		address: string;
 	};
 
 	@Prop({ default: false })

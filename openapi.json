@@ -6781,7 +6781,8 @@
               },
               "location": {
                 "city": "Hồ Chí Minh",
-                "district": "Quận 7"
+                "district": "Quận 7",
+                "address": "123 Main St"
               },
               "age": {
                 "min": 10,
@@ -6916,7 +6917,8 @@
               },
               "location": {
                 "city": "Hồ Chí Minh",
-                "district": "Quận 7"
+                "district": "Quận 7",
+                "address": "123 Main St"
               },
               "age": {
                 "min": 10,
@@ -7186,7 +7188,8 @@
               },
               "location": {
                 "city": "Hồ Chí Minh",
-                "district": "Quận 7"
+                "district": "Quận 7",
+                "address": "123 Main St"
               },
               "age": {
                 "min": 10,
