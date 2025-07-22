@@ -1113,6 +1113,215 @@
         ]
       }
     },
+    "/api/v1/events": {
+      "post": {
+        "operationId": "EventController_createEvent_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEventDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tạo sự kiện thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          }
+        },
+        "summary": "Tạo sự kiện mới",
+        "tags": [
+          "Event"
+        ]
+      },
+      "get": {
+        "operationId": "EventController_getAllEvents_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sport",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "football",
+                "basketball",
+                "tennis",
+                "badminton",
+                "volleyball",
+                "table_tennis",
+                "swimming",
+                "running",
+                "cycling",
+                "yoga",
+                "gym",
+                "martial_arts",
+                "boxing",
+                "golf",
+                "rock_climbing"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách sự kiện thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedEventsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy danh sách sự kiện",
+        "tags": [
+          "Event"
+        ]
+      }
+    },
+    "/api/v1/events/{eventId}": {
+      "get": {
+        "operationId": "EventController_getEventById_v1",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "description": "ID sự kiện",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy sự kiện thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Không tìm thấy sự kiện"
+          }
+        },
+        "summary": "Lấy chi tiết sự kiện theo ID",
+        "tags": [
+          "Event"
+        ]
+      },
+      "put": {
+        "operationId": "EventController_updateEvent_v1",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "description": "ID sự kiện",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateEventDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cập nhật sự kiện thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EventResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "404": {
+            "description": "Không tìm thấy sự kiện"
+          }
+        },
+        "summary": "Cập nhật sự kiện",
+        "tags": [
+          "Event"
+        ]
+      },
+      "delete": {
+        "operationId": "EventController_deleteEvent_v1",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "description": "ID sự kiện",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Xóa sự kiện thành công"
+          },
+          "404": {
+            "description": "Không tìm thấy sự kiện"
+          }
+        },
+        "summary": "Xóa sự kiện",
+        "tags": [
+          "Event"
+        ]
+      }
+    },
     "/api/v1/notifications": {
       "get": {
         "operationId": "NotificationController_getNotifications_v1",
@@ -5289,6 +5498,393 @@
           "rejected"
         ]
       },
+      "EventLocationDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Tên địa điểm"
+          },
+          "address": {
+            "type": "string",
+            "description": "Địa chỉ"
+          },
+          "city": {
+            "type": "string",
+            "description": "Thành phố"
+          },
+          "district": {
+            "type": "string",
+            "description": "Quận/Huyện"
+          }
+        },
+        "required": [
+          "name",
+          "address",
+          "city",
+          "district"
+        ]
+      },
+      "CreateEventDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Tiêu đề sự kiện"
+          },
+          "description": {
+            "type": "string",
+            "description": "Mô tả"
+          },
+          "image": {
+            "type": "string",
+            "description": "Ảnh sự kiện"
+          },
+          "organizer": {
+            "type": "string",
+            "description": "ID người tổ chức"
+          },
+          "organizerType": {
+            "type": "string",
+            "enum": [
+              "User",
+              "Group"
+            ],
+            "description": "Loại organizer"
+          },
+          "sport": {
+            "type": "string",
+            "enum": [
+              "football",
+              "basketball",
+              "tennis",
+              "badminton",
+              "volleyball",
+              "table_tennis",
+              "swimming",
+              "running",
+              "cycling",
+              "yoga",
+              "gym",
+              "martial_arts",
+              "boxing",
+              "golf",
+              "rock_climbing"
+            ],
+            "description": "Môn thể thao"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Thời gian bắt đầu"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Thời gian kết thúc"
+          },
+          "location": {
+            "description": "Địa điểm",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EventLocationDto"
+              }
+            ]
+          },
+          "minParticipants": {
+            "type": "number",
+            "description": "Số lượng tham gia tối thiểu"
+          },
+          "maxParticipants": {
+            "type": "number",
+            "description": "Số lượng tham gia tối đa"
+          }
+        },
+        "required": [
+          "title",
+          "organizer",
+          "organizerType",
+          "sport",
+          "startDate",
+          "endDate",
+          "location",
+          "maxParticipants"
+        ]
+      },
+      "ObjectId": {
+        "type": "object",
+        "properties": {}
+      },
+      "EventResponseDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "ID sự kiện"
+          },
+          "title": {
+            "type": "string",
+            "description": "Tiêu đề sự kiện"
+          },
+          "description": {
+            "type": "string",
+            "description": "Mô tả"
+          },
+          "image": {
+            "type": "string",
+            "description": "Ảnh sự kiện"
+          },
+          "organizer": {
+            "description": "ID người tổ chức",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ObjectId"
+              }
+            ]
+          },
+          "organizerType": {
+            "type": "string",
+            "enum": [
+              "User",
+              "Group"
+            ],
+            "description": "Loại organizer"
+          },
+          "sport": {
+            "type": "string",
+            "enum": [
+              "football",
+              "basketball",
+              "tennis",
+              "badminton",
+              "volleyball",
+              "table_tennis",
+              "swimming",
+              "running",
+              "cycling",
+              "yoga",
+              "gym",
+              "martial_arts",
+              "boxing",
+              "golf",
+              "rock_climbing"
+            ],
+            "description": "Môn thể thao"
+          },
+          "startDate": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Thời gian bắt đầu"
+          },
+          "endDate": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Thời gian kết thúc"
+          },
+          "location": {
+            "description": "Địa điểm",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EventLocationDto"
+              }
+            ]
+          },
+          "minParticipants": {
+            "type": "number",
+            "description": "Số lượng tham gia tối thiểu"
+          },
+          "maxParticipants": {
+            "type": "number",
+            "description": "Số lượng tham gia tối đa"
+          },
+          "participants": {
+            "description": "Danh sách người tham gia",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ObjectId"
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "upcoming",
+              "ongoing",
+              "completed",
+              "cancelled"
+            ],
+            "description": "Trạng thái sự kiện"
+          },
+          "participantCount": {
+            "type": "number",
+            "description": "Số lượng người tham gia"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Thời gian tạo"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Thời gian cập nhật"
+          },
+          "organizerUser": {
+            "type": "object",
+            "description": "Thông tin người tổ chức"
+          },
+          "participantUsers": {
+            "description": "Danh sách thông tin người tham gia",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "_id",
+          "title",
+          "organizer",
+          "organizerType",
+          "sport",
+          "startDate",
+          "endDate",
+          "location",
+          "maxParticipants",
+          "status"
+        ]
+      },
+      "PaginatedEventsResponseDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "Tổng số items",
+            "example": 100
+          },
+          "page": {
+            "type": "number",
+            "description": "Trang hiện tại",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Số lượng items trên mỗi trang",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Tổng số trang",
+            "example": 10
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Có trang tiếp theo không",
+            "example": true
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Có trang trước không",
+            "example": false
+          },
+          "events": {
+            "description": "Danh sách sự kiện",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EventResponseDto"
+            }
+          }
+        },
+        "required": [
+          "page",
+          "limit",
+          "totalPages",
+          "hasNextPage",
+          "hasPrevPage",
+          "events"
+        ]
+      },
+      "UpdateEventDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Tiêu đề sự kiện"
+          },
+          "description": {
+            "type": "string",
+            "description": "Mô tả"
+          },
+          "image": {
+            "type": "string",
+            "description": "Ảnh sự kiện"
+          },
+          "organizer": {
+            "type": "string",
+            "description": "ID người tổ chức"
+          },
+          "organizerType": {
+            "type": "string",
+            "enum": [
+              "User",
+              "Group"
+            ],
+            "description": "Loại organizer"
+          },
+          "sport": {
+            "type": "string",
+            "enum": [
+              "football",
+              "basketball",
+              "tennis",
+              "badminton",
+              "volleyball",
+              "table_tennis",
+              "swimming",
+              "running",
+              "cycling",
+              "yoga",
+              "gym",
+              "martial_arts",
+              "boxing",
+              "golf",
+              "rock_climbing"
+            ],
+            "description": "Môn thể thao"
+          },
+          "startDate": {
+            "type": "string",
+            "description": "Thời gian bắt đầu"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "Thời gian kết thúc"
+          },
+          "location": {
+            "description": "Địa điểm",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EventLocationDto"
+              }
+            ]
+          },
+          "minParticipants": {
+            "type": "number",
+            "description": "Số lượng tham gia tối thiểu"
+          },
+          "maxParticipants": {
+            "type": "number",
+            "description": "Số lượng tham gia tối đa"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "upcoming",
+              "ongoing",
+              "completed",
+              "cancelled"
+            ],
+            "description": "Trạng thái sự kiện"
+          }
+        }
+      },
       "NotificationRelatedUserDto": {
         "type": "object",
         "properties": {
@@ -5600,10 +6196,6 @@
           "sport",
           "approvalStatus"
         ]
-      },
-      "ObjectId": {
-        "type": "object",
-        "properties": {}
       },
       "PostResponseDto": {
         "type": "object",

@@ -1,0 +1,9 @@
+{
+	"EVENT_CREATED_SUCCESS": "Event created successfully",
+	"EVENT_CREATION_FAILED": "Failed to create event",
+	"EVENTS_RETRIEVED_SUCCESS": "Events retrieved successfully",
+	"EVENT_RETRIEVED_SUCCESS": "Event retrieved successfully",
+	"EVENT_NOT_FOUND": "Event not found",
+	"EVENT_UPDATED_SUCCESS": "Event updated successfully",
+	"EVENT_DELETED_SUCCESS": "Event deleted successfully"
+}

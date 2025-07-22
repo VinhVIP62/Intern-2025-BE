@@ -1,0 +1,9 @@
+{
+	"EVENT_CREATED_SUCCESS": "Tạo sự kiện thành công",
+	"EVENT_CREATION_FAILED": "Tạo sự kiện thất bại",
+	"EVENTS_RETRIEVED_SUCCESS": "Lấy danh sách sự kiện thành công",
+	"EVENT_RETRIEVED_SUCCESS": "Lấy sự kiện thành công",
+	"EVENT_NOT_FOUND": "Không tìm thấy sự kiện",
+	"EVENT_UPDATED_SUCCESS": "Cập nhật sự kiện thành công",
+	"EVENT_DELETED_SUCCESS": "Xóa sự kiện thành công"
+}

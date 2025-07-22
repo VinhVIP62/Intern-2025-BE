@@ -4,3 +4,8 @@ export enum EventStatus {
 	COMPLETED = 'completed',
 	CANCELLED = 'cancelled',
 }
+
+export enum OrganizerType {
+	USER = 'User',
+	GROUP = 'Group',
+}
