@@ -2,9 +2,8 @@ import { Exclude, Expose, Transform, Type } from 'class-transformer';
 
 import { WithPopulated } from '@common/crud/entities';
 
+import { Comment } from '@modules/comment/entities';
 import { User } from '@modules/user/entities';
-
-import { Comment } from '../entities';
 
 @Exclude()
 export class ResponseCommentDto {
