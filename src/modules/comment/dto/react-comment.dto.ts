@@ -1,8 +1,8 @@
 import { Expose } from 'class-transformer';
-import { IsNumber } from 'class-validator';
+import { IsInt } from 'class-validator';
 
 export class ReactCommentDto {
 	@Expose()
-	@IsNumber()
+	@IsInt()
 	reactionValue!: number;
 }

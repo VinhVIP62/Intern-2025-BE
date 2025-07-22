@@ -1,5 +1,5 @@
 import { Expose, Type } from 'class-transformer';
-import { IsMongoId, IsNumber, IsOptional, IsPositive } from 'class-validator';
+import { IsInt, IsMongoId, IsOptional, IsPositive } from 'class-validator';
 
 export class FeedPostDto {
 	@Expose()
@@ -9,7 +9,7 @@ export class FeedPostDto {
 
 	@Expose()
 	@Type(() => Number)
-	@IsNumber()
+	@IsInt()
 	@IsOptional()
 	@IsPositive()
 	limit: number = 10;

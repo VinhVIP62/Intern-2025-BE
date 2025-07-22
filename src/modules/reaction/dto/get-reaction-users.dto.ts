@@ -1,10 +1,10 @@
 import { Expose, Type } from 'class-transformer';
-import { IsMongoId, IsNumber, IsOptional, IsPositive } from 'class-validator';
+import { IsInt, IsMongoId, IsOptional, IsPositive } from 'class-validator';
 
 export class GetReactionUsersDto {
 	@Expose()
 	@Type(() => Number)
-	@IsNumber()
+	@IsInt()
 	reactionValue!: number;
 
 	@Expose()
@@ -14,7 +14,7 @@ export class GetReactionUsersDto {
 
 	@Expose()
 	@Type(() => Number)
-	@IsNumber()
+	@IsInt()
 	@IsOptional()
 	@IsPositive()
 	limit: number = 10;

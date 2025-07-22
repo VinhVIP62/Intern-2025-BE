@@ -26,7 +26,6 @@ export class PostRepositoryImpl
 		data: Partial<SocialPost>,
 		deletedFilesIdx?: number[],
 	): Promise<WithPopulated<SocialPost>> {
-		console.log(deletedFilesIdx);
 		const foundPost = await this.findOneByOrFail({ ...where, postType: PostType.FILES });
 		if (data.fileUrls) {
 			data.fileUrls = foundPost.fileUrls?.concat(data.fileUrls);
