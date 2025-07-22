@@ -2924,7 +2924,6 @@
         ]
       }
     },
-    "/api/v1/groups/{groupId}/waiting-list": {
       "get": {
         "operationId": "GroupController_getWaitingList_v1",
         "parameters": [

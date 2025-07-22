@@ -76,6 +76,11 @@ export interface IGroupRepository {
 		page: number,
 		limit: number,
 	): Promise<{ total: number; page: number; limit: number; totalPages: number; data: any[] }>;
+	getGroupsUserIsInvited(
+		userId: string,
+		page: number,
+		limit: number,
+	): Promise<{ total: number; page: number; limit: number; totalPages: number; data: any[] }>;
 }
 
 export const IGroupRepository = Symbol('IGroupRepository');
