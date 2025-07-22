@@ -3,10 +3,11 @@ import bcrypt from 'bcrypt';
 import mongoose, { HydratedDocument, ValidatorProps } from 'mongoose';
 
 import { WithPopulated } from '@common/crud/entities';
-import { Level, Role, Status } from '@common/enums';
+import { Role } from '@common/enums';
 import { Complete } from '@common/types/utils';
 import { nonEmptyAfterCreate, uniqueArrayFieldValidator } from '@common/validators';
 
+import { Level, Status } from '../enums';
 import { GoogleLoginInfo, Location, Sport, User } from './user.entity';
 
 @Schema({ _id: false })

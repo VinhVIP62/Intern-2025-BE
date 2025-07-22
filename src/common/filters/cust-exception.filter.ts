@@ -6,7 +6,7 @@ import { ResponseTransform } from '@common/decorators';
 import { CustomError, EntityNotFound } from '@common/exceptions';
 import { ResponseEntity } from '@common/types/data';
 
-import { AppLoggerService } from '@modules/logger';
+import { AppLoggerService } from '@shared/modules/logger';
 
 @Catch(CustomError)
 export class CustomExceptionFilter implements ExceptionFilter {

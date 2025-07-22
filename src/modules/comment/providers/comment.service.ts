@@ -1,19 +1,20 @@
 import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
-import { InjectConnection } from '@nestjs/mongoose';
-import { Connection } from 'mongoose';
 import { MemoryStoredFile } from 'nestjs-form-data';
 
 import { WithPopulated } from '@common/crud/entities';
 import { Action } from '@common/enums';
-import { CursorPaginationOption, CustomRequestCtx } from '@common/types/data';
+import { CursorPaginationOption } from '@common/types/data';
+
+import { ReactionService } from '@modules/reaction/providers';
+import { ReactionCount } from '@modules/reaction/repositories';
 
 import {
-	IReactionRepository,
-	IReactionRepositoryToken,
-	ReactionCount,
-} from '@modules/reaction/repositories';
-
-import { CaslFilterFactory, FileHostService } from '@shared/modules';
+	CaslFilterFactory,
+	FileHostService,
+	ISessionService,
+	ISessionServiceToken,
+	UserAbilityOptions,
+} from '@shared/modules';
 
 import { Comment } from '../entities';
 import { ICommentRepository, ICommentRepositoryToken } from '../repositories';
@@ -29,17 +30,18 @@ export type PaginatedCommentsWithCursor = {
 export class CommentService {
 	constructor(
 		@Inject(ICommentRepositoryToken) private readonly commentRepository: ICommentRepository,
-		@Inject(IReactionRepositoryToken) private readonly reactionRepository: IReactionRepository,
-		@InjectConnection() private connection: Connection,
+		private readonly reactionService: ReactionService,
+		@Inject(ISessionServiceToken) private readonly sessionService: ISessionService<any>,
 		private readonly fileHostService: FileHostService,
 		private readonly caslFilterFactory: CaslFilterFactory,
 	) {}
 
-	async checkAccessTo(id: string, action: Action): Promise<void> {
-		const filter = this.caslFilterFactory.createFilterForUser(Comment, action);
-		await this.commentRepository.findOneByOrFail({ id, ...filter }).catch(() => {
+	async checkAccessTo(id: string, action: Action, options?: UserAbilityOptions): Promise<Comment> {
+		const filter = this.caslFilterFactory.createFilterForUser(Comment, action, options);
+		const foundComment = this.commentRepository.findOneByOrFail({ id, ...filter }).catch(() => {
 			throw new ForbiddenException();
 		});
+		return foundComment;
 	}
 
 	async createComment(
@@ -50,7 +52,7 @@ export class CommentService {
 		return createdComment;
 	}
 
-	async getCommentsCountOfTarget(targetId: string) {
+	async getCommentsCountOf(targetId: string) {
 		return this.commentRepository.count({ targetId });
 	}
 
@@ -62,7 +64,7 @@ export class CommentService {
 			targetId,
 			options,
 		);
-		const reactionCounts = await this.reactionRepository.getCount(
+		const reactionCounts = await this.reactionService.getCount(
 			foundComments.map(comment => comment.id),
 		);
 		// targetId toString because it's actually objectid
@@ -86,18 +88,15 @@ export class CommentService {
 	}
 
 	async deleteComment(id: string): Promise<DeletedCommentsSummary> {
-		const requestCtx = CustomRequestCtx.getAuthenticated().req;
 		const filter = this.caslFilterFactory.createFilterForUser(Comment, Action.UPDATE);
-		const session = await this.connection.startSession();
-		requestCtx.db.mongoose.session = session;
-		session.startTransaction();
+		await this.sessionService.start();
 		const deletedCommentIds = await this.commentRepository.deleteSelfAndDescendants({
 			id,
 			...filter,
 		});
-		const deletedReactions = await this.reactionRepository.deleteManyOf(deletedCommentIds);
-		await session.endSession();
-		requestCtx.db.mongoose.session = null;
+		const deletedReactions = await this.reactionService.deleteMany(deletedCommentIds);
+		await this.sessionService.commit();
+		await this.sessionService.end();
 		return { deletedComments: deletedCommentIds.length, deletedReactions };
 	}
 }

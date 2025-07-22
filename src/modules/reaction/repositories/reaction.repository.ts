@@ -9,14 +9,6 @@ export type ReactionCount = {
 	counts: { reactionValue: number; count: number }[];
 };
 
-export type ReactionUser = {
-	id: string;
-	user: {
-		avatarUrl: string;
-		username: string;
-	};
-};
-
 export interface IReactionRepository extends IBaseRepository<Reaction> {
 	upsert(where: Partial<Reaction>, data: Partial<Reaction>): Promise<WithPopulated<Reaction>>;
 	getCount(targetIds: string[]): Promise<ReactionCount[]>;
@@ -24,7 +16,7 @@ export interface IReactionRepository extends IBaseRepository<Reaction> {
 		targetId: string,
 		reactionValue: number,
 		options?: CursorPaginationOption<string>,
-	): Promise<ReactionUser[]>;
+	): Promise<Reaction[]>;
 	deleteManyOf(targetIds: string[]): Promise<number>;
 }
 

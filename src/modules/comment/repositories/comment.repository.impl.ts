@@ -5,7 +5,9 @@ import mongoose, { Model, PipelineStage } from 'mongoose';
 import { WithPopulated } from '@common/crud/entities';
 import { MongooseRepositoryImpl } from '@common/crud/repos';
 import { SORT } from '@common/enums';
-import { CursorPaginationOption, CustomRequestCtx } from '@common/types/data';
+import { CursorPaginationOption } from '@common/types/data';
+
+import { CustomRequestCtx } from '@shared/modules/request-ctx/types';
 
 import { Comment } from '../entities';
 import { ICommentRepository } from './comment.repository';
@@ -27,32 +29,18 @@ export class CommentRepositoryImpl
 		targetId: string,
 		options?: CursorPaginationOption<string>,
 	): Promise<WithPopulated<Comment>[]> {
-		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
-		const foundEntities: WithPopulated<Comment>[] = [];
 		const filterOptions = {
 			targetId,
 			...(options?.cursor && this.transformFilter({ _id: { $gt: options?.cursor } })),
 		};
-		const sortOptions = this.transformSort({
-			customRepoOptions: {
-				sort: { createdAt: SORT.ASC },
-			},
-		});
+		const sortOptions = { createdAt: SORT.ASC };
 		const limitOptions = options?.limit || 10;
-		const populateOptions = this.transformPopulate();
-		const query = this.commentModel
-			.find(filterOptions)
-			.sort(sortOptions)
-			.limit(limitOptions)
-			.populate(populateOptions)
-			.session(session);
-		const cursor = query.cursor();
+		const foundComments = this.find(filterOptions, {
+			customRepoOptions: { sort: sortOptions },
+			limit: limitOptions,
+		});
 
-		for await (const comment of cursor) {
-			foundEntities.push(comment.toObject());
-		}
-
-		return foundEntities;
+		return foundComments;
 	}
 
 	async deleteSelfAndDescendants(
@@ -61,6 +49,9 @@ export class CommentRepositoryImpl
 		const where = this.transformFilter(options);
 		const globalSession = CustomRequestCtx.get().req.db.mongoose.session || null;
 		const session = globalSession ?? (await this.commentModel.startSession());
+		if (!globalSession) {
+			session.startTransaction();
+		}
 
 		const matchStage: PipelineStage.Match = { $match: { ...where } };
 		// get ancestors of self (not including self)
@@ -91,7 +82,10 @@ export class CommentRepositoryImpl
 		const descendantsFilter = { _id: { $in: descendants } };
 		await this.commentModel.deleteMany(descendantsFilter).session(session).exec();
 		// if this was just local, end the session, else the global session must end elsewhere
-		if (!globalSession) await session.endSession();
+		if (!globalSession) {
+			await session.commitTransaction();
+			await session.endSession();
+		}
 		return descendants.map(id => id.toString());
 	}
 }

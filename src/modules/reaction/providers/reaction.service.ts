@@ -4,15 +4,10 @@ import { WithPopulated } from '@common/crud/entities';
 import { CursorPaginationOption } from '@common/types/data';
 
 import { Reaction } from '../entities';
-import {
-	IReactionRepository,
-	IReactionRepositoryToken,
-	ReactionCount,
-	ReactionUser,
-} from '../repositories';
+import { IReactionRepository, IReactionRepositoryToken, ReactionCount } from '../repositories';
 
 export type PaginatedReactionUsersListWithCursor = {
-	foundUsers: ReactionUser[];
+	foundUsers: Reaction[];
 	nextCursor: string;
 };
 
@@ -32,6 +27,11 @@ export class ReactionService {
 	async delete(options: Pick<Reaction, 'userId' | 'targetId'>): Promise<WithPopulated<Reaction>> {
 		const deletedReaction = this.reactionRepository.findOneByAndDelete(options);
 		return deletedReaction;
+	}
+
+	async deleteMany(targetIds: string[]): Promise<number> {
+		const deletedCount = this.reactionRepository.deleteManyOf(targetIds);
+		return deletedCount;
 	}
 
 	async getCount(targetIds: string[]): Promise<ReactionCount[]> {

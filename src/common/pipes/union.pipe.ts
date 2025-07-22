@@ -20,7 +20,7 @@ export class UnionValidationPipe<T extends Record<string, any>> implements PipeT
 
 		if (!TargetDtoType) {
 			throw new BadRequestException(
-				`Invalid discriminator "${typeKey}". Expected one of: ${Object.keys(types).join(', ')}`,
+				`Invalid discriminator "${String(discriminator)}". Expected one of: ${Object.keys(types).join(', ')}`,
 			);
 		}
 
@@ -31,8 +31,12 @@ export class UnionValidationPipe<T extends Record<string, any>> implements PipeT
 			forbidUnknownValues: true,
 		});
 
+		const errMsg = errors
+			.flatMap(err => Object.values(err.constraints ?? {})) // flatten all messages
+			.join(', ');
+
 		if (errors.length > 0) {
-			throw new BadRequestException(errors);
+			throw new BadRequestException(errMsg);
 		}
 
 		return instance;

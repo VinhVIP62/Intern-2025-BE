@@ -9,6 +9,12 @@ export interface IPostRepository extends ISoftDeleteBaseRepository<SocialPost> {
 		where: Partial<SocialPost>,
 		options?: CursorPaginationOption<string>,
 	): Promise<WithPopulated<SocialPost>[]>;
+
+	findOneAndUpdateWithFiles(
+		where: Partial<SocialPost>,
+		data: Partial<SocialPost>,
+		deletedFilesIdx?: number[],
+	): Promise<WithPopulated<SocialPost>>;
 }
 
 export const IPostRepositoryToken = Symbol('IPostRepository');

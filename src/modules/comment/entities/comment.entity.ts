@@ -1,20 +1,18 @@
-import { ISoftDeletableEntity } from '@common/crud/entities';
+import { IBaseEntity } from '@common/crud/entities';
 
-export class Comment implements ISoftDeletableEntity {
-	id!: string;
+export enum CommentRootType {
+	POST = 'post',
+}
+
+export class Comment extends IBaseEntity {
 	userId!: string;
 
-	postId!: string;
+	rootId!: string;
+	rootType!: CommentRootType;
 	targetId!: string;
 
 	content!: string;
 	fileUrls!: string[] | null;
 
 	childrenCount!: number;
-
-	createdAt!: Date;
-	updatedAt!: Date;
-	deleted!: boolean;
-	deletedAt!: Date | null;
-	deletedBy!: string | null;
 }

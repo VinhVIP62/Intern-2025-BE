@@ -2,11 +2,12 @@ import mongoose, { Model, PopulateOptions, SortOrder } from 'mongoose';
 
 import { SORT } from '@common/enums';
 import { EntityNotFound } from '@common/exceptions';
-import { CustomRequestCtx } from '@common/types/data/request-ctx.js';
 import { Class, LowerBound } from '@common/types/utils/';
 
-import { IBaseEntity } from '../entities/base-entity.interface.js';
-import { ISoftDeletableEntity } from '../entities/softdeletable-entity.interface.js';
+import { CustomRequestCtx } from '@shared/modules/request-ctx/types';
+
+import { IBaseEntity } from '../entities/base-entity.type.js';
+import { ISoftDeletableEntity } from '../entities/softdeletable-entity.type.js';
 import { WithPopulated } from '../entities/type-with-populated.type.js';
 import {
 	IBaseRepository,

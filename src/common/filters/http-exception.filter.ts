@@ -12,7 +12,7 @@ import { I18nService } from 'nestjs-i18n';
 import { ResponseTransform } from '@common/decorators';
 import { ResponseEntity } from '@common/types/data';
 
-import { AppLoggerService } from '@modules/logger';
+import { AppLoggerService } from '@shared/modules/logger';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {

@@ -1,3 +1,3 @@
-export * from './IsEmailOrPhone.validator';
+export * from './mail-or-phone.validator';
 export * from './uniqueArray.validator';
-export * from './nonNullAfterCreate.validator';
+export * from './non-null-postcreate.validator';

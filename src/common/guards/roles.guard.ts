@@ -1,9 +1,9 @@
 import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { Request } from 'express';
 
 import { IS_PUBLIC_KEY, ROLES_KEY } from '@common/decorators';
 import { Role } from '@common/enums';
+import { AuthenticatedRequest } from '@common/types/data';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -28,11 +28,9 @@ export class RolesGuard implements CanActivate {
 			return true;
 		}
 
-		const { user } = context.switchToHttp().getRequest<Request>();
+		const { user } = context.switchToHttp().getRequest<AuthenticatedRequest>();
 
-		const hasRequiredRoles = rolesRequiredForRoute.some(role =>
-			(user as { roles?: string[] })?.roles?.includes(role),
-		);
+		const hasRequiredRoles = rolesRequiredForRoute.some(role => user.roles?.includes(role));
 
 		if (!hasRequiredRoles) {
 			const rolesList = rolesRequiredForRoute.join(', ');

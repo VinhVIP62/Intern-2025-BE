@@ -1,4 +1,4 @@
-import { IsArray, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsInt, IsString } from 'class-validator';
 
 export class OffsetPaginatedData<T> {
 	constructor(page: number, limit: number, data: T[]) {
@@ -7,10 +7,10 @@ export class OffsetPaginatedData<T> {
 		this.limit = limit;
 	}
 
-	@IsNumber()
+	@IsInt()
 	page: number = 1;
 
-	@IsNumber()
+	@IsInt()
 	limit: number = 10;
 
 	// eslint-disable-next-line @darraghor/nestjs-typed/validated-non-primitive-property-needs-type-decorator

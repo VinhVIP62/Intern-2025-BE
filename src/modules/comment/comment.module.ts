@@ -4,7 +4,7 @@ import { NestjsFormDataModule } from 'nestjs-form-data';
 
 import { ReactionModule } from '@modules/reaction';
 
-import { CaslModule, FileHostModule } from '@shared/modules';
+import { CaslModule, DataServiceModule, FileHostModule } from '@shared/modules';
 
 import { Comment, CommentSchema } from './entities';
 import { CommentService } from './providers';
@@ -22,6 +22,7 @@ import { CommentRepositoryImpl, ICommentRepositoryToken } from './repositories';
 		NestjsFormDataModule,
 		ReactionModule,
 		CaslModule,
+		DataServiceModule,
 	],
 	providers: [
 		CommentService,
