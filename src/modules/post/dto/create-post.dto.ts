@@ -1,7 +1,16 @@
 import { Expose, Transform, Type } from 'class-transformer';
-import { IsArray, IsEnum, IsMongoId, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+	ArrayMaxSize,
+	IsArray,
+	IsEnum,
+	IsMongoId,
+	IsNotEmpty,
+	IsOptional,
+	IsString,
+} from 'class-validator';
 import { HasExtension, HasMimeType, IsFile, MemoryStoredFile } from 'nestjs-form-data';
 
+import { MAX_FILES_NUM } from '@common/constants';
 import { Visibility } from '@common/enums';
 
 import { PostType } from '../enums';
@@ -46,6 +55,7 @@ export class CreatePostDto {
 export class CreateFilePostDto extends CreatePostDto {
 	@Expose()
 	@Type(() => MemoryStoredFile)
+	@ArrayMaxSize(MAX_FILES_NUM)
 	@HasExtension(['png', 'jpg', 'jpeg', 'gif', 'ogg', 'mp4', 'webp'], { each: true })
 	@HasMimeType(['image/*', 'video/*'], { each: true })
 	@IsArray()

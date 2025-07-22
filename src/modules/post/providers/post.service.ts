@@ -42,11 +42,14 @@ export class PostService {
 	async updatePost(
 		id: string,
 		postType: PostType,
-		data: Partial<SocialPost> & { files?: MemoryStoredFile[] },
+		data: Partial<SocialPost> & { files?: MemoryStoredFile[]; deletedFilesIdx?: number[] },
 	): Promise<WithPopulated<SocialPost> | null> {
 		const filter = this.caslFilterFactory.createFilterForUser(SocialPost, Action.UPDATE);
 		if (data.files) data.fileUrls = await this.fileHostService.files2Urls(data.files);
-		const createdPost = this.postRepository.findOneByAndUpdate({ id, postType, ...filter }, data);
+		const createdPost =
+			postType == PostType.FILES ?
+				this.postRepository.findOneAndUpdateWithFiles({ id, ...filter }, data, data.deletedFilesIdx)
+			:	this.postRepository.findOneByAndUpdate({ id, postType, ...filter }, data);
 		return createdPost;
 	}
 
