@@ -4,7 +4,7 @@ import { WithPopulated } from '@common/crud/entities';
 
 import { User } from '@modules/user/entities';
 
-import { Reaction } from '../entities';
+import { Reaction } from '../../entities';
 
 @Exclude()
 export class ResponseReactionUsersDto {
