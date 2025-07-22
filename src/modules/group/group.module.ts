@@ -10,6 +10,7 @@ import { NotificationModule } from '@modules/notification/notification.module';
 import { PostModule } from '@modules/post/post.module';
 import { UserModule } from '@modules/user/user.module';
 import { User, UserSchema } from '@modules/user/entities/user.schema';
+import { EventModule } from '@modules/event/event.module';
 
 @Module({
 	imports: [
@@ -21,6 +22,7 @@ import { User, UserSchema } from '@modules/user/entities/user.schema';
 		NotificationModule,
 		PostModule,
 		UserModule,
+		EventModule,
 	],
 	controllers: [GroupController],
 	providers: [GroupService, { provide: IGroupRepository, useClass: GroupRepositoryImpl }],

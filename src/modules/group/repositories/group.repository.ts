@@ -58,6 +58,7 @@ export interface IGroupRepository {
 		totalPages: number;
 		data: any[];
 	}>;
+	findManyByIds(ids: string[]): Promise<any[]>;
 }
 
 export const IGroupRepository = Symbol('IGroupRepository');

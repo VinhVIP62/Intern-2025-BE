@@ -5,6 +5,7 @@ import { SearchService } from './providers/search.service';
 import { UserModule } from '../user/user.module';
 import { PostModule } from '../post/post.module';
 import { EventModule } from '../event/event.module';
+import { GroupModule } from '../group/group.module';
 import { ISearchRepository } from './repositories/search.repository';
 import { SearchRepositoryImpl } from './repositories/search.repository.impl';
 import { User, UserSchema } from '../user/entities/user.schema';
@@ -27,6 +28,7 @@ import { SearchHistoryRepositoryImpl } from './repositories/searchHistory.reposi
 		forwardRef(() => UserModule),
 		forwardRef(() => PostModule),
 		forwardRef(() => EventModule),
+		forwardRef(() => GroupModule),
 	],
 	controllers: [SearchController],
 	providers: [

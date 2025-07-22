@@ -372,6 +372,10 @@ export class GroupRepositoryImpl implements IGroupRepository {
 		};
 	}
 
+	async findManyByIds(ids: string[]): Promise<any[]> {
+		return this.groupModel.find({ _id: { $in: ids } }).lean();
+	}
+
 	private mapToResponseDto(group: any): GroupResponseDto {
 		return {
 			_id: group._id.toString(),

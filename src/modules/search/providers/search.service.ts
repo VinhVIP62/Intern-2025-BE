@@ -17,6 +17,9 @@ import { ISearchHistoryRepository } from '../repositories/searchHistory.reposito
 import { User } from '@modules/user/entities/user.schema';
 import { Group } from '@modules/group/entities/group.schema';
 import { Event } from '@modules/event/entities/event.schema';
+import { UserService } from '@modules/user/providers/user.service';
+import { GroupService } from '@modules/group/providers/group.service';
+import { EventService } from '@modules/event/providers/event.service';
 
 @Injectable()
 export class SearchService {
@@ -27,9 +30,9 @@ export class SearchService {
 		private readonly postService: PostService,
 		@Inject(ISearchHistoryRepository)
 		private readonly searchHistoryRepository: ISearchHistoryRepository,
-		@InjectModel(User.name) private readonly userModel: Model<User>,
-		@InjectModel(Group.name) private readonly groupModel: Model<Group>,
-		@InjectModel(Event.name) private readonly eventModel: Model<Event>,
+		private readonly userService: UserService,
+		private readonly groupService: GroupService,
+		private readonly eventService: EventService,
 	) {}
 
 	async searchAll(
@@ -191,24 +194,9 @@ export class SearchService {
 
 		// Batch fetch basic data
 		const [users, groups, events] = await Promise.all([
-			userIds.size > 0 ?
-				this.userModel
-					.find({ _id: { $in: Array.from(userIds).map(id => new Types.ObjectId(id)) } })
-					.select('_id firstName lastName avatar')
-					.lean()
-			:	([] as any[]),
-			groupIds.size > 0 ?
-				this.groupModel
-					.find({ _id: { $in: Array.from(groupIds).map(id => new Types.ObjectId(id)) } })
-					.select('_id name avatar')
-					.lean()
-			:	([] as any[]),
-			eventIds.size > 0 ?
-				this.eventModel
-					.find({ _id: { $in: Array.from(eventIds).map(id => new Types.ObjectId(id)) } })
-					.select('_id title image')
-					.lean()
-			:	([] as any[]),
+			userIds.size > 0 ? this.userService.getBasicInfos(Array.from(userIds)) : [],
+			groupIds.size > 0 ? this.groupService.getBasicInfos(Array.from(groupIds)) : [],
+			eventIds.size > 0 ? this.eventService.getBasicInfos(Array.from(eventIds)) : [],
 		]);
 
 		// Create lookup maps with proper typing
