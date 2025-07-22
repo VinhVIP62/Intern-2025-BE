@@ -3,11 +3,15 @@ import { IEventRepository } from './event.repository';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Event } from '../entities/event.schema';
-import { RSVPStatus } from '../entities/event.enum';
+import { RSVPStatus, EventInvitationStatus } from '../entities/event.enum';
+import { EventInvitation, EventInvitationSchema } from '../entities/event-invitation.schema';
 
 @Injectable()
 export class EventRepositoryImpl implements IEventRepository {
-	constructor(@InjectModel(Event.name) private readonly eventModel: Model<Event>) {}
+	constructor(
+		@InjectModel(Event.name) private readonly eventModel: Model<Event>,
+		@InjectModel(EventInvitation.name) private readonly invitationModel: Model<EventInvitation>,
+	) {}
 
 	async findManyByIds(ids: string[]): Promise<Event[]> {
 		return this.eventModel.find({ _id: { $in: ids } }).lean();
@@ -111,5 +115,91 @@ export class EventRepositoryImpl implements IEventRepository {
 		const end = start + options.limit;
 		const paginated = event.participants.slice(start, end);
 		return { participants: paginated, total };
+	}
+
+	// ===== INVITATION, NEARBY, USER EVENTS =====
+
+	async inviteUsersToEvent(eventId: string, senderId: string, userIds: string[]): Promise<void> {
+		const invitations = userIds.map(userId => ({
+			eventId,
+			senderId,
+			recipientId: userId,
+			status: EventInvitationStatus.PENDING,
+		}));
+		await this.invitationModel.insertMany(invitations);
+	}
+
+	async getUserEventInvitations(
+		userId: string,
+		page: number,
+		limit: number,
+		status?: EventInvitationStatus,
+	): Promise<{ invitations: any[]; total: number }> {
+		const skip = (page - 1) * limit;
+		const query: any = { recipientId: userId };
+		if (status) query.status = status;
+		const [invitations, total] = await Promise.all([
+			this.invitationModel.find(query).skip(skip).limit(limit).populate('eventId').lean(),
+			this.invitationModel.countDocuments(query),
+		]);
+		return { invitations, total };
+	}
+
+	async respondToInvitation(
+		invitationId: string,
+		userId: string,
+		status: EventInvitationStatus,
+	): Promise<any> {
+		return this.invitationModel
+			.findOneAndUpdate({ _id: invitationId, recipientId: userId }, { status }, { new: true })
+			.lean();
+	}
+
+	async findEventsByUserId(
+		userId: string,
+		page: number,
+		limit: number,
+	): Promise<{ events: any[]; total: number }> {
+		const skip = (page - 1) * limit;
+		const query = { participants: userId };
+		const [events, total] = await Promise.all([
+			this.eventModel.find(query).skip(skip).limit(limit).lean(),
+			this.eventModel.countDocuments(query),
+		]);
+		return { events, total };
+	}
+
+	// Cancel invitation: chỉ cho phép sender hoặc recipient xóa
+	async cancelInvitation(invitationId: string, userId: string): Promise<any> {
+		return this.invitationModel
+			.findOneAndDelete({
+				_id: invitationId,
+				$or: [{ senderId: userId }, { recipientId: userId }],
+			})
+			.lean();
+	}
+
+	// Get invitations sent by current user for a specific event
+	async getSentInvitations(
+		eventId: string,
+		senderId: string,
+		page: number,
+		limit: number,
+	): Promise<{ invitations: any[]; total: number }> {
+		const skip = (page - 1) * limit;
+		const query: any = { eventId, senderId };
+		const [invitations, total] = await Promise.all([
+			this.invitationModel
+				.find(query)
+				.skip(skip)
+				.limit(limit)
+				.populate({
+					path: 'recipientId',
+					select: 'firstName lastName avatar fullName',
+				})
+				.lean(),
+			this.invitationModel.countDocuments(query),
+		]);
+		return { invitations, total };
 	}
 }

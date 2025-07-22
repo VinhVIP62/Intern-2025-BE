@@ -1,4 +1,4 @@
-import { RSVPStatus } from '../entities/event.enum';
+import { RSVPStatus, EventInvitationStatus } from '../entities/event.enum';
 
 export interface IEventRepository {
 	findManyByIds(ids: string[]): Promise<any[]>;
@@ -16,6 +16,38 @@ export interface IEventRepository {
 		eventId: string,
 		options: { page: number; limit: number },
 	): Promise<{ participants: any[]; total: number }>;
+
+	// Event Invitation APIs
+	inviteUsersToEvent(eventId: string, senderId: string, userIds: string[]): Promise<void>;
+	getUserEventInvitations(
+		userId: string,
+		page: number,
+		limit: number,
+		status?: EventInvitationStatus,
+	): Promise<{ invitations: any[]; total: number }>;
+	respondToInvitation(
+		invitationId: string,
+		userId: string,
+		status: EventInvitationStatus,
+	): Promise<any>;
+
+	// Cancel invitation
+	cancelInvitation(invitationId: string, userId: string): Promise<any>;
+
+	// User Events
+	findEventsByUserId(
+		userId: string,
+		page: number,
+		limit: number,
+	): Promise<{ events: any[]; total: number }>;
+
+	// Get invitations sent by current user for a specific event
+	getSentInvitations(
+		eventId: string,
+		senderId: string,
+		page: number,
+		limit: number,
+	): Promise<{ invitations: any[]; total: number }>;
 }
 
 export const IEventRepository = Symbol('IEventRepository');

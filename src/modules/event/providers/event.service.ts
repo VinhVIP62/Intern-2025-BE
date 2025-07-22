@@ -5,6 +5,7 @@ import { OrganizerType, RSVPStatus } from '../entities/event.enum';
 import { GroupService } from '@modules/group/providers/group.service';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { isValidObjectId } from 'mongoose';
+import { EventInvitationStatus } from '../entities/event.enum';
 
 @Injectable()
 export class EventService {
@@ -149,5 +150,85 @@ export class EventService {
 		options: { page: number; limit: number },
 	): Promise<{ participants: any[]; total: number }> {
 		return this.eventRepository.getParticipants(eventId, options);
+	}
+
+	// ===== INVITATION, NEARBY, USER EVENTS =====
+
+	async inviteUsersToEvent(
+		eventId: string,
+		senderId: string,
+		userIds: string[],
+		i18n?: any,
+	): Promise<void> {
+		// Kiểm tra event tồn tại
+		const event = await this.getEventById(eventId);
+		if (!event) {
+			throw new HttpException(
+				{ success: false, message: i18n?.t('event.EVENT_NOT_FOUND') },
+				HttpStatus.NOT_FOUND,
+			);
+		}
+		await this.eventRepository.inviteUsersToEvent(eventId, senderId, userIds);
+	}
+
+	async getUserEventInvitations(
+		userId: string,
+		page: number,
+		limit: number,
+		i18n?: any,
+	): Promise<{ invitations: any[]; total: number }> {
+		return this.eventRepository.getUserEventInvitations(userId, page, limit);
+	}
+
+	async respondToInvitation(
+		invitationId: string,
+		userId: string,
+		status: EventInvitationStatus,
+		i18n?: any,
+	): Promise<any> {
+		const invitation = await this.eventRepository.respondToInvitation(invitationId, userId, status);
+		if (!invitation) {
+			throw new HttpException(
+				{ success: false, message: i18n?.t('event.INVITATION_NOT_FOUND') },
+				HttpStatus.NOT_FOUND,
+			);
+		}
+		// Nếu accept thì thêm user vào participants của event
+		if (status === EventInvitationStatus.ACCEPTED) {
+			await this.eventRepository.joinEvent(invitation.eventId.toString(), userId);
+		}
+		return invitation;
+	}
+
+	async findEventsByUserId(
+		userId: string,
+		page: number,
+		limit: number,
+	): Promise<{ events: any[]; total: number }> {
+		return this.eventRepository.findEventsByUserId(userId, page, limit);
+	}
+
+	// Cancel invitation
+	async cancelInvitation(invitationId: string, userId: string, i18n: any): Promise<void> {
+		const deleted = await this.eventRepository.cancelInvitation(invitationId, userId);
+		if (!deleted) {
+			throw new HttpException(
+				{
+					success: false,
+					message: i18n.t('event.INVITATION_NOT_FOUND_OR_NO_PERMISSION'),
+				},
+				HttpStatus.NOT_FOUND,
+			);
+		}
+	}
+
+	async getSentInvitations(
+		eventId: string,
+		senderId: string,
+		page: number,
+		limit: number,
+		i18n?: any,
+	): Promise<{ invitations: any[]; total: number }> {
+		return this.eventRepository.getSentInvitations(eventId, senderId, page, limit);
 	}
 }

@@ -16,5 +16,14 @@
 	"NO_PERMISSION_DELETE": "You do not have permission to delete this event",
 	"EVENT_ORGANIZER_INVALID": "Event organizer is invalid",
 	"RSVP_STATUS_INVALID": "Invalid RSVP status",
-	"MUST_JOIN_BEFORE_RSVP": "You must join the event before RSVP"
+	"MUST_JOIN_BEFORE_RSVP": "You must join the event before RSVP",
+	"INVITE_USERS_SUCCESS": "Invitations sent successfully",
+	"INVITATIONS_RETRIEVED_SUCCESS": "Event invitations retrieved successfully",
+	"NEARBY_EVENTS_RETRIEVED_SUCCESS": "Nearby events retrieved successfully",
+	"USER_EVENTS_RETRIEVED_SUCCESS": "User's events retrieved successfully",
+	"INVITATION_RESPONDED_SUCCESS": "Invitation responded successfully",
+	"INVITATION_NOT_FOUND": "Invitation not found",
+	"INVITATION_CANCELLED_SUCCESS": "Invitation cancelled successfully",
+	"INVITATION_NOT_FOUND_OR_NO_PERMISSION": "Invitation not found or you do not have permission to cancel it",
+	"INVITATION_STATUS_INVALID": "Invitation status is invalid"
 }

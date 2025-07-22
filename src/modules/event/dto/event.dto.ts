@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 import {
 	IsString,
@@ -12,9 +12,15 @@ import {
 	IsArray,
 	ValidateNested,
 	IsObject,
+	IsNumber,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { EventStatus, OrganizerType, RSVPStatus } from '../entities/event.enum';
+import {
+	EventInvitationStatus,
+	EventStatus,
+	OrganizerType,
+	RSVPStatus,
+} from '../entities/event.enum';
 import { SportType } from '@modules/user/enums/user.enum';
 import { BasePaginationMetaDto } from '@common/dto/base-pagination.dto';
 
@@ -248,4 +254,84 @@ export class EventParticipantDto {
 export class PaginatedEventParticipantsResponseDto extends BasePaginationMetaDto {
 	@ApiProperty({ type: [EventParticipantDto], description: 'Danh sách người tham gia sự kiện' })
 	participants: EventParticipantDto[];
+}
+
+// ===== INVITATION, NEARBY, USER EVENTS DTOs =====
+
+export class InviteUsersToEventDto {
+	@ApiProperty({ type: [String], description: 'Danh sách userId được mời' })
+	@IsArray()
+	@IsMongoId({ each: true })
+	userIds: string[];
+}
+
+export class EventInvitationResponseDto {
+	@ApiProperty({ description: 'ID lời mời' })
+	@IsString()
+	invitationId: string;
+
+	@ApiProperty({ description: 'ID sự kiện' })
+	@IsMongoId()
+	eventId: string;
+
+	@ApiProperty({ description: 'ID người gửi' })
+	@IsMongoId()
+	senderId: string;
+
+	@ApiProperty({ description: 'ID người nhận' })
+	@IsMongoId()
+	recipientId: string;
+
+	@ApiProperty({ type: EventResponseDto, description: 'Thông tin sự kiện' })
+	@ValidateNested()
+	@Type(() => EventResponseDto)
+	event: EventResponseDto;
+
+	@ApiProperty({ description: 'Trạng thái lời mời', example: 'pending' })
+	@IsString()
+	status: string;
+
+	@ApiProperty({ description: 'Thời gian tạo' })
+	@IsString()
+	createdAt: string;
+}
+
+export class PaginatedEventInvitationsResponseDto extends BasePaginationMetaDto {
+	@ApiProperty({ type: [EventInvitationResponseDto], description: 'Danh sách lời mời sự kiện' })
+	invitations: EventInvitationResponseDto[];
+}
+
+export class NearbyEventsQueryDto {
+	@ApiProperty({ description: 'Vĩ độ', example: 21.0285 })
+	@IsNumber()
+	lat: number;
+
+	@ApiProperty({ description: 'Kinh độ', example: 105.8542 })
+	@IsNumber()
+	lng: number;
+
+	@ApiPropertyOptional({ description: 'Bán kính (mét)', example: 5000 })
+	@IsOptional()
+	@IsNumber()
+	radius?: number = 5000;
+
+	@ApiPropertyOptional({ description: 'Trang', example: 1 })
+	@IsOptional()
+	@IsNumber()
+	page?: number = 1;
+
+	@ApiPropertyOptional({ description: 'Số lượng/trang', example: 10 })
+	@IsOptional()
+	@IsNumber()
+	limit?: number = 10;
+}
+
+export class PaginatedNearbyEventsResponseDto extends BasePaginationMetaDto {
+	@ApiProperty({ type: [EventResponseDto], description: 'Danh sách sự kiện gần đây' })
+	events: EventResponseDto[];
+}
+
+export class PaginatedUserEventsResponseDto extends BasePaginationMetaDto {
+	@ApiProperty({ type: [EventResponseDto], description: 'Danh sách sự kiện của user' })
+	events: EventResponseDto[];
 }

@@ -15,3 +15,9 @@ export enum RSVPStatus {
 	INTERESTED = 'interested',
 	NOT_GOING = 'not_going',
 }
+
+export enum EventInvitationStatus {
+	PENDING = 'pending',
+	ACCEPTED = 'accepted',
+	REJECTED = 'rejected',
+}

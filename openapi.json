@@ -1476,6 +1476,264 @@
         ]
       }
     },
+    "/api/v1/events/{eventId}/invite": {
+      "post": {
+        "operationId": "EventController_inviteUsersToEvent_v1",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "description": "ID sự kiện",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteUsersToEventDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Gửi lời mời thành công"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền mời người dùng"
+          },
+          "404": {
+            "description": "Không tìm thấy sự kiện"
+          }
+        },
+        "summary": "Mời người dùng tham gia sự kiện",
+        "tags": [
+          "Event"
+        ]
+      }
+    },
+    "/api/v1/events/invitations/current-user": {
+      "get": {
+        "operationId": "EventController_getUserEventInvitations_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách lời mời thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedEventInvitationsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy danh sách lời mời tham gia sự kiện của user hiện tại",
+        "tags": [
+          "Event"
+        ]
+      }
+    },
+    "/api/v1/events/{eventId}/invitations/sent": {
+      "get": {
+        "operationId": "EventController_getSentInvitations_v1",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "description": "ID sự kiện",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách lời mời đã gửi thành công"
+          }
+        },
+        "summary": "Lấy danh sách người dùng đã được user hiện tại mời tham gia sự kiện",
+        "tags": [
+          "Event"
+        ]
+      }
+    },
+    "/api/v1/events/invitations/{invitationId}/respond": {
+      "post": {
+        "operationId": "EventController_respondToInvitation_v1",
+        "parameters": [
+          {
+            "name": "invitationId",
+            "required": true,
+            "in": "path",
+            "description": "ID lời mời",
+            "schema": {
+              "example": "...",
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "pending",
+                "accepted",
+                "rejected"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Phản hồi lời mời thành công"
+          },
+          "404": {
+            "description": "Không tìm thấy lời mời"
+          }
+        },
+        "summary": "Phản hồi lời mời sự kiện (accept/reject)",
+        "tags": [
+          "Event"
+        ]
+      }
+    },
+    "/api/v1/events/invitations/{invitationId}": {
+      "delete": {
+        "operationId": "EventController_cancelInvitation_v1",
+        "parameters": [
+          {
+            "name": "invitationId",
+            "required": true,
+            "in": "path",
+            "description": "ID lời mời",
+            "schema": {
+              "example": "...",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hủy lời mời thành công"
+          },
+          "403": {
+            "description": "Không có quyền hủy lời mời"
+          },
+          "404": {
+            "description": "Không tìm thấy lời mời"
+          }
+        },
+        "summary": "Hủy lời mời tham gia sự kiện (cho phép sender hoặc recipient xóa)",
+        "tags": [
+          "Event"
+        ]
+      }
+    },
+    "/api/v1/events/user/{userId}": {
+      "get": {
+        "operationId": "EventController_getUserEvents_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "ID user",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách sự kiện của user thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedUserEventsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy danh sách sự kiện mà user đã tham gia theo userId",
+        "tags": [
+          "Event"
+        ]
+      }
+    },
     "/api/v1/groups": {
       "post": {
         "operationId": "GroupController_createGroup_v1",
@@ -6108,6 +6366,168 @@
           "hasNextPage",
           "hasPrevPage",
           "participants"
+        ]
+      },
+      "InviteUsersToEventDto": {
+        "type": "object",
+        "properties": {
+          "userIds": {
+            "description": "Danh sách userId được mời",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "userIds"
+        ]
+      },
+      "EventInvitationResponseDto": {
+        "type": "object",
+        "properties": {
+          "invitationId": {
+            "type": "string",
+            "description": "ID lời mời"
+          },
+          "eventId": {
+            "type": "string",
+            "description": "ID sự kiện"
+          },
+          "senderId": {
+            "type": "string",
+            "description": "ID người gửi"
+          },
+          "recipientId": {
+            "type": "string",
+            "description": "ID người nhận"
+          },
+          "event": {
+            "description": "Thông tin sự kiện",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EventResponseDto"
+              }
+            ]
+          },
+          "status": {
+            "type": "string",
+            "description": "Trạng thái lời mời",
+            "example": "pending"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "Thời gian tạo"
+          }
+        },
+        "required": [
+          "invitationId",
+          "eventId",
+          "senderId",
+          "recipientId",
+          "event",
+          "status",
+          "createdAt"
+        ]
+      },
+      "PaginatedEventInvitationsResponseDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "Tổng số items",
+            "example": 100
+          },
+          "page": {
+            "type": "number",
+            "description": "Trang hiện tại",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Số lượng items trên mỗi trang",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Tổng số trang",
+            "example": 10
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Có trang tiếp theo không",
+            "example": true
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Có trang trước không",
+            "example": false
+          },
+          "invitations": {
+            "description": "Danh sách lời mời sự kiện",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EventInvitationResponseDto"
+            }
+          }
+        },
+        "required": [
+          "page",
+          "limit",
+          "totalPages",
+          "hasNextPage",
+          "hasPrevPage",
+          "invitations"
+        ]
+      },
+      "PaginatedUserEventsResponseDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "Tổng số items",
+            "example": 100
+          },
+          "page": {
+            "type": "number",
+            "description": "Trang hiện tại",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Số lượng items trên mỗi trang",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Tổng số trang",
+            "example": 10
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Có trang tiếp theo không",
+            "example": true
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Có trang trước không",
+            "example": false
+          },
+          "events": {
+            "description": "Danh sách sự kiện của user",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EventResponseDto"
+            }
+          }
+        },
+        "required": [
+          "page",
+          "limit",
+          "totalPages",
+          "hasNextPage",
+          "hasPrevPage",
+          "events"
         ]
       },
       "JoinConditionSportDto": {
