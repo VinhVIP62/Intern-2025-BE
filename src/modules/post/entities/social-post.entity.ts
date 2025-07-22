@@ -3,8 +3,7 @@ import { Visibility } from '@common/enums';
 
 import { PostType } from '../enums';
 
-export class SocialPost implements ISoftDeletableEntity {
-	id!: string;
+export class SocialPost extends ISoftDeletableEntity {
 	visibility!: Visibility;
 	title!: string;
 	content!: string;
@@ -18,13 +17,6 @@ export class SocialPost implements ISoftDeletableEntity {
 	// PostType.SHARED
 	parentPostId!: string | null;
 	postType!: PostType;
-
-	createdAt!: Date;
-	updatedAt!: Date;
-	deleted!: boolean;
-	deletedAt!: Date | null;
-	deletedBy!: string | null;
-
 	// ignore
 	visibleToCommunityId!: string | null;
 	visibleToUsersIds!: string[];

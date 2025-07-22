@@ -6,8 +6,8 @@ import { Class, LowerBound } from '@common/types/utils/';
 
 import { CustomRequestCtx } from '@shared/modules/request-ctx/types';
 
-import { IBaseEntity } from '../entities/base-entity.interface.js';
-import { ISoftDeletableEntity } from '../entities/softdeletable-entity.interface.js';
+import { IBaseEntity } from '../entities/base-entity.type.js';
+import { ISoftDeletableEntity } from '../entities/softdeletable-entity.type.js';
 import { WithPopulated } from '../entities/type-with-populated.type.js';
 import {
 	IBaseRepository,

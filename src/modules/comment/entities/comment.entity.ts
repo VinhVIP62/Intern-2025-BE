@@ -4,8 +4,7 @@ export enum CommentRootType {
 	POST = 'post',
 }
 
-export class Comment implements IBaseEntity {
-	id!: string;
+export class Comment extends IBaseEntity {
 	userId!: string;
 
 	rootId!: string;
@@ -16,7 +15,4 @@ export class Comment implements IBaseEntity {
 	fileUrls!: string[] | null;
 
 	childrenCount!: number;
-
-	createdAt!: Date;
-	updatedAt!: Date;
 }

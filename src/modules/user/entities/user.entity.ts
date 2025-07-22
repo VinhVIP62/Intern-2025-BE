@@ -18,8 +18,7 @@ export type GoogleLoginInfo = {
 	id: string | null;
 };
 
-export class User implements ISoftDeletableEntity {
-	id!: string;
+export class User extends ISoftDeletableEntity {
 	username!: string;
 	// compromise mail, phone and password being null for google oauth2 login
 	password!: string | null;
@@ -32,12 +31,6 @@ export class User implements ISoftDeletableEntity {
 	status!: Status;
 	// after registration user needs to setup (finish filling the other required field)
 	hasFinishedSetup!: boolean;
-	// auto generated fields
-	createdAt!: Date;
-	updatedAt!: Date;
-	deleted!: boolean;
-	deletedAt!: Date | null;
-	deletedBy!: string | null;
 	// social login info
 	googleLoginInfo!: GoogleLoginInfo | null;
 }
