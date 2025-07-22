@@ -32,7 +32,6 @@ export class PostService {
 		private readonly postRepository: IPostRepository,
 		private readonly fileService: FileService,
 		private readonly notificationService: NotificationService,
-		@InjectModel('User') private readonly userModel: Model<User>,
 		private readonly userService: UserService,
 		private readonly commentService: CommentService,
 	) {}
@@ -642,14 +641,9 @@ export class PostService {
 		try {
 			const { likes, likeCount } = await this.postRepository.getPostLikes(postId);
 			if (!likes.length) return { likes: [], likeCount };
-			const users = await this.userModel
-				.find({ _id: { $in: likes } })
-				.select('avatar firstName lastName _id')
-				.lean();
-			const likeUsers = users.map(u => ({
-				userId: u._id.toString(),
-				fullName: `${u.firstName || ''} ${u.lastName || ''}`.trim(),
-				avatar: u.avatar,
+			const likeUsers = (await this.userService.getBasicInfos(likes)).map(u => ({
+				...u,
+				avatar: u.avatar ?? '',
 			}));
 			return { likes: likeUsers, likeCount };
 		} catch (error) {

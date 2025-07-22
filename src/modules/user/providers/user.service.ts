@@ -146,6 +146,17 @@ export class UserService {
 		};
 	}
 
+	async getBasicInfos(
+		userIds: string[],
+	): Promise<{ userId: string; fullName: string; avatar: string | null }[]> {
+		const users = await this.userRepository.findManyByIds(userIds);
+		return users.map(user => ({
+			userId: String(user._id as any),
+			fullName: user.fullName,
+			avatar: user.avatar,
+		}));
+	}
+
 	// FOLLOW/UNFOLLOW
 	async followUser(currentUserId: string, targetUserId: string, i18n?: I18nContext): Promise<void> {
 		if (currentUserId === targetUserId)

@@ -28,6 +28,10 @@ export class UserRepositoryImpl implements IUserRepository {
 		return await this.userModel.findById(id);
 	}
 
+	async findManyByIds(ids: string[]): Promise<User[]> {
+		return this.userModel.find({ _id: { $in: ids } }).exec();
+	}
+
 	async findFriendsByKey(
 		userId: string,
 		key: string,
