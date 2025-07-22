@@ -2,7 +2,7 @@ import { Exclude, Expose, Transform, Type } from 'class-transformer';
 
 import { WithPopulated } from '@common/crud/entities';
 
-import { GoogleLoginInfo, Location, User } from '../entities';
+import { GoogleLoginInfo, Location, User } from '../../entities';
 import { ResponseUserDto } from './user-response.dto';
 
 // NOT THE SAME AS ResponseUserDto

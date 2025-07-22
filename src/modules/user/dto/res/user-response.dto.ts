@@ -1,8 +1,8 @@
 import { OmitType } from '@nestjs/mapped-types';
 import { Exclude, Expose, Transform } from 'class-transformer';
 
-import { Location, Sport } from '../entities';
-import { Status } from '../enums';
+import { Location, Sport } from '../../entities';
+import { Status } from '../../enums';
 
 @Exclude()
 export class ResponseUserDto {

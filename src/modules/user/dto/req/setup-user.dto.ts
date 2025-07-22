@@ -13,8 +13,8 @@ import { HasExtension, HasMimeType, IsFile, MemoryStoredFile } from 'nestjs-form
 
 import { str2bool } from '@common/utils';
 
-import { Location, Sport } from '../entities';
-import { Level } from '../enums';
+import { Location, Sport } from '@modules/user/entities';
+import { Level } from '@modules/user/enums';
 
 export class LocationDto implements Location {
 	@Expose()
