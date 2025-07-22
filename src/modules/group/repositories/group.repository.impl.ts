@@ -429,6 +429,27 @@ export class GroupRepositoryImpl implements IGroupRepository {
 		};
 	}
 
+	async getGroupsUserIsInvited(userId: string, page: number, limit: number) {
+		const skip = (page - 1) * limit;
+		const filter = { inviteList: new Types.ObjectId(userId) };
+		const [groups, total] = await Promise.all([
+			this.groupModel.find(filter).sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+			this.groupModel.countDocuments(filter),
+		]);
+		const totalPages = Math.ceil(total / limit);
+		return {
+			total,
+			page,
+			limit,
+			totalPages,
+			data: groups.map(group => ({
+				name: group.name,
+				description: group.description,
+				_id: group._id.toString(),
+			})),
+		};
+	}
+
 	private mapToResponseDto(group: any): GroupResponseDto {
 		return {
 			_id: group._id.toString(),

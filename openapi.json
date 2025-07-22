@@ -2851,6 +2851,75 @@
         ]
       }
     },
+    "/api/v1/groups/invited": {
+      "get": {
+        "operationId": "GroupController_getGroupsUserIsInvited_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách group được mời thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "success": true,
+                    "data": {
+                      "total": 2,
+                      "page": 1,
+                      "limit": 10,
+                      "totalPages": 1,
+                      "data": [
+                        {
+                          "name": "Group 1",
+                          "description": "Desc 1"
+                        },
+                        {
+                          "name": "Group 2",
+                          "description": "Desc 2"
+                        }
+                      ]
+                    },
+                    "message": "Lấy danh sách group được mời thành công"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy danh sách group mà user hiện tại hoặc userId được mời",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
     "/api/v1/groups/{groupId}": {
       "get": {
         "operationId": "GroupController_getGroupById_v1",

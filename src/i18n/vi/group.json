@@ -84,5 +84,6 @@
 	"INVALID_LOCATION_ADDRESS": "Bạn không đáp ứng điều kiện về địa chỉ khi tham gia nhóm (yêu cầu: {required}, hiện tại: {current})",
 	"INVALID_AGE_MIN": "Tuổi của bạn ({current}) chưa đủ điều kiện tối thiểu ({required}) để tham gia nhóm",
 	"INVALID_AGE_MAX": "Tuổi của bạn ({current}) vượt quá điều kiện tối đa ({required}) để tham gia nhóm",
-	"INVALID_AGE_RANGE": "Điều kiện tuổi tham gia nhóm không hợp lệ (min phải nhỏ hơn hoặc bằng max)"
+	"INVALID_AGE_RANGE": "Điều kiện tuổi tham gia nhóm không hợp lệ (min phải nhỏ hơn hoặc bằng max)",
+	"USER_INVITED_GROUPS_RETRIEVED_SUCCESS": "Lấy danh sách nhóm đã mời thành công"
 }

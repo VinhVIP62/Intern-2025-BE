@@ -201,6 +201,55 @@ export class GroupController {
 	}
 
 	@Version('1')
+	@Get('invited')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Lấy danh sách group mà user hiện tại hoặc userId được mời' })
+	@ApiQuery({ name: 'userId', required: false, type: String, example: '507f1f77bcf86cd799439011' })
+	@ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+	@ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+	@ApiResponse({
+		status: 200,
+		description: 'Lấy danh sách group được mời thành công',
+		schema: {
+			example: {
+				success: true,
+				data: {
+					total: 2,
+					page: 1,
+					limit: 10,
+					totalPages: 1,
+					data: [
+						{ name: 'Group 1', description: 'Desc 1' },
+						{ name: 'Group 2', description: 'Desc 2' },
+					],
+				},
+				message: 'Lấy danh sách group được mời thành công',
+			},
+		},
+	})
+	async getGroupsUserIsInvited(
+		@Request() req,
+		@Query('userId') userId: string,
+		@I18n() i18n: I18nContext,
+		@Query('page') page: number = 1,
+		@Query('limit') limit: number = 10,
+	): Promise<ResponseEntity<any>> {
+		const targetUserId = userId ? userId : req.user.id;
+		const result = await this.groupService.getGroupsUserIsInvited(
+			targetUserId,
+			Number(page),
+			Number(limit),
+			i18n,
+		);
+		return {
+			success: true,
+			data: result,
+			message: i18n.t('group.USER_INVITED_GROUPS_RETRIEVED_SUCCESS'),
+		};
+	}
+
+	@Version('1')
 	@Get(':groupId')
 	@Public()
 	@ApiOperation({ summary: 'Lấy thông tin chi tiết nhóm theo ID' })

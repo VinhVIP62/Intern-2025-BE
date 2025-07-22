@@ -839,6 +839,19 @@ export class GroupService {
 		}
 	}
 
+	async getGroupsUserIsInvited(
+		userId: string,
+		page: number = 1,
+		limit: number = 10,
+		i18n: I18nContext,
+	) {
+		try {
+			return await this.groupRepository.getGroupsUserIsInvited(userId, page, limit);
+		} catch (error) {
+			throw error;
+		}
+	}
+
 	async cancelJoinRequest(groupId: string, userId: string, i18n: I18nContext): Promise<void> {
 		try {
 			if (!groupId || groupId.trim().length === 0) {
