@@ -5,7 +5,7 @@ import { Visibility } from '@common/enums';
 
 import { User } from '@modules/user/entities';
 
-import { SocialPost } from '../entities';
+import { SocialPost } from '../../entities';
 
 @Exclude()
 export class ResponsePostDto {

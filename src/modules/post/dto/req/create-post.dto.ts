@@ -13,7 +13,7 @@ import { HasExtension, HasMimeType, IsFile, MemoryStoredFile } from 'nestjs-form
 import { MAX_FILES_NUM } from '@common/constants';
 import { Visibility } from '@common/enums';
 
-import { PostType } from '../enums';
+import { PostType } from '../../enums';
 
 export class CreatePostDto {
 	@Expose()
