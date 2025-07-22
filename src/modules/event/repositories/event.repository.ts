@@ -48,6 +48,12 @@ export interface IEventRepository {
 		page: number,
 		limit: number,
 	): Promise<{ invitations: any[]; total: number }>;
+
+	// Tìm sự kiện gợi ý theo query, limit, skip (phân trang)
+	findRecommendedEvents(query: any, limit: number, skip: number): Promise<any[]>;
+
+	// Đếm tổng số sự kiện phù hợp query (phân trang)
+	countRecommendedEvents(query: any): Promise<number>;
 }
 
 export const IEventRepository = Symbol('IEventRepository');

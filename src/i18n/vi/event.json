@@ -25,5 +25,6 @@
 	"INVITATION_NOT_FOUND": "Không tìm thấy lời mời",
 	"INVITATION_CANCELLED_SUCCESS": "Hủy lời mời thành công",
 	"INVITATION_NOT_FOUND_OR_NO_PERMISSION": "Không tìm thấy lời mời hoặc bạn không có quyền hủy",
-	"INVITATION_STATUS_INVALID": "Trạng thái lời mời không hợp lệ"
+	"INVITATION_STATUS_INVALID": "Trạng thái lời mời không hợp lệ",
+	"RECOMMENDATIONS_RETRIEVED_SUCCESS": "Lấy sự kiện gợi ý thành công"
 }

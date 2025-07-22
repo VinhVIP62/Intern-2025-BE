@@ -202,4 +202,14 @@ export class EventRepositoryImpl implements IEventRepository {
 		]);
 		return { invitations, total };
 	}
+
+	// Tìm sự kiện gợi ý theo query, limit, skip (phân trang)
+	async findRecommendedEvents(query: any, limit: number, skip: number): Promise<any[]> {
+		return this.eventModel.find(query).sort({ startDate: 1 }).skip(skip).limit(limit).lean();
+	}
+
+	// Đếm tổng số sự kiện phù hợp query (phân trang)
+	async countRecommendedEvents(query: any): Promise<number> {
+		return this.eventModel.countDocuments(query);
+	}
 }

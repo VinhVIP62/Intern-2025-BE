@@ -1,17 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
 import { IEventRepository } from '../repositories/event.repository';
-import { OrganizerType, RSVPStatus } from '../entities/event.enum';
+import { EventStatus, OrganizerType, RSVPStatus } from '../entities/event.enum';
 import { GroupService } from '@modules/group/providers/group.service';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { isValidObjectId } from 'mongoose';
 import { EventInvitationStatus } from '../entities/event.enum';
+import { UserService } from '@modules/user/providers/user.service';
 
 @Injectable()
 export class EventService {
 	constructor(
 		private readonly eventRepository: IEventRepository,
 		private readonly groupService: GroupService,
+		private readonly userService: UserService,
 	) {}
 
 	async getBasicInfos(
@@ -230,5 +232,53 @@ export class EventService {
 		i18n?: any,
 	): Promise<{ invitations: any[]; total: number }> {
 		return this.eventRepository.getSentInvitations(eventId, senderId, page, limit);
+	}
+
+	// Gợi ý sự kiện cho user hiện tại
+	async getRecommendationsForUser(
+		userId: string,
+		page: number,
+		limit: number,
+		i18n: any,
+	): Promise<any> {
+		const user = await this.userService.getUserById(userId);
+		if (!user)
+			return {
+				success: false,
+				data: [],
+				message: i18n.t('user.USER_NOT_FOUND'),
+			};
+
+		const favoriteSports = user.favoritesSports || [];
+		const { city, district } = user.location || {};
+		const friendIds = user.friends?.map(f => f.toString()) || [];
+
+		const query: any = {
+			status: EventStatus.UPCOMING,
+			$or: [
+				favoriteSports.length ? { sport: { $in: favoriteSports } } : null,
+				city && district ? { 'location.city': city, 'location.district': district } : null,
+				friendIds.length ? { participants: { $in: friendIds } } : null,
+			].filter(Boolean),
+			participants: { $ne: userId },
+		};
+
+		const skip = (page - 1) * limit;
+		const [events, total] = await Promise.all([
+			this.eventRepository.findRecommendedEvents(query, limit, skip),
+			this.eventRepository.countRecommendedEvents(query),
+		]);
+
+		return {
+			success: true,
+			data: events,
+			total,
+			page,
+			limit,
+			totalPages: Math.ceil(total / limit),
+			hasNextPage: page * limit < total,
+			hasPrevPage: page > 1,
+			message: i18n.t('event.RECOMMENDATIONS_RETRIEVED_SUCCESS'),
+		};
 	}
 }

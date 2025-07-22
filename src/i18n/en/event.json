@@ -25,5 +25,6 @@
 	"INVITATION_NOT_FOUND": "Invitation not found",
 	"INVITATION_CANCELLED_SUCCESS": "Invitation cancelled successfully",
 	"INVITATION_NOT_FOUND_OR_NO_PERMISSION": "Invitation not found or you do not have permission to cancel it",
-	"INVITATION_STATUS_INVALID": "Invitation status is invalid"
+	"INVITATION_STATUS_INVALID": "Invitation status is invalid",
+	"RECOMMENDATIONS_RETRIEVED_SUCCESS": "Recommended events retrieved successfully"
 }

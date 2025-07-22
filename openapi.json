@@ -1734,6 +1734,40 @@
         ]
       }
     },
+    "/api/v1/events/list/recommendations": {
+      "get": {
+        "operationId": "EventController_getEventRecommendations_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Gợi ý sự kiện cho user hiện tại",
+        "tags": [
+          "Event"
+        ]
+      }
+    },
     "/api/v1/groups": {
       "post": {
         "operationId": "GroupController_createGroup_v1",

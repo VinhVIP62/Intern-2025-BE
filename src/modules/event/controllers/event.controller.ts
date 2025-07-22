@@ -474,4 +474,29 @@ export class EventController {
 			message: i18n.t('event.USER_EVENTS_RETRIEVED_SUCCESS'),
 		};
 	}
+
+	@Get('list/recommendations')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Gợi ý sự kiện cho user hiện tại' })
+	@ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+	@ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+	async getEventRecommendations(
+		@Request() req,
+		@Query('page') page: number = 1,
+		@Query('limit') limit: number = 10,
+		@I18n() i18n: I18nContext,
+	) {
+		const recommendations = await this.eventService.getRecommendationsForUser(
+			req.user.id,
+			page,
+			limit,
+			i18n,
+		);
+		return {
+			success: true,
+			data: recommendations,
+			message: i18n.t('event.RECOMMENDATIONS_RETRIEVED_SUCCESS'),
+		};
+	}
 }
