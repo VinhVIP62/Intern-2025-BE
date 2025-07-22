@@ -9,6 +9,9 @@ import { IGroupRepository } from '../../group/repositories/group.repository';
 import { IPostRepository } from '../../post/repositories/post.repository';
 import { ICommentRepository } from '../../comment/repositories/comment.repository';
 import { ReferenceModel } from '../entities/notification.enum';
+import { IEventRepository } from '../../event/repositories/event.repository';
+import { IAchievementRepository } from '../../achievement/repositories/achievement.repository';
+import { IFriendRequestRepository } from '../../friend-request/repositories/friend-request.repository';
 // Nếu có Event/Achievement repository thì import tương tự
 
 @Injectable()
@@ -19,7 +22,9 @@ export class NotificationService {
 		private readonly groupRepository: IGroupRepository,
 		private readonly postRepository: IPostRepository,
 		private readonly commentRepository: ICommentRepository,
-		// Nếu có eventRepository, achievementRepository thì inject tương tự
+		private readonly eventRepository: IEventRepository,
+		private readonly achievementRepository: IAchievementRepository,
+		private readonly friendRequestRepository: IFriendRequestRepository,
 	) {}
 
 	async createNotification(data: CreateNotificationDto, i18n: I18nContext) {
@@ -105,21 +110,19 @@ export class NotificationService {
 						break;
 					}
 					case ReferenceModel.EVENT: {
-						// TODO: Inject eventRepository và lấy tên event
-						// const event = await this.eventRepository.findById(id);
-						// if (event) name = event.name;
+						const event = await this.eventRepository.findById(id);
+						if (event && (event.name || event.title)) name = event.name || event.title;
 						break;
 					}
 					case ReferenceModel.ACHIEVEMENT: {
-						// TODO: Inject achievementRepository và lấy tên achievement
-						// const achievement = await this.achievementRepository.findById(id);
-						// if (achievement) name = achievement.title;
+						const achievements = await this.achievementRepository.findAllAchievements();
+						const achievement = achievements.find((a: any) => a._id?.toString?.() === id);
+						if (achievement && achievement.title) name = achievement.title;
 						break;
 					}
 					case ReferenceModel.FRIEND_REQUEST: {
-						// TODO: Inject friendRequestRepository và lấy thông tin friend request
-						// const request = await this.friendRequestRepository.findById(id);
-						// if (request) name = 'Friend Request';
+						const request = await this.friendRequestRepository.getFriendRequestById(id);
+						if (request) name = 'Friend Request';
 						break;
 					}
 					case ReferenceModel.USER: {
