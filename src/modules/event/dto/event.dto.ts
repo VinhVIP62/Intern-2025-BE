@@ -14,7 +14,7 @@ import {
 	IsObject,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { EventStatus, OrganizerType } from '../entities/event.enum';
+import { EventStatus, OrganizerType, RSVPStatus } from '../entities/event.enum';
 import { SportType } from '@modules/user/enums/user.enum';
 import { BasePaginationMetaDto } from '@common/dto/base-pagination.dto';
 
@@ -216,4 +216,36 @@ export class UpdateEventDto {
 	@IsOptional()
 	@IsEnum(EventStatus)
 	status?: EventStatus;
+}
+
+export class JoinEventDto {
+	@ApiProperty({ description: 'ID sự kiện' })
+	@IsMongoId()
+	eventId: string;
+}
+
+export class LeaveEventDto {
+	@ApiProperty({ description: 'ID sự kiện' })
+	@IsMongoId()
+	eventId: string;
+}
+
+export class EventParticipantDto {
+	@ApiProperty({ description: 'ID người dùng' })
+	@IsMongoId()
+	userId: string;
+
+	@ApiProperty({ description: 'Tên người dùng' })
+	@IsString()
+	fullName: string;
+
+	@ApiProperty({ description: 'Ảnh đại diện', required: false })
+	@IsOptional()
+	@IsString()
+	avatar?: string;
+}
+
+export class PaginatedEventParticipantsResponseDto extends BasePaginationMetaDto {
+	@ApiProperty({ type: [EventParticipantDto], description: 'Danh sách người tham gia sự kiện' })
+	participants: EventParticipantDto[];
 }

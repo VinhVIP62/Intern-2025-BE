@@ -3,6 +3,7 @@ import { IEventRepository } from './event.repository';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Event } from '../entities/event.schema';
+import { RSVPStatus } from '../entities/event.enum';
 
 @Injectable()
 export class EventRepositoryImpl implements IEventRepository {
@@ -50,5 +51,65 @@ export class EventRepositoryImpl implements IEventRepository {
 
 	async deleteById(id: string): Promise<any> {
 		return this.eventModel.findByIdAndDelete(id).lean();
+	}
+
+	// Join event: add userId to participants if not already present
+	async joinEvent(eventId: string, userId: string): Promise<any> {
+		return this.eventModel
+			.findByIdAndUpdate(
+				eventId,
+				{ $addToSet: { participants: userId }, $inc: { participantCount: 1 } },
+				{ new: true },
+			)
+			.lean();
+	}
+
+	// Leave event: remove userId from participants
+	async leaveEvent(eventId: string, userId: string): Promise<any> {
+		return this.eventModel
+			.findByIdAndUpdate(
+				eventId,
+				{ $pull: { participants: userId }, $inc: { participantCount: -1 } },
+				{ new: true },
+			)
+			.lean();
+	}
+
+	// RSVP event: set RSVP status for user (store in a rsvps subdocument)
+	async rsvpEvent(eventId: string, userId: string, status: RSVPStatus): Promise<any> {
+		// Add or update RSVP status in a rsvps array [{ userId, status }]
+		return this.eventModel
+			.findByIdAndUpdate(
+				eventId,
+				{
+					$pull: { rsvps: { userId } },
+				},
+				{ new: false },
+			)
+			.then(() =>
+				this.eventModel
+					.findByIdAndUpdate(eventId, { $addToSet: { rsvps: { userId, status } } }, { new: true })
+					.lean(),
+			);
+	}
+
+	// Get paginated participants with user info
+	async getParticipants(
+		eventId: string,
+		options: { page: number; limit: number },
+	): Promise<{ participants: any[]; total: number }> {
+		const event = await this.eventModel
+			.findById(eventId)
+			.populate({
+				path: 'participants',
+				select: 'firstName lastName avatar fullName',
+			})
+			.lean();
+		if (!event) return { participants: [], total: 0 };
+		const total = event.participants.length;
+		const start = (options.page - 1) * options.limit;
+		const end = start + options.limit;
+		const paginated = event.participants.slice(start, end);
+		return { participants: paginated, total };
 	}
 }

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { GroupController } from './controllers/group.controller';
 import { GroupService } from './providers/group.service';
@@ -22,7 +22,7 @@ import { EventModule } from '@modules/event/event.module';
 		NotificationModule,
 		PostModule,
 		UserModule,
-		EventModule,
+		forwardRef(() => EventModule),
 	],
 	controllers: [GroupController],
 	providers: [GroupService, { provide: IGroupRepository, useClass: GroupRepositoryImpl }],

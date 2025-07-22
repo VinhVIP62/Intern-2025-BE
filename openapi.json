@@ -1312,6 +1312,9 @@
           "200": {
             "description": "Xóa sự kiện thành công"
           },
+          "403": {
+            "description": "Không có quyền xóa sự kiện"
+          },
           "404": {
             "description": "Không tìm thấy sự kiện"
           }
@@ -1319,6 +1322,1489 @@
         "summary": "Xóa sự kiện",
         "tags": [
           "Event"
+        ]
+      }
+    },
+    "/api/v1/events/{eventId}/join": {
+      "post": {
+        "operationId": "EventController_joinEvent_v1",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "description": "ID sự kiện",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tham gia sự kiện thành công"
+          },
+          "400": {
+            "description": "Tham gia sự kiện thất bại"
+          }
+        },
+        "summary": "Tham gia sự kiện",
+        "tags": [
+          "Event"
+        ]
+      }
+    },
+    "/api/v1/events/{eventId}/leave": {
+      "delete": {
+        "operationId": "EventController_leaveEvent_v1",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "description": "ID sự kiện",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Rời sự kiện thành công"
+          },
+          "400": {
+            "description": "Rời sự kiện thất bại"
+          }
+        },
+        "summary": "Rời sự kiện",
+        "tags": [
+          "Event"
+        ]
+      }
+    },
+    "/api/v1/events/{eventId}/rsvp": {
+      "put": {
+        "operationId": "EventController_rsvpEvent_v1",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "description": "ID sự kiện",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "enum": [
+                "going",
+                "interested",
+                "not_going"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "RSVP thành công"
+          },
+          "400": {
+            "description": "RSVP thất bại"
+          }
+        },
+        "summary": "RSVP sự kiện",
+        "tags": [
+          "Event"
+        ]
+      }
+    },
+    "/api/v1/events/{eventId}/participants": {
+      "get": {
+        "operationId": "EventController_getParticipants_v1",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "description": "ID sự kiện",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách người tham gia thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedEventParticipantsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy danh sách người tham gia sự kiện",
+        "tags": [
+          "Event"
+        ]
+      }
+    },
+    "/api/v1/groups": {
+      "post": {
+        "operationId": "GroupController_createGroup_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGroupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tạo nhóm thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          }
+        },
+        "summary": "Tạo nhóm mới",
+        "tags": [
+          "Group"
+        ]
+      },
+      "get": {
+        "operationId": "GroupController_getAllGroups_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng nhóm trên mỗi trang (mặc định: 10)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "sport",
+            "required": false,
+            "in": "query",
+            "description": "Lọc theo môn thể thao",
+            "schema": {
+              "enum": [
+                "football",
+                "basketball",
+                "tennis",
+                "badminton",
+                "volleyball",
+                "table_tennis",
+                "swimming",
+                "running",
+                "cycling",
+                "yoga",
+                "gym",
+                "martial_arts",
+                "boxing",
+                "golf",
+                "rock_climbing"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "isPrivate",
+            "required": false,
+            "in": "query",
+            "description": "Lọc theo loại nhóm (công khai/riêng tư)",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách nhóm thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedGroupsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy danh sách tất cả nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/user/{userId}": {
+      "get": {
+        "operationId": "GroupController_getGroupsByUserId_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "ID của người dùng",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng nhóm trên mỗi trang (mặc định: 10)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "key",
+            "required": false,
+            "in": "query",
+            "description": "Tìm kiếm theo tên nhóm (có thể là 1 phần tên)",
+            "schema": {
+              "example": "football",
+              "type": "string"
+            }
+          },
+          {
+            "name": "role",
+            "required": false,
+            "in": "query",
+            "description": "Lọc theo vai trò thành viên",
+            "schema": {
+              "enum": [
+                "admin",
+                "member",
+                "waiting"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách nhóm của người dùng thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedSimpleGroupsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy danh sách nhóm của người dùng",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}": {
+      "get": {
+        "operationId": "GroupController_getGroupById_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy thông tin nhóm thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupResponseDto"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "Lấy thông tin chi tiết nhóm theo ID",
+        "tags": [
+          "Group"
+        ]
+      },
+      "put": {
+        "operationId": "GroupController_updateGroup_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateGroupDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cập nhật nhóm thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GroupResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền chỉnh sửa nhóm này"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "Cập nhật thông tin nhóm",
+        "tags": [
+          "Group"
+        ]
+      },
+      "delete": {
+        "operationId": "GroupController_deleteGroup_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Xóa nhóm thành công"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền xóa nhóm này"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "Xóa nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/join": {
+      "post": {
+        "operationId": "GroupController_joinGroup_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tham gia nhóm thành công"
+          },
+          "400": {
+            "description": "Đã là thành viên hoặc dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "Tham gia nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/leave": {
+      "delete": {
+        "operationId": "GroupController_leaveGroup_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Rời khỏi nhóm thành công"
+          },
+          "400": {
+            "description": "Không phải thành viên hoặc dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "Rời khỏi nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/members/{userId}/role": {
+      "put": {
+        "operationId": "GroupController_changeMemberRole_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "ID của người dùng",
+            "schema": {
+              "example": "507f1f77bcf86cd799439012",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Thay đổi vai trò",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string",
+                    "enum": [
+                      "admin",
+                      "member"
+                    ],
+                    "description": "Vai trò mới",
+                    "example": "admin"
+                  }
+                },
+                "required": [
+                  "role"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Thay đổi vai trò thành công"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền thay đổi vai trò"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm hoặc người dùng"
+          }
+        },
+        "summary": "Thay đổi vai trò thành viên (admin/member)",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/members": {
+      "get": {
+        "operationId": "GroupController_getGroupMembers_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng thành viên trên mỗi trang (mặc định: 10)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "role",
+            "required": false,
+            "in": "query",
+            "description": "Lọc theo vai trò",
+            "schema": {
+              "enum": [
+                "admin",
+                "member"
+              ],
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách thành viên thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "success": true,
+                    "data": {
+                      "total": 15,
+                      "page": 1,
+                      "limit": 10,
+                      "totalPages": 2,
+                      "data": [
+                        {
+                          "userId": "507f1f77bcf86cd799439012",
+                          "fullName": "Nguyen Van A",
+                          "avatar": "https://example.com/avatar1.jpg",
+                          "role": "admin",
+                          "joinedAt": "2024-01-15T10:30:00.000Z"
+                        },
+                        {
+                          "userId": "507f1f77bcf86cd799439013",
+                          "fullName": "Tran Thi B",
+                          "avatar": "https://example.com/avatar2.jpg",
+                          "role": "member",
+                          "joinedAt": "2024-01-16T14:20:00.000Z"
+                        }
+                      ]
+                    },
+                    "message": "Lấy danh sách thành viên thành công"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "Lấy danh sách thành viên nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/requests/{userId}/approve": {
+      "post": {
+        "operationId": "GroupController_approveJoinRequest_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "ID của yêu cầu (user ID)",
+            "schema": {
+              "example": "507f1f77bcf86cd799439012",
+              "type": "string"
+            }
+          },
+          {
+            "name": "approved",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Phê duyệt yêu cầu",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "approved": {
+                    "type": "boolean",
+                    "description": "Phê duyệt hoặc từ chối, default = false",
+                    "example": true
+                  },
+                  "reason": {
+                    "type": "string",
+                    "description": "Lý do từ chối (nếu approved = false)",
+                    "example": "Không phù hợp với nhóm"
+                  }
+                },
+                "required": [
+                  "approved"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Xử lý yêu cầu thành công"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền phê duyệt yêu cầu"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm hoặc yêu cầu"
+          }
+        },
+        "summary": "Phê duyệt yêu cầu tham gia nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/invite": {
+      "post": {
+        "operationId": "GroupController_inviteUsersToGroup_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Danh sách người dùng được mời",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "Danh sách ID người dùng được mời",
+                    "example": [
+                      "507f1f77bcf86cd799439012",
+                      "507f1f77bcf86cd799439013"
+                    ]
+                  }
+                },
+                "required": [
+                  "userIds"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Gửi lời mời thành công"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền mời người dùng"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "Mời người dùng tham gia nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/invitation/accept": {
+      "post": {
+        "operationId": "GroupController_acceptGroupInvitation_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Chấp nhận lời mời thành công"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm hoặc lời mời"
+          }
+        },
+        "summary": "Chấp nhận lời mời tham gia nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/invitation/reject": {
+      "post": {
+        "operationId": "GroupController_rejectGroupInvitation_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Từ chối lời mời thành công"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm hoặc lời mời"
+          }
+        },
+        "summary": "Từ chối lời mời tham gia nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/posts": {
+      "get": {
+        "operationId": "GroupController_getGroupPosts_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng bài viết trên mỗi trang (mặc định: 10)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách bài viết của nhóm thành công"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm hoặc bài viết"
+          }
+        },
+        "summary": "Lấy danh sách bài viết của nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/posts/{postId}/approve": {
+      "put": {
+        "operationId": "GroupController_approveGroupPost_v1",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "description": "ID của bài viết",
+            "schema": {
+              "example": "507f1f77bcf86cd799439099",
+              "type": "string"
+            }
+          },
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "Phê duyệt hoặc từ chối bài viết",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "approved": {
+                    "type": "boolean",
+                    "description": "Phê duyệt hoặc từ chối",
+                    "example": true
+                  },
+                  "reason": {
+                    "type": "string",
+                    "description": "Lý do từ chối (nếu approved = false)",
+                    "example": "Nội dung không phù hợp"
+                  }
+                },
+                "required": [
+                  "approved"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Phê duyệt bài viết thành công"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền phê duyệt bài viết"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm hoặc bài viết"
+          }
+        },
+        "summary": "Phê duyệt hoặc từ chối bài viết trong nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/post": {
+      "post": {
+        "operationId": "GroupController_createGroupPost_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "description": "Dữ liệu tạo bài viết",
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePostDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tạo bài viết thành công"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "Tạo bài viết mới trong nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/members/{userId}": {
+      "delete": {
+        "operationId": "GroupController_removeMemberFromGroup_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "ID của thành viên cần xóa",
+            "schema": {
+              "example": "507f1f77bcf86cd799439012",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Xóa thành viên thành công"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền xóa thành viên"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm hoặc thành viên"
+          }
+        },
+        "summary": "Xóa thành viên khỏi nhóm (chỉ admin)",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/invite/{userId}": {
+      "delete": {
+        "operationId": "GroupController_cancelGroupInvitation_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "ID của người dùng được mời",
+            "schema": {
+              "example": "507f1f77bcf86cd799439012",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hủy lời mời thành công"
+          },
+          "400": {
+            "description": "Dữ liệu không hợp lệ"
+          },
+          "401": {
+            "description": "Không có quyền truy cập"
+          },
+          "403": {
+            "description": "Không có quyền hủy lời mời"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm hoặc lời mời"
+          }
+        },
+        "summary": "Hủy lời mời tham gia nhóm (chỉ admin)",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/posts/user": {
+      "get": {
+        "operationId": "GroupController_getPostsOfUserInGroup_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "query",
+            "description": "ID nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "description": "ID người dùng, nếu không truyền -> current user",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "required": false,
+            "in": "query",
+            "description": "Trạng thái duyệt bài (nếu không truyền sẽ lấy tất cả)",
+            "schema": {
+              "enum": [
+                "pending",
+                "approved",
+                "rejected"
+              ],
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng bài đăng trên mỗi trang (mặc định: 10)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách bài đăng thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedPostsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Lấy danh sách bài đăng của user trong group, có thể lọc theo status",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/posts/pending": {
+      "get": {
+        "operationId": "GroupController_getPendingPostsInGroup_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng bài viết trên mỗi trang (mặc định: 10)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách bài viết pending thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedPostsResponseDto"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Không có quyền truy cập"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm hoặc bài viết"
+          }
+        },
+        "summary": "Lấy danh sách bài viết đang chờ duyệt (pending) trong nhóm",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/waiting-list": {
+      "get": {
+        "operationId": "GroupController_getWaitingList_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách chờ duyệt thành công"
+          },
+          "403": {
+            "description": "Không có quyền truy cập"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "Lấy danh sách user chờ duyệt vào group (chỉ admin)",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/users/groups-waiting": {
+      "get": {
+        "operationId": "GroupController_getUserWaitingGroups_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "ID của user, nếu không truyền -> current user",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách nhóm đã gửi yêu cầu thành công"
+          }
+        },
+        "summary": "Lấy danh sách group user đã gửi yêu cầu tham gia",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/invite-list": {
+      "get": {
+        "operationId": "GroupController_getInviteList_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách người được mời thành công"
+          },
+          "403": {
+            "description": "Không có quyền truy cập"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "Lấy danh sách user được mời vào group (chỉ admin được xem)",
+        "tags": [
+          "Group"
+        ]
+      }
+    },
+    "/api/v1/groups/{groupId}/waiting-list/cancel": {
+      "delete": {
+        "operationId": "GroupController_cancelJoinRequest_v1",
+        "parameters": [
+          {
+            "name": "groupId",
+            "required": true,
+            "in": "path",
+            "description": "ID của nhóm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hủy yêu cầu tham gia nhóm thành công"
+          },
+          "400": {
+            "description": "Không hợp lệ hoặc không có trong waitingList"
+          },
+          "404": {
+            "description": "Không tìm thấy nhóm"
+          }
+        },
+        "summary": "User hủy yêu cầu tham gia nhóm (rút khỏi waitingList)",
+        "tags": [
+          "Group"
         ]
       }
     },
@@ -2866,1338 +4352,6 @@
         "summary": "Cập nhật danh sách tagged users (thay thế toàn bộ)",
         "tags": [
           "Comment"
-        ]
-      }
-    },
-    "/api/v1/groups": {
-      "post": {
-        "operationId": "GroupController_createGroup_v1",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateGroupDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Tạo nhóm thành công",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GroupResponseDto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Dữ liệu không hợp lệ"
-          },
-          "401": {
-            "description": "Không có quyền truy cập"
-          }
-        },
-        "summary": "Tạo nhóm mới",
-        "tags": [
-          "Group"
-        ]
-      },
-      "get": {
-        "operationId": "GroupController_getAllGroups_v1",
-        "parameters": [
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Số trang (mặc định: 1)",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Số lượng nhóm trên mỗi trang (mặc định: 10)",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          },
-          {
-            "name": "sport",
-            "required": false,
-            "in": "query",
-            "description": "Lọc theo môn thể thao",
-            "schema": {
-              "enum": [
-                "football",
-                "basketball",
-                "tennis",
-                "badminton",
-                "volleyball",
-                "table_tennis",
-                "swimming",
-                "running",
-                "cycling",
-                "yoga",
-                "gym",
-                "martial_arts",
-                "boxing",
-                "golf",
-                "rock_climbing"
-              ],
-              "type": "string"
-            }
-          },
-          {
-            "name": "isPrivate",
-            "required": false,
-            "in": "query",
-            "description": "Lọc theo loại nhóm (công khai/riêng tư)",
-            "schema": {
-              "type": "boolean"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Lấy danh sách nhóm thành công",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedGroupsResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Lấy danh sách tất cả nhóm",
-        "tags": [
-          "Group"
-        ]
-      }
-    },
-    "/api/v1/groups/user/{userId}": {
-      "get": {
-        "operationId": "GroupController_getGroupsByUserId_v1",
-        "parameters": [
-          {
-            "name": "userId",
-            "required": true,
-            "in": "path",
-            "description": "ID của người dùng",
-            "schema": {
-              "example": "507f1f77bcf86cd799439011",
-              "type": "string"
-            }
-          },
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Số trang (mặc định: 1)",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Số lượng nhóm trên mỗi trang (mặc định: 10)",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          },
-          {
-            "name": "key",
-            "required": false,
-            "in": "query",
-            "description": "Tìm kiếm theo tên nhóm (có thể là 1 phần tên)",
-            "schema": {
-              "example": "football",
-              "type": "string"
-            }
-          },
-          {
-            "name": "role",
-            "required": false,
-            "in": "query",
-            "description": "Lọc theo vai trò thành viên",
-            "schema": {
-              "enum": [
-                "admin",
-                "member",
-                "waiting"
-              ],
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Lấy danh sách nhóm của người dùng thành công",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedSimpleGroupsResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Lấy danh sách nhóm của người dùng",
-        "tags": [
-          "Group"
-        ]
-      }
-    },
-    "/api/v1/groups/{groupId}": {
-      "get": {
-        "operationId": "GroupController_getGroupById_v1",
-        "parameters": [
-          {
-            "name": "groupId",
-            "required": true,
-            "in": "path",
-            "description": "ID của nhóm",
-            "schema": {
-              "example": "507f1f77bcf86cd799439011",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Lấy thông tin nhóm thành công",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GroupResponseDto"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Không tìm thấy nhóm"
-          }
-        },
-        "summary": "Lấy thông tin chi tiết nhóm theo ID",
-        "tags": [
-          "Group"
-        ]
-      },
-      "put": {
-        "operationId": "GroupController_updateGroup_v1",
-        "parameters": [
-          {
-            "name": "groupId",
-            "required": true,
-            "in": "path",
-            "description": "ID của nhóm",
-            "schema": {
-              "example": "507f1f77bcf86cd799439011",
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateGroupDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Cập nhật nhóm thành công",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GroupResponseDto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Dữ liệu không hợp lệ"
-          },
-          "401": {
-            "description": "Không có quyền truy cập"
-          },
-          "403": {
-            "description": "Không có quyền chỉnh sửa nhóm này"
-          },
-          "404": {
-            "description": "Không tìm thấy nhóm"
-          }
-        },
-        "summary": "Cập nhật thông tin nhóm",
-        "tags": [
-          "Group"
-        ]
-      },
-      "delete": {
-        "operationId": "GroupController_deleteGroup_v1",
-        "parameters": [
-          {
-            "name": "groupId",
-            "required": true,
-            "in": "path",
-            "description": "ID của nhóm",
-            "schema": {
-              "example": "507f1f77bcf86cd799439011",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Xóa nhóm thành công"
-          },
-          "401": {
-            "description": "Không có quyền truy cập"
-          },
-          "403": {
-            "description": "Không có quyền xóa nhóm này"
-          },
-          "404": {
-            "description": "Không tìm thấy nhóm"
-          }
-        },
-        "summary": "Xóa nhóm",
-        "tags": [
-          "Group"
-        ]
-      }
-    },
-    "/api/v1/groups/{groupId}/join": {
-      "post": {
-        "operationId": "GroupController_joinGroup_v1",
-        "parameters": [
-          {
-            "name": "groupId",
-            "required": true,
-            "in": "path",
-            "description": "ID của nhóm",
-            "schema": {
-              "example": "507f1f77bcf86cd799439011",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Tham gia nhóm thành công"
-          },
-          "400": {
-            "description": "Đã là thành viên hoặc dữ liệu không hợp lệ"
-          },
-          "401": {
-            "description": "Không có quyền truy cập"
-          },
-          "404": {
-            "description": "Không tìm thấy nhóm"
-          }
-        },
-        "summary": "Tham gia nhóm",
-        "tags": [
-          "Group"
-        ]
-      }
-    },
-    "/api/v1/groups/{groupId}/leave": {
-      "delete": {
-        "operationId": "GroupController_leaveGroup_v1",
-        "parameters": [
-          {
-            "name": "groupId",
-            "required": true,
-            "in": "path",
-            "description": "ID của nhóm",
-            "schema": {
-              "example": "507f1f77bcf86cd799439011",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Rời khỏi nhóm thành công"
-          },
-          "400": {
-            "description": "Không phải thành viên hoặc dữ liệu không hợp lệ"
-          },
-          "401": {
-            "description": "Không có quyền truy cập"
-          },
-          "404": {
-            "description": "Không tìm thấy nhóm"
-          }
-        },
-        "summary": "Rời khỏi nhóm",
-        "tags": [
-          "Group"
-        ]
-      }
-    },
-    "/api/v1/groups/{groupId}/members/{userId}/role": {
-      "put": {
-        "operationId": "GroupController_changeMemberRole_v1",
-        "parameters": [
-          {
-            "name": "groupId",
-            "required": true,
-            "in": "path",
-            "description": "ID của nhóm",
-            "schema": {
-              "example": "507f1f77bcf86cd799439011",
-              "type": "string"
-            }
-          },
-          {
-            "name": "userId",
-            "required": true,
-            "in": "path",
-            "description": "ID của người dùng",
-            "schema": {
-              "example": "507f1f77bcf86cd799439012",
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "description": "Thay đổi vai trò",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "role": {
-                    "type": "string",
-                    "enum": [
-                      "admin",
-                      "member"
-                    ],
-                    "description": "Vai trò mới",
-                    "example": "admin"
-                  }
-                },
-                "required": [
-                  "role"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Thay đổi vai trò thành công"
-          },
-          "400": {
-            "description": "Dữ liệu không hợp lệ"
-          },
-          "401": {
-            "description": "Không có quyền truy cập"
-          },
-          "403": {
-            "description": "Không có quyền thay đổi vai trò"
-          },
-          "404": {
-            "description": "Không tìm thấy nhóm hoặc người dùng"
-          }
-        },
-        "summary": "Thay đổi vai trò thành viên (admin/member)",
-        "tags": [
-          "Group"
-        ]
-      }
-    },
-    "/api/v1/groups/{groupId}/members": {
-      "get": {
-        "operationId": "GroupController_getGroupMembers_v1",
-        "parameters": [
-          {
-            "name": "groupId",
-            "required": true,
-            "in": "path",
-            "description": "ID của nhóm",
-            "schema": {
-              "example": "507f1f77bcf86cd799439011",
-              "type": "string"
-            }
-          },
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Số trang (mặc định: 1)",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Số lượng thành viên trên mỗi trang (mặc định: 10)",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          },
-          {
-            "name": "role",
-            "required": false,
-            "in": "query",
-            "description": "Lọc theo vai trò",
-            "schema": {
-              "enum": [
-                "admin",
-                "member"
-              ],
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Lấy danh sách thành viên thành công",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "success": true,
-                    "data": {
-                      "total": 15,
-                      "page": 1,
-                      "limit": 10,
-                      "totalPages": 2,
-                      "data": [
-                        {
-                          "userId": "507f1f77bcf86cd799439012",
-                          "fullName": "Nguyen Van A",
-                          "avatar": "https://example.com/avatar1.jpg",
-                          "role": "admin",
-                          "joinedAt": "2024-01-15T10:30:00.000Z"
-                        },
-                        {
-                          "userId": "507f1f77bcf86cd799439013",
-                          "fullName": "Tran Thi B",
-                          "avatar": "https://example.com/avatar2.jpg",
-                          "role": "member",
-                          "joinedAt": "2024-01-16T14:20:00.000Z"
-                        }
-                      ]
-                    },
-                    "message": "Lấy danh sách thành viên thành công"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Không tìm thấy nhóm"
-          }
-        },
-        "summary": "Lấy danh sách thành viên nhóm",
-        "tags": [
-          "Group"
-        ]
-      }
-    },
-    "/api/v1/groups/{groupId}/requests/{userId}/approve": {
-      "post": {
-        "operationId": "GroupController_approveJoinRequest_v1",
-        "parameters": [
-          {
-            "name": "groupId",
-            "required": true,
-            "in": "path",
-            "description": "ID của nhóm",
-            "schema": {
-              "example": "507f1f77bcf86cd799439011",
-              "type": "string"
-            }
-          },
-          {
-            "name": "userId",
-            "required": true,
-            "in": "path",
-            "description": "ID của yêu cầu (user ID)",
-            "schema": {
-              "example": "507f1f77bcf86cd799439012",
-              "type": "string"
-            }
-          },
-          {
-            "name": "approved",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "boolean"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "description": "Phê duyệt yêu cầu",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "approved": {
-                    "type": "boolean",
-                    "description": "Phê duyệt hoặc từ chối, default = false",
-                    "example": true
-                  },
-                  "reason": {
-                    "type": "string",
-                    "description": "Lý do từ chối (nếu approved = false)",
-                    "example": "Không phù hợp với nhóm"
-                  }
-                },
-                "required": [
-                  "approved"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Xử lý yêu cầu thành công"
-          },
-          "400": {
-            "description": "Dữ liệu không hợp lệ"
-          },
-          "401": {
-            "description": "Không có quyền truy cập"
-          },
-          "403": {
-            "description": "Không có quyền phê duyệt yêu cầu"
-          },
-          "404": {
-            "description": "Không tìm thấy nhóm hoặc yêu cầu"
-          }
-        },
-        "summary": "Phê duyệt yêu cầu tham gia nhóm",
-        "tags": [
-          "Group"
-        ]
-      }
-    },
-    "/api/v1/groups/{groupId}/invite": {
-      "post": {
-        "operationId": "GroupController_inviteUsersToGroup_v1",
-        "parameters": [
-          {
-            "name": "groupId",
-            "required": true,
-            "in": "path",
-            "description": "ID của nhóm",
-            "schema": {
-              "example": "507f1f77bcf86cd799439011",
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "description": "Danh sách người dùng được mời",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "userIds": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    },
-                    "description": "Danh sách ID người dùng được mời",
-                    "example": [
-                      "507f1f77bcf86cd799439012",
-                      "507f1f77bcf86cd799439013"
-                    ]
-                  }
-                },
-                "required": [
-                  "userIds"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Gửi lời mời thành công"
-          },
-          "400": {
-            "description": "Dữ liệu không hợp lệ"
-          },
-          "401": {
-            "description": "Không có quyền truy cập"
-          },
-          "403": {
-            "description": "Không có quyền mời người dùng"
-          },
-          "404": {
-            "description": "Không tìm thấy nhóm"
-          }
-        },
-        "summary": "Mời người dùng tham gia nhóm",
-        "tags": [
-          "Group"
-        ]
-      }
-    },
-    "/api/v1/groups/{groupId}/invitation/accept": {
-      "post": {
-        "operationId": "GroupController_acceptGroupInvitation_v1",
-        "parameters": [
-          {
-            "name": "groupId",
-            "required": true,
-            "in": "path",
-            "description": "ID của nhóm",
-            "schema": {
-              "example": "507f1f77bcf86cd799439011",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Chấp nhận lời mời thành công"
-          },
-          "400": {
-            "description": "Dữ liệu không hợp lệ"
-          },
-          "401": {
-            "description": "Không có quyền truy cập"
-          },
-          "404": {
-            "description": "Không tìm thấy nhóm hoặc lời mời"
-          }
-        },
-        "summary": "Chấp nhận lời mời tham gia nhóm",
-        "tags": [
-          "Group"
-        ]
-      }
-    },
-    "/api/v1/groups/{groupId}/invitation/reject": {
-      "post": {
-        "operationId": "GroupController_rejectGroupInvitation_v1",
-        "parameters": [
-          {
-            "name": "groupId",
-            "required": true,
-            "in": "path",
-            "description": "ID của nhóm",
-            "schema": {
-              "example": "507f1f77bcf86cd799439011",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Từ chối lời mời thành công"
-          },
-          "400": {
-            "description": "Dữ liệu không hợp lệ"
-          },
-          "401": {
-            "description": "Không có quyền truy cập"
-          },
-          "404": {
-            "description": "Không tìm thấy nhóm hoặc lời mời"
-          }
-        },
-        "summary": "Từ chối lời mời tham gia nhóm",
-        "tags": [
-          "Group"
-        ]
-      }
-    },
-    "/api/v1/groups/{groupId}/posts": {
-      "get": {
-        "operationId": "GroupController_getGroupPosts_v1",
-        "parameters": [
-          {
-            "name": "groupId",
-            "required": true,
-            "in": "path",
-            "description": "ID của nhóm",
-            "schema": {
-              "example": "507f1f77bcf86cd799439011",
-              "type": "string"
-            }
-          },
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Số trang (mặc định: 1)",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Số lượng bài viết trên mỗi trang (mặc định: 10)",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Lấy danh sách bài viết của nhóm thành công"
-          },
-          "404": {
-            "description": "Không tìm thấy nhóm hoặc bài viết"
-          }
-        },
-        "summary": "Lấy danh sách bài viết của nhóm",
-        "tags": [
-          "Group"
-        ]
-      }
-    },
-    "/api/v1/groups/{groupId}/posts/{postId}/approve": {
-      "put": {
-        "operationId": "GroupController_approveGroupPost_v1",
-        "parameters": [
-          {
-            "name": "postId",
-            "required": true,
-            "in": "path",
-            "description": "ID của bài viết",
-            "schema": {
-              "example": "507f1f77bcf86cd799439099",
-              "type": "string"
-            }
-          },
-          {
-            "name": "groupId",
-            "required": true,
-            "in": "path",
-            "description": "ID của nhóm",
-            "schema": {
-              "example": "507f1f77bcf86cd799439011"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "description": "Phê duyệt hoặc từ chối bài viết",
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "approved": {
-                    "type": "boolean",
-                    "description": "Phê duyệt hoặc từ chối",
-                    "example": true
-                  },
-                  "reason": {
-                    "type": "string",
-                    "description": "Lý do từ chối (nếu approved = false)",
-                    "example": "Nội dung không phù hợp"
-                  }
-                },
-                "required": [
-                  "approved"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Phê duyệt bài viết thành công"
-          },
-          "400": {
-            "description": "Dữ liệu không hợp lệ"
-          },
-          "401": {
-            "description": "Không có quyền truy cập"
-          },
-          "403": {
-            "description": "Không có quyền phê duyệt bài viết"
-          },
-          "404": {
-            "description": "Không tìm thấy nhóm hoặc bài viết"
-          }
-        },
-        "summary": "Phê duyệt hoặc từ chối bài viết trong nhóm",
-        "tags": [
-          "Group"
-        ]
-      }
-    },
-    "/api/v1/groups/post": {
-      "post": {
-        "operationId": "GroupController_createGroupPost_v1",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "description": "Dữ liệu tạo bài viết",
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "$ref": "#/components/schemas/CreatePostDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Tạo bài viết thành công"
-          },
-          "400": {
-            "description": "Dữ liệu không hợp lệ"
-          },
-          "401": {
-            "description": "Không có quyền truy cập"
-          },
-          "404": {
-            "description": "Không tìm thấy nhóm"
-          }
-        },
-        "summary": "Tạo bài viết mới trong nhóm",
-        "tags": [
-          "Group"
-        ]
-      }
-    },
-    "/api/v1/groups/{groupId}/members/{userId}": {
-      "delete": {
-        "operationId": "GroupController_removeMemberFromGroup_v1",
-        "parameters": [
-          {
-            "name": "groupId",
-            "required": true,
-            "in": "path",
-            "description": "ID của nhóm",
-            "schema": {
-              "example": "507f1f77bcf86cd799439011",
-              "type": "string"
-            }
-          },
-          {
-            "name": "userId",
-            "required": true,
-            "in": "path",
-            "description": "ID của thành viên cần xóa",
-            "schema": {
-              "example": "507f1f77bcf86cd799439012",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Xóa thành viên thành công"
-          },
-          "400": {
-            "description": "Dữ liệu không hợp lệ"
-          },
-          "401": {
-            "description": "Không có quyền truy cập"
-          },
-          "403": {
-            "description": "Không có quyền xóa thành viên"
-          },
-          "404": {
-            "description": "Không tìm thấy nhóm hoặc thành viên"
-          }
-        },
-        "summary": "Xóa thành viên khỏi nhóm (chỉ admin)",
-        "tags": [
-          "Group"
-        ]
-      }
-    },
-    "/api/v1/groups/{groupId}/invite/{userId}": {
-      "delete": {
-        "operationId": "GroupController_cancelGroupInvitation_v1",
-        "parameters": [
-          {
-            "name": "groupId",
-            "required": true,
-            "in": "path",
-            "description": "ID của nhóm",
-            "schema": {
-              "example": "507f1f77bcf86cd799439011",
-              "type": "string"
-            }
-          },
-          {
-            "name": "userId",
-            "required": true,
-            "in": "path",
-            "description": "ID của người dùng được mời",
-            "schema": {
-              "example": "507f1f77bcf86cd799439012",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Hủy lời mời thành công"
-          },
-          "400": {
-            "description": "Dữ liệu không hợp lệ"
-          },
-          "401": {
-            "description": "Không có quyền truy cập"
-          },
-          "403": {
-            "description": "Không có quyền hủy lời mời"
-          },
-          "404": {
-            "description": "Không tìm thấy nhóm hoặc lời mời"
-          }
-        },
-        "summary": "Hủy lời mời tham gia nhóm (chỉ admin)",
-        "tags": [
-          "Group"
-        ]
-      }
-    },
-    "/api/v1/groups/posts/user": {
-      "get": {
-        "operationId": "GroupController_getPostsOfUserInGroup_v1",
-        "parameters": [
-          {
-            "name": "groupId",
-            "required": true,
-            "in": "query",
-            "description": "ID nhóm",
-            "schema": {
-              "example": "507f1f77bcf86cd799439011",
-              "type": "string"
-            }
-          },
-          {
-            "name": "userId",
-            "required": false,
-            "in": "query",
-            "description": "ID người dùng, nếu không truyền -> current user",
-            "schema": {
-              "example": "507f1f77bcf86cd799439011",
-              "type": "string"
-            }
-          },
-          {
-            "name": "status",
-            "required": false,
-            "in": "query",
-            "description": "Trạng thái duyệt bài (nếu không truyền sẽ lấy tất cả)",
-            "schema": {
-              "enum": [
-                "pending",
-                "approved",
-                "rejected"
-              ],
-              "type": "string"
-            }
-          },
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Số trang (mặc định: 1)",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Số lượng bài đăng trên mỗi trang (mặc định: 10)",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Lấy danh sách bài đăng thành công",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedPostsResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "summary": "Lấy danh sách bài đăng của user trong group, có thể lọc theo status",
-        "tags": [
-          "Group"
-        ]
-      }
-    },
-    "/api/v1/groups/{groupId}/posts/pending": {
-      "get": {
-        "operationId": "GroupController_getPendingPostsInGroup_v1",
-        "parameters": [
-          {
-            "name": "groupId",
-            "required": true,
-            "in": "path",
-            "description": "ID của nhóm",
-            "schema": {
-              "example": "507f1f77bcf86cd799439011",
-              "type": "string"
-            }
-          },
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Số trang (mặc định: 1)",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Số lượng bài viết trên mỗi trang (mặc định: 10)",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Lấy danh sách bài viết pending thành công",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedPostsResponseDto"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "Không có quyền truy cập"
-          },
-          "404": {
-            "description": "Không tìm thấy nhóm hoặc bài viết"
-          }
-        },
-        "summary": "Lấy danh sách bài viết đang chờ duyệt (pending) trong nhóm",
-        "tags": [
-          "Group"
-        ]
-      }
-    },
-    "/api/v1/groups/{groupId}/waiting-list": {
-      "get": {
-        "operationId": "GroupController_getWaitingList_v1",
-        "parameters": [
-          {
-            "name": "groupId",
-            "required": true,
-            "in": "path",
-            "description": "ID của nhóm",
-            "schema": {
-              "example": "507f1f77bcf86cd799439011",
-              "type": "string"
-            }
-          },
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Lấy danh sách chờ duyệt thành công"
-          },
-          "403": {
-            "description": "Không có quyền truy cập"
-          },
-          "404": {
-            "description": "Không tìm thấy nhóm"
-          }
-        },
-        "summary": "Lấy danh sách user chờ duyệt vào group (chỉ admin)",
-        "tags": [
-          "Group"
-        ]
-      }
-    },
-    "/api/v1/groups/users/groups-waiting": {
-      "get": {
-        "operationId": "GroupController_getUserWaitingGroups_v1",
-        "parameters": [
-          {
-            "name": "userId",
-            "required": true,
-            "in": "path",
-            "description": "ID của user, nếu không truyền -> current user",
-            "schema": {
-              "example": "507f1f77bcf86cd799439011",
-              "type": "string"
-            }
-          },
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Lấy danh sách nhóm đã gửi yêu cầu thành công"
-          }
-        },
-        "summary": "Lấy danh sách group user đã gửi yêu cầu tham gia",
-        "tags": [
-          "Group"
-        ]
-      }
-    },
-    "/api/v1/groups/{groupId}/invite-list": {
-      "get": {
-        "operationId": "GroupController_getInviteList_v1",
-        "parameters": [
-          {
-            "name": "groupId",
-            "required": true,
-            "in": "path",
-            "description": "ID của nhóm",
-            "schema": {
-              "example": "507f1f77bcf86cd799439011",
-              "type": "string"
-            }
-          },
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Lấy danh sách người được mời thành công"
-          },
-          "403": {
-            "description": "Không có quyền truy cập"
-          },
-          "404": {
-            "description": "Không tìm thấy nhóm"
-          }
-        },
-        "summary": "Lấy danh sách user được mời vào group (chỉ admin được xem)",
-        "tags": [
-          "Group"
-        ]
-      }
-    },
-    "/api/v1/groups/{groupId}/waiting-list/cancel": {
-      "delete": {
-        "operationId": "GroupController_cancelJoinRequest_v1",
-        "parameters": [
-          {
-            "name": "groupId",
-            "required": true,
-            "in": "path",
-            "description": "ID của nhóm",
-            "schema": {
-              "example": "507f1f77bcf86cd799439011",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Hủy yêu cầu tham gia nhóm thành công"
-          },
-          "400": {
-            "description": "Không hợp lệ hoặc không có trong waitingList"
-          },
-          "404": {
-            "description": "Không tìm thấy nhóm"
-          }
-        },
-        "summary": "User hủy yêu cầu tham gia nhóm (rút khỏi waitingList)",
-        "tags": [
-          "Group"
         ]
       }
     },
@@ -5885,163 +6039,28 @@
           }
         }
       },
-      "NotificationRelatedUserDto": {
+      "EventParticipantDto": {
         "type": "object",
         "properties": {
-          "_id": {
-            "type": "string"
+          "userId": {
+            "type": "string",
+            "description": "ID người dùng"
           },
-          "name": {
-            "type": "string"
+          "fullName": {
+            "type": "string",
+            "description": "Tên người dùng"
           },
           "avatar": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "_id",
-          "name"
-        ]
-      },
-      "NotificationRelatedGroupDto": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "avatar": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "_id",
-          "name"
-        ]
-      },
-      "NotificationRelatedEventDto": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "avatar": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "_id",
-          "name"
-        ]
-      },
-      "NotificationRelatedPostDto": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string"
-          },
-          "title": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "_id",
-          "title"
-        ]
-      },
-      "NotificationRelatedCommentDto": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string"
-          },
-          "content": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "_id",
-          "content"
-        ]
-      },
-      "NotificationResponseDto": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string"
-          },
-          "type": {
             "type": "string",
-            "enum": [
-              "friend_request",
-              "event_invitation",
-              "group_invitation",
-              "group_invitation_accepted",
-              "group_invitation_rejected",
-              "group_join_request",
-              "like",
-              "comment",
-              "post_approved",
-              "post_rejected",
-              "achievement_unlocked",
-              "mention",
-              "follow",
-              "share",
-              "request_approve_post"
-            ]
-          },
-          "message": {
-            "type": "string"
-          },
-          "isRead": {
-            "type": "boolean"
-          },
-          "isActive": {
-            "type": "boolean"
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "updatedAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "sender": {
-            "$ref": "#/components/schemas/NotificationRelatedUserDto"
-          },
-          "recipient": {
-            "$ref": "#/components/schemas/NotificationRelatedUserDto"
-          },
-          "group": {
-            "$ref": "#/components/schemas/NotificationRelatedGroupDto"
-          },
-          "event": {
-            "$ref": "#/components/schemas/NotificationRelatedEventDto"
-          },
-          "post": {
-            "$ref": "#/components/schemas/NotificationRelatedPostDto"
-          },
-          "comment": {
-            "$ref": "#/components/schemas/NotificationRelatedCommentDto"
+            "description": "Ảnh đại diện"
           }
         },
         "required": [
-          "_id",
-          "type",
-          "message",
-          "isRead",
-          "isActive",
-          "createdAt",
-          "updatedAt"
+          "userId",
+          "fullName"
         ]
       },
-      "NotificationPaginationResponseDto": {
+      "PaginatedEventParticipantsResponseDto": {
         "type": "object",
         "properties": {
           "total": {
@@ -6074,10 +6093,11 @@
             "description": "Có trang trước không",
             "example": false
           },
-          "notifications": {
+          "participants": {
+            "description": "Danh sách người tham gia sự kiện",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/NotificationResponseDto"
+              "$ref": "#/components/schemas/EventParticipantDto"
             }
           }
         },
@@ -6087,723 +6107,7 @@
           "totalPages",
           "hasNextPage",
           "hasPrevPage",
-          "notifications"
-        ]
-      },
-      "CreatePostDto": {
-        "type": "object",
-        "properties": {
-          "content": {
-            "type": "string",
-            "description": "Nội dung bài đăng",
-            "minLength": 1,
-            "maxLength": 2000,
-            "example": "Hôm nay tôi đã có một buổi tập tuyệt vời! #fitness #health"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "text",
-              "image",
-              "video",
-              "event"
-            ],
-            "description": "Loại bài đăng",
-            "default": "text",
-            "example": [
-              "text",
-              "image",
-              "video",
-              "event"
-            ]
-          },
-          "sport": {
-            "type": "string",
-            "enum": [
-              "football",
-              "basketball",
-              "tennis",
-              "badminton",
-              "volleyball",
-              "table_tennis",
-              "swimming",
-              "running",
-              "cycling",
-              "yoga",
-              "gym",
-              "martial_arts",
-              "boxing",
-              "golf",
-              "rock_climbing"
-            ],
-            "description": "Môn thể thao liên quan",
-            "example": "football"
-          },
-          "approvalStatus": {
-            "type": "string",
-            "enum": [
-              "pending",
-              "approved",
-              "rejected"
-            ],
-            "description": "Trạng thái duyệt bài",
-            "example": "approved"
-          },
-          "eventId": {
-            "type": "string",
-            "description": "ID sự kiện liên quan",
-            "example": "507f1f77bcf86cd799439011"
-          },
-          "groupId": {
-            "type": "string",
-            "description": "ID nhóm liên quan",
-            "example": "507f1f77bcf86cd799439011"
-          },
-          "taggedUsers": {
-            "description": "Danh sách ID người dùng được tag",
-            "example": [
-              "507f1f77bcf86cd799439011"
-            ],
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "sharedFrom": {
-            "type": "string",
-            "description": "ID bài đăng được share từ",
-            "example": "507f1f77bcf86cd799439011"
-          },
-          "accessLevel": {
-            "type": "string",
-            "enum": [
-              "public",
-              "private",
-              "protected"
-            ],
-            "description": "Quyền truy cập bài đăng",
-            "default": "public",
-            "example": [
-              "public",
-              "private",
-              "protected"
-            ]
-          }
-        },
-        "required": [
-          "content",
-          "type",
-          "sport",
-          "approvalStatus"
-        ]
-      },
-      "PostResponseDto": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string",
-            "description": "ID của bài đăng"
-          },
-          "author": {
-            "description": "ID của tác giả",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ObjectId"
-              }
-            ]
-          },
-          "content": {
-            "type": "string",
-            "description": "Nội dung bài đăng"
-          },
-          "type": {
-            "type": "string",
-            "enum": [
-              "text",
-              "image",
-              "video",
-              "event"
-            ],
-            "description": "Loại bài đăng"
-          },
-          "images": {
-            "description": "Danh sách hình ảnh",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "video": {
-            "type": "string",
-            "description": "Video URL"
-          },
-          "eventId": {
-            "description": "ID sự kiện liên quan",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ObjectId"
-              }
-            ]
-          },
-          "groupId": {
-            "description": "ID nhóm liên quan",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ObjectId"
-              }
-            ]
-          },
-          "likes": {
-            "description": "Danh sách ID người dùng đã like",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ObjectId"
-            }
-          },
-          "hashtags": {
-            "description": "Danh sách hashtags",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "taggedUsers": {
-            "description": "Danh sách ID người dùng được tag",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ObjectId"
-            }
-          },
-          "sharedFrom": {
-            "description": "ID bài đăng được share từ",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ObjectId"
-              }
-            ]
-          },
-          "likeCount": {
-            "type": "number",
-            "description": "Số lượng like"
-          },
-          "commentCount": {
-            "type": "number",
-            "description": "Số lượng comment"
-          },
-          "shareCount": {
-            "type": "number",
-            "description": "Số lượng share"
-          },
-          "sport": {
-            "type": "string",
-            "enum": [
-              "football",
-              "basketball",
-              "tennis",
-              "badminton",
-              "volleyball",
-              "table_tennis",
-              "swimming",
-              "running",
-              "cycling",
-              "yoga",
-              "gym",
-              "martial_arts",
-              "boxing",
-              "golf",
-              "rock_climbing"
-            ],
-            "description": "Môn thể thao liên quan"
-          },
-          "approvalStatus": {
-            "type": "string",
-            "enum": [
-              "pending",
-              "approved",
-              "rejected"
-            ],
-            "description": "Trạng thái duyệt bài"
-          },
-          "approvedBy": {
-            "description": "ID admin đã duyệt",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ObjectId"
-              }
-            ]
-          },
-          "approvedAt": {
-            "format": "date-time",
-            "type": "string",
-            "description": "Thời gian duyệt"
-          },
-          "rejectionReason": {
-            "type": "string",
-            "description": "Lý do từ chối"
-          },
-          "rejectedBy": {
-            "description": "ID admin đã từ chối",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ObjectId"
-              }
-            ]
-          },
-          "rejectedAt": {
-            "format": "date-time",
-            "type": "string",
-            "description": "Thời gian từ chối"
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string",
-            "description": "Thời gian tạo"
-          },
-          "updatedAt": {
-            "format": "date-time",
-            "type": "string",
-            "description": "Thời gian cập nhật"
-          },
-          "accessLevel": {
-            "type": "string",
-            "enum": [
-              "public",
-              "private",
-              "protected"
-            ],
-            "description": "Quyền truy cập bài đăng"
-          },
-          "authorUser": {
-            "type": "object",
-            "description": "Thông tin tác giả"
-          },
-          "event": {
-            "type": "object",
-            "description": "Thông tin sự kiện"
-          },
-          "group": {
-            "type": "object",
-            "description": "Thông tin nhóm"
-          },
-          "sharedFromPost": {
-            "type": "object",
-            "description": "Thông tin bài đăng được share từ"
-          },
-          "comments": {
-            "description": "Danh sách comment",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "taggedUsersList": {
-            "description": "Danh sách thông tin người dùng được tag",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "required": [
-          "_id",
-          "author",
-          "content",
-          "type",
-          "images",
-          "likes",
-          "hashtags",
-          "taggedUsers",
-          "likeCount",
-          "commentCount",
-          "shareCount",
-          "sport",
-          "approvalStatus",
-          "createdAt",
-          "updatedAt"
-        ]
-      },
-      "PaginatedPostsResponseDto": {
-        "type": "object",
-        "properties": {
-          "total": {
-            "type": "number",
-            "description": "Tổng số items",
-            "example": 100
-          },
-          "page": {
-            "type": "number",
-            "description": "Trang hiện tại",
-            "example": 1
-          },
-          "limit": {
-            "type": "number",
-            "description": "Số lượng items trên mỗi trang",
-            "example": 10
-          },
-          "totalPages": {
-            "type": "number",
-            "description": "Tổng số trang",
-            "example": 10
-          },
-          "hasNextPage": {
-            "type": "boolean",
-            "description": "Có trang tiếp theo không",
-            "example": true
-          },
-          "hasPrevPage": {
-            "type": "boolean",
-            "description": "Có trang trước không",
-            "example": false
-          },
-          "posts": {
-            "description": "Danh sách bài đăng",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/PostResponseDto"
-            }
-          }
-        },
-        "required": [
-          "page",
-          "limit",
-          "totalPages",
-          "hasNextPage",
-          "hasPrevPage",
-          "posts"
-        ]
-      },
-      "UpdatePostDto": {
-        "type": "object",
-        "properties": {
-          "content": {
-            "type": "string",
-            "description": "Nội dung bài đăng",
-            "minLength": 1,
-            "maxLength": 2000,
-            "example": "Hôm nay tôi đã có một buổi tập tuyệt vời! #fitness #health"
-          },
-          "sport": {
-            "type": "string",
-            "enum": [
-              "football",
-              "basketball",
-              "tennis",
-              "badminton",
-              "volleyball",
-              "table_tennis",
-              "swimming",
-              "running",
-              "cycling",
-              "yoga",
-              "gym",
-              "martial_arts",
-              "boxing",
-              "golf",
-              "rock_climbing"
-            ],
-            "description": "Môn thể thao liên quan",
-            "example": "football"
-          },
-          "eventId": {
-            "type": "string",
-            "description": "ID sự kiện liên quan",
-            "example": "507f1f77bcf86cd799439011"
-          },
-          "groupId": {
-            "type": "string",
-            "description": "ID nhóm liên quan",
-            "example": "507f1f77bcf86cd799439011"
-          },
-          "taggedUsers": {
-            "description": "Danh sách ID người dùng được tag",
-            "example": [
-              "507f1f77bcf86cd799439011"
-            ],
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "accessLevel": {
-            "type": "string",
-            "enum": [
-              "public",
-              "private",
-              "protected"
-            ],
-            "description": "Quyền truy cập bài đăng",
-            "default": "public"
-          },
-          "oldUrls": {
-            "description": "Các url cũ",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        }
-      },
-      "HashtagTrendingDto": {
-        "type": "object",
-        "properties": {
-          "hashtag": {
-            "type": "string",
-            "description": "Tên hashtag"
-          },
-          "postCount": {
-            "type": "number",
-            "description": "Số lượng bài đăng sử dụng hashtag này"
-          },
-          "usageCount": {
-            "type": "number",
-            "description": "Tổng số lượt sử dụng hashtag này"
-          }
-        },
-        "required": [
-          "hashtag",
-          "postCount",
-          "usageCount"
-        ]
-      },
-      "TrendingHashtagsResponseDto": {
-        "type": "object",
-        "properties": {
-          "total": {
-            "type": "number",
-            "description": "Tổng số items",
-            "example": 100
-          },
-          "page": {
-            "type": "number",
-            "description": "Trang hiện tại",
-            "example": 1
-          },
-          "limit": {
-            "type": "number",
-            "description": "Số lượng items trên mỗi trang",
-            "example": 10
-          },
-          "totalPages": {
-            "type": "number",
-            "description": "Tổng số trang",
-            "example": 10
-          },
-          "hasNextPage": {
-            "type": "boolean",
-            "description": "Có trang tiếp theo không",
-            "example": true
-          },
-          "hasPrevPage": {
-            "type": "boolean",
-            "description": "Có trang trước không",
-            "example": false
-          },
-          "hashtags": {
-            "description": "Danh sách hashtag trending",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/HashtagTrendingDto"
-            }
-          }
-        },
-        "required": [
-          "page",
-          "limit",
-          "totalPages",
-          "hasNextPage",
-          "hasPrevPage",
-          "hashtags"
-        ]
-      },
-      "ClearUrlDto": {
-        "type": "object",
-        "properties": {
-          "isClearImage": {
-            "type": "boolean",
-            "description": "Xóa images",
-            "default": false
-          },
-          "isClearVideo": {
-            "type": "boolean",
-            "description": "Xóa video",
-            "default": false
-          }
-        }
-      },
-      "CommentResponseDto": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string",
-            "description": "ID của comment"
-          },
-          "postId": {
-            "description": "ID của bài đăng",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ObjectId"
-              }
-            ]
-          },
-          "author": {
-            "description": "ID của tác giả",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ObjectId"
-              }
-            ]
-          },
-          "content": {
-            "type": "string",
-            "description": "Nội dung comment"
-          },
-          "parentId": {
-            "description": "ID comment cha (cho reply)",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/ObjectId"
-              }
-            ]
-          },
-          "likes": {
-            "description": "Danh sách ID người dùng đã like",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ObjectId"
-            }
-          },
-          "taggedUsers": {
-            "description": "Danh sách ID người dùng được tag",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ObjectId"
-            }
-          },
-          "isActive": {
-            "type": "boolean",
-            "description": "Trạng thái hoạt động"
-          },
-          "isHidden": {
-            "type": "boolean",
-            "description": "Trạng thái ẩn"
-          },
-          "likeCount": {
-            "type": "number",
-            "description": "Số lượng like"
-          },
-          "replyCount": {
-            "type": "number",
-            "description": "Số lượng reply"
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string",
-            "description": "Thời gian tạo"
-          },
-          "updatedAt": {
-            "format": "date-time",
-            "type": "string",
-            "description": "Thời gian cập nhật"
-          },
-          "authorUser": {
-            "type": "object",
-            "description": "Thông tin tác giả",
-            "example": {
-              "_id": "685a2443342f516009019c71",
-              "firstName": "John",
-              "lastName": "Doe",
-              "avatar": "https://example.com/avatar.jpg",
-              "fullName": "John Doe"
-            }
-          },
-          "post": {
-            "type": "object",
-            "description": "Thông tin bài đăng",
-            "example": {
-              "_id": "6864972223c53bb8ca77e453",
-              "content": "bạn bè của 123 và tôi đã có một buổi tập tuyệt vời! #fitness #health"
-            }
-          },
-          "parentComment": {
-            "type": "object",
-            "description": "Thông tin comment cha",
-            "example": {
-              "_id": "507f1f77bcf86cd799439011",
-              "content": "Comment cha",
-              "author": "507f1f77bcf86cd799439013"
-            }
-          },
-          "replies": {
-            "description": "Danh sách reply",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CommentResponseDto"
-            }
-          }
-        },
-        "required": [
-          "_id",
-          "postId",
-          "author",
-          "content",
-          "likes",
-          "taggedUsers",
-          "isActive",
-          "isHidden",
-          "likeCount",
-          "replyCount",
-          "createdAt",
-          "updatedAt"
-        ]
-      },
-      "PaginatedCommentsResponseDto": {
-        "type": "object",
-        "properties": {
-          "total": {
-            "type": "number",
-            "description": "Tổng số items",
-            "example": 100
-          },
-          "page": {
-            "type": "number",
-            "description": "Trang hiện tại",
-            "example": 1
-          },
-          "limit": {
-            "type": "number",
-            "description": "Số lượng items trên mỗi trang",
-            "example": 10
-          },
-          "totalPages": {
-            "type": "number",
-            "description": "Tổng số trang",
-            "example": 10
-          },
-          "hasNextPage": {
-            "type": "boolean",
-            "description": "Có trang tiếp theo không",
-            "example": true
-          },
-          "hasPrevPage": {
-            "type": "boolean",
-            "description": "Có trang trước không",
-            "example": false
-          },
-          "comments": {
-            "description": "Danh sách comment",
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/CommentResponseDto"
-            }
-          }
-        },
-        "required": [
-          "page",
-          "limit",
-          "totalPages",
-          "hasNextPage",
-          "hasPrevPage",
-          "comments"
+          "participants"
         ]
       },
       "JoinConditionSportDto": {
@@ -7368,6 +6672,927 @@
             ]
           }
         }
+      },
+      "CreatePostDto": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Nội dung bài đăng",
+            "minLength": 1,
+            "maxLength": 2000,
+            "example": "Hôm nay tôi đã có một buổi tập tuyệt vời! #fitness #health"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "text",
+              "image",
+              "video",
+              "event"
+            ],
+            "description": "Loại bài đăng",
+            "default": "text",
+            "example": [
+              "text",
+              "image",
+              "video",
+              "event"
+            ]
+          },
+          "sport": {
+            "type": "string",
+            "enum": [
+              "football",
+              "basketball",
+              "tennis",
+              "badminton",
+              "volleyball",
+              "table_tennis",
+              "swimming",
+              "running",
+              "cycling",
+              "yoga",
+              "gym",
+              "martial_arts",
+              "boxing",
+              "golf",
+              "rock_climbing"
+            ],
+            "description": "Môn thể thao liên quan",
+            "example": "football"
+          },
+          "approvalStatus": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "approved",
+              "rejected"
+            ],
+            "description": "Trạng thái duyệt bài",
+            "example": "approved"
+          },
+          "eventId": {
+            "type": "string",
+            "description": "ID sự kiện liên quan",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "groupId": {
+            "type": "string",
+            "description": "ID nhóm liên quan",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "taggedUsers": {
+            "description": "Danh sách ID người dùng được tag",
+            "example": [
+              "507f1f77bcf86cd799439011"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sharedFrom": {
+            "type": "string",
+            "description": "ID bài đăng được share từ",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "accessLevel": {
+            "type": "string",
+            "enum": [
+              "public",
+              "private",
+              "protected"
+            ],
+            "description": "Quyền truy cập bài đăng",
+            "default": "public",
+            "example": [
+              "public",
+              "private",
+              "protected"
+            ]
+          }
+        },
+        "required": [
+          "content",
+          "type",
+          "sport",
+          "approvalStatus"
+        ]
+      },
+      "PostResponseDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "ID của bài đăng"
+          },
+          "author": {
+            "description": "ID của tác giả",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ObjectId"
+              }
+            ]
+          },
+          "content": {
+            "type": "string",
+            "description": "Nội dung bài đăng"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "text",
+              "image",
+              "video",
+              "event"
+            ],
+            "description": "Loại bài đăng"
+          },
+          "images": {
+            "description": "Danh sách hình ảnh",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "video": {
+            "type": "string",
+            "description": "Video URL"
+          },
+          "eventId": {
+            "description": "ID sự kiện liên quan",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ObjectId"
+              }
+            ]
+          },
+          "groupId": {
+            "description": "ID nhóm liên quan",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ObjectId"
+              }
+            ]
+          },
+          "likes": {
+            "description": "Danh sách ID người dùng đã like",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ObjectId"
+            }
+          },
+          "hashtags": {
+            "description": "Danh sách hashtags",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "taggedUsers": {
+            "description": "Danh sách ID người dùng được tag",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ObjectId"
+            }
+          },
+          "sharedFrom": {
+            "description": "ID bài đăng được share từ",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ObjectId"
+              }
+            ]
+          },
+          "likeCount": {
+            "type": "number",
+            "description": "Số lượng like"
+          },
+          "commentCount": {
+            "type": "number",
+            "description": "Số lượng comment"
+          },
+          "shareCount": {
+            "type": "number",
+            "description": "Số lượng share"
+          },
+          "sport": {
+            "type": "string",
+            "enum": [
+              "football",
+              "basketball",
+              "tennis",
+              "badminton",
+              "volleyball",
+              "table_tennis",
+              "swimming",
+              "running",
+              "cycling",
+              "yoga",
+              "gym",
+              "martial_arts",
+              "boxing",
+              "golf",
+              "rock_climbing"
+            ],
+            "description": "Môn thể thao liên quan"
+          },
+          "approvalStatus": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "approved",
+              "rejected"
+            ],
+            "description": "Trạng thái duyệt bài"
+          },
+          "approvedBy": {
+            "description": "ID admin đã duyệt",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ObjectId"
+              }
+            ]
+          },
+          "approvedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Thời gian duyệt"
+          },
+          "rejectionReason": {
+            "type": "string",
+            "description": "Lý do từ chối"
+          },
+          "rejectedBy": {
+            "description": "ID admin đã từ chối",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ObjectId"
+              }
+            ]
+          },
+          "rejectedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Thời gian từ chối"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Thời gian tạo"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Thời gian cập nhật"
+          },
+          "accessLevel": {
+            "type": "string",
+            "enum": [
+              "public",
+              "private",
+              "protected"
+            ],
+            "description": "Quyền truy cập bài đăng"
+          },
+          "authorUser": {
+            "type": "object",
+            "description": "Thông tin tác giả"
+          },
+          "event": {
+            "type": "object",
+            "description": "Thông tin sự kiện"
+          },
+          "group": {
+            "type": "object",
+            "description": "Thông tin nhóm"
+          },
+          "sharedFromPost": {
+            "type": "object",
+            "description": "Thông tin bài đăng được share từ"
+          },
+          "comments": {
+            "description": "Danh sách comment",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "taggedUsersList": {
+            "description": "Danh sách thông tin người dùng được tag",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "_id",
+          "author",
+          "content",
+          "type",
+          "images",
+          "likes",
+          "hashtags",
+          "taggedUsers",
+          "likeCount",
+          "commentCount",
+          "shareCount",
+          "sport",
+          "approvalStatus",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PaginatedPostsResponseDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "Tổng số items",
+            "example": 100
+          },
+          "page": {
+            "type": "number",
+            "description": "Trang hiện tại",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Số lượng items trên mỗi trang",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Tổng số trang",
+            "example": 10
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Có trang tiếp theo không",
+            "example": true
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Có trang trước không",
+            "example": false
+          },
+          "posts": {
+            "description": "Danh sách bài đăng",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PostResponseDto"
+            }
+          }
+        },
+        "required": [
+          "page",
+          "limit",
+          "totalPages",
+          "hasNextPage",
+          "hasPrevPage",
+          "posts"
+        ]
+      },
+      "NotificationRelatedUserDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "name"
+        ]
+      },
+      "NotificationRelatedGroupDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "name"
+        ]
+      },
+      "NotificationRelatedEventDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "avatar": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "name"
+        ]
+      },
+      "NotificationRelatedPostDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "title"
+        ]
+      },
+      "NotificationRelatedCommentDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "content"
+        ]
+      },
+      "NotificationResponseDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "friend_request",
+              "event_invitation",
+              "group_invitation",
+              "group_invitation_accepted",
+              "group_invitation_rejected",
+              "group_join_request",
+              "like",
+              "comment",
+              "post_approved",
+              "post_rejected",
+              "achievement_unlocked",
+              "mention",
+              "follow",
+              "share",
+              "request_approve_post"
+            ]
+          },
+          "message": {
+            "type": "string"
+          },
+          "isRead": {
+            "type": "boolean"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "sender": {
+            "$ref": "#/components/schemas/NotificationRelatedUserDto"
+          },
+          "recipient": {
+            "$ref": "#/components/schemas/NotificationRelatedUserDto"
+          },
+          "group": {
+            "$ref": "#/components/schemas/NotificationRelatedGroupDto"
+          },
+          "event": {
+            "$ref": "#/components/schemas/NotificationRelatedEventDto"
+          },
+          "post": {
+            "$ref": "#/components/schemas/NotificationRelatedPostDto"
+          },
+          "comment": {
+            "$ref": "#/components/schemas/NotificationRelatedCommentDto"
+          }
+        },
+        "required": [
+          "_id",
+          "type",
+          "message",
+          "isRead",
+          "isActive",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "NotificationPaginationResponseDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "Tổng số items",
+            "example": 100
+          },
+          "page": {
+            "type": "number",
+            "description": "Trang hiện tại",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Số lượng items trên mỗi trang",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Tổng số trang",
+            "example": 10
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Có trang tiếp theo không",
+            "example": true
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Có trang trước không",
+            "example": false
+          },
+          "notifications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NotificationResponseDto"
+            }
+          }
+        },
+        "required": [
+          "page",
+          "limit",
+          "totalPages",
+          "hasNextPage",
+          "hasPrevPage",
+          "notifications"
+        ]
+      },
+      "UpdatePostDto": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "Nội dung bài đăng",
+            "minLength": 1,
+            "maxLength": 2000,
+            "example": "Hôm nay tôi đã có một buổi tập tuyệt vời! #fitness #health"
+          },
+          "sport": {
+            "type": "string",
+            "enum": [
+              "football",
+              "basketball",
+              "tennis",
+              "badminton",
+              "volleyball",
+              "table_tennis",
+              "swimming",
+              "running",
+              "cycling",
+              "yoga",
+              "gym",
+              "martial_arts",
+              "boxing",
+              "golf",
+              "rock_climbing"
+            ],
+            "description": "Môn thể thao liên quan",
+            "example": "football"
+          },
+          "eventId": {
+            "type": "string",
+            "description": "ID sự kiện liên quan",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "groupId": {
+            "type": "string",
+            "description": "ID nhóm liên quan",
+            "example": "507f1f77bcf86cd799439011"
+          },
+          "taggedUsers": {
+            "description": "Danh sách ID người dùng được tag",
+            "example": [
+              "507f1f77bcf86cd799439011"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "accessLevel": {
+            "type": "string",
+            "enum": [
+              "public",
+              "private",
+              "protected"
+            ],
+            "description": "Quyền truy cập bài đăng",
+            "default": "public"
+          },
+          "oldUrls": {
+            "description": "Các url cũ",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "HashtagTrendingDto": {
+        "type": "object",
+        "properties": {
+          "hashtag": {
+            "type": "string",
+            "description": "Tên hashtag"
+          },
+          "postCount": {
+            "type": "number",
+            "description": "Số lượng bài đăng sử dụng hashtag này"
+          },
+          "usageCount": {
+            "type": "number",
+            "description": "Tổng số lượt sử dụng hashtag này"
+          }
+        },
+        "required": [
+          "hashtag",
+          "postCount",
+          "usageCount"
+        ]
+      },
+      "TrendingHashtagsResponseDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "Tổng số items",
+            "example": 100
+          },
+          "page": {
+            "type": "number",
+            "description": "Trang hiện tại",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Số lượng items trên mỗi trang",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Tổng số trang",
+            "example": 10
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Có trang tiếp theo không",
+            "example": true
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Có trang trước không",
+            "example": false
+          },
+          "hashtags": {
+            "description": "Danh sách hashtag trending",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HashtagTrendingDto"
+            }
+          }
+        },
+        "required": [
+          "page",
+          "limit",
+          "totalPages",
+          "hasNextPage",
+          "hasPrevPage",
+          "hashtags"
+        ]
+      },
+      "ClearUrlDto": {
+        "type": "object",
+        "properties": {
+          "isClearImage": {
+            "type": "boolean",
+            "description": "Xóa images",
+            "default": false
+          },
+          "isClearVideo": {
+            "type": "boolean",
+            "description": "Xóa video",
+            "default": false
+          }
+        }
+      },
+      "CommentResponseDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "ID của comment"
+          },
+          "postId": {
+            "description": "ID của bài đăng",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ObjectId"
+              }
+            ]
+          },
+          "author": {
+            "description": "ID của tác giả",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ObjectId"
+              }
+            ]
+          },
+          "content": {
+            "type": "string",
+            "description": "Nội dung comment"
+          },
+          "parentId": {
+            "description": "ID comment cha (cho reply)",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ObjectId"
+              }
+            ]
+          },
+          "likes": {
+            "description": "Danh sách ID người dùng đã like",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ObjectId"
+            }
+          },
+          "taggedUsers": {
+            "description": "Danh sách ID người dùng được tag",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ObjectId"
+            }
+          },
+          "isActive": {
+            "type": "boolean",
+            "description": "Trạng thái hoạt động"
+          },
+          "isHidden": {
+            "type": "boolean",
+            "description": "Trạng thái ẩn"
+          },
+          "likeCount": {
+            "type": "number",
+            "description": "Số lượng like"
+          },
+          "replyCount": {
+            "type": "number",
+            "description": "Số lượng reply"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Thời gian tạo"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Thời gian cập nhật"
+          },
+          "authorUser": {
+            "type": "object",
+            "description": "Thông tin tác giả",
+            "example": {
+              "_id": "685a2443342f516009019c71",
+              "firstName": "John",
+              "lastName": "Doe",
+              "avatar": "https://example.com/avatar.jpg",
+              "fullName": "John Doe"
+            }
+          },
+          "post": {
+            "type": "object",
+            "description": "Thông tin bài đăng",
+            "example": {
+              "_id": "6864972223c53bb8ca77e453",
+              "content": "bạn bè của 123 và tôi đã có một buổi tập tuyệt vời! #fitness #health"
+            }
+          },
+          "parentComment": {
+            "type": "object",
+            "description": "Thông tin comment cha",
+            "example": {
+              "_id": "507f1f77bcf86cd799439011",
+              "content": "Comment cha",
+              "author": "507f1f77bcf86cd799439013"
+            }
+          },
+          "replies": {
+            "description": "Danh sách reply",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommentResponseDto"
+            }
+          }
+        },
+        "required": [
+          "_id",
+          "postId",
+          "author",
+          "content",
+          "likes",
+          "taggedUsers",
+          "isActive",
+          "isHidden",
+          "likeCount",
+          "replyCount",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PaginatedCommentsResponseDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "Tổng số items",
+            "example": 100
+          },
+          "page": {
+            "type": "number",
+            "description": "Trang hiện tại",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Số lượng items trên mỗi trang",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Tổng số trang",
+            "example": 10
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Có trang tiếp theo không",
+            "example": true
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Có trang trước không",
+            "example": false
+          },
+          "comments": {
+            "description": "Danh sách comment",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CommentResponseDto"
+            }
+          }
+        },
+        "required": [
+          "page",
+          "limit",
+          "totalPages",
+          "hasNextPage",
+          "hasPrevPage",
+          "comments"
+        ]
       },
       "CreateFriendRequestDto": {
         "type": "object",

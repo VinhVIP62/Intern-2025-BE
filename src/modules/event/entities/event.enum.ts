@@ -9,3 +9,9 @@ export enum OrganizerType {
 	USER = 'User',
 	GROUP = 'Group',
 }
+
+export enum RSVPStatus {
+	GOING = 'going',
+	INTERESTED = 'interested',
+	NOT_GOING = 'not_going',
+}

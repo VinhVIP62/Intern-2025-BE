@@ -5,5 +5,16 @@
 	"EVENT_RETRIEVED_SUCCESS": "Lấy sự kiện thành công",
 	"EVENT_NOT_FOUND": "Không tìm thấy sự kiện",
 	"EVENT_UPDATED_SUCCESS": "Cập nhật sự kiện thành công",
-	"EVENT_DELETED_SUCCESS": "Xóa sự kiện thành công"
+	"EVENT_DELETED_SUCCESS": "Xóa sự kiện thành công",
+	"JOIN_SUCCESS": "Tham gia sự kiện thành công",
+	"JOIN_FAILED": "Tham gia sự kiện thất bại",
+	"LEAVE_SUCCESS": "Rời sự kiện thành công",
+	"LEAVE_FAILED": "Rời sự kiện thất bại",
+	"RSVP_SUCCESS": "Cập nhật RSVP thành công",
+	"RSVP_FAILED": "Cập nhật RSVP thất bại",
+	"PARTICIPANTS_RETRIEVED_SUCCESS": "Lấy danh sách người tham gia thành công",
+	"NO_PERMISSION_DELETE": "Bạn không có quyền xóa sự kiện này",
+	"EVENT_ORGANIZER_INVALID": "Tác giả sự kiện không hợp lệ",
+	"RSVP_STATUS_INVALID": "Trạng thái RSVP không hợp lệ",
+	"MUST_JOIN_BEFORE_RSVP": "Bạn phải tham gia sự kiện trước khi RSVP"
 }

@@ -5,5 +5,16 @@
 	"EVENT_RETRIEVED_SUCCESS": "Event retrieved successfully",
 	"EVENT_NOT_FOUND": "Event not found",
 	"EVENT_UPDATED_SUCCESS": "Event updated successfully",
-	"EVENT_DELETED_SUCCESS": "Event deleted successfully"
+	"EVENT_DELETED_SUCCESS": "Event deleted successfully",
+	"JOIN_SUCCESS": "Joined event successfully",
+	"JOIN_FAILED": "Failed to join event",
+	"LEAVE_SUCCESS": "Left event successfully",
+	"LEAVE_FAILED": "Failed to leave event",
+	"RSVP_SUCCESS": "RSVP updated successfully",
+	"RSVP_FAILED": "Failed to update RSVP",
+	"PARTICIPANTS_RETRIEVED_SUCCESS": "Participants retrieved successfully",
+	"NO_PERMISSION_DELETE": "You do not have permission to delete this event",
+	"EVENT_ORGANIZER_INVALID": "Event organizer is invalid",
+	"RSVP_STATUS_INVALID": "Invalid RSVP status",
+	"MUST_JOIN_BEFORE_RSVP": "You must join the event before RSVP"
 }
