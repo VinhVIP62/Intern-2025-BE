@@ -159,9 +159,13 @@ export class EventRepositoryImpl implements IEventRepository {
 		userId: string,
 		page: number,
 		limit: number,
+		key?: string,
 	): Promise<{ events: any[]; total: number }> {
 		const skip = (page - 1) * limit;
-		const query = { participants: userId };
+		const query: any = { participants: userId };
+		if (key && key.trim() !== '') {
+			query.title = { $regex: key, $options: 'i' };
+		}
 		const [events, total] = await Promise.all([
 			this.eventModel.find(query).skip(skip).limit(limit).lean(),
 			this.eventModel.countDocuments(query),

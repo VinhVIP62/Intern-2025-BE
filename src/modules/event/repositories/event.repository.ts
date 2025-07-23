@@ -39,6 +39,7 @@ export interface IEventRepository {
 		userId: string,
 		page: number,
 		limit: number,
+		key?: string,
 	): Promise<{ events: any[]; total: number }>;
 
 	// Get invitations sent by current user for a specific event

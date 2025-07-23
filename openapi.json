@@ -1714,6 +1714,15 @@
               "example": 10,
               "type": "number"
             }
+          },
+          {
+            "name": "key",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "football",
+              "type": "string"
+            }
           }
         ],
         "responses": {

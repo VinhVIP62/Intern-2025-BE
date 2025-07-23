@@ -448,6 +448,7 @@ export class EventController {
 	@ApiParam({ name: 'userId', description: 'ID user', example: '507f1f77bcf86cd799439011' })
 	@ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
 	@ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+	@ApiQuery({ name: 'key', required: false, type: String, example: 'football' })
 	@ApiResponse({
 		status: 200,
 		description: 'Lấy danh sách sự kiện của user thành công',
@@ -458,8 +459,9 @@ export class EventController {
 		@I18n() i18n: I18nContext,
 		@Query('page') page: number = 1,
 		@Query('limit') limit: number = 10,
+		@Query('key') key?: string,
 	): Promise<{ success: boolean; data: PaginatedUserEventsResponseDto; message: string }> {
-		const { events, total } = await this.eventService.findEventsByUserId(userId, page, limit);
+		const { events, total } = await this.eventService.findEventsByUserId(userId, page, limit, key);
 		return {
 			success: true,
 			data: {

@@ -206,8 +206,9 @@ export class EventService {
 		userId: string,
 		page: number,
 		limit: number,
+		key?: string,
 	): Promise<{ events: any[]; total: number }> {
-		return this.eventRepository.findEventsByUserId(userId, page, limit);
+		return this.eventRepository.findEventsByUserId(userId, page, limit, key);
 	}
 
 	// Cancel invitation
