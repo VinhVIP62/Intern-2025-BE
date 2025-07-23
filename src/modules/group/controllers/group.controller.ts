@@ -839,7 +839,13 @@ export class GroupController {
 		@Query('page') page: number = 1,
 		@Query('limit') limit: number = 10,
 	): Promise<ResponseEntity<any>> {
-		const result = await this.postService.getPostsByGroupId(groupId, i18n, page, limit);
+		const result = await this.postService.getPostsByGroupId(
+			groupId,
+			i18n,
+			page,
+			limit,
+			PostStatus.APPROVED,
+		);
 		return {
 			success: true,
 			data: result,
