@@ -234,6 +234,22 @@ export class PostRepositoryImpl implements IPostRepository {
 	): Promise<Post> {
 		const updateFields: any = { ...updateData };
 
+		// Convert string IDs to Types.ObjectId if present
+		if (updateFields.eventId) {
+			updateFields.eventId = new Types.ObjectId(updateFields.eventId);
+		}
+		if (updateFields.groupId) {
+			updateFields.groupId = new Types.ObjectId(updateFields.groupId);
+		}
+		if (updateFields.sharedFrom) {
+			updateFields.sharedFrom = new Types.ObjectId(updateFields.sharedFrom);
+		}
+		if (updateFields.taggedUsers && Array.isArray(updateFields.taggedUsers)) {
+			updateFields.taggedUsers = updateFields.taggedUsers.map(
+				(id: string) => new Types.ObjectId(id),
+			);
+		}
+
 		// Only update images/video if provided
 		if (images.length > 0) {
 			updateFields.images = images;
