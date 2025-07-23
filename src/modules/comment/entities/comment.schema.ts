@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory, Virtual } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 
 import { WithPopulated } from '@common/crud/entities';
+import { BaseEntitySchemaDef } from '@common/crud/entities/mongoose-schema';
 import { Complete } from '@common/types/utils';
 
 import { User } from '@modules/user/entities';
@@ -14,15 +15,10 @@ import { Comment, CommentRootType } from './comment.entity';
 		virtuals: true,
 	},
 })
-export class CommentSchemaDef implements WithPopulated<Complete<Comment>> {
-	_id!: string;
-	@Virtual({
-		get: function (this: CommentSchemaDef) {
-			return this._id.toString();
-		},
-	})
-	id!: string;
-
+export class CommentSchemaDef
+	extends BaseEntitySchemaDef
+	implements WithPopulated<Complete<Comment>>
+{
 	@Prop({ type: mongoose.Schema.Types.ObjectId, index: true, ref: User.name, required: true })
 	userId!: string;
 
@@ -60,9 +56,6 @@ export class CommentSchemaDef implements WithPopulated<Complete<Comment>> {
 
 	@Prop({ type: String, required: true })
 	content!: string;
-
-	createdAt!: Date;
-	updatedAt!: Date;
 }
 
 export const CommentSchema = SchemaFactory.createForClass(CommentSchemaDef);

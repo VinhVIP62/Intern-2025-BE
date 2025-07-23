@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory, Virtual } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 
 import { WithPopulated } from '@common/crud/entities';
+import { BaseEntitySchemaDef } from '@common/crud/entities/mongoose-schema';
 import { Complete } from '@common/types/utils';
 
 import { User } from '@modules/user/entities';
@@ -14,15 +15,10 @@ import { Reaction } from './reaction.entity';
 		virtuals: true,
 	},
 })
-export class ReactionSchemaDef implements WithPopulated<Complete<Reaction>> {
-	_id!: string;
-	@Virtual({
-		get: function (this: ReactionSchemaDef) {
-			return this._id.toString();
-		},
-	})
-	id!: string;
-
+export class ReactionSchemaDef
+	extends BaseEntitySchemaDef
+	implements WithPopulated<Complete<Reaction>>
+{
 	@Prop({ type: mongoose.Schema.Types.ObjectId, index: true, ref: User.name, required: true })
 	userId!: string;
 
@@ -41,9 +37,6 @@ export class ReactionSchemaDef implements WithPopulated<Complete<Reaction>> {
 
 	@Prop({ type: Number })
 	reactionValue!: number;
-
-	createdAt!: Date;
-	updatedAt!: Date;
 }
 
 export const ReactionSchema = SchemaFactory.createForClass(ReactionSchemaDef);
