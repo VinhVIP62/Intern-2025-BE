@@ -42,6 +42,7 @@ export class GoogleLoginInfoSubDoc implements GoogleLoginInfo {
 	timestamps: true,
 	toObject: {
 		virtuals: true,
+		getters: true,
 	},
 })
 export class UserSchemaDef

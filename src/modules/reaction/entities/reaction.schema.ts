@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory, Virtual } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 
 import { WithPopulated } from '@common/crud/entities';
-import { BaseEntitySchemaDef } from '@common/crud/entities/mongoose-schema';
+import { BaseEntitySchemaDef, toString } from '@common/crud/entities/mongoose-schema';
 import { Complete } from '@common/types/utils';
 
 import { User } from '@modules/user/entities';
@@ -13,13 +13,20 @@ import { Reaction } from './reaction.entity';
 	timestamps: true,
 	toObject: {
 		virtuals: true,
+		getters: true,
 	},
 })
 export class ReactionSchemaDef
 	extends BaseEntitySchemaDef
 	implements WithPopulated<Complete<Reaction>>
 {
-	@Prop({ type: mongoose.Schema.Types.ObjectId, index: true, ref: User.name, required: true })
+	@Prop({
+		type: mongoose.Schema.Types.ObjectId,
+		index: true,
+		ref: User.name,
+		required: true,
+		get: toString,
+	})
 	userId!: string;
 
 	@Virtual({
@@ -32,7 +39,7 @@ export class ReactionSchemaDef
 	})
 	userIdPopulated!: User;
 
-	@Prop({ type: mongoose.Schema.Types.ObjectId, index: true, required: true })
+	@Prop({ type: mongoose.Schema.Types.ObjectId, index: true, required: true, get: toString })
 	targetId!: string;
 
 	@Prop({ type: Number })

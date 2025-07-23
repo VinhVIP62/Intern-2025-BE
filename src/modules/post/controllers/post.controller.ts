@@ -10,7 +10,6 @@ import {
 	Req,
 	Version,
 } from '@nestjs/common';
-import { ParseObjectIdPipe } from '@nestjs/mongoose';
 import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 
 import { WithPopulated } from '@common/crud/entities';
@@ -50,9 +49,7 @@ export class PostController {
 
 	@Version('1')
 	@Delete(':postid')
-	async deletePost(
-		@Param('postid', ParseObjectIdPipe) postId: string,
-	): Promise<WithPopulated<ResponsePostDto>> {
+	async deletePost(@Param('postid') postId: string): Promise<WithPopulated<ResponsePostDto>> {
 		await this.postService.checkAccessTo(postId, Action.DELETE);
 		const deletedPost = await this.postService.deletePost(postId);
 		return plainToInstanceStrict(ResponsePostDto, deletedPost);
@@ -62,7 +59,7 @@ export class PostController {
 	@Patch(':postid')
 	@FormDataRequest({ storage: MemoryStoredFile })
 	async updatePost(
-		@Param('postid', ParseObjectIdPipe) postId: string,
+		@Param('postid') postId: string,
 		@Body(
 			new UnionValidationPipe<UpdateEventPostDto | UpdateFilePostDto | UpdateSharePostDto>({
 				discriminator: 'postType',
@@ -96,9 +93,7 @@ export class PostController {
 
 	@Version('1')
 	@Get(':postid')
-	async getPost(
-		@Param('postid', ParseObjectIdPipe) postId: string,
-	): Promise<WithPopulated<ResponsePostDto>> {
+	async getPost(@Param('postid') postId: string): Promise<WithPopulated<ResponsePostDto>> {
 		await this.postService.checkAccessTo(postId, Action.READ);
 		const foundPost = await this.postService.getPost(postId);
 		return plainToInstanceStrict(ResponsePostDto, foundPost);
@@ -107,7 +102,7 @@ export class PostController {
 	@Version('1')
 	@Post(':postid/share')
 	async sharePost(
-		@Param('postid', ParseObjectIdPipe) postId: string,
+		@Param('postid') postId: string,
 		@Req() request: AuthenticatedRequest,
 		@Body() body: CreateSharePostDto,
 	): Promise<WithPopulated<ResponsePostDto>> {

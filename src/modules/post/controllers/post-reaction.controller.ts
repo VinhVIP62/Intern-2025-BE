@@ -1,5 +1,4 @@
 import { Body, Controller, Delete, Get, Param, Put, Query, Req, Version } from '@nestjs/common';
-import { ParseObjectIdPipe } from '@nestjs/mongoose';
 
 import { PriorityRole, ResponseTransform } from '@common/decorators';
 import { Action, Role } from '@common/enums';
@@ -27,7 +26,7 @@ export class PostReactionController {
 	@Get(':postid/reactions/list')
 	@ResponseTransform({ pagination: true })
 	async getCommentReactionUsersList(
-		@Param('postid', ParseObjectIdPipe) postId: string,
+		@Param('postid') postId: string,
 		@Query() query: GetReactionUsersDto,
 	): Promise<CursorPaginatedData<ResponseReactionUsersDto>> {
 		await this.postService.checkAccessTo(postId, Action.READ);
@@ -45,7 +44,7 @@ export class PostReactionController {
 	@Version('1')
 	@Put(':postid/reactions')
 	async reactComment(
-		@Param('postid', ParseObjectIdPipe) postId: string,
+		@Param('postid') postId: string,
 		@Req() request: AuthenticatedRequest,
 		@Body() body: ReactCommentDto,
 	): Promise<ResponseReactionDto> {
@@ -60,7 +59,7 @@ export class PostReactionController {
 	@Version('1')
 	@Delete(':postid/reactions')
 	async unreactComment(
-		@Param('postid', ParseObjectIdPipe) postId: string,
+		@Param('postid') postId: string,
 		@Req() request: AuthenticatedRequest,
 	): Promise<ResponseReactionDto> {
 		await this.postService.checkAccessTo(postId, Action.READ);

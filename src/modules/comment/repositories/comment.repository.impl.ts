@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, { Model, PipelineStage } from 'mongoose';
+import { Model, PipelineStage } from 'mongoose';
 
 import { WithPopulated } from '@common/crud/entities';
 import { MongooseRepositoryImpl } from '@common/crud/repos';
@@ -12,7 +12,7 @@ import { CustomRequestCtx } from '@shared/modules/request-ctx/types';
 import { Comment } from '../entities';
 import { ICommentRepository } from './comment.repository';
 
-type DescendantResult = { descendants: { _id: mongoose.Types.ObjectId }[] };
+type DescendantResult = { descendants: { _id: string }[] };
 
 @Injectable()
 export class CommentRepositoryImpl
@@ -67,7 +67,15 @@ export class CommentRepositoryImpl
 		// match projection with DescendantResult
 		const projectStage: PipelineStage.Project = {
 			$project: {
-				'descendants._id': 1,
+				descendants: {
+					$map: {
+						input: '$descendants',
+						as: 'd',
+						in: {
+							_id: { $toString: '$$d._id' },
+						},
+					},
+				},
 			},
 		};
 
@@ -86,6 +94,6 @@ export class CommentRepositoryImpl
 			await session.commitTransaction();
 			await session.endSession();
 		}
-		return descendants.map(id => id.toString());
+		return descendants;
 	}
 }

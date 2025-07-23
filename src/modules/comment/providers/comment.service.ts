@@ -67,8 +67,7 @@ export class CommentService {
 		const reactionCounts = await this.reactionService.getCount(
 			foundComments.map(comment => comment.id),
 		);
-		// targetId toString because it's actually objectid
-		const reactionCountMap = new Map(reactionCounts.map(rc => [rc.targetId.toString(), rc.counts]));
+		const reactionCountMap = new Map(reactionCounts.map(rc => [rc.targetId, rc.counts]));
 		const commentsWithReactions = foundComments.map(comment => ({
 			...comment,
 			counts: reactionCountMap.get(comment.id) || [],

@@ -8,6 +8,7 @@ import { User } from '@modules/user/entities';
 import { ISoftDeletableEntity } from '../softdeletable-entity.type';
 import { WithPopulated } from '../type-with-populated.type';
 import { BaseEntitySchemaDef } from './base-entity.schema';
+import { toString } from './oid-to-string';
 
 @Schema()
 export class SoftDeletableEntitySchemaDef
@@ -20,7 +21,13 @@ export class SoftDeletableEntitySchemaDef
 	@Prop({ type: Date, default: null })
 	deletedAt!: Date | null;
 
-	@Prop({ type: mongoose.Schema.Types.ObjectId, default: null, index: true, ref: User.name })
+	@Prop({
+		type: mongoose.Schema.Types.ObjectId,
+		default: null,
+		index: true,
+		ref: User.name,
+		get: toString,
+	})
 	deletedBy!: string | null;
 
 	@Virtual({

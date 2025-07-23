@@ -62,7 +62,7 @@ export class ReactionRepositoryImpl
 		const projectStage: PipelineStage.Project = {
 			$project: {
 				_id: 0,
-				targetId: '$_id',
+				targetId: { $toString: '$_id' },
 				counts: 1,
 			},
 		};
@@ -75,6 +75,7 @@ export class ReactionRepositoryImpl
 			])
 			.session(session)
 			.exec();
+
 		return countedReactions;
 	}
 

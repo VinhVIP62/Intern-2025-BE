@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory, Virtual } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 
 import { WithPopulated } from '@common/crud/entities';
-import { SoftDeletableEntitySchemaDef } from '@common/crud/entities/mongoose-schema';
+import { SoftDeletableEntitySchemaDef, toString } from '@common/crud/entities/mongoose-schema';
 import { Visibility } from '@common/enums';
 import { Complete } from '@common/types/utils';
 
@@ -15,6 +15,7 @@ import { SocialPost } from './social-post.entity';
 	timestamps: true,
 	toObject: {
 		virtuals: true,
+		getters: true,
 	},
 })
 export class SocialPostSchemaDef
@@ -34,10 +35,15 @@ export class SocialPostSchemaDef
 	fileUrls!: string[] | null;
 
 	// [PLA] not implemented
-	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Event', default: null })
+	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Event', default: null, get: toString })
 	embeddedEventId!: string | null;
 
-	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: SocialPost.name, default: null })
+	@Prop({
+		type: mongoose.Schema.Types.ObjectId,
+		ref: SocialPost.name,
+		default: null,
+		get: toString,
+	})
 	parentPostId!: string | null;
 
 	@Virtual({
@@ -53,7 +59,13 @@ export class SocialPostSchemaDef
 	@Prop({ type: String, enum: PostType, required: true, default: PostType.FILES })
 	postType!: PostType;
 
-	@Prop({ type: mongoose.Schema.Types.ObjectId, index: true, ref: User.name, required: true })
+	@Prop({
+		type: mongoose.Schema.Types.ObjectId,
+		index: true,
+		ref: User.name,
+		required: true,
+		get: toString,
+	})
 	userId!: string;
 
 	@Virtual({
@@ -67,10 +79,16 @@ export class SocialPostSchemaDef
 	userIdPopulated!: User;
 
 	// [PLAN] not implemented
-	@Prop({ type: [mongoose.Schema.Types.ObjectId], default: null, ref: 'Group' })
+	@Prop({ type: [mongoose.Schema.Types.ObjectId], default: null, ref: 'Group', get: toString })
 	visibleToCommunityId!: string | null;
 
-	@Prop({ type: [mongoose.Schema.Types.ObjectId], default: null, ref: User.name, index: true })
+	@Prop({
+		type: [mongoose.Schema.Types.ObjectId],
+		default: null,
+		ref: User.name,
+		index: true,
+		get: toString,
+	})
 	visibleToUsersIds!: string[];
 
 	@Virtual({
@@ -83,7 +101,13 @@ export class SocialPostSchemaDef
 	})
 	visibleToUsersIdsPopulated!: User[];
 
-	@Prop({ type: [mongoose.Schema.Types.ObjectId], default: null, ref: User.name, index: true })
+	@Prop({
+		type: [mongoose.Schema.Types.ObjectId],
+		default: null,
+		ref: User.name,
+		index: true,
+		get: toString,
+	})
 	invisibleToUsersIds!: string[];
 
 	@Virtual({

@@ -1,4 +1,4 @@
-import mongoose, { Model, PopulateOptions, SortOrder } from 'mongoose';
+import { Model, PopulateOptions, SortOrder } from 'mongoose';
 
 import { SORT } from '@common/enums';
 import { EntityNotFound } from '@common/exceptions';
@@ -87,19 +87,19 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 		this: MongooseRepositoryImpl<T>,
 		where: { id: string } & TWhere,
 		queryOptions?: QueryOptions<T>,
-	): { _id: mongoose.Types.ObjectId } & Omit<TWhere, 'id'>;
+	): { _id: string } & Omit<TWhere, 'id'>;
 	// overload 2
 	protected transformFilter<TWhere>(
 		this: MongooseRepositoryImpl<T>,
 		where: { id?: string } & TWhere,
 		queryOptions?: QueryOptions<T>,
-	): { _id?: mongoose.Types.ObjectId } & Omit<TWhere, 'id'>;
+	): { _id?: string } & Omit<TWhere, 'id'>;
 	// implementation
 	protected transformFilter<TWhere>(
 		this: MongooseRepositoryImpl<T>,
 		where: { id?: string } & TWhere,
 		queryOptions?: QueryOptions<T>,
-	): { _id?: mongoose.Types.ObjectId } & Omit<TWhere, 'id'> {
+	): { _id?: string } & Omit<TWhere, 'id'> {
 		const repoOptions: Partial<T> =
 			(
 				queryOptions?.doNotUseRepoOptions === true ||
@@ -126,8 +126,9 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 		const transformed = {
 			...defaultFindOptions,
 			...cleanedFindOptions,
-			...(where.id && { _id: new mongoose.Types.ObjectId(where.id) }),
+			...(where.id && { _id: where.id }),
 		};
+
 		delete transformed.id;
 		return transformed;
 	}
