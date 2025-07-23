@@ -641,7 +641,7 @@ export class PostService {
 		try {
 			const { likes, likeCount } = await this.postRepository.getPostLikes(postId);
 			if (!likes.length) return { likes: [], likeCount };
-			const likeUsers = (await this.userService.getBasicInfos(likes)).map(u => ({
+			const likeUsers = (await this.userService.getBasicInfosForPost(likes)).map(u => ({
 				...u,
 				avatar: u.avatar ?? '',
 			}));
