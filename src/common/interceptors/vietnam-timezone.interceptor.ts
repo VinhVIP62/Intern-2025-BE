@@ -13,6 +13,10 @@ function convertDatesToVietnamTimezone(obj: any, processed = new WeakSet()): any
 	if (obj instanceof Date) {
 		return convertDateToVietnamTimezone(obj);
 	}
+	// Nếu là string dạng ISO date
+	if (typeof obj === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(obj)) {
+		return convertDateToVietnamTimezone(new Date(obj));
+	}
 
 	// Nếu là ObjectId của mongoose hoặc MongoDB
 	if (
