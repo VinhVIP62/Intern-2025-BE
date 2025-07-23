@@ -1,0 +1,49 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
+
+import { WithPopulated } from '@common/crud/entities';
+import { SoftDeletableEntitySchemaDef } from '@common/crud/entities/mongoose-schema';
+import { Complete } from '@common/types/utils';
+
+import { User } from '@modules/user/entities';
+
+import { Event } from './event.entity';
+
+@Schema()
+export class EventSchemaDef
+	extends SoftDeletableEntitySchemaDef
+	implements WithPopulated<Complete<Event>>
+{
+	@Prop({ type: mongoose.Schema.Types.ObjectId, index: true, ref: User.name, required: true })
+	createdBy!: string;
+
+	@Prop({ type: [String], index: true, default: [] })
+	keyword!: string[];
+
+	@Prop({ type: String, default: null })
+	coverUrl!: string;
+
+	@Prop({ type: String, index: 'text', required: true })
+	name!: string;
+
+	@Prop({ type: String, index: 'text', default: '' })
+	description!: string;
+
+	@Prop({ type: Date, required: true })
+	startAt!: Date;
+
+	@Prop({ type: Date, required: true })
+	endAt!: Date;
+
+	@Prop({ type: Boolean, default: true })
+	isPrivate!: boolean;
+
+	@Prop({ type: Boolean, default: false })
+	allowInvite!: boolean;
+
+	@Prop({ type: Boolean, default: false })
+	isCanceled!: boolean;
+}
+
+export const EventSchema = SchemaFactory.createForClass(EventSchemaDef);
+export type EventDocument = HydratedDocument<Event>;

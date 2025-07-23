@@ -27,6 +27,7 @@ import { DevModule } from '@modules/dev';
 import { EventModule } from '@modules/event';
 import { NotificationModule } from '@modules/notification';
 import { PostModule } from '@modules/post';
+import { RelationshipModule } from '@modules/relationship';
 import { RouteModule } from '@modules/router';
 import { UserModule } from '@modules/user';
 
@@ -77,6 +78,8 @@ import { CustomRequestCtxModule, LoggerModule } from '@shared/modules';
 		PostModule,
 		CommentModule,
 		UserModule,
+		RelationshipModule,
+		EventModule,
 	],
 	providers: [
 		{
