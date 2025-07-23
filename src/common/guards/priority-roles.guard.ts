@@ -9,6 +9,7 @@ const rolePriorityMap: Record<Role, number> = {
 	[Role.ADMIN]: 99,
 	[Role.MODERATOR]: 98,
 	[Role.USER]: 1,
+	[Role.SETTING_UP]: 0,
 };
 
 @Injectable()

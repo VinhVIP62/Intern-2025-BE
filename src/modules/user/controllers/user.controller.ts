@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 
-import { PriorityRole, Roles } from '@common/decorators';
+import { PriorityRole } from '@common/decorators';
 import { Role } from '@common/enums';
 import { EntityNotFound } from '@common/exceptions';
 import { AuthenticatedRequest } from '@common/types/data';
@@ -41,7 +41,7 @@ export class UserController {
 
 	@Version('1')
 	@Get('me')
-	@PriorityRole()
+	@PriorityRole(Role.SETTING_UP)
 	async profile(@Req() request: AuthenticatedRequest): Promise<ResponseProfileDto> {
 		const profile = await this.userService.findOneById(request.user.id);
 		if (!profile) throw new EntityNotFound(User);
@@ -51,7 +51,7 @@ export class UserController {
 	@Version('1')
 	@Patch('setup')
 	@FormDataRequest({ storage: MemoryStoredFile })
-	@Roles()
+	@PriorityRole(Role.SETTING_UP)
 	async setupProfile(
 		@Req() request: AuthenticatedRequest,
 		@Body() body: SetupUserDto,
@@ -67,7 +67,7 @@ export class UserController {
 	@Version('1')
 	@Patch('setup/google')
 	@FormDataRequest({ storage: MemoryStoredFile })
-	@Roles()
+	@PriorityRole(Role.SETTING_UP)
 	async setupProfileForGoogle(
 		@Req() request: AuthenticatedRequest,
 		@Body() body: SetupGoogleUserDto,
@@ -97,7 +97,7 @@ export class UserController {
 
 	@Version('1')
 	@Delete('deactivate')
-	@Roles()
+	@PriorityRole(Role.SETTING_UP)
 	async deactivateProfile(@Req() request: AuthenticatedRequest): Promise<ResponseProfileDto> {
 		const deletedProfile = await this.userService.softDelete(request.user.id, request.user.id);
 		return plainToInstanceStrict(ResponseProfileDto, deletedProfile);
@@ -105,7 +105,7 @@ export class UserController {
 
 	@Version('1')
 	@Get()
-	@Roles()
+	@PriorityRole(Role.SETTING_UP)
 	async getProfiles(): Promise<LimitedUserResponseDto[]> {
 		const foundUser = await this.userService.findAny({});
 		if (!foundUser) throw new EntityNotFound(User);

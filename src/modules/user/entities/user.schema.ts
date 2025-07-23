@@ -60,7 +60,7 @@ export class UserSchemaDef
 	})
 	password!: string | null;
 
-	@Prop({ type: [String], enum: Role, default: [] })
+	@Prop({ type: [String], enum: Role, default: [Role.SETTING_UP] })
 	roles!: Role[];
 
 	@Prop({
