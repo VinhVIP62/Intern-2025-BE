@@ -240,6 +240,8 @@ export class SearchService {
 						name: `${user.firstName} ${user.lastName}`.trim(),
 						avatar: user.avatar || null,
 					};
+				} else {
+					enhanced.user = null;
 				}
 			}
 
@@ -252,6 +254,8 @@ export class SearchService {
 						name: group.name,
 						avatar: group.avatar || null,
 					};
+				} else {
+					enhanced.group = null;
 				}
 			}
 
@@ -264,6 +268,8 @@ export class SearchService {
 						name: event.title,
 						avatar: event.image || null,
 					};
+				} else {
+					enhanced.event = null;
 				}
 			}
 

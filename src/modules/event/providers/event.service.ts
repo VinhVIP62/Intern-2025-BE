@@ -18,10 +18,10 @@ export class EventService {
 
 	async getBasicInfos(
 		eventIds: string[],
-	): Promise<{ eventId: string; title: string; image: string }[]> {
+	): Promise<{ _id: string; title: string; image: string }[]> {
 		const events = await this.eventRepository.findManyByIds(eventIds);
 		return events.map(event => ({
-			eventId: String(event._id as any),
+			_id: String(event._id as any),
 			title: event.title,
 			image: event.image,
 		}));

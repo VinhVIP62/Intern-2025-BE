@@ -148,11 +148,12 @@ export class UserService {
 
 	async getBasicInfos(
 		userIds: string[],
-	): Promise<{ userId: string; fullName: string; avatar: string | null }[]> {
+	): Promise<{ _id: string; firstName: string; lastName: string; avatar: string | null }[]> {
 		const users = await this.userRepository.findManyByIds(userIds);
 		return users.map(user => ({
-			userId: String(user._id as any),
-			fullName: user.fullName,
+			_id: String(user._id as any),
+			firstName: user.firstName,
+			lastName: user.lastName,
 			avatar: user.avatar,
 		}));
 	}

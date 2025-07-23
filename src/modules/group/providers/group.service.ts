@@ -777,10 +777,10 @@ export class GroupService {
 
 	async getBasicInfos(
 		groupIds: string[],
-	): Promise<{ groupId: string; name: string; avatar: string }[]> {
+	): Promise<{ _id: string; name: string; avatar: string }[]> {
 		const groups = await this.groupRepository.findManyByIds(groupIds);
 		return groups.map(group => ({
-			groupId: String(group._id as any),
+			_id: String(group._id as any),
 			name: group.name,
 			avatar: group.avatar,
 		}));
