@@ -56,5 +56,6 @@
 	"NOT_LIKED": "Bạn chưa thích bài đăng này",
 	"TRENDING_POSTS_RETRIEVED_SUCCESS": "Lấy danh sách bài đăng trending thành công",
 	"CLEAR_URL_SUCCESS": "Xóa hình ảnh/video thành công",
-	"GROUP_USER_POSTS_RETRIEVED_SUCCESS": "Lấy danh sách bài đăng của nhóm và người dùng thành công"
+	"GROUP_USER_POSTS_RETRIEVED_SUCCESS": "Lấy danh sách bài đăng của nhóm và người dùng thành công",
+	"POSTS_NOT_FOUND": "Không tìm thấy bài đăng"
 }

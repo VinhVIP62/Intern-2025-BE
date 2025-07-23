@@ -844,6 +844,7 @@ export class GroupController {
 			i18n,
 			page,
 			limit,
+			undefined,
 			PostStatus.APPROVED,
 		);
 		return {

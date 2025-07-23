@@ -56,5 +56,6 @@
 	"NOT_LIKED": "You have not liked this post",
 	"TRENDING_POSTS_RETRIEVED_SUCCESS": "Trending posts retrieved successfully",
 	"CLEAR_URL_SUCCESS": "Clear images/video successfully",
-	"GROUP_USER_POSTS_RETRIEVED_SUCCESS": "Group and user posts retrieved successfully"
+	"GROUP_USER_POSTS_RETRIEVED_SUCCESS": "Group and user posts retrieved successfully",
+	"POSTS_NOT_FOUND": "Posts not found"
 }
