@@ -23,23 +23,21 @@ import {
 	InviteUsersToEventDto,
 	EventInvitationResponseDto,
 	PaginatedEventInvitationsResponseDto,
-	NearbyEventsQueryDto,
-	PaginatedNearbyEventsResponseDto,
 	PaginatedUserEventsResponseDto,
-} from '../dto/event.dto';
+} from '@modules/event/dto';
 import { SportType } from '@modules/user/enums/user.enum';
 import {
 	JoinEventDto,
 	LeaveEventDto,
 	PaginatedEventParticipantsResponseDto,
 	EventParticipantDto,
-} from '../dto/event.dto';
+} from '@modules/event/dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { RolesGuard } from '@common/guards';
 import { Roles } from '@common/decorators';
 import { Role } from '@common/enum';
-import { RSVPStatus } from '../entities/event.enum';
-import { EventInvitationStatus } from '../entities/event.enum';
+import { RSVPStatus } from '@modules/event/entities/event.enum';
+import { EventInvitationStatus } from '@modules/event/entities/event.enum';
 @ApiTags('Event')
 @Controller('events')
 export class EventController {
