@@ -35,6 +35,9 @@ export class User extends Document {
 	@Prop({ default: null })
 	fcmToken: string;
 
+	@Prop({ default: 'vi' })
+	deviceLanguage: string;
+
 	@Prop({ type: Date, default: null })
 	dateOfBirth: Date;
 

@@ -495,4 +495,23 @@ export class UserController {
 			message: i18n.t('user.FCM_TOKEN_UPDATED_SUCCESS'),
 		};
 	}
+
+	@Version('1')
+	@Put('device-language')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Cập nhật ngôn ngữ thiết bị cho user' })
+	@ApiResponse({ status: 200, description: 'Cập nhật ngôn ngữ thiết bị thành công' })
+	async updateDeviceLanguage(
+		@Request() req,
+		@Query('lang') lang: string,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<null>> {
+		const userId = req.user.id;
+		await this.userService.updateDeviceLanguage(userId, lang);
+		return {
+			success: true,
+			message: i18n.t('user.LANGUAGE_UPDATED_SUCCESS'),
+		};
+	}
 }

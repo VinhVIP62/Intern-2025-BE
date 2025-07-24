@@ -23,5 +23,6 @@
 	"CANNOT_UNBLOCK_SELF": "Bạn không thể tự bỏ chặn chính mình",
 	"REMOVE_FOLLOWER_SUCCESS": "Xóa follower thành công",
 	"GET_FOLLOWERS_SUCCESS": "Lấy danh sách người theo dõi thành công",
-	"GET_FOLLOWING_SUCCESS": "Lấy danh sách đang theo dõi thành công"
+	"GET_FOLLOWING_SUCCESS": "Lấy danh sách đang theo dõi thành công",
+	"LANGUAGE_UPDATED_SUCCESS": "Cập nhật ngôn ngữ thành công"
 }

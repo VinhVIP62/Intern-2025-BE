@@ -23,5 +23,6 @@
 	"CANNOT_UNBLOCK_SELF": "You cannot unblock yourself",
 	"REMOVE_FOLLOWER_SUCCESS": "Removed follower successfully",
 	"GET_FOLLOWERS_SUCCESS": "Followers retrieved successfully",
-	"GET_FOLLOWING_SUCCESS": "Following retrieved successfully"
+	"GET_FOLLOWING_SUCCESS": "Following retrieved successfully",
+	"LANGUAGE_UPDATED_SUCCESS": "Language updated successfully"
 }

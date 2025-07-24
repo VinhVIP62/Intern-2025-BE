@@ -599,6 +599,30 @@
         ]
       }
     },
+    "/api/v1/user/device-language": {
+      "put": {
+        "operationId": "UserController_updateDeviceLanguage_v1",
+        "parameters": [
+          {
+            "name": "lang",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cập nhật ngôn ngữ thiết bị thành công"
+          }
+        },
+        "summary": "Cập nhật ngôn ngữ thiết bị cho user",
+        "tags": [
+          "User"
+        ]
+      }
+    },
     "/api/v1/users/{userId}/block": {
       "post": {
         "operationId": "UserManagementController_blockUser_v1",

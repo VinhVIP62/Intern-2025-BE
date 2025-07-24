@@ -280,6 +280,10 @@ export class UserService {
 		await this.userRepository.update(userId, { fcmToken });
 	}
 
+	async updateDeviceLanguage(userId: string, deviceLanguage: string): Promise<void> {
+		await this.userRepository.update(userId, { deviceLanguage });
+	}
+
 	async getUserById(userId: string): Promise<User | null> {
 		return this.userRepository.findOneById(userId);
 	}
