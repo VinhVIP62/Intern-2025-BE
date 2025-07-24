@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 
 import { GRACE_PERIOD } from '@common/constants';
-import { WithPopulated } from '@common/crud/entities';
+import { QuerriableType, WithPopulated } from '@common/crud/entities';
 import { MongooseSoftDeleteRepositoryImpl } from '@common/crud/repos';
 
 import { User } from '../entities';
@@ -25,7 +25,7 @@ export class UserRepositoryImpl
 		return foundUser;
 	}
 
-	async findOneLoginable(where: Partial<User>): Promise<WithPopulated<User> | null> {
+	async findOneLoginable(where: QuerriableType<User>): Promise<WithPopulated<User> | null> {
 		const filter: FilterQuery<User> = this.transformFilter({
 			...where,
 			$or: [

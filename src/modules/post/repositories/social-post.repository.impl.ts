@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { FilterQuery, Model } from 'mongoose';
 
-import { WithPopulated } from '@common/crud/entities';
+import { QuerriableType, WithPopulated } from '@common/crud/entities';
 import { MongooseSoftDeleteRepositoryImpl } from '@common/crud/repos';
 import { CursorPaginationOption } from '@common/types/data';
 
@@ -22,7 +22,7 @@ export class PostRepositoryImpl
 	}
 
 	async findOneAndUpdateWithFiles(
-		where: Partial<SocialPost>,
+		where: QuerriableType<SocialPost>,
 		data: Partial<SocialPost>,
 		deletedFilesIdx?: number[],
 	): Promise<WithPopulated<SocialPost>> {
@@ -37,7 +37,7 @@ export class PostRepositoryImpl
 	}
 
 	async fetchFeed(
-		where: Partial<SocialPost>,
+		where: QuerriableType<SocialPost>,
 		options?: CursorPaginationOption<string>,
 	): Promise<WithPopulated<SocialPost>[]> {
 		const cursorPost = options?.cursor ? await this.findOneByIdOrFail(options.cursor) : undefined;

@@ -1,4 +1,4 @@
-import { WithPopulated } from '@common/crud/entities';
+import { QuerriableType, WithPopulated } from '@common/crud/entities';
 import { ISoftDeleteBaseRepository } from '@common/crud/repos';
 
 import { User } from '../entities';
@@ -7,7 +7,7 @@ export interface IUserRepository extends ISoftDeleteBaseRepository<User> {
 	findOneByUsername(username: string): Promise<WithPopulated<User> | null>;
 
 	/** Find a user matching the where options & match criterias to still be able to login */
-	findOneLoginable(where: Partial<User>): Promise<WithPopulated<User> | null>;
+	findOneLoginable(where: QuerriableType<User>): Promise<WithPopulated<User> | null>;
 }
 
 export const IUserRepositoryToken = Symbol('IUserRepository');
