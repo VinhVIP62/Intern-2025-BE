@@ -21,6 +21,8 @@ import {
 	NotificationResponseDto,
 	NotificationPaginationResponseDto,
 } from '@modules/notification/dto';
+import { PaginationQuery } from '@common/decorators/pagination-query.decorator';
+import { PaginationQueryDto } from '@common/dto/pagination-query.dto';
 
 @ApiTags('Notification')
 @Controller('notifications')
@@ -48,16 +50,15 @@ export class NotificationController {
 	async getNotifications(
 		@Request() req,
 		@I18n() i18n: I18nContext,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 		@Query('isRead') isRead?: string,
 	): Promise<ResponseEntity<NotificationPaginationResponseDto>> {
 		const userId = req.user.id;
 		const isReadBool = isRead === undefined ? undefined : isRead === 'true';
 		const { notifications, total } = await this.notificationService.getNotifications(
 			userId,
-			page,
-			limit,
+			query.page ?? 1,
+			query.limit ?? 10,
 			isReadBool,
 		);
 
@@ -72,14 +73,14 @@ export class NotificationController {
 			})),
 		);
 
-		const totalPages = Math.ceil(total / limit);
+		const totalPages = Math.ceil(total / (query.limit ?? 10));
 		return {
 			success: true,
 			data: {
 				notifications: translatedNotifications as NotificationResponseDto[],
 				total,
-				page,
-				limit,
+				page: query.page ?? 1,
+				limit: query.limit ?? 10,
 				totalPages,
 			},
 			message: i18n.t('notification.LIST_RETRIEVED_SUCCESS'),

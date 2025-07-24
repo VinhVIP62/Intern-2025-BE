@@ -30,6 +30,8 @@ import { Public } from '@common/decorators';
 import { RolesGuard } from '@common/guards';
 import { Roles } from '@common/decorators';
 import { Role } from '@common/enum';
+import { PaginationQuery } from '@common/decorators/pagination-query.decorator';
+import { PaginationQueryDto } from '@common/dto/pagination-query.dto';
 
 @ApiTags('Comment')
 @Controller('comments')
@@ -144,9 +146,10 @@ export class CommentController {
 	async getCommentsByPostId(
 		@Param('postId') postId: string,
 		@I18n() i18n: I18nContext,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 	): Promise<ResponseEntity<PaginatedCommentsResponseDto>> {
+		const page = query.page ?? 1;
+		const limit = query.limit ?? 10;
 		const result = await this.commentService.getCommentsByPostId(postId, i18n, page, limit);
 
 		return {

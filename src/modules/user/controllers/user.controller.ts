@@ -36,6 +36,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadApiResponse } from 'cloudinary';
 import { SportType, ActivityLevel } from '../enums/user.enum';
 import { plainToInstance } from 'class-transformer';
+import { PaginationQuery } from '@common/decorators/pagination-query.decorator';
+import { PaginationQueryDto } from '@common/dto/pagination-query.dto';
 
 @ApiTags('User')
 @Controller('user')
@@ -435,10 +437,11 @@ export class UserController {
 		@Request() req,
 		@I18n() i18n: I18nContext,
 		@Query('key') key: string,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 	): Promise<ResponseEntity<FriendSimpleDto[]>> {
 		const userId = req.user.id;
+		const page = query.page ?? 1;
+		const limit = query.limit ?? 10;
 		const friends = await this.userService.getFriendsByKey(userId, key, page, limit);
 		const data = plainToInstance(FriendSimpleDto, friends, { excludeExtraneousValues: true });
 		return {

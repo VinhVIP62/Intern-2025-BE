@@ -26,6 +26,8 @@ import { I18n, I18nContext } from 'nestjs-i18n';
 import { RolesGuard } from '@common/guards';
 import { Roles } from '@common/decorators';
 import { Role } from '@common/enum';
+import { PaginationQuery } from '@common/decorators/pagination-query.decorator';
+import { PaginationQueryDto } from '@common/dto/pagination-query.dto';
 
 @ApiTags('Friend Request')
 @Controller('friends/requests')
@@ -114,14 +116,13 @@ export class FriendRequestController {
 	async getFriendRequests(
 		@Request() req,
 		@I18n() i18n: I18nContext,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 		@Query('type') type: 'sent' | 'received' = 'received',
 	): Promise<ResponseEntity<PaginatedFriendRequestsResponseDto>> {
 		const result = await this.friendRequestService.getFriendRequests(
 			i18n,
-			page,
-			limit,
+			query.page ?? 1,
+			query.limit ?? 10,
 			req.user.id,
 			type,
 		);
