@@ -56,6 +56,10 @@ export class CommentService {
 		return this.commentRepository.count({ targetId });
 	}
 
+	async getCommentsCountOfRoot(rootId: string) {
+		return this.commentRepository.count({ rootId });
+	}
+
 	async getCommentsOf(
 		targetId: string,
 		options?: CursorPaginationOption<string>,

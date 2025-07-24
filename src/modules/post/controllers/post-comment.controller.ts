@@ -86,7 +86,7 @@ export class PostCommentController {
 	@Get(':postid/comments/count')
 	async getCommentsCount(@Param('postid', ValidateIdPipe) postId: string): Promise<number> {
 		await this.postService.checkAccessTo(postId, Action.READ);
-		const commentsCount = await this.commentService.getCommentsCountOf(postId);
+		const commentsCount = await this.commentService.getCommentsCountOfRoot(postId);
 		return commentsCount;
 	}
 
