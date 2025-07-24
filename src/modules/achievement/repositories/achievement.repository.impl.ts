@@ -9,6 +9,6 @@ export class AchievementRepositoryImpl implements IAchievementRepository {
 	constructor(@InjectModel('Achievement') private readonly achievementModel: Model<Achievement>) {}
 
 	async findAllAchievements(): Promise<Achievement[]> {
-		return this.achievementModel.find({ isActive: true }).lean();
+		return this.achievementModel.find().lean();
 	}
 }
