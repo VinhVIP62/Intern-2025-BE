@@ -54,7 +54,7 @@ export class SocialPostSchemaDef
 			justOne: true,
 		},
 	})
-	parentPostIdPopulated!: Partial<SocialPost> | null;
+	parentPostIdPopulated!: any;
 
 	@Prop({ type: String, enum: PostType, required: true, default: PostType.FILES })
 	postType!: PostType;
@@ -76,7 +76,7 @@ export class SocialPostSchemaDef
 			justOne: true,
 		},
 	})
-	userIdPopulated!: User;
+	userIdPopulated!: any;
 
 	// [PLAN] not implemented
 	@Prop({ type: [mongoose.Schema.Types.ObjectId], default: null, ref: 'Group', get: toString })
@@ -99,7 +99,7 @@ export class SocialPostSchemaDef
 			justOne: false,
 		},
 	})
-	visibleToUsersIdsPopulated!: User[];
+	visibleToUsersIdsPopulated!: any[];
 
 	@Prop({
 		type: [mongoose.Schema.Types.ObjectId],
@@ -118,7 +118,7 @@ export class SocialPostSchemaDef
 			justOne: false,
 		},
 	})
-	invisibleToUsersIdsPopulated!: User[];
+	invisibleToUsersIdsPopulated!: any[];
 }
 
 export const SocialPostSchema = SchemaFactory.createForClass(SocialPostSchemaDef);

@@ -3,7 +3,7 @@ import { Schema, Virtual } from '@nestjs/mongoose';
 import { Complete } from '@common/types/utils';
 
 import { IBaseEntity } from '../base-entity.type';
-import { WithPopulated } from '../type-with-populated.type';
+import { WithPopulated } from '../querry-type';
 
 @Schema()
 export class BaseEntitySchemaDef implements WithPopulated<Complete<IBaseEntity>> {

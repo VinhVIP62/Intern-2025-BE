@@ -1,9 +1,16 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { RelationshipController } from './controllers/relationship.controller';
 import { Block, BlockSchema, Friendship, FriendshipSchema } from './entities';
-import { RelationshipService } from './providers/relationship.service';
+import { RelationshipService } from './providers';
+import {
+	IBlockRepositoryToken,
+	IFriendshipRepositoryToken,
+} from './repositories/relationship.repository';
+import {
+	BlockRepositoryImpl,
+	FriendshipRepositoryImpl,
+} from './repositories/relationship.repository.impl';
 
 @Module({
 	imports: [
@@ -18,7 +25,17 @@ import { RelationshipService } from './providers/relationship.service';
 			},
 		]),
 	],
-	controllers: [RelationshipController],
-	providers: [RelationshipService],
+	providers: [
+		RelationshipService,
+		{
+			provide: IFriendshipRepositoryToken,
+			useClass: FriendshipRepositoryImpl,
+		},
+		{
+			provide: IBlockRepositoryToken,
+			useClass: BlockRepositoryImpl,
+		},
+	],
+	exports: [RelationshipService, IFriendshipRepositoryToken, IBlockRepositoryToken],
 })
 export class RelationshipModule {}

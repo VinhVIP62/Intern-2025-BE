@@ -1,4 +1,4 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory, Virtual } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 
 import { WithPopulated } from '@common/crud/entities';
@@ -26,6 +26,16 @@ export class BlockSchemaDef extends BaseEntitySchemaDef implements WithPopulated
 	})
 	fromUserId!: string;
 
+	@Virtual({
+		options: {
+			ref: User.name,
+			localField: 'fromUserId',
+			foreignField: '_id',
+			justOne: true,
+		},
+	})
+	fromUserIdPopulated!: any;
+
 	@Prop({
 		type: mongoose.Schema.Types.ObjectId,
 		index: true,
@@ -34,6 +44,16 @@ export class BlockSchemaDef extends BaseEntitySchemaDef implements WithPopulated
 		get: toString,
 	})
 	toUserId!: string;
+
+	@Virtual({
+		options: {
+			ref: User.name,
+			localField: 'toUserId',
+			foreignField: '_id',
+			justOne: true,
+		},
+	})
+	toUserIdPopulated!: any;
 }
 
 export const BlockSchema = SchemaFactory.createForClass(BlockSchemaDef);

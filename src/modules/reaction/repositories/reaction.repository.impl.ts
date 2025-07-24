@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model, PipelineStage } from 'mongoose';
 
-import { WithPopulated } from '@common/crud/entities';
 import { MongooseRepositoryImpl } from '@common/crud/repos';
 import { SORT } from '@common/enums';
 import { CursorPaginationOption } from '@common/types/data';
@@ -19,23 +18,6 @@ export class ReactionRepositoryImpl
 {
 	constructor(@InjectModel(Reaction.name) private readonly reactionModel: Model<Reaction>) {
 		super(reactionModel, Reaction);
-	}
-
-	async upsert(
-		where: Partial<Reaction>,
-		data: Partial<Reaction>,
-	): Promise<WithPopulated<Reaction>> {
-		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
-		const filterOptions = this.transformFilter(where);
-		const populateOptions = this.transformPopulate();
-		const upsertedDocument = (
-			await this.reactionModel
-				.findOneAndUpdate(filterOptions, data, { upsert: true, new: true })
-				.populate(populateOptions)
-				.session(session)
-				.exec()
-		).toObject();
-		return upsertedDocument;
 	}
 
 	async getCount(targetIds: string[]): Promise<ReactionCount[]> {

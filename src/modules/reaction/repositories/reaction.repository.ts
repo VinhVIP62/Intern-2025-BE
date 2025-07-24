@@ -1,4 +1,3 @@
-import { WithPopulated } from '@common/crud/entities';
 import { IBaseRepository } from '@common/crud/repos';
 import { CursorPaginationOption } from '@common/types/data';
 
@@ -10,7 +9,6 @@ export type ReactionCount = {
 };
 
 export interface IReactionRepository extends IBaseRepository<Reaction> {
-	upsert(where: Partial<Reaction>, data: Partial<Reaction>): Promise<WithPopulated<Reaction>>;
 	getCount(targetIds: string[]): Promise<ReactionCount[]>;
 	getReactionUsersList(
 		targetId: string,

@@ -1,9 +1,9 @@
 export type CursorPaginationOption<T> = {
 	cursor?: T;
-	limit: number;
+	limit?: number;
 };
 
 export type OffsetPaginationOption = {
-	page: number;
-	limit: number;
+	page?: number;
+	limit?: number;
 };

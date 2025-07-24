@@ -1,3 +1,5 @@
+import mongoose from 'mongoose';
+
 export function uniqueArrayValidator<T>(val: T[]) {
 	if (!Array.isArray(val)) return false;
 
@@ -25,4 +27,17 @@ export function uniqueArrayFieldValidator<T extends object>(key: keyof T) {
 
 		return true;
 	};
+}
+
+export function uniqueArrayValidatorForOID(val: mongoose.Types.ObjectId[]) {
+	if (!Array.isArray(val)) return false;
+
+	const seen = new Set<string>();
+
+	for (const item of val) {
+		if (seen.has(item.toString())) return false;
+		seen.add(item.toString());
+	}
+
+	return true;
 }

@@ -1,21 +1,11 @@
 import { Expose, Type } from 'class-transformer';
-import { IsInt, IsMongoId, IsOptional, IsPositive } from 'class-validator';
+import { IsInt } from 'class-validator';
 
-export class GetReactionUsersDto {
+import { CursorPaginationDto } from '@common/types/dto';
+
+export class GetReactionUsersDto extends CursorPaginationDto {
 	@Expose()
 	@Type(() => Number)
 	@IsInt()
 	reactionValue!: number;
-
-	@Expose()
-	@IsMongoId()
-	@IsOptional()
-	cursor?: string;
-
-	@Expose()
-	@Type(() => Number)
-	@IsInt()
-	@IsOptional()
-	@IsPositive()
-	limit: number = 10;
 }

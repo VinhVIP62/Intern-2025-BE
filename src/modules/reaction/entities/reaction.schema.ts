@@ -37,7 +37,7 @@ export class ReactionSchemaDef
 			justOne: true,
 		},
 	})
-	userIdPopulated!: User;
+	userIdPopulated!: any;
 
 	@Prop({ type: mongoose.Schema.Types.ObjectId, index: true, required: true, get: toString })
 	targetId!: string;

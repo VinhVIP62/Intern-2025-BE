@@ -1,4 +1,4 @@
-import { OmitType } from '@nestjs/mapped-types';
+import { OmitType, PickType } from '@nestjs/mapped-types';
 import { Exclude, Expose, Transform } from 'class-transformer';
 
 import { Location, Sport } from '../../entities';
@@ -31,9 +31,17 @@ export class ResponseUserDto {
 	sports!: Sport[];
 }
 
-@Exclude()
-export class LimitedUserResponseDto extends OmitType(ResponseUserDto, [
-	'id',
-	'location',
-	'roles',
-]) {}
+// @Exclude()
+// export class LimitedUserResponseDto extends OmitType(ResponseUserDto, [
+// 	'id',
+// 	'location',
+// 	'roles',
+// ]) {}
+
+export class LimitedUserResponseDto extends OmitType(ResponseUserDto, ['location', 'roles']) {}
+
+export const MoreLimitedUserResponseDto = (
+	keys?: (keyof InstanceType<typeof LimitedUserResponseDto>)[],
+) => {
+	return keys ? PickType(LimitedUserResponseDto, keys) : LimitedUserResponseDto;
+};

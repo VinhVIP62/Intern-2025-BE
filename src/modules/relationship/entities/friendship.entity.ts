@@ -7,5 +7,6 @@ export enum FriendStatus {
 
 export class Friendship extends IBaseEntity {
 	userIds!: [string, string];
+	requestedFrom!: string;
 	status!: FriendStatus;
 }

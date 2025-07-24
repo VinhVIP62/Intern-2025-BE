@@ -7,8 +7,8 @@ import { Class, LowerBound } from '@common/types/utils/';
 import { CustomRequestCtx } from '@shared/modules/request-ctx/types';
 
 import { IBaseEntity } from '../entities/base-entity.type.js';
+import { QuerriableType, WithPopulated } from '../entities/querry-type.js';
 import { ISoftDeletableEntity } from '../entities/softdeletable-entity.type.js';
-import { WithPopulated } from '../entities/type-with-populated.type.js';
 import {
 	IBaseRepository,
 	ISoftDeleteBaseRepository,
@@ -45,16 +45,16 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 	repoOptions: RepoOptions<T>;
 
 	protected mergeRepoOptions(repoOptions: RepoOptions<T>) {
-		const filter = this.mergeFilter({ ...repoOptions.filter } as Partial<T>);
+		const filter = this.mergeFilter({ ...repoOptions.filter } as QuerriableType<T>);
 		const populate = this.mergePopulate([...(repoOptions.populate ?? [])]);
-		const sort = this.mergeSort({ ...repoOptions.sort } as unknown as Record<keyof T, SORT>);
+		const sort = this.mergeSort({ ...repoOptions.sort } as Record<keyof T, SORT>);
 		this.repoOptions = { filter, populate, sort };
 	}
 
 	//#region TRANSFORMER
 	/** To apply middleware transformation for all class methods */
-	protected mergeFilter(filter: Partial<T> = {}) {
-		const repoOptions: Partial<T> = this.repoOptions.filter ?? {};
+	protected mergeFilter(filter: QuerriableType<T> = {}) {
+		const repoOptions: QuerriableType<T> = this.repoOptions.filter ?? {};
 		const merged = {
 			...repoOptions,
 			...filter,
@@ -100,7 +100,7 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 		where: { id?: string } & TWhere,
 		queryOptions?: QueryOptions<T>,
 	): { _id?: string } & Omit<TWhere, 'id'> {
-		const repoOptions: Partial<T> =
+		const repoOptions: QuerriableType<T> =
 			(
 				queryOptions?.doNotUseRepoOptions === true ||
 				(Array.isArray(queryOptions?.doNotUseRepoOptions) &&
@@ -194,13 +194,36 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 		return populatedEntity.toObject();
 	}
 
+	async upsert(
+		where: QuerriableType<T>,
+		data: Partial<T>,
+		queryOptions?: QueryOptions<T>,
+	): Promise<WithPopulated<T>> {
+		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
+		const filterOptions = this.transformFilter(where, queryOptions);
+		const populateOptions = this.transformPopulate(queryOptions);
+		const upsertedEntity = (
+			await this.entityModel
+				.findOneAndUpdate(filterOptions, data, {
+					new: true,
+					runValidators: true,
+					upsert: true,
+				})
+				.populate(populateOptions)
+				.session(session)
+				.exec()
+		)?.toObject();
+		if (!upsertedEntity) throw new EntityNotFound(this.entityClass);
+		return upsertedEntity;
+	}
+
 	async update(id: string, data: Partial<T>, queryOptions?: QueryOptions<T>): Promise<T> {
-		const filterOptions = { id } as unknown as Partial<T>;
+		const filterOptions = { id } as QuerriableType<T>;
 		return this.findOneByAndUpdate(filterOptions, data, queryOptions);
 	}
 
 	async delete(id: string, queryOptions?: QueryOptions<T>): Promise<T> {
-		const filterOptions = { id } as unknown as Partial<T>;
+		const filterOptions = { id } as QuerriableType<T>;
 		return this.findOneByAndDelete(filterOptions, queryOptions);
 	}
 
@@ -225,7 +248,7 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 	}
 
 	async findOneBy(
-		where: Partial<T>,
+		where: QuerriableType<T>,
 		queryOptions?: QueryOptions<T>,
 	): Promise<WithPopulated<T> | null> {
 		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
@@ -242,7 +265,7 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 	}
 
 	async findOneByOrFail(
-		where: Partial<T>,
+		where: QuerriableType<T>,
 		queryOptions?: QueryOptions<T>,
 	): Promise<WithPopulated<T>> {
 		const foundEntity = await this.findOneBy(where, queryOptions);
@@ -251,7 +274,7 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 	}
 
 	async findOneByAndUpdate(
-		where: Partial<T>,
+		where: QuerriableType<T>,
 		data: Partial<T>,
 		queryOptions?: QueryOptions<T>,
 	): Promise<WithPopulated<T>> {
@@ -273,7 +296,7 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 	}
 
 	async findOneByAndDelete(
-		where: Partial<T>,
+		where: QuerriableType<T>,
 		queryOptions?: QueryOptions<T>,
 	): Promise<WithPopulated<T>> {
 		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
@@ -290,7 +313,10 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 		return deletedEntity;
 	}
 
-	async find(where: Partial<T>, queryOptions?: QueryOptions<T>): Promise<WithPopulated<T>[]> {
+	async find(
+		where: QuerriableType<T>,
+		queryOptions?: QueryOptions<T>,
+	): Promise<WithPopulated<T>[]> {
 		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
 		const filterOptions = this.transformFilter(where, queryOptions);
 		const sortOptions = this.transformSort(queryOptions);
@@ -312,14 +338,14 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 		return foundEntities;
 	}
 
-	async count(where: Partial<T>, queryOptions?: QueryOptions<T>): Promise<number> {
+	async count(where: QuerriableType<T>, queryOptions?: QueryOptions<T>): Promise<number> {
 		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
 		const filterOptions = this.transformFilter(where, queryOptions);
 		const count = this.entityModel.countDocuments(filterOptions).session(session);
 		return count;
 	}
 
-	async exists(where: Partial<T>, queryOptions?: QueryOptions<T>): Promise<boolean> {
+	async exists(where: QuerriableType<T>, queryOptions?: QueryOptions<T>): Promise<boolean> {
 		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
 		const filterOptions = this.transformFilter(where, queryOptions);
 		const existing = await this.entityModel.exists(filterOptions).session(session);
@@ -355,7 +381,7 @@ export class MongooseSoftDeleteRepositoryImpl<
 		 */
 		super(entityModel, entityClass);
 		this.repoOptions = {
-			filter: { deleted: false } as Partial<T>,
+			filter: { deleted: false } as QuerriableType<T>,
 			populate: ['deletedBy'],
 		};
 		this.mergeRepoOptions(repoOptions);
@@ -368,13 +394,13 @@ export class MongooseSoftDeleteRepositoryImpl<
 		queryOptions?: QueryOptions<T>,
 	): Promise<WithPopulated<T>> {
 		// Still have to assert type, but dw we already have a check above
-		const filterOptions = { id } as unknown as Partial<T>;
+		const filterOptions = { id } as QuerriableType<T>;
 		return this.findOneByAndSoftDelete(filterOptions, deletedBy, queryOptions);
 	}
 
 	/** [PLA] not finished as this does not soft delete related entities */
 	async findOneByAndSoftDelete(
-		where: Partial<T>,
+		where: QuerriableType<T>,
 		deletedBy: string | null = null,
 		queryOptions?: QueryOptions<T>,
 	): Promise<WithPopulated<T>> {

@@ -37,7 +37,7 @@ export class CommentSchemaDef
 			justOne: true,
 		},
 	})
-	userIdPopulated!: User;
+	userIdPopulated!: any;
 
 	@Prop({ type: mongoose.Schema.Types.ObjectId, required: true, index: true })
 	rootId!: string;

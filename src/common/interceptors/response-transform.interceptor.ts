@@ -49,7 +49,7 @@ export class ResponseTransformInterceptor implements NestInterceptor {
 				}
 				// if nothing matches
 				throw new Error(
-					'The `pagination` options only works with return type of PaginatedData<T> or CursorPaginatedData<T>',
+					`The 'pagination' options only works with return type of ${OffsetPaginatedData.name} or ${CursorPaginatedData.name}`,
 				);
 			}
 
