@@ -9,7 +9,8 @@ import { Reaction } from '../../entities';
 @Exclude()
 export class ResponseReactionUsersDto {
 	@Expose()
-	id!: string;
+	@Transform(({ obj }: { obj: WithPopulated<Reaction> }) => (obj.userIdPopulated as User)?.id)
+	userId!: string;
 
 	@Expose()
 	@Transform(
