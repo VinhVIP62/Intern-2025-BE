@@ -293,4 +293,11 @@ export class EventService {
 		const { total } = await this.eventRepository.findEventsByUserId(userId, 1, 1);
 		return total;
 	}
+
+	async getUserEventStatus(
+		eventId: string,
+		userId: string,
+	): Promise<{ rsvpStatus: RSVPStatus | null; invitationStatus: EventInvitationStatus | null }> {
+		return this.eventRepository.getUserEventStatus(eventId, userId);
+	}
 }

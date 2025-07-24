@@ -55,6 +55,11 @@ export interface IEventRepository {
 
 	// Đếm tổng số sự kiện phù hợp query (phân trang)
 	countRecommendedEvents(query: any): Promise<number>;
+
+	getUserEventStatus(
+		eventId: string,
+		userId: string,
+	): Promise<{ rsvpStatus: RSVPStatus | null; invitationStatus: EventInvitationStatus | null }>;
 }
 
 export const IEventRepository = Symbol('IEventRepository');
