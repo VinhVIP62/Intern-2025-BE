@@ -11,6 +11,7 @@ import { UserAchievement, UserAchievementSchema } from './entities/user-achievem
 import { UserModule } from '../user/user.module';
 import { EventModule } from '../event/event.module';
 import { PostModule } from '../post/post.module';
+import { NotificationModule } from '../notification/notification.module';
 
 @Module({
 	imports: [
@@ -21,6 +22,7 @@ import { PostModule } from '../post/post.module';
 		forwardRef(() => UserModule),
 		forwardRef(() => EventModule),
 		forwardRef(() => PostModule),
+		forwardRef(() => NotificationModule),
 	],
 	controllers: [AchievementController],
 	providers: [

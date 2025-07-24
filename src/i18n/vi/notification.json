@@ -30,5 +30,6 @@
 	"MESSAGE_NEW_POST_IN_GROUP": "đã đăng bài viết trong nhóm của bạn",
 	"MESSAGE_POST_APPROVED": "Bài viết của bạn đã được phê duyệt",
 	"MESSAGE_POST_REJECTED": "Bài viết của bạn đã được từ chối",
-	"NEW_NOTIFICATION": "Thông báo mới"
+	"NEW_NOTIFICATION": "Thông báo mới",
+	"MESSAGE_UNLOCKED_ACHIEVEMENT": "đã mở khóa thành tích"
 }

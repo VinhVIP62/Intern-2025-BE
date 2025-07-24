@@ -105,7 +105,7 @@ export class AchievementController {
 	async autoUpdateAchievements(@Request() req, @I18n() i18n: I18nContext) {
 		const userId = req.user.id;
 		const userStats = await this.achievementService.buildUserStatsDto(userId);
-		await this.achievementService.checkAndUnlockAchievements(userId, userStats);
+		await this.achievementService.checkAndUnlockAchievements(userId, userStats, i18n);
 		await this.achievementService.trackProgress(userId, userStats);
 		return {
 			success: true,

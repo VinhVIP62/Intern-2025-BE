@@ -6,6 +6,8 @@ import { IUserAchievementRepository } from '../repositories/user-achievement.rep
 import { UserService } from '../../user/providers/user.service';
 import { EventService } from '../../event/providers/event.service';
 import { PostService } from '../../post/providers/post.service';
+import { NotificationService } from '@modules/notification/providers/notification.service';
+import { NotificationType, ReferenceModel } from '@modules/notification/entities/notification.enum';
 
 @Injectable()
 export class AchievementService {
@@ -17,10 +19,11 @@ export class AchievementService {
 		private readonly userService: UserService,
 		private readonly eventService: EventService,
 		private readonly postService: PostService,
+		private readonly notificationService: NotificationService,
 	) {}
 
 	// Kiểm tra và unlock achievement cho user
-	async checkAndUnlockAchievements(userId: string, userStats: UserStatsDto) {
+	async checkAndUnlockAchievements(userId: string, userStats: UserStatsDto, i18n?: any) {
 		const achievements = await this.achievementRepo.findAllAchievements();
 		for (const achievement of achievements) {
 			const criteria = JSON.parse(achievement.criteria);
@@ -70,6 +73,18 @@ export class AchievementService {
 			);
 			if (!existed) {
 				await this.userAchievementRepo.unlockAchievement(userId, achievement._id);
+				// Send notification to user
+				await this.notificationService.createNotification(
+					{
+						recipient: userId,
+						sender: userId,
+						type: NotificationType.ACHIEVEMENT_UNLOCKED,
+						message: `@${userId} MESSAGE_UNLOCKED_ACHIEVEMENT ${achievement.name}`,
+						referenceId: achievement._id.toString(),
+						referenceModel: ReferenceModel.ACHIEVEMENT,
+					},
+					i18n,
+				);
 			}
 		}
 	}
