@@ -2,5 +2,6 @@
 	"LIST_SUCCESS": "Get achievements successfully",
 	"USER_LIST_SUCCESS": "Get user achievements successfully",
 	"UNLOCK_SUCCESS": "Unlock achievement successfully",
-	"PROGRESS_UPDATE_SUCCESS": "Update achievement progress successfully"
+	"PROGRESS_UPDATE_SUCCESS": "Update achievement progress successfully",
+	"AUTO_UPDATE_SUCCESS": "Auto update achievements successfully"
 }

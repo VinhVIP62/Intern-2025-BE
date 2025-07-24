@@ -15,9 +15,6 @@ export class Achievement extends Document {
 	@Prop({ required: true })
 	criteria: string; // JSON string describing the criteria
 
-	@Prop({ default: true, index: true })
-	isActive: boolean;
-
 	createdAt?: Date;
 	updatedAt?: Date;
 }
@@ -25,7 +22,6 @@ export class Achievement extends Document {
 export const AchievementSchema = SchemaFactory.createForClass(Achievement);
 
 // Setup indexes for better performance
-AchievementSchema.index({ isActive: 1, createdAt: -1 });
 AchievementSchema.index({ name: 'text', description: 'text' });
 
 // Virtual populate for user achievements

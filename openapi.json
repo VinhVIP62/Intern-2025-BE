@@ -5219,13 +5219,13 @@
             "description": "Lấy thành công"
           }
         },
-        "summary": "Lấy tất cả achievement",
+        "summary": "Lấy tất cả achievement có thể đạt được",
         "tags": [
           "Achievement"
         ]
       }
     },
-    "/api/v1/achievements/user": {
+    "/api/v1/achievements/personal": {
       "get": {
         "operationId": "AchievementController_getUserAchievements_v1",
         "parameters": [],
@@ -5234,7 +5234,7 @@
             "description": "Lấy thành công"
           }
         },
-        "summary": "Lấy achievement của user hiện tại",
+        "summary": "Lấy achievement và tiến trình thực hiện của user hiện tại",
         "tags": [
           "Achievement"
         ]
@@ -5259,7 +5259,7 @@
             "description": "Unlock thành công"
           }
         },
-        "summary": "Unlock achievement cho user",
+        "summary": "Unlock achievement cho user thủ công",
         "tags": [
           "Achievement"
         ]
@@ -5284,7 +5284,22 @@
             "description": "Cập nhật thành công"
           }
         },
-        "summary": "Cập nhật tiến trình achievement cho user",
+        "summary": "Cập nhật tiến trình achievement cho user thủ công",
+        "tags": [
+          "Achievement"
+        ]
+      }
+    },
+    "/api/v1/achievements/auto-update": {
+      "post": {
+        "operationId": "AchievementController_autoUpdateAchievements_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Cập nhật và unlock thành công"
+          }
+        },
+        "summary": "Tự động check và update achievement cho user hiện tại",
         "tags": [
           "Achievement"
         ]
