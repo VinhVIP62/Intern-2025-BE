@@ -71,7 +71,8 @@ export class NotificationService {
 		NOTIFICATION_MESSAGE_KEYS.forEach(key => {
 			if (translatedMessage.includes(key)) {
 				try {
-					const translatedValue = i18n.t(`notification.${key}`, { lang });
+					const translatedValue =
+						lang ? i18n.t(`notification.${key}`, { lang }) : i18n.t(`notification.${key}`);
 					translatedMessage = translatedMessage.replace(key, translatedValue);
 				} catch (error) {
 					console.warn(`Translation key not found: notification.${key}`);
