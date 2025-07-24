@@ -43,6 +43,8 @@ import { PostService } from '@modules/post/providers/post.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CreatePostDto, PaginatedPostsResponseDto } from '@modules/post/dto';
 import { PostStatus } from '@modules/post/entities/post.enum';
+import { PaginationQuery } from '@common/decorators/pagination-query.decorator';
+import { PaginationQueryDto } from '@common/dto/pagination-query.dto';
 
 @ApiTags('Group')
 @Controller('groups')
@@ -122,12 +124,17 @@ export class GroupController {
 	})
 	async getAllGroups(
 		@I18n() i18n: I18nContext,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 		@Query('sport') sport?: string,
 		@Query('isPrivate') isPrivate: boolean = false,
 	): Promise<ResponseEntity<PaginatedGroupsResponseDto>> {
-		const result = await this.groupService.getAllGroups(i18n, page, limit, sport, isPrivate);
+		const result = await this.groupService.getAllGroups(
+			i18n,
+			query.page,
+			query.limit,
+			sport,
+			isPrivate,
+		);
 
 		return {
 			success: true,
@@ -179,16 +186,15 @@ export class GroupController {
 	async getGroupsByUserId(
 		@Param('userId') userId: string,
 		@I18n() i18n: I18nContext,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 		@Query('key') key?: string,
 		@Query('role') role?: string,
 	): Promise<ResponseEntity<PaginatedSimpleGroupsResponseDto>> {
 		const result = await this.groupService.getSimpleGroupsByUserId(
 			userId,
 			i18n,
-			page,
-			limit,
+			query.page,
+			query.limit,
 			key,
 			role,
 		);
@@ -232,14 +238,13 @@ export class GroupController {
 		@Request() req,
 		@Query('userId') userId: string,
 		@I18n() i18n: I18nContext,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 	): Promise<ResponseEntity<any>> {
 		const targetUserId = userId ? userId : req.user.id;
 		const result = await this.groupService.getGroupsUserIsInvited(
 			targetUserId,
-			Number(page),
-			Number(limit),
+			query.page,
+			query.limit,
 			i18n,
 		);
 		return {
@@ -578,11 +583,16 @@ export class GroupController {
 	async getGroupMembers(
 		@Param('groupId') groupId: string,
 		@I18n() i18n: I18nContext,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 		@Query('role') role?: string,
 	): Promise<ResponseEntity<any>> {
-		const result = await this.groupService.getGroupMembers(groupId, i18n, page, limit, role);
+		const result = await this.groupService.getGroupMembers(
+			groupId,
+			i18n,
+			query.page,
+			query.limit,
+			role,
+		);
 
 		return {
 			success: true,
@@ -836,14 +846,13 @@ export class GroupController {
 	async getGroupPosts(
 		@Param('groupId') groupId: string,
 		@I18n() i18n: I18nContext,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 	): Promise<ResponseEntity<any>> {
 		const result = await this.postService.getPostsByGroupId(
 			groupId,
 			i18n,
-			page,
-			limit,
+			query.page,
+			query.limit,
 			undefined,
 			PostStatus.APPROVED,
 		);
@@ -1117,8 +1126,7 @@ export class GroupController {
 		@Query('groupId') groupId: string,
 		@Query('userId') userId: string,
 		@Query('status') status: string,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 		@Request() req,
 	): Promise<ResponseEntity<PaginatedPostsResponseDto>> {
 		if (status && !Object.values(PostStatus).includes(status as PostStatus)) {
@@ -1131,8 +1139,8 @@ export class GroupController {
 		const result = await this.postService.getPostsByGroupId(
 			groupId,
 			i18n,
-			Number(page),
-			Number(limit),
+			query.page,
+			query.limit,
 			userId ? userId : req.user.id,
 			statusEnum,
 		);
@@ -1184,8 +1192,7 @@ export class GroupController {
 		@Request() req,
 		@Param('groupId') groupId: string,
 		@I18n() i18n: I18nContext,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 	): Promise<ResponseEntity<PaginatedPostsResponseDto>> {
 		const isAdmin = await this.groupService['groupRepository'].isUserAdmin(groupId, req.user.id);
 		if (!isAdmin) {
@@ -1194,8 +1201,8 @@ export class GroupController {
 		const result = await this.postService.getPostsByGroupId(
 			groupId,
 			i18n,
-			Number(page),
-			Number(limit),
+			query.page,
+			query.limit,
 			undefined,
 			PostStatus.PENDING,
 		);
@@ -1221,13 +1228,12 @@ export class GroupController {
 		@Request() req,
 		@Param('groupId') groupId: string,
 		@I18n() i18n: I18nContext,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 	): Promise<ResponseEntity<any>> {
 		const result = await this.groupService.getWaitingListUsers(
 			groupId,
-			Number(page),
-			Number(limit),
+			query.page,
+			query.limit,
 			i18n,
 			req.user.id,
 		);
@@ -1255,13 +1261,12 @@ export class GroupController {
 		@Request() req,
 		@Query('userId') userId: string,
 		@I18n() i18n: I18nContext,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 	): Promise<ResponseEntity<any>> {
 		const result = await this.groupService.getGroupsUserIsWaiting(
 			userId ? userId : req.user.id,
-			Number(page),
-			Number(limit),
+			query.page,
+			query.limit,
 			i18n,
 		);
 		return {
@@ -1286,13 +1291,12 @@ export class GroupController {
 		@Request() req,
 		@Param('groupId') groupId: string,
 		@I18n() i18n: I18nContext,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 	): Promise<ResponseEntity<any>> {
 		const result = await this.groupService.getInviteListUsers(
 			groupId,
-			Number(page),
-			Number(limit),
+			query.page,
+			query.limit,
 			i18n,
 			req.user.id,
 		);

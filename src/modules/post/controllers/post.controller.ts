@@ -43,6 +43,8 @@ import { Role } from '@common/enum';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { PostAccessLevel, PostStatus } from '../entities/post.enum';
 import { FILE_TYPE_CONSTANTS } from '@common/constants/file-types.constant';
+import { PaginationQuery } from '@common/decorators/pagination-query.decorator';
+import { PaginationQueryDto } from '@common/dto/pagination-query.dto';
 
 @ApiTags('Post')
 @Controller('posts')
@@ -152,12 +154,11 @@ export class PostController {
 	})
 	async getAllPosts(
 		@I18n() i18n: I18nContext,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 		@Query('sport') sport?: string,
 		@Query('userId') userId?: string,
 	): Promise<ResponseEntity<PaginatedPostsResponseDto>> {
-		const result = await this.postService.getAllPosts(i18n, page, limit, sport, userId);
+		const result = await this.postService.getAllPosts(i18n, query.page, query.limit, sport, userId);
 
 		return {
 			success: true,
@@ -199,11 +200,16 @@ export class PostController {
 	async getNewsfeed(
 		@Request() req,
 		@I18n() i18n: I18nContext,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 		@Query('sport') sport?: string,
 	): Promise<ResponseEntity<PaginatedPostsResponseDto>> {
-		const result = await this.postService.getNewsfeed(i18n, page, limit, req.user.id, sport);
+		const result = await this.postService.getNewsfeed(
+			i18n,
+			query.page,
+			query.limit,
+			req.user.id,
+			sport,
+		);
 
 		return {
 			success: true,
@@ -278,10 +284,15 @@ export class PostController {
 		@Request() req,
 		@Param('userId') userId: string,
 		@I18n() i18n: I18nContext,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 	): Promise<ResponseEntity<PaginatedPostsResponseDto>> {
-		const result = await this.postService.getPostsByUserId(userId, i18n, page, limit, req.user?.id);
+		const result = await this.postService.getPostsByUserId(
+			userId,
+			i18n,
+			query.page,
+			query.limit,
+			req.user?.id,
+		);
 
 		return {
 			success: true,
@@ -445,11 +456,15 @@ export class PostController {
 	})
 	async getTrendingHashtags(
 		@I18n() i18n: I18nContext,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 		@Query('timeRange') timeRange?: string,
 	): Promise<ResponseEntity<TrendingHashtagsResponseDto>> {
-		const result = await this.postService.getTrendingHashtags(i18n, page, limit, timeRange);
+		const result = await this.postService.getTrendingHashtags(
+			i18n,
+			query.page,
+			query.limit,
+			timeRange,
+		);
 
 		return {
 			success: true,
@@ -494,14 +509,13 @@ export class PostController {
 		@Request() req,
 		@Param('hashtag') hashtag: string,
 		@I18n() i18n: I18nContext,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 	): Promise<ResponseEntity<PaginatedPostsResponseDto>> {
 		const result = await this.postService.getPostsByHashtag(
 			hashtag,
 			i18n,
-			page,
-			limit,
+			query.page,
+			query.limit,
 			req.user?.id,
 		);
 
@@ -653,8 +667,7 @@ export class PostController {
 	})
 	async getTrendingPosts(
 		@I18n() i18n: I18nContext,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 		@Query('sport') sport?: string,
 		@Query('userId') userId?: string,
 		@Query('timeRange') timeRange?: string,
@@ -662,8 +675,8 @@ export class PostController {
 	): Promise<ResponseEntity<PaginatedPostsResponseDto>> {
 		const result = await this.postService.getTrendingPosts(
 			i18n,
-			page,
-			limit,
+			query.page,
+			query.limit,
 			sport,
 			userId,
 			req?.user?.id,

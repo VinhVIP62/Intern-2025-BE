@@ -23,6 +23,8 @@ import {
 } from '@modules/search/dto';
 import { Inject } from '@nestjs/common';
 import { Types } from 'mongoose';
+import { PaginationQuery } from '@common/decorators/pagination-query.decorator';
+import { PaginationQueryDto } from '@common/dto/pagination-query.dto';
 
 @ApiTags('Search')
 @Controller('search')
@@ -97,8 +99,7 @@ export class SearchController {
 	@ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
 	@ApiResponse({ status: 200, type: PaginatedEnhancedSearchHistoryResultDto })
 	async getSearchHistory(
-		@Query('page') page = 1,
-		@Query('limit') limit = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 		@Request() req,
 		@I18n() i18n: I18nContext,
 	): Promise<ResponseEntity<PaginatedEnhancedSearchHistoryResultDto>> {
@@ -106,20 +107,24 @@ export class SearchController {
 		let data: EnhancedSearchHistoryResultDto[] = [];
 		let total = 0;
 		if (userId) {
-			const result = await this.searchService.getSearchHistoryWithBasicData(userId, page, limit);
+			const result = await this.searchService.getSearchHistoryWithBasicData(
+				userId,
+				query.page ?? 1,
+				query.limit ?? 10,
+			);
 			data = result.data;
 			total = result.total;
 		}
-		const totalPages = Math.ceil(total / limit);
+		const totalPages = Math.ceil(total / (query.limit ?? 10));
 		return {
 			success: true,
 			data: {
 				data,
-				page,
-				limit,
+				page: query.page ?? 1,
+				limit: query.limit ?? 10,
 				totalPages,
-				hasNextPage: page < totalPages,
-				hasPrevPage: page > 1,
+				hasNextPage: (query.page ?? 1) < totalPages,
+				hasPrevPage: (query.page ?? 1) > 1,
 			},
 			message: i18n.t('search.FETCH_HISTORY_SUCCESS'),
 		};

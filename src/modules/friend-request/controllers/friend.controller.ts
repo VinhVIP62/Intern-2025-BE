@@ -17,6 +17,8 @@ import { Role } from '@common/enum';
 import { ResponseEntity } from '@common/types';
 import { FriendRequestService } from '../providers/friend-request.service';
 import { PaginatedFriendsResponseDto, MutualFriendsResponseDto } from '@modules/friend-request/dto';
+import { PaginationQuery } from '@common/decorators/pagination-query.decorator';
+import { PaginationQueryDto } from '@common/dto/pagination-query.dto';
 
 @ApiTags('Friends')
 @Controller('friends')
@@ -61,15 +63,14 @@ export class FriendsController {
 	async getFriendsList(
 		@Request() req,
 		@I18n() i18n: I18nContext,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 		@Query('search') search?: string,
 	): Promise<ResponseEntity<PaginatedFriendsResponseDto>> {
 		const result = await this.friendRequestService.getFriendsList(
 			req.user.id,
 			i18n,
-			page,
-			limit,
+			query.page ?? 1,
+			query.limit ?? 10,
 			search,
 		);
 
@@ -174,15 +175,14 @@ export class FriendsController {
 		@Request() req,
 		@Param('userId') userId: string,
 		@I18n() i18n: I18nContext,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 	): Promise<ResponseEntity<MutualFriendsResponseDto>> {
 		try {
 			const result = await this.friendRequestService.getMutualFriends(
 				req.user.id,
 				userId,
-				page,
-				limit,
+				query.page ?? 1,
+				query.limit ?? 10,
 				i18n,
 			);
 

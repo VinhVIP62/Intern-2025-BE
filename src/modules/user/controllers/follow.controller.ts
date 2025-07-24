@@ -18,6 +18,8 @@ import { I18n, I18nContext } from 'nestjs-i18n';
 import { ResponseEntity } from '@common/types';
 import { UserBasicInfoDto } from '../dto/request/user-basic-info.dto';
 import { PaginatedUserBasicInfoResponseDto } from '../dto/response/user-response.dto';
+import { PaginationQuery } from '@common/decorators/pagination-query.decorator';
+import { PaginationQueryDto } from '@common/dto/pagination-query.dto';
 
 @ApiTags('User Follow')
 @Controller('users')
@@ -92,13 +94,18 @@ export class FollowController {
 	async getFollowers(
 		@Query('userId') userId: string,
 		@Query('key') key: string,
-		@Query('page') page = 1,
-		@Query('limit') limit = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 		@Request() req,
 		@I18n() i18n: I18nContext,
 	): Promise<ResponseEntity<PaginatedUserBasicInfoResponseDto>> {
 		const id = userId || req.user.id;
-		const followers = await this.userService.getFollowers(id, key, page, limit, i18n);
+		const followers = await this.userService.getFollowers(
+			id,
+			key,
+			query.page ?? 1,
+			query.limit ?? 10,
+			i18n,
+		);
 		return {
 			success: true,
 			message: i18n.t('user.GET_FOLLOWERS_SUCCESS'),
@@ -136,13 +143,18 @@ export class FollowController {
 	async getFollowing(
 		@Query('userId') userId: string,
 		@Query('key') key: string,
-		@Query('page') page = 1,
-		@Query('limit') limit = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 		@Request() req,
 		@I18n() i18n: I18nContext,
 	): Promise<ResponseEntity<PaginatedUserBasicInfoResponseDto>> {
 		const id = userId || req.user.id;
-		const following = await this.userService.getFollowing(id, key, page, limit, i18n);
+		const following = await this.userService.getFollowing(
+			id,
+			key,
+			query.page ?? 1,
+			query.limit ?? 10,
+			i18n,
+		);
 		return {
 			success: true,
 			message: i18n.t('user.GET_FOLLOWING_SUCCESS'),

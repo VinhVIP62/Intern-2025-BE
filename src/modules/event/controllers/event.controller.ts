@@ -38,6 +38,8 @@ import { Roles } from '@common/decorators';
 import { Role } from '@common/enum';
 import { RSVPStatus } from '@modules/event/entities/event.enum';
 import { EventInvitationStatus } from '@modules/event/entities/event.enum';
+import { PaginationQuery } from '@common/decorators/pagination-query.decorator';
+import { PaginationQueryDto } from '@common/dto/pagination-query.dto';
 @ApiTags('Event')
 @Controller('events')
 export class EventController {
@@ -83,23 +85,25 @@ export class EventController {
 	})
 	async getAllEvents(
 		@I18n() i18n: I18nContext,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 		@Query('sport') sport?: string,
 	) {
-		const query: any = {};
-		if (sport) query.sport = sport;
-		const { events, total } = await this.eventService.getAllEvents(query, { page, limit });
+		const q: any = {}; // q is query object
+		if (sport) q.sport = sport;
+		const { events, total } = await this.eventService.getAllEvents(q, {
+			page: query.page ?? 1,
+			limit: query.limit ?? 10,
+		});
 		return {
 			success: true,
 			data: {
 				events,
 				total,
-				page,
-				limit,
-				totalPages: Math.ceil(total / limit),
-				hasNextPage: page * limit < total,
-				hasPrevPage: page > 1,
+				page: query.page ?? 1,
+				limit: query.limit ?? 10,
+				totalPages: Math.ceil(total / (query.limit ?? 10)),
+				hasNextPage: (query.page ?? 1) * (query.limit ?? 10) < total,
+				hasPrevPage: (query.page ?? 1) > 1,
 			},
 			message: i18n.t('event.EVENTS_RETRIEVED_SUCCESS'),
 		};
@@ -259,24 +263,23 @@ export class EventController {
 	})
 	async getParticipants(
 		@Param('eventId') eventId: string,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 		@I18n() i18n: I18nContext,
 	): Promise<{ success: boolean; data: PaginatedEventParticipantsResponseDto; message: string }> {
 		const { participants, total } = await this.eventService.getParticipants(eventId, {
-			page,
-			limit,
+			page: query.page ?? 1,
+			limit: query.limit ?? 10,
 		});
 		return {
 			success: true,
 			data: {
 				participants,
 				total,
-				page,
-				limit,
-				totalPages: Math.ceil(total / limit),
-				hasNextPage: page * limit < total,
-				hasPrevPage: page > 1,
+				page: query.page ?? 1,
+				limit: query.limit ?? 10,
+				totalPages: Math.ceil(total / (query.limit ?? 10)),
+				hasNextPage: (query.page ?? 1) * (query.limit ?? 10) < total,
+				hasPrevPage: (query.page ?? 1) > 1,
 			},
 			message: i18n.t('event.PARTICIPANTS_RETRIEVED_SUCCESS'),
 		};
@@ -322,13 +325,12 @@ export class EventController {
 	async getUserEventInvitations(
 		@Request() req,
 		@I18n() i18n: I18nContext,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 	): Promise<{ success: boolean; data: PaginatedEventInvitationsResponseDto; message: string }> {
 		const { invitations, total } = await this.eventService.getUserEventInvitations(
 			req.user.id,
-			page,
-			limit,
+			query.page ?? 1,
+			query.limit ?? 10,
 			i18n,
 		);
 		return {
@@ -336,11 +338,11 @@ export class EventController {
 			data: {
 				invitations,
 				total,
-				page,
-				limit,
-				totalPages: Math.ceil(total / limit),
-				hasNextPage: page * limit < total,
-				hasPrevPage: page > 1,
+				page: query.page ?? 1,
+				limit: query.limit ?? 10,
+				totalPages: Math.ceil(total / (query.limit ?? 10)),
+				hasNextPage: (query.page ?? 1) * (query.limit ?? 10) < total,
+				hasPrevPage: (query.page ?? 1) > 1,
 			},
 			message: i18n.t('event.INVITATIONS_RETRIEVED_SUCCESS'),
 		};
@@ -357,15 +359,14 @@ export class EventController {
 	async getSentInvitations(
 		@Request() req,
 		@Param('eventId') eventId: string,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 		@I18n() i18n: I18nContext,
 	) {
 		const { invitations, total } = await this.eventService.getSentInvitations(
 			eventId,
 			req.user.id,
-			page,
-			limit,
+			query.page ?? 1,
+			query.limit ?? 10,
 			i18n,
 		);
 		return {
@@ -373,11 +374,11 @@ export class EventController {
 			data: {
 				invitations,
 				total,
-				page,
-				limit,
-				totalPages: Math.ceil(total / limit),
-				hasNextPage: page * limit < total,
-				hasPrevPage: page > 1,
+				page: query.page ?? 1,
+				limit: query.limit ?? 10,
+				totalPages: Math.ceil(total / (query.limit ?? 10)),
+				hasNextPage: (query.page ?? 1) * (query.limit ?? 10) < total,
+				hasPrevPage: (query.page ?? 1) > 1,
 			},
 			message: i18n.t('event.INVITATIONS_RETRIEVED_SUCCESS'),
 		};
@@ -455,21 +456,25 @@ export class EventController {
 	async getUserEvents(
 		@Param('userId') userId: string,
 		@I18n() i18n: I18nContext,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 		@Query('key') key?: string,
 	): Promise<{ success: boolean; data: PaginatedUserEventsResponseDto; message: string }> {
-		const { events, total } = await this.eventService.findEventsByUserId(userId, page, limit, key);
+		const { events, total } = await this.eventService.findEventsByUserId(
+			userId,
+			query.page ?? 1,
+			query.limit ?? 10,
+			key,
+		);
 		return {
 			success: true,
 			data: {
 				events,
 				total,
-				page,
-				limit,
-				totalPages: Math.ceil(total / limit),
-				hasNextPage: page * limit < total,
-				hasPrevPage: page > 1,
+				page: query.page ?? 1,
+				limit: query.limit ?? 10,
+				totalPages: Math.ceil(total / (query.limit ?? 10)),
+				hasNextPage: (query.page ?? 1) * (query.limit ?? 10) < total,
+				hasPrevPage: (query.page ?? 1) > 1,
 			},
 			message: i18n.t('event.USER_EVENTS_RETRIEVED_SUCCESS'),
 		};
@@ -483,14 +488,13 @@ export class EventController {
 	@ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
 	async getEventRecommendations(
 		@Request() req,
-		@Query('page') page: number = 1,
-		@Query('limit') limit: number = 10,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
 		@I18n() i18n: I18nContext,
 	) {
 		const recommendations = await this.eventService.getRecommendationsForUser(
 			req.user.id,
-			page,
-			limit,
+			query.page ?? 1,
+			query.limit ?? 10,
 			i18n,
 		);
 		return {

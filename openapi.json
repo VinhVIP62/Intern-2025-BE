@@ -484,22 +484,6 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "page",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": true,
-            "in": "query",
-            "schema": {
-              "type": "number"
-            }
           }
         ],
         "responses": {
@@ -1175,24 +1159,6 @@
         "operationId": "EventController_getAllEvents_v1",
         "parameters": [
           {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          },
-          {
             "name": "sport",
             "required": false,
             "in": "query",
@@ -1215,6 +1181,24 @@
                 "rock_climbing"
               ],
               "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
             }
           }
         ],
@@ -1464,20 +1448,20 @@
             }
           },
           {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
             "name": "limit",
             "required": false,
             "in": "query",
             "schema": {
               "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
               "type": "number"
             }
           }
@@ -1553,20 +1537,20 @@
         "operationId": "EventController_getUserEventInvitations_v1",
         "parameters": [
           {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
             "name": "limit",
             "required": false,
             "in": "query",
             "schema": {
               "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
               "type": "number"
             }
           }
@@ -1604,20 +1588,20 @@
             }
           },
           {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
             "name": "limit",
             "required": false,
             "in": "query",
             "schema": {
               "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
               "type": "number"
             }
           }
@@ -1722,12 +1706,12 @@
             }
           },
           {
-            "name": "page",
+            "name": "key",
             "required": false,
             "in": "query",
             "schema": {
-              "example": 1,
-              "type": "number"
+              "example": "football",
+              "type": "string"
             }
           },
           {
@@ -1740,12 +1724,12 @@
             }
           },
           {
-            "name": "key",
+            "name": "page",
             "required": false,
             "in": "query",
             "schema": {
-              "example": "football",
-              "type": "string"
+              "example": 1,
+              "type": "number"
             }
           }
         ],
@@ -1772,20 +1756,20 @@
         "operationId": "EventController_getEventRecommendations_v1",
         "parameters": [
           {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
             "name": "limit",
             "required": false,
             "in": "query",
             "schema": {
               "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
               "type": "number"
             }
           }
@@ -1882,26 +1866,6 @@
         "operationId": "GroupController_getAllGroups_v1",
         "parameters": [
           {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Số trang (mặc định: 1)",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Số lượng nhóm trên mỗi trang (mặc định: 10)",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          },
-          {
             "name": "sport",
             "required": false,
             "in": "query",
@@ -1934,6 +1898,26 @@
             "description": "Lọc theo loại nhóm (công khai/riêng tư)",
             "schema": {
               "type": "boolean"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng nhóm trên mỗi trang (mặc định: 10)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
             }
           }
         ],
@@ -1970,26 +1954,6 @@
             }
           },
           {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Số trang (mặc định: 1)",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Số lượng nhóm trên mỗi trang (mặc định: 10)",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          },
-          {
             "name": "key",
             "required": false,
             "in": "query",
@@ -2011,6 +1975,26 @@
                 "waiting"
               ],
               "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng nhóm trên mỗi trang (mặc định: 10)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
             }
           }
         ],
@@ -2046,20 +2030,20 @@
             }
           },
           {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
             "name": "limit",
             "required": false,
             "in": "query",
             "schema": {
               "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
               "type": "number"
             }
           }
@@ -2381,13 +2365,16 @@
             }
           },
           {
-            "name": "page",
+            "name": "role",
             "required": false,
             "in": "query",
-            "description": "Số trang (mặc định: 1)",
+            "description": "Lọc theo vai trò",
             "schema": {
-              "example": 1,
-              "type": "number"
+              "enum": [
+                "admin",
+                "member"
+              ],
+              "type": "string"
             }
           },
           {
@@ -2401,16 +2388,13 @@
             }
           },
           {
-            "name": "role",
+            "name": "page",
             "required": false,
             "in": "query",
-            "description": "Lọc theo vai trò",
+            "description": "Số trang (mặc định: 1)",
             "schema": {
-              "enum": [
-                "admin",
-                "member"
-              ],
-              "type": "string"
+              "example": 1,
+              "type": "number"
             }
           }
         ],
@@ -2692,22 +2676,22 @@
             }
           },
           {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Số trang (mặc định: 1)",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
             "name": "limit",
             "required": false,
             "in": "query",
             "description": "Số lượng bài viết trên mỗi trang (mặc định: 10)",
             "schema": {
               "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
               "type": "number"
             }
           }
@@ -2969,22 +2953,22 @@
             }
           },
           {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Số trang (mặc định: 1)",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
             "name": "limit",
             "required": false,
             "in": "query",
             "description": "Số lượng bài đăng trên mỗi trang (mặc định: 10)",
             "schema": {
               "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
               "type": "number"
             }
           }
@@ -3022,22 +3006,22 @@
             }
           },
           {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Số trang (mặc định: 1)",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
             "name": "limit",
             "required": false,
             "in": "query",
             "description": "Số lượng bài viết trên mỗi trang (mặc định: 10)",
             "schema": {
               "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
               "type": "number"
             }
           }
@@ -3081,20 +3065,20 @@
             }
           },
           {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
             "name": "limit",
             "required": false,
             "in": "query",
             "schema": {
               "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
               "type": "number"
             }
           }
@@ -3131,20 +3115,20 @@
             }
           },
           {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
             "name": "limit",
             "required": false,
             "in": "query",
             "schema": {
               "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
               "type": "number"
             }
           }
@@ -3175,20 +3159,20 @@
             }
           },
           {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
             "name": "limit",
             "required": false,
             "in": "query",
             "schema": {
               "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
               "type": "number"
             }
           }
@@ -3247,12 +3231,12 @@
         "operationId": "NotificationController_getNotifications_v1",
         "parameters": [
           {
-            "name": "page",
+            "name": "isRead",
             "required": false,
             "in": "query",
+            "description": "Lọc theo đã đọc/chưa đọc (nếu không truyền thì lấy tất cả)",
             "schema": {
-              "example": 1,
-              "type": "number"
+              "type": "boolean"
             }
           },
           {
@@ -3265,12 +3249,12 @@
             }
           },
           {
-            "name": "isRead",
+            "name": "page",
             "required": false,
             "in": "query",
-            "description": "Lọc theo đã đọc/chưa đọc (nếu không truyền thì lấy tất cả)",
             "schema": {
-              "type": "boolean"
+              "example": 1,
+              "type": "number"
             }
           }
         ],
@@ -3438,26 +3422,6 @@
         "operationId": "PostController_getNewsfeed_v1",
         "parameters": [
           {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Số trang (mặc định: 1)",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Số lượng bài đăng trên mỗi trang (mặc định: 10)",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          },
-          {
             "name": "sport",
             "required": false,
             "in": "query",
@@ -3481,6 +3445,26 @@
                 "rock_climbing"
               ],
               "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng bài đăng trên mỗi trang (mặc định: 10)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
             }
           }
         ],
@@ -3506,26 +3490,6 @@
       "get": {
         "operationId": "PostController_getAllPosts_v1",
         "parameters": [
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Số trang (mặc định: 1)",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Số lượng bài đăng trên mỗi trang (mặc định: 10)",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          },
           {
             "name": "sport",
             "required": false,
@@ -3559,6 +3523,26 @@
             "description": "Lọc theo ID người dùng",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng bài đăng trên mỗi trang (mặc định: 10)",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
+              "type": "number"
             }
           }
         ],
@@ -3717,22 +3701,22 @@
             }
           },
           {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Số trang (mặc định: 1)",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
             "name": "limit",
             "required": false,
             "in": "query",
             "description": "Số lượng bài đăng trên mỗi trang (mặc định: 10)",
             "schema": {
               "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
               "type": "number"
             }
           }
@@ -3760,13 +3744,13 @@
         "operationId": "PostController_getTrendingHashtags_v1",
         "parameters": [
           {
-            "name": "page",
+            "name": "timeRange",
             "required": false,
             "in": "query",
-            "description": "Số trang (mặc định: 1)",
+            "description": "Khoảng thời gian (7d, 30d, 90d, all)",
             "schema": {
-              "example": 1,
-              "type": "number"
+              "example": "7d",
+              "type": "string"
             }
           },
           {
@@ -3780,13 +3764,13 @@
             }
           },
           {
-            "name": "timeRange",
+            "name": "page",
             "required": false,
             "in": "query",
-            "description": "Khoảng thời gian (7d, 30d, 90d, all)",
+            "description": "Số trang (mặc định: 1)",
             "schema": {
-              "example": "7d",
-              "type": "string"
+              "example": 1,
+              "type": "number"
             }
           }
         ],
@@ -3823,22 +3807,22 @@
             }
           },
           {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Số trang (mặc định: 1)",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
             "name": "limit",
             "required": false,
             "in": "query",
             "description": "Số lượng bài đăng trên mỗi trang (mặc định: 10)",
             "schema": {
               "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
               "type": "number"
             }
           }
@@ -4068,24 +4052,6 @@
         "operationId": "PostController_getTrendingPosts_v1",
         "parameters": [
           {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "example": 10,
-              "type": "number"
-            }
-          },
-          {
             "name": "sport",
             "required": false,
             "in": "query",
@@ -4125,6 +4091,24 @@
             "schema": {
               "example": "7d",
               "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
             }
           }
         ],
@@ -4279,22 +4263,22 @@
             }
           },
           {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Số trang (mặc định: 1)",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
             "name": "limit",
             "required": false,
             "in": "query",
             "description": "Số lượng comment trên mỗi trang (mặc định: 10)",
             "schema": {
               "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
               "type": "number"
             }
           }
@@ -4830,13 +4814,16 @@
         "operationId": "FriendRequestController_getFriendRequests_v1",
         "parameters": [
           {
-            "name": "page",
+            "name": "type",
             "required": false,
             "in": "query",
-            "description": "Số trang (mặc định: 1)",
+            "description": "Loại lời mời (sent: đã gửi, received: đã nhận), default: received",
             "schema": {
-              "example": 1,
-              "type": "number"
+              "enum": [
+                "sent",
+                "received"
+              ],
+              "type": "string"
             }
           },
           {
@@ -4850,16 +4837,13 @@
             }
           },
           {
-            "name": "type",
+            "name": "page",
             "required": false,
             "in": "query",
-            "description": "Loại lời mời (sent: đã gửi, received: đã nhận), default: received",
+            "description": "Số trang (mặc định: 1)",
             "schema": {
-              "enum": [
-                "sent",
-                "received"
-              ],
-              "type": "string"
+              "example": 1,
+              "type": "number"
             }
           }
         ],
@@ -5126,13 +5110,13 @@
         "operationId": "FriendsController_getFriendsList_v1",
         "parameters": [
           {
-            "name": "page",
+            "name": "search",
             "required": false,
             "in": "query",
-            "description": "Số trang (mặc định: 1)",
+            "description": "Tìm kiếm bạn bè theo tên hoặc email",
             "schema": {
-              "example": 1,
-              "type": "number"
+              "example": "Nguyen Van",
+              "type": "string"
             }
           },
           {
@@ -5146,13 +5130,13 @@
             }
           },
           {
-            "name": "search",
+            "name": "page",
             "required": false,
             "in": "query",
-            "description": "Tìm kiếm bạn bè theo tên hoặc email",
+            "description": "Số trang (mặc định: 1)",
             "schema": {
-              "example": "Nguyen Van",
-              "type": "string"
+              "example": 1,
+              "type": "number"
             }
           }
         ],
@@ -5227,22 +5211,22 @@
             }
           },
           {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Số trang (mặc định: 1)",
-            "schema": {
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
             "name": "limit",
             "required": false,
             "in": "query",
             "description": "Số lượng bạn bè chung trên mỗi trang (mặc định: 10)",
             "schema": {
               "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Số trang (mặc định: 1)",
+            "schema": {
+              "example": 1,
               "type": "number"
             }
           }
