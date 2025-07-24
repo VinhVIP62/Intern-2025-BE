@@ -3,5 +3,11 @@
 	"USER_LIST_SUCCESS": "Lấy thành công",
 	"UNLOCK_SUCCESS": "Mở khóa thành công",
 	"PROGRESS_UPDATE_SUCCESS": "Cập nhật tiến trình thành công",
-	"AUTO_UPDATE_SUCCESS": "Cập nhật và unlock thành công"
+	"AUTO_UPDATE_SUCCESS": "Cập nhật và unlock thành công",
+	"NAME_DYNAMIC_ROOKIE": "Tân binh năng động",
+	"NAME_DILIGENT": "Chuyên cần",
+	"NAME_WELL_CONNECTED": "Kết nối rộng rãi",
+	"NAME_ORGANIZER": "Người tổ chức",
+	"NAME_ACTIVE_ATHLETE": "Vận động viên tích cực",
+	"NAME_INSPIRATION_SHARER": "Chia sẻ cảm hứng"
 }

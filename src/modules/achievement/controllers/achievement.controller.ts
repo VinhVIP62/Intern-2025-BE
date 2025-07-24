@@ -23,10 +23,14 @@ export class AchievementController {
 	@ApiResponse({ status: 200, description: 'Lấy thành công' })
 	async getAllAchievements(@I18n() i18n: I18nContext) {
 		const achievements = await this.achievementRepo.findAllAchievements();
+		const achievementsWithName = achievements.map(achievement => ({
+			...achievement,
+			name: i18n.t(`achievement.${achievement.name}`),
+		}));
 		return {
 			success: true,
 			total: achievements.length,
-			data: achievements,
+			data: achievementsWithName,
 			message: i18n.t('achievement.LIST_SUCCESS'),
 		};
 	}
@@ -40,15 +44,21 @@ export class AchievementController {
 		const userId = req.user.id;
 		const allAchievements = await this.achievementRepo.findAllAchievements();
 		const userAchievements = await this.userAchievementRepo.findUserAchievements(userId);
+
 		const passed = userAchievements.filter(a => a.progress === 100).length;
 		const inProgress = userAchievements.filter(a => a.progress < 100).length;
 		const total = allAchievements.length;
+
+		const achievementsWithName = allAchievements.map(achievement => ({
+			...achievement,
+			name: i18n.t(`achievement.${achievement.name}`),
+		}));
 		return {
 			success: true,
 			total,
 			passed,
 			inProgress,
-			data: userAchievements,
+			data: achievementsWithName,
 			message: i18n.t('achievement.USER_LIST_SUCCESS'),
 		};
 	}

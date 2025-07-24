@@ -74,12 +74,13 @@ export class AchievementService {
 			if (!existed) {
 				await this.userAchievementRepo.unlockAchievement(userId, achievement._id);
 				// Send notification to user
+				const name = i18n.t(`achievement.${achievement.name}`);
 				await this.notificationService.createNotification(
 					{
 						recipient: userId,
 						sender: userId,
 						type: NotificationType.ACHIEVEMENT_UNLOCKED,
-						message: `@${userId} MESSAGE_UNLOCKED_ACHIEVEMENT ${achievement.name}`,
+						message: `@${userId} MESSAGE_UNLOCKED_ACHIEVEMENT ${name}`,
 						referenceId: achievement._id.toString(),
 						referenceModel: ReferenceModel.ACHIEVEMENT,
 					},

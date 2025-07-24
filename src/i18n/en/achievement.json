@@ -3,5 +3,11 @@
 	"USER_LIST_SUCCESS": "Get user achievements successfully",
 	"UNLOCK_SUCCESS": "Unlock achievement successfully",
 	"PROGRESS_UPDATE_SUCCESS": "Update achievement progress successfully",
-	"AUTO_UPDATE_SUCCESS": "Auto update achievements successfully"
+	"AUTO_UPDATE_SUCCESS": "Auto update achievements successfully",
+	"NAME_DYNAMIC_ROOKIE": "Dynamic Rookie",
+	"NAME_DILIGENT": "Diligent",
+	"NAME_WELL_CONNECTED": "Well Connected",
+	"NAME_ORGANIZER": "Organizer",
+	"NAME_ACTIVE_ATHLETE": "Active Athlete",
+	"NAME_INSPIRATION_SHARER": "Inspiration Sharer"
 }
