@@ -282,4 +282,15 @@ export class EventService {
 			message: i18n.t('event.RECOMMENDATIONS_RETRIEVED_SUCCESS'),
 		};
 	}
+
+	async countEventsCreatedByUser(userId: string): Promise<number> {
+		const query = { organizer: userId, organizerType: 'User' };
+		const { total } = await this.eventRepository.findAll(query, { page: 1, limit: 1 });
+		return total;
+	}
+
+	async countEventsJoinedByUser(userId: string): Promise<number> {
+		const { total } = await this.eventRepository.findEventsByUserId(userId, 1, 1);
+		return total;
+	}
 }

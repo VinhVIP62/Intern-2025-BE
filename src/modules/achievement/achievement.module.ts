@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Achievement, AchievementSchema } from './entities/achievement.schema';
 import { AchievementController } from './controllers/achievement.controller';
@@ -8,6 +8,9 @@ import { AchievementRepositoryImpl } from './repositories/achievement.repository
 import { IUserAchievementRepository } from './repositories/user-achievement.repository';
 import { UserAchievementRepositoryImpl } from './repositories/user-achievement.repository.impl';
 import { UserAchievement, UserAchievementSchema } from './entities/user-achievement.schema';
+import { UserModule } from '../user/user.module';
+import { EventModule } from '../event/event.module';
+import { PostModule } from '../post/post.module';
 
 @Module({
 	imports: [
@@ -15,6 +18,9 @@ import { UserAchievement, UserAchievementSchema } from './entities/user-achievem
 			{ name: Achievement.name, schema: AchievementSchema },
 			{ name: UserAchievement.name, schema: UserAchievementSchema },
 		]),
+		forwardRef(() => UserModule),
+		forwardRef(() => EventModule),
+		forwardRef(() => PostModule),
 	],
 	controllers: [AchievementController],
 	providers: [

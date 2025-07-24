@@ -7,6 +7,7 @@ import { Role } from '@common/enum';
 import { IAchievementRepository } from '../repositories/achievement.repository';
 import { AchievementProgressDto } from '../dto/achievement-progress.dto';
 import { IUserAchievementRepository } from '../repositories/user-achievement.repository';
+import { AchievementService } from '../providers/achievement.service';
 
 @ApiTags('Achievement')
 @Controller('achievements')
@@ -14,31 +15,40 @@ export class AchievementController {
 	constructor(
 		private readonly achievementRepo: IAchievementRepository,
 		private readonly userAchievementRepo: IUserAchievementRepository,
+		private readonly achievementService: AchievementService,
 	) {}
 
 	@Get('all')
-	@ApiOperation({ summary: 'Lấy tất cả achievement' })
+	@ApiOperation({ summary: 'Lấy tất cả achievement có thể đạt được' })
 	@ApiResponse({ status: 200, description: 'Lấy thành công' })
 	async getAllAchievements(@I18n() i18n: I18nContext) {
 		const achievements = await this.achievementRepo.findAllAchievements();
 		return {
 			success: true,
+			total: achievements.length,
 			data: achievements,
 			message: i18n.t('achievement.LIST_SUCCESS'),
 		};
 	}
 
-	@Get('user')
+	@Get('personal')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
-	@ApiOperation({ summary: 'Lấy achievement của user hiện tại' })
+	@ApiOperation({ summary: 'Lấy achievement và tiến trình thực hiện của user hiện tại' })
 	@ApiResponse({ status: 200, description: 'Lấy thành công' })
 	async getUserAchievements(@Request() req, @I18n() i18n: I18nContext) {
 		const userId = req.user.id;
-		const achievements = await this.userAchievementRepo.findUserAchievements(userId);
+		const allAchievements = await this.achievementRepo.findAllAchievements();
+		const userAchievements = await this.userAchievementRepo.findUserAchievements(userId);
+		const passed = userAchievements.filter(a => a.progress === 100).length;
+		const inProgress = userAchievements.filter(a => a.progress < 100).length;
+		const total = allAchievements.length;
 		return {
 			success: true,
-			data: achievements,
+			total,
+			passed,
+			inProgress,
+			data: userAchievements,
 			message: i18n.t('achievement.USER_LIST_SUCCESS'),
 		};
 	}
@@ -46,7 +56,7 @@ export class AchievementController {
 	@Post('unlock')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
-	@ApiOperation({ summary: 'Unlock achievement cho user' })
+	@ApiOperation({ summary: 'Unlock achievement cho user thủ công' })
 	@ApiBody({ type: AchievementProgressDto })
 	@ApiResponse({ status: 200, description: 'Unlock thành công' })
 	async unlockAchievement(
@@ -66,7 +76,7 @@ export class AchievementController {
 	@Post('progress')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
-	@ApiOperation({ summary: 'Cập nhật tiến trình achievement cho user' })
+	@ApiOperation({ summary: 'Cập nhật tiến trình achievement cho user thủ công' })
 	@ApiBody({ type: AchievementProgressDto })
 	@ApiResponse({ status: 200, description: 'Cập nhật thành công' })
 	async updateProgress(
@@ -84,6 +94,22 @@ export class AchievementController {
 			success: true,
 			data: result,
 			message: i18n.t('achievement.PROGRESS_UPDATE_SUCCESS'),
+		};
+	}
+
+	@Post('auto-update')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Tự động check và update achievement cho user hiện tại' })
+	@ApiResponse({ status: 200, description: 'Cập nhật và unlock thành công' })
+	async autoUpdateAchievements(@Request() req, @I18n() i18n: I18nContext) {
+		const userId = req.user.id;
+		const userStats = await this.achievementService.buildUserStatsDto(userId);
+		await this.achievementService.checkAndUnlockAchievements(userId, userStats);
+		await this.achievementService.trackProgress(userId, userStats);
+		return {
+			success: true,
+			message: i18n.t('achievement.AUTO_UPDATE_SUCCESS'),
 		};
 	}
 }

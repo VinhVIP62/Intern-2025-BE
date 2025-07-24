@@ -755,4 +755,9 @@ export class PostService {
 			throw error;
 		}
 	}
+
+	async countPostsByUser(userId: string): Promise<number> {
+		const { total } = await this.postRepository.findAll(1, 1, undefined, userId);
+		return total;
+	}
 }

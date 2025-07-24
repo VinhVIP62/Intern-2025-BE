@@ -3,6 +3,9 @@ import { AchievementCriteriaKey } from '../achievement-criteria.constant';
 import { UserStatsDto } from '../dto/user-stats.dto';
 import { IAchievementRepository } from '../repositories/achievement.repository';
 import { IUserAchievementRepository } from '../repositories/user-achievement.repository';
+import { UserService } from '../../user/providers/user.service';
+import { EventService } from '../../event/providers/event.service';
+import { PostService } from '../../post/providers/post.service';
 
 @Injectable()
 export class AchievementService {
@@ -11,6 +14,9 @@ export class AchievementService {
 		private readonly achievementRepo: IAchievementRepository,
 		@Inject(IUserAchievementRepository)
 		private readonly userAchievementRepo: IUserAchievementRepository,
+		private readonly userService: UserService,
+		private readonly eventService: EventService,
+		private readonly postService: PostService,
 	) {}
 
 	// Kiểm tra và unlock achievement cho user
@@ -19,36 +25,45 @@ export class AchievementService {
 		for (const achievement of achievements) {
 			const criteria = JSON.parse(achievement.criteria);
 			let isUnlocked = true;
-			if (criteria[AchievementCriteriaKey.COMPLETE_PROFILE] && !userStats.completeProfile)
+			if (criteria[AchievementCriteriaKey.COMPLETE_PROFILE] && !userStats.completeProfile) {
 				isUnlocked = false;
-			if (criteria[AchievementCriteriaKey.JOIN_FIRST_GROUP] && !userStats.joinFirstGroup)
+			}
+			if (criteria[AchievementCriteriaKey.JOIN_FIRST_GROUP] && !userStats.joinFirstGroup) {
 				isUnlocked = false;
+			}
 			if (
 				criteria[AchievementCriteriaKey.LOGIN_STREAK] &&
 				userStats.loginStreak < criteria[AchievementCriteriaKey.LOGIN_STREAK]
-			)
+			) {
 				isUnlocked = false;
+			}
 			if (
 				criteria[AchievementCriteriaKey.FRIEND_COUNT] &&
 				userStats.friendCount < criteria[AchievementCriteriaKey.FRIEND_COUNT]
-			)
+			) {
 				isUnlocked = false;
+			}
 			if (
 				criteria[AchievementCriteriaKey.CREATE_EVENT] &&
 				userStats.createEvent < criteria[AchievementCriteriaKey.CREATE_EVENT]
-			)
+			) {
 				isUnlocked = false;
+			}
 			if (
 				criteria[AchievementCriteriaKey.JOIN_EVENT] &&
 				userStats.joinEvent < criteria[AchievementCriteriaKey.JOIN_EVENT]
-			)
+			) {
 				isUnlocked = false;
+			}
 			if (
 				criteria[AchievementCriteriaKey.POST_COUNT] &&
 				userStats.postCount < criteria[AchievementCriteriaKey.POST_COUNT]
-			)
+			) {
 				isUnlocked = false;
-			if (!isUnlocked) continue;
+			}
+			if (!isUnlocked) {
+				continue;
+			}
 			const userAchievements = await this.userAchievementRepo.findUserAchievements(userId);
 			const existed = userAchievements.find(
 				ua => ua.achievementId.toString() === achievement._id.toString(),
@@ -93,5 +108,40 @@ export class AchievementService {
 				}
 			}
 		}
+	}
+
+	// Build UserStatsDto for achievement
+	public async buildUserStatsDto(userId: string): Promise<UserStatsDto> {
+		const { NotFoundException } = await import('@nestjs/common');
+		const user = await this.userService['userRepository'].findOneById(userId);
+		if (!user) throw new NotFoundException('User not found');
+
+		const completeProfile = Boolean(
+			user.firstName && user.lastName && user.avatar && user.dateOfBirth && user.location?.city,
+		);
+		const joinFirstGroup = (user.joinedGroups?.length || 0) > 0;
+		const friendCount = user.friends?.length || 0;
+		const loginStreak = (user as any).loginStreak || 0;
+		let createEvent = 0;
+		if (this.eventService) {
+			createEvent = await this.eventService.countEventsCreatedByUser(userId);
+		}
+		let joinEvent = 0;
+		if (this.eventService) {
+			joinEvent = await this.eventService.countEventsJoinedByUser(userId);
+		}
+		let postCount = 0;
+		if (this.postService) {
+			postCount = await this.postService.countPostsByUser(userId);
+		}
+		return {
+			completeProfile,
+			joinFirstGroup,
+			loginStreak,
+			friendCount,
+			createEvent,
+			joinEvent,
+			postCount,
+		};
 	}
 }

@@ -2,5 +2,6 @@
 	"LIST_SUCCESS": "Lấy thành công",
 	"USER_LIST_SUCCESS": "Lấy thành công",
 	"UNLOCK_SUCCESS": "Mở khóa thành công",
-	"PROGRESS_UPDATE_SUCCESS": "Cập nhật tiến trình thành công"
+	"PROGRESS_UPDATE_SUCCESS": "Cập nhật tiến trình thành công",
+	"AUTO_UPDATE_SUCCESS": "Cập nhật và unlock thành công"
 }
