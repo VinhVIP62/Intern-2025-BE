@@ -4,8 +4,8 @@ import {
 	BadRequestException,
 	ForbiddenException,
 } from '@nestjs/common';
-import { IPostRepository } from '../repositories/post.repository';
-import { Post } from '../entities/post.schema';
+import { IPostRepository } from '@modules/post/repositories/post.repository';
+import { Post } from '@modules/post/entities/post.schema';
 import { I18nContext } from 'nestjs-i18n';
 import {
 	PaginatedPostsResponseDto,
@@ -13,9 +13,9 @@ import {
 	CreatePostDto,
 	UpdatePostDto,
 	TrendingHashtagsResponseDto,
-} from '../dto/post.dto';
+} from '@modules/post/dto';
 import { FileService } from '../../file/providers/file.service';
-import { PostAccessLevel, PostType } from '../entities/post.enum';
+import { PostAccessLevel, PostType } from '@modules/post/entities/post.enum';
 import { NotificationService } from '../../notification/providers/notification.service';
 import { NotificationType, ReferenceModel } from '../../notification/entities/notification.enum';
 import { InjectModel } from '@nestjs/mongoose';
@@ -24,7 +24,7 @@ import { User } from '../../user/entities/user.schema';
 import { UserService } from '../../user/providers/user.service';
 import { CommentService } from '../../comment/providers/comment.service';
 import { FILE_TYPE_CONSTANTS } from '@common/constants/file-types.constant';
-import { PostStatus } from '../entities/post.enum';
+import { PostStatus } from '@modules/post/entities/post.enum';
 
 @Injectable()
 export class PostService {

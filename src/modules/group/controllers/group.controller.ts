@@ -41,7 +41,7 @@ import { Roles } from '@common/decorators';
 import { Role } from '@common/enum';
 import { PostService } from '@modules/post/providers/post.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { CreatePostDto, PaginatedPostsResponseDto } from '@modules/post/dto/post.dto';
+import { CreatePostDto, PaginatedPostsResponseDto } from '@modules/post/dto';
 import { PostStatus } from '@modules/post/entities/post.enum';
 
 @ApiTags('Group')

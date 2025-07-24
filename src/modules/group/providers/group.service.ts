@@ -16,7 +16,7 @@ import {
 import { SportType, ActivityLevel } from '@modules/user/enums/user.enum';
 import { NotificationService } from '../../notification/providers/notification.service';
 import { NotificationType, ReferenceModel } from '../../notification/entities/notification.enum';
-import { CreatePostDto } from '@modules/post/dto/post.dto';
+import { CreatePostDto } from '@modules/post/dto';
 import { PostService } from '@modules/post/providers/post.service';
 import { PostStatus } from '@modules/post/entities/post.enum';
 import { UserService } from '@modules/user/providers/user.service';

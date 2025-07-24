@@ -33,7 +33,7 @@ import {
 	UpdatePostDto,
 	TrendingHashtagsResponseDto,
 	ClearUrlDto,
-} from '../dto/post.dto';
+} from '@modules/post/dto';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { SportType } from '@modules/user/enums/user.enum';
 import { Public } from '@common/decorators';
