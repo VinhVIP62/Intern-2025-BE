@@ -1,4 +1,4 @@
-import { Post } from '../entities/post.schema';
+import { Post } from '@modules/post/entities/post.schema';
 import { Types } from 'mongoose';
 import { CreatePostDto, UpdatePostDto } from '@modules/post/dto';
 import { PostAccessLevel } from '@modules/post/entities/post.enum';

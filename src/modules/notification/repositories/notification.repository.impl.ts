@@ -2,17 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { INotificationRepository } from './notification.repository';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { Notification } from '../entities/notification.schema';
-import { Post, PostSchema } from '../../post/entities/post.schema';
-import { Event, EventSchema } from '../../event/entities/event.schema';
-import { Group, GroupSchema } from '../../group/entities/group.schema';
-import { Comment, CommentSchema } from '../../comment/entities/comment.schema';
-import { User, UserSchema } from '../../user/entities/user.schema';
-import { Achievement, AchievementSchema } from '../../achievement/entities/achievement.schema';
+import { Notification } from '@modules/notification/entities/notification.schema';
+import { Post, PostSchema } from '@modules/post/entities/post.schema';
+import { Event, EventSchema } from '@modules/event/entities/event.schema';
+import { Group, GroupSchema } from '@modules/group/entities/group.schema';
+import { Comment, CommentSchema } from '@modules/comment/entities/comment.schema';
+import { User, UserSchema } from '@modules/user/entities/user.schema';
+import { Achievement, AchievementSchema } from '@modules/achievement/entities/achievement.schema';
 import {
 	FriendRequest,
 	FriendRequestSchema,
-} from '../../friend-request/entities/friend-request.schema';
+} from '@modules/friend-request/entities/friend-request.schema';
 
 @Injectable()
 export class NotificationRepositoryImpl implements INotificationRepository {

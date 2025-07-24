@@ -1,6 +1,6 @@
 import { BasePaginatedResponseDto } from '@common/dto/base-pagination.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { UserBasicInfoDto } from '../request/user-basic-info.dto';
+import { UserBasicInfoDto } from '@modules/user/dto/request/user-basic-info.dto';
 import { Exclude, Expose } from 'class-transformer';
 
 export class ResponseUserDto {

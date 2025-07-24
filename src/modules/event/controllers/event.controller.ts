@@ -14,7 +14,7 @@ import {
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody } from '@nestjs/swagger';
 import { I18n, I18nContext } from 'nestjs-i18n';
-import { EventService } from '../providers/event.service';
+import { EventService } from '@modules/event/providers/event.service';
 import {
 	CreateEventDto,
 	UpdateEventDto,

@@ -7,7 +7,7 @@ import {
 import { Inject } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { I18nContext } from 'nestjs-i18n';
-import { Comment } from '../entities/comment.schema';
+import { Comment } from '@modules/comment/entities/comment.schema';
 import { Post } from '@modules/post/entities/post.schema';
 import { NotificationService } from '@modules/notification/providers/notification.service';
 import { NotificationType, ReferenceModel } from '@modules/notification/entities/notification.enum';
@@ -19,11 +19,11 @@ import {
 	PaginatedCommentsResponseDto,
 	CommentResponseDto,
 	TagUsersDto,
-} from '../dto/comment.dto';
+} from '@modules/comment/dto/comment.dto';
 import {
 	ICommentRepository,
 	ICommentRepository as ICommentRepositoryToken,
-} from '../repositories/comment.repository';
+} from '@modules/comment/repositories/comment.repository';
 
 @Injectable()
 export class CommentService {

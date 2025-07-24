@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { Comment } from '../entities/comment.schema';
+import { Comment } from '@modules/comment/entities/comment.schema';
 import { Post } from '@modules/post/entities/post.schema';
 import {
 	CreateCommentDto,
@@ -8,7 +8,7 @@ import {
 	UpdateCommentVisibilityDto,
 	PaginatedCommentsResponseDto,
 	CommentResponseDto,
-} from '../dto/comment.dto';
+} from '@modules/comment/dto/comment.dto';
 
 export interface ICommentRepository {
 	// Post operations

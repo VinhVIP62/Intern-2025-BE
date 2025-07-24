@@ -18,7 +18,7 @@ import { Type } from 'class-transformer';
 import { EventStatus, OrganizerType } from '@modules/event/entities/event.enum';
 import { SportType } from '@modules/user/enums/user.enum';
 import { BasePaginationMetaDto } from '@common/dto/base-pagination.dto';
-import { EventLocationDto } from '../event.dto';
+import { EventLocationDto } from '@modules/event/dto/event.dto';
 
 export class EventResponseDto {
 	@ApiProperty({ description: 'ID sự kiện' })

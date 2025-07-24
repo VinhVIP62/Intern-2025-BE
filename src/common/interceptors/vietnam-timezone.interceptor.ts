@@ -1,7 +1,7 @@
 import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { convertDateToVietnamTimezone } from '../utils/timezone.util';
+import { convertDateToVietnamTimezone } from '@common/utils/timezone.util';
 import { Types } from 'mongoose'; // Thêm dòng này
 
 function convertDatesToVietnamTimezone(obj: any, processed = new WeakSet()): any {

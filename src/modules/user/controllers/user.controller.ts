@@ -27,14 +27,19 @@ import {
 	ApiConsumes,
 	ApiOkResponse,
 } from '@nestjs/swagger';
-import { UserService } from '../providers/user.service';
+import { UserService } from '@modules/user/providers/user.service';
 import { ResponseEntity } from '@common/types';
-import { ResponseProfileDto, UpdateProfileDto, FriendSimpleDto, UserBasicInfoDto } from '../dto';
+import {
+	ResponseProfileDto,
+	UpdateProfileDto,
+	FriendSimpleDto,
+	UserBasicInfoDto,
+} from '@modules/user/dto';
 import { I18n, I18nContext } from 'nestjs-i18n';
-import { FileService } from '../../file/providers/file.service';
+import { FileService } from '@modules/file/providers/file.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadApiResponse } from 'cloudinary';
-import { SportType, ActivityLevel } from '../enums/user.enum';
+import { SportType, ActivityLevel } from '@modules/user/enums/user.enum';
 import { plainToInstance } from 'class-transformer';
 import { PaginationQuery } from '@common/decorators/pagination-query.decorator';
 import { PaginationQueryDto } from '@common/dto/pagination-query.dto';

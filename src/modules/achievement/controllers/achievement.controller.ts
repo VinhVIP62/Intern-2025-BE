@@ -4,10 +4,10 @@ import { I18n, I18nContext } from 'nestjs-i18n';
 import { RolesGuard } from '@common/guards';
 import { Roles } from '@common/decorators';
 import { Role } from '@common/enum';
-import { IAchievementRepository } from '../repositories/achievement.repository';
-import { AchievementProgressDto } from '../dto/request/achievement-progress.dto';
-import { IUserAchievementRepository } from '../repositories/user-achievement.repository';
-import { AchievementService } from '../providers/achievement.service';
+import { IAchievementRepository } from '@modules/achievement/repositories/achievement.repository';
+import { AchievementProgressDto } from '@modules/achievement/dto/request/achievement-progress.dto';
+import { IUserAchievementRepository } from '@modules/achievement/repositories/user-achievement.repository';
+import { AchievementService } from '@modules/achievement/providers/achievement.service';
 
 @ApiTags('Achievement')
 @Controller('achievements')

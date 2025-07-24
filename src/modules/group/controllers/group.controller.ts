@@ -24,7 +24,7 @@ import {
 	ApiBody,
 	ApiConsumes,
 } from '@nestjs/swagger';
-import { GroupService } from '../providers/group.service';
+import { GroupService } from '@modules/group/providers/group.service';
 import { ResponseEntity } from '@common/types';
 import {
 	CreateGroupDto,

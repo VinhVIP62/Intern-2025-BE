@@ -24,7 +24,7 @@ import {
 	ApiBody,
 	ApiConsumes,
 } from '@nestjs/swagger';
-import { PostService } from '../providers/post.service';
+import { PostService } from '@modules/post/providers/post.service';
 import { ResponseEntity } from '@common/types';
 import {
 	PostResponseDto,
@@ -41,7 +41,7 @@ import { RolesGuard } from '@common/guards';
 import { Roles } from '@common/decorators';
 import { Role } from '@common/enum';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { PostAccessLevel, PostStatus } from '../entities/post.enum';
+import { PostAccessLevel, PostStatus } from '@modules/post/entities/post.enum';
 import { FILE_TYPE_CONSTANTS } from '@common/constants/file-types.constant';
 import { PaginationQuery } from '@common/decorators/pagination-query.decorator';
 import { PaginationQueryDto } from '@common/dto/pagination-query.dto';

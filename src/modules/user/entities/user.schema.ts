@@ -2,7 +2,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 import bcrypt from 'bcrypt';
-import { ActivityLevel, SportType } from '../enums/user.enum';
+import { ActivityLevel, SportType } from '@modules/user/enums/user.enum';
 import { Role } from '@common/enum';
 import mongooseLeanVirtuals from 'mongoose-lean-virtuals';
 

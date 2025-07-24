@@ -2,10 +2,10 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { TokenService } from './token.service';
 import { UserService } from '@modules/user/providers/user.service';
 import * as bcrypt from 'bcrypt';
-import { Payload, Tokens } from '../types';
-import { RegisterDto } from '../dto/request/register.dto';
+import { Payload, Tokens } from '@modules/auth/types';
+import { RegisterDto } from '@modules/auth/dto/request/register.dto';
 import { User } from '@modules/user/entities/user.schema';
-import { LoginDto } from '../dto/request/login.dto';
+import { LoginDto } from '@modules/auth/dto/request/login.dto';
 import { I18nContext } from 'nestjs-i18n';
 
 @Injectable()

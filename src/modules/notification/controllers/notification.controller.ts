@@ -11,7 +11,7 @@ import {
 	BadRequestException,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
-import { NotificationService } from '../providers/notification.service';
+import { NotificationService } from '@modules/notification/providers/notification.service';
 import { RolesGuard } from '@common/guards';
 import { Roles } from '@common/decorators';
 import { Role } from '@common/enum';

@@ -1,11 +1,11 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { AchievementCriteriaKey } from '../achievement-criteria.constant';
-import { UserStatsDto } from '../dto/user-stats.dto';
-import { IAchievementRepository } from '../repositories/achievement.repository';
-import { IUserAchievementRepository } from '../repositories/user-achievement.repository';
-import { UserService } from '../../user/providers/user.service';
-import { EventService } from '../../event/providers/event.service';
-import { PostService } from '../../post/providers/post.service';
+import { AchievementCriteriaKey } from '@modules/achievement/achievement-criteria.constant';
+import { UserStatsDto } from '@modules/achievement/dto/user-stats.dto';
+import { IAchievementRepository } from '@modules/achievement/repositories/achievement.repository';
+import { IUserAchievementRepository } from '@modules/achievement/repositories/user-achievement.repository';
+import { UserService } from '@modules/user/providers/user.service';
+import { EventService } from '@modules/event/providers/event.service';
+import { PostService } from '@modules/post/providers/post.service';
 import { NotificationService } from '@modules/notification/providers/notification.service';
 import { NotificationType, ReferenceModel } from '@modules/notification/entities/notification.enum';
 

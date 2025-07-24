@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { IFriendRequestRepository } from './friend-request.repository';
-import { FriendRequest } from '../entities/friend-request.schema';
-import { FriendRequestStatus } from '../entities/friend-request.enum';
+import { FriendRequest } from '@modules/friend-request/entities/friend-request.schema';
+import { FriendRequestStatus } from '@modules/friend-request/entities/friend-request.enum';
 import { User } from '@modules/user/entities/user.schema';
 
 @Injectable()

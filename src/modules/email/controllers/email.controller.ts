@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Version } from '@nestjs/common';
-import { EmailService } from '../providers/email.service';
-import { SendEmailDto } from '../dto/request/send-email.dto';
-import { ResponseEmailDto } from '../dto/response/response-email.dto';
+import { EmailService } from '@modules/email/providers/email.service';
+import { SendEmailDto } from '@modules/email/dto/request/send-email.dto';
+import { ResponseEmailDto } from '@modules/email/dto/response/response-email.dto';
 import { ResponseEntity } from '@common/types';
 import { ApiOperation, ApiResponse, ApiTags, ApiBody, ApiHeader } from '@nestjs/swagger';
 import { Public } from '@common/decorators';

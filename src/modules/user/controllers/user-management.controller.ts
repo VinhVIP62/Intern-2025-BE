@@ -1,12 +1,12 @@
 import { Controller, Post, Delete, Get, Request, Param, UseGuards, Version } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
-import { UserService } from '../providers/user.service';
+import { UserService } from '@modules/user/providers/user.service';
 import { RolesGuard } from '@common/guards';
 import { Roles } from '@common/decorators';
 import { Role } from '@common/enum';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { ResponseEntity } from '@common/types';
-import { UserBasicInfoDto } from '../dto/request/user-basic-info.dto';
+import { UserBasicInfoDto } from '@modules/user/dto/request/user-basic-info.dto';
 
 @ApiTags('User Management')
 @Controller('users')

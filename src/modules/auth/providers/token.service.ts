@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '@modules/user/providers/user.service';
-import { Payload, Tokens } from '../types';
+import { Payload, Tokens } from '@modules/auth/types';
 
 @Injectable()
 export class TokenService {
