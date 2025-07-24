@@ -6,6 +6,8 @@ import { QuerriableType, WithPopulated } from '@common/crud/entities';
 import { MongooseSoftDeleteRepositoryImpl } from '@common/crud/repos';
 import { CursorPaginationOption } from '@common/types/data';
 
+import { CustomRequestCtx } from '@shared/modules/request-ctx/types';
+
 import { SocialPost } from '../entities';
 import { PostType } from '../enums';
 import { IPostRepository } from './social-post.repository';
@@ -40,6 +42,7 @@ export class PostRepositoryImpl
 		where: QuerriableType<SocialPost>,
 		options?: CursorPaginationOption<string>,
 	): Promise<WithPopulated<SocialPost>[]> {
+		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
 		const cursorPost = options?.cursor ? await this.findOneByIdOrFail(options.cursor) : undefined;
 		const filter: FilterQuery<SocialPost> = where;
 		if (cursorPost) {
@@ -59,6 +62,7 @@ export class PostRepositoryImpl
 				.sort({ createdAt: -1, _id: -1 })
 				.limit(options?.limit || 10)
 				.populate(this.transformPopulate())
+				.session(session)
 				.exec()
 		).map(p => p.toObject());
 		return await Promise.all(foundPosts);
