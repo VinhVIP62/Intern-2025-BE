@@ -7,6 +7,8 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { isValidObjectId } from 'mongoose';
 import { EventInvitationStatus } from '../entities/event.enum';
 import { UserService } from '@modules/user/providers/user.service';
+import { NotificationService } from '@modules/notification/providers/notification.service';
+import { NotificationType, ReferenceModel } from '@modules/notification/entities/notification.enum';
 
 @Injectable()
 export class EventService {
@@ -14,6 +16,7 @@ export class EventService {
 		private readonly eventRepository: IEventRepository,
 		private readonly groupService: GroupService,
 		private readonly userService: UserService,
+		private readonly notificationService: NotificationService,
 	) {}
 
 	async getBasicInfos(
@@ -171,6 +174,25 @@ export class EventService {
 			);
 		}
 		await this.eventRepository.inviteUsersToEvent(eventId, senderId, userIds);
+
+		// Send notifications to invited users (except sender)
+		await Promise.all(
+			userIds
+				.filter(invitedUserId => invitedUserId !== senderId)
+				.map(invitedUserId =>
+					this.notificationService.createNotification(
+						{
+							recipient: invitedUserId,
+							sender: senderId,
+							type: NotificationType.EVENT_INVITATION,
+							message: `@${senderId} MESSAGE_INVITED_TO_EVENT`,
+							referenceId: eventId,
+							referenceModel: ReferenceModel.EVENT,
+						},
+						i18n,
+					),
+				),
+		);
 	}
 
 	async getUserEventInvitations(
@@ -198,6 +220,36 @@ export class EventService {
 		// Nếu accept thì thêm user vào participants của event
 		if (status === EventInvitationStatus.ACCEPTED) {
 			await this.eventRepository.joinEvent(invitation.eventId.toString(), userId);
+			// Notify sender (except self)
+			if (invitation.senderId.toString() !== userId.toString()) {
+				await this.notificationService.createNotification(
+					{
+						recipient: invitation.senderId.toString(),
+						sender: userId,
+						type: NotificationType.EVENT_INVITATION_ACCEPTED,
+						message: `@${userId} MESSAGE_ACCEPTED_EVENT_INVITATION`,
+						referenceId: invitation.eventId.toString(),
+						referenceModel: ReferenceModel.EVENT,
+					},
+					i18n,
+				);
+			}
+		}
+		if (status === EventInvitationStatus.REJECTED) {
+			// Notify sender (except self)
+			if (invitation.senderId.toString() !== userId.toString()) {
+				await this.notificationService.createNotification(
+					{
+						recipient: invitation.senderId.toString(),
+						sender: userId,
+						type: NotificationType.EVENT_INVITATION_REJECTED,
+						message: `@${userId} MESSAGE_REJECTED_EVENT_INVITATION`,
+						referenceId: invitation.eventId.toString(),
+						referenceModel: ReferenceModel.EVENT,
+					},
+					i18n,
+				);
+			}
 		}
 		return invitation;
 	}
@@ -212,16 +264,37 @@ export class EventService {
 	}
 
 	// Cancel invitation
+	private async getInvitationById(invitationId: string): Promise<any> {
+		// eventRepository is IEventRepository, but we need the concrete implementation for invitationModel
+		const repo = this.eventRepository as any;
+		if (repo.invitationModel) {
+			return repo.invitationModel.findById(invitationId).lean();
+		}
+		return null;
+	}
+
 	async cancelInvitation(invitationId: string, userId: string, i18n: any): Promise<void> {
-		const deleted = await this.eventRepository.cancelInvitation(invitationId, userId);
-		if (!deleted) {
-			throw new HttpException(
-				{
-					success: false,
-					message: i18n.t('event.INVITATION_NOT_FOUND_OR_NO_PERMISSION'),
-				},
-				HttpStatus.NOT_FOUND,
-			);
+		// Lấy thông tin invitation trước khi xóa để gửi notification
+		const invitation = await this.getInvitationById(invitationId);
+		await this.eventRepository.cancelInvitation(invitationId, userId);
+		// Notify recipient nếu người hủy là sender, hoặc notify sender nếu người hủy là recipient
+		if (invitation) {
+			const isSender = invitation.senderId.toString() === userId.toString();
+			const notifyUserId =
+				isSender ? invitation.recipientId.toString() : invitation.senderId.toString();
+			if (notifyUserId !== userId.toString()) {
+				await this.notificationService.createNotification(
+					{
+						recipient: notifyUserId,
+						sender: userId,
+						type: NotificationType.EVENT_INVITATION,
+						message: `@${userId} MESSAGE_CANCELLED_EVENT_INVITATION`,
+						referenceId: invitation.eventId.toString(),
+						referenceModel: ReferenceModel.EVENT,
+					},
+					i18n,
+				);
+			}
 		}
 	}
 

@@ -7757,7 +7757,9 @@
               "mention",
               "follow",
               "share",
-              "request_approve_post"
+              "request_approve_post",
+              "event_invitation_accepted",
+              "event_invitation_rejected"
             ]
           },
           "message": {
