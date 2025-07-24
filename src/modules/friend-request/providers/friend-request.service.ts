@@ -8,7 +8,7 @@ import { Types } from 'mongoose';
 import { I18nContext } from 'nestjs-i18n';
 import { IFriendRequestRepository } from '../repositories/friend-request.repository';
 import { FriendRequestStatus } from '../entities/friend-request.enum';
-import { CreateFriendRequestDto } from '../dto/friend-request.dto';
+import { CreateFriendRequestDto } from '../dto';
 import { IUserRepository } from '@modules/user/repositories/user.repository';
 import { UserService } from '@modules/user/providers/user.service';
 

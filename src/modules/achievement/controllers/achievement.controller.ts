@@ -5,7 +5,7 @@ import { RolesGuard } from '@common/guards';
 import { Roles } from '@common/decorators';
 import { Role } from '@common/enum';
 import { IAchievementRepository } from '../repositories/achievement.repository';
-import { AchievementProgressDto } from '../dto/achievement-progress.dto';
+import { AchievementProgressDto } from '../dto/request/achievement-progress.dto';
 import { IUserAchievementRepository } from '../repositories/user-achievement.repository';
 import { AchievementService } from '../providers/achievement.service';
 

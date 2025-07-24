@@ -15,7 +15,7 @@ import {
 	ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { SportType, ActivityLevel } from '../enums/user.enum';
+import { SportType, ActivityLevel } from '../../enums/user.enum';
 
 class LocationDto {
 	@ApiPropertyOptional({ example: 'Hanoi' })

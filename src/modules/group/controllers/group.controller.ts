@@ -32,7 +32,7 @@ import {
 	GroupResponseDto,
 	PaginatedGroupsResponseDto,
 	PaginatedSimpleGroupsResponseDto,
-} from '../dto/group.dto';
+} from '@modules/group/dto';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { SportType } from '@modules/user/enums/user.enum';
 import { Public } from '@common/decorators';
@@ -41,7 +41,7 @@ import { Roles } from '@common/decorators';
 import { Role } from '@common/enum';
 import { PostService } from '@modules/post/providers/post.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
-import { CreatePostDto, PaginatedPostsResponseDto } from '@modules/post/dto/post.dto';
+import { CreatePostDto, PaginatedPostsResponseDto } from '@modules/post/dto';
 import { PostStatus } from '@modules/post/entities/post.enum';
 
 @ApiTags('Group')

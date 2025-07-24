@@ -6,17 +6,11 @@ import {
 	PaginatedSearchResultDto,
 	SearchFilterType,
 	SearchResultDto,
-} from '../dto/search.dto';
-import { ISearchRepository } from '../repositories/search.repository';
+} from '@modules/search/dto';
+import { ISearchRepository } from '@modules/search/repositories/search.repository';
 import { PostService } from '@modules/post/providers/post.service';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
-import { SearchHistory } from '../entities/searchHistory.schema';
-import { CreateSearchHistoryInternalDto } from '../dto/searchHistory.dto';
-import { ISearchHistoryRepository } from '../repositories/searchHistory.repository';
-import { User } from '@modules/user/entities/user.schema';
-import { Group } from '@modules/group/entities/group.schema';
-import { Event } from '@modules/event/entities/event.schema';
+import { Types } from 'mongoose';
+import { ISearchHistoryRepository } from '@modules/search/repositories/searchHistory.repository';
 import { UserService } from '@modules/user/providers/user.service';
 import { GroupService } from '@modules/group/providers/group.service';
 import { EventService } from '@modules/event/providers/event.service';

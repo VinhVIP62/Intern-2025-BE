@@ -16,8 +16,8 @@ import { Roles } from '@common/decorators';
 import { Role } from '@common/enum';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { ResponseEntity } from '@common/types';
-import { UserBasicInfoDto } from '../dto/user-basic-info.dto';
-import { PaginatedUserBasicInfoResponseDto } from '../dto/user-response.dto';
+import { UserBasicInfoDto } from '../dto/request/user-basic-info.dto';
+import { PaginatedUserBasicInfoResponseDto } from '../dto/response/user-response.dto';
 
 @ApiTags('User Follow')
 @Controller('users')

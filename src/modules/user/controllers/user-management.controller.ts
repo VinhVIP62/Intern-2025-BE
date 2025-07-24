@@ -6,7 +6,7 @@ import { Roles } from '@common/decorators';
 import { Role } from '@common/enum';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { ResponseEntity } from '@common/types';
-import { UserBasicInfoDto } from '../dto/user-basic-info.dto';
+import { UserBasicInfoDto } from '../dto/request/user-basic-info.dto';
 
 @ApiTags('User Management')
 @Controller('users')

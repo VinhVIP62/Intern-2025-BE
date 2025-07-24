@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsOptional, IsString, IsDate, IsArray, IsEnum, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
-import { ActivityLevel, SportType } from '../enums/user.enum';
+import { ActivityLevel, SportType } from '../../enums/user.enum';
 
 export class LocationDto {
 	@ApiProperty({ description: 'Thành phố', required: false })

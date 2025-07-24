@@ -10,7 +10,7 @@ import {
 	GroupResponseDto,
 	PaginatedSimpleGroupsResponseDto,
 	SimpleGroupResponseDto,
-} from '../dto/group.dto';
+} from '../dto';
 import { SportType } from '@modules/user/enums/user.enum';
 import { User } from '../../user/entities/user.schema';
 

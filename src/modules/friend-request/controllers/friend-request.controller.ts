@@ -21,7 +21,7 @@ import {
 	FriendRequestResponseDto,
 	PaginatedFriendRequestsResponseDto,
 	FriendshipStatusResponseDto,
-} from '../dto/friend-request.dto';
+} from '../dto';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { RolesGuard } from '@common/guards';
 import { Roles } from '@common/decorators';

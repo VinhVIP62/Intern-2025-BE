@@ -3,9 +3,9 @@ import { TokenService } from './token.service';
 import { UserService } from '@modules/user/providers/user.service';
 import * as bcrypt from 'bcrypt';
 import { Payload, Tokens } from '../types';
-import { RegisterDto } from '../dto/register.dto';
+import { RegisterDto } from '../dto/request/register.dto';
 import { User } from '@modules/user/entities/user.schema';
-import { LoginDto } from '../dto/login.dto';
+import { LoginDto } from '../dto/request/login.dto';
 import { I18nContext } from 'nestjs-i18n';
 
 @Injectable()

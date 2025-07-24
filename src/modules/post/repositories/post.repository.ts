@@ -1,8 +1,8 @@
 import { Post } from '../entities/post.schema';
 import { Types } from 'mongoose';
-import { CreatePostDto, UpdatePostDto } from '../dto/post.dto';
-import { PostAccessLevel } from '../entities/post.enum';
-import { PostStatus } from '../entities/post.enum';
+import { CreatePostDto, UpdatePostDto } from '@modules/post/dto';
+import { PostAccessLevel } from '@modules/post/entities/post.enum';
+import { PostStatus } from '@modules/post/entities/post.enum';
 export interface IPostRepository {
 	findAll(
 		page: number,

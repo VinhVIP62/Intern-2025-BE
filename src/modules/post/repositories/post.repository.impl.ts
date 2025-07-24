@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { Post } from '../entities/post.schema';
-import { IPostRepository } from './post.repository';
-import { PostAccessLevel, PostStatus } from '../entities/post.enum';
-import { CreatePostDto, UpdatePostDto } from '../dto/post.dto';
+import { Post } from '@modules/post/entities/post.schema';
+import { IPostRepository } from '@modules/post/repositories/post.repository';
+import { PostAccessLevel, PostStatus } from '@modules/post/entities/post.enum';
+import { CreatePostDto, UpdatePostDto } from '@modules/post/dto';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class PostRepositoryImpl implements IPostRepository {
