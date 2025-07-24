@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { SearchHistory } from '../entities/searchHistory.schema';
-import { CreateSearchHistoryInternalDto } from '../dto/searchHistory.dto';
-import { ISearchHistoryRepository } from './searchHistory.repository';
+import { SearchHistory } from '@modules/search/entities/searchHistory.schema';
+import { CreateSearchHistoryInternalDto } from '@modules/search/dto';
+import { ISearchHistoryRepository } from '@modules/search/repositories/searchHistory.repository';
 
 @Injectable()
 export class SearchHistoryRepositoryImpl implements ISearchHistoryRepository {

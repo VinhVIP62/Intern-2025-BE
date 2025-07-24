@@ -11,16 +11,16 @@ import {
 	SearchQueryDto,
 	PaginatedSearchResultDto,
 	SearchFilterType,
-} from '../dto/search.dto';
-import { SearchService } from '../providers/search.service';
-import { ISearchHistoryRepository } from '../repositories/searchHistory.repository';
+} from '@modules/search/dto';
+import { SearchService } from '@modules/search/providers/search.service';
+import { ISearchHistoryRepository } from '@modules/search/repositories/searchHistory.repository';
 import {
 	CreateSearchHistoryDto,
 	CreateSearchHistoryInternalDto,
 	SearchHistoryResultDto,
 	PaginatedEnhancedSearchHistoryResultDto,
 	EnhancedSearchHistoryResultDto,
-} from '../dto/searchHistory.dto';
+} from '@modules/search/dto';
 import { Inject } from '@nestjs/common';
 import { Types } from 'mongoose';
 

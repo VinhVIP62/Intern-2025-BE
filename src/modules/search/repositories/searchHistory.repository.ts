@@ -1,5 +1,5 @@
-import { CreateSearchHistoryInternalDto } from '../dto/searchHistory.dto';
-import { SearchHistory } from '../entities/searchHistory.schema';
+import { CreateSearchHistoryInternalDto } from '@modules/search/dto';
+import { SearchHistory } from '@modules/search/entities/searchHistory.schema';
 import { Types } from 'mongoose';
 
 export interface ISearchHistoryRepository {
