@@ -31,17 +31,19 @@ export class NotificationService {
 		const notification = await this.notificationRepository.createNotification(data);
 		// Lấy FCM token của user nhận qua repository
 		const recipient = await this.userRepository.findOneById(data.recipient);
+		const lang = recipient?.deviceLanguage || 'vi';
 		if (recipient?.fcmToken) {
 			await admin.messaging().send({
 				token: recipient.fcmToken,
 				notification: {
-					title: i18n ? i18n.t('notification.NEW_NOTIFICATION') : 'New Notification',
+					title: i18n.t('notification.NEW_NOTIFICATION', { lang }),
 					body: await this.translateNotificationMessage(
 						data.message,
 						i18n,
 						data.sender,
 						data.referenceModel,
 						data.referenceId,
+						lang,
 					),
 				},
 				data: {
@@ -61,6 +63,7 @@ export class NotificationService {
 		sender?: string,
 		referenceModel?: string,
 		referenceId?: string,
+		lang?: string,
 	): Promise<string> {
 		let translatedMessage = message;
 
@@ -68,7 +71,7 @@ export class NotificationService {
 		NOTIFICATION_MESSAGE_KEYS.forEach(key => {
 			if (translatedMessage.includes(key)) {
 				try {
-					const translatedValue = i18n ? i18n.t(`notification.${key}`) : key;
+					const translatedValue = i18n.t(`notification.${key}`, { lang });
 					translatedMessage = translatedMessage.replace(key, translatedValue);
 				} catch (error) {
 					console.warn(`Translation key not found: notification.${key}`);

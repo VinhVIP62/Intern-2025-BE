@@ -74,7 +74,9 @@ export class AchievementService {
 			if (!existed) {
 				await this.userAchievementRepo.unlockAchievement(userId, achievement._id);
 				// Send notification to user
-				const name = i18n.t(`achievement.${achievement.name}`);
+				const recipient = await this.userService['userRepository'].findOneById(userId);
+				const lang = recipient?.deviceLanguage || 'vi';
+				const name = i18n.t(`achievement.${achievement.name}`, { lang });
 				await this.notificationService.createNotification(
 					{
 						recipient: userId,
