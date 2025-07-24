@@ -14,6 +14,8 @@ export enum NotificationType {
 	FOLLOW = 'follow',
 	SHARE = 'share',
 	REQUEST_APPROVE_POST = 'request_approve_post',
+	EVENT_INVITATION_ACCEPTED = 'event_invitation_accepted',
+	EVENT_INVITATION_REJECTED = 'event_invitation_rejected',
 }
 
 export enum ReferenceModel {
