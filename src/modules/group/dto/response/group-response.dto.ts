@@ -17,7 +17,7 @@ import { Type } from 'class-transformer';
 import { SportType, ActivityLevel } from '@modules/user/enums/user.enum';
 import { BasePaginatedResponseDto } from '@common/dto/base-pagination.dto';
 import { BasePaginationMetaDto } from '@common/dto/base-pagination.dto';
-import { LocationDto } from '@modules/user/dto/update-profile.dto';
+import { LocationDto } from '@modules/user/dto/request/update-profile.dto';
 import { JoinConditionsDto } from '../request/group-request.dto';
 
 export class GroupResponseDto {
