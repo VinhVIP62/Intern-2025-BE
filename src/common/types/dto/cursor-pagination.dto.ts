@@ -1,10 +1,12 @@
 import { Expose, Type } from 'class-transformer';
-import { IsInt, IsMongoId, IsOptional, IsPositive } from 'class-validator';
+import { IsInt, IsOptional, IsPositive } from 'class-validator';
+
+import { IsValidId } from '@common/decorators/class-validator';
 
 export class CursorPaginationDto {
 	@Expose()
-	@IsMongoId()
 	@IsOptional()
+	@IsValidId()
 	cursor?: string;
 
 	@Expose()

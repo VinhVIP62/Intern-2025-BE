@@ -1,16 +1,9 @@
 import { Expose, Transform, Type } from 'class-transformer';
-import {
-	ArrayMaxSize,
-	IsArray,
-	IsEnum,
-	IsMongoId,
-	IsNotEmpty,
-	IsOptional,
-	IsString,
-} from 'class-validator';
+import { ArrayMaxSize, IsArray, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { HasExtension, HasMimeType, IsFile, MemoryStoredFile } from 'nestjs-form-data';
 
 import { MAX_FILES_NUM } from '@common/constants';
+import { IsValidId } from '@common/decorators/class-validator';
 import { Visibility } from '@common/enums';
 
 import { PostType } from '../../enums';
@@ -35,20 +28,20 @@ export class CreatePostDto {
 	postType!: PostType;
 
 	@Expose()
-	@IsMongoId()
 	@IsOptional()
+	@IsValidId()
 	visibleToCommunityId?: string;
 
 	@Expose()
 	@IsArray()
-	@IsMongoId({ each: true })
 	@IsOptional()
+	@IsValidId({ each: true })
 	visibleToUsersIds?: string[];
 
 	@Expose()
 	@IsArray()
-	@IsMongoId({ each: true })
 	@IsOptional()
+	@IsValidId({ each: true })
 	invisibleToUsersIds?: string[];
 }
 
@@ -79,8 +72,8 @@ export class CreateSharePostDto extends CreatePostDto {
 export class CreateEventPostDto extends CreatePostDto {
 	@Expose()
 	@Type(() => String)
-	@IsMongoId()
 	@IsString()
+	@IsValidId()
 	eventId!: string;
 
 	@Expose()

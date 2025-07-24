@@ -35,6 +35,7 @@ export class PostService {
 		data: Partial<SocialPost> & { files?: MemoryStoredFile[] },
 	): Promise<WithPopulated<SocialPost>> {
 		if (data.files) data.fileUrls = await this.fileHostService.files2Urls(data.files);
+		console.log(data);
 		const createdPost = this.postRepository.create(data);
 		return createdPost;
 	}

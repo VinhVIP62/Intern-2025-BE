@@ -2,6 +2,7 @@ import { Controller, Delete, Get, Param, Post, Query, Req } from '@nestjs/common
 
 import { PriorityRole, ResponseTransform } from '@common/decorators';
 import { Role } from '@common/enums';
+import { ValidateIdPipe } from '@common/pipes';
 import { AuthenticatedRequest, OffsetPaginatedData } from '@common/types/data';
 import { plainToInstanceStrict } from '@common/utils';
 
@@ -23,7 +24,7 @@ export class UserRelationshipController {
 
 	@Post(':userid/friend-request')
 	async addFriend(
-		@Param('userid') userId: string,
+		@Param('userid', ValidateIdPipe) userId: string,
 		@Req() request: AuthenticatedRequest,
 	): Promise<ResponseFriendshipDto> {
 		const from = request.user.id;
@@ -34,7 +35,7 @@ export class UserRelationshipController {
 
 	@Delete(':userid/friend-request')
 	async cancelFriendRequest(
-		@Param('userid') userId: string,
+		@Param('userid', ValidateIdPipe) userId: string,
 		@Req() request: AuthenticatedRequest,
 	): Promise<ResponseFriendshipDto> {
 		const from = request.user.id;
@@ -45,7 +46,7 @@ export class UserRelationshipController {
 
 	@Delete('friends/:requestid')
 	async denyFriendRequest(
-		@Param('requestid') requestId: string,
+		@Param('requestid', ValidateIdPipe) requestId: string,
 		@Req() request: AuthenticatedRequest,
 	): Promise<ResponseFriendshipDto> {
 		const friendRequest = await this.relationshipService.denyFriendRequest(
@@ -57,7 +58,7 @@ export class UserRelationshipController {
 
 	@Post('friends/:requestid')
 	async acceptFriendRequest(
-		@Param('requestid') requestId: string,
+		@Param('requestid', ValidateIdPipe) requestId: string,
 		@Req() request: AuthenticatedRequest,
 	): Promise<ResponseFriendshipDto> {
 		const friendRequest = await this.relationshipService.acceptFriendRequest(
@@ -69,7 +70,7 @@ export class UserRelationshipController {
 
 	@Delete(':userid/unfriend')
 	async unfriend(
-		@Param('userid') userId: string,
+		@Param('userid', ValidateIdPipe) userId: string,
 		@Req() request: AuthenticatedRequest,
 	): Promise<ResponseFriendshipDto> {
 		const from = request.user.id;
@@ -112,7 +113,7 @@ export class UserRelationshipController {
 	@Get(':userid/friends')
 	@ResponseTransform({ pagination: true })
 	async getFriendListOf(
-		@Param('userid') userId: string,
+		@Param('userid', ValidateIdPipe) userId: string,
 		@Query() query: GetFriendListDto,
 	): Promise<OffsetPaginatedData<ResponseFriendshipListDto>> {
 		const foundFriendList = await this.relationshipService.getFriendListOf(userId);
@@ -125,7 +126,7 @@ export class UserRelationshipController {
 
 	@Post('blocks/:userid')
 	async block(
-		@Param('userid') userId: string,
+		@Param('userid', ValidateIdPipe) userId: string,
 		@Req() request: AuthenticatedRequest,
 	): Promise<ResponseBlockDto> {
 		const from = request.user.id;
@@ -136,7 +137,7 @@ export class UserRelationshipController {
 
 	@Delete('blocks/:userid')
 	async unblock(
-		@Param('userid') userId: string,
+		@Param('userid', ValidateIdPipe) userId: string,
 		@Req() request: AuthenticatedRequest,
 	): Promise<ResponseBlockDto> {
 		const from = request.user.id;

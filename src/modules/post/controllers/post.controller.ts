@@ -15,7 +15,7 @@ import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 import { WithPopulated } from '@common/crud/entities';
 import { PriorityRole, ResponseTransform } from '@common/decorators';
 import { Action, Role } from '@common/enums';
-import { UnionValidationPipe } from '@common/pipes';
+import { UnionValidationPipe, ValidateIdPipe } from '@common/pipes';
 import { AuthenticatedRequest, CursorPaginatedData } from '@common/types/data';
 import { plainToInstanceStrict } from '@common/utils';
 
@@ -49,7 +49,9 @@ export class PostController {
 
 	@Version('1')
 	@Delete(':postid')
-	async deletePost(@Param('postid') postId: string): Promise<WithPopulated<ResponsePostDto>> {
+	async deletePost(
+		@Param('postid', ValidateIdPipe) postId: string,
+	): Promise<WithPopulated<ResponsePostDto>> {
 		await this.postService.checkAccessTo(postId, Action.DELETE);
 		const deletedPost = await this.postService.deletePost(postId);
 		return plainToInstanceStrict(ResponsePostDto, deletedPost);
@@ -59,7 +61,7 @@ export class PostController {
 	@Patch(':postid')
 	@FormDataRequest({ storage: MemoryStoredFile })
 	async updatePost(
-		@Param('postid') postId: string,
+		@Param('postid', ValidateIdPipe) postId: string,
 		@Body(
 			new UnionValidationPipe<UpdateEventPostDto | UpdateFilePostDto | UpdateSharePostDto>({
 				discriminator: 'postType',
@@ -93,7 +95,9 @@ export class PostController {
 
 	@Version('1')
 	@Get(':postid')
-	async getPost(@Param('postid') postId: string): Promise<WithPopulated<ResponsePostDto>> {
+	async getPost(
+		@Param('postid', ValidateIdPipe) postId: string,
+	): Promise<WithPopulated<ResponsePostDto>> {
 		await this.postService.checkAccessTo(postId, Action.READ);
 		const foundPost = await this.postService.getPost(postId);
 		return plainToInstanceStrict(ResponsePostDto, foundPost);
@@ -102,7 +106,7 @@ export class PostController {
 	@Version('1')
 	@Post(':postid/share')
 	async sharePost(
-		@Param('postid') postId: string,
+		@Param('postid', ValidateIdPipe) postId: string,
 		@Req() request: AuthenticatedRequest,
 		@Body() body: CreateSharePostDto,
 	): Promise<WithPopulated<ResponsePostDto>> {
