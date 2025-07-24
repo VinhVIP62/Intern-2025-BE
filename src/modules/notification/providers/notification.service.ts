@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { INotificationRepository } from '../repositories/notification.repository';
+import { INotificationRepository } from '@modules/notification/repositories/notification.repository';
 import { I18nContext } from 'nestjs-i18n';
-import { CreateNotificationDto } from '../dto/notification.dto';
+import { CreateNotificationDto } from '@modules/notification/dto';
 import admin from '../../../firebase';
-import { IUserRepository } from '../../user/repositories/user.repository';
+import { IUserRepository } from '@modules/user/repositories/user.repository';
 import { NOTIFICATION_MESSAGE_KEYS } from '@common/constants/message-key.constant';
-import { IGroupRepository } from '../../group/repositories/group.repository';
-import { IPostRepository } from '../../post/repositories/post.repository';
-import { ICommentRepository } from '../../comment/repositories/comment.repository';
-import { ReferenceModel } from '../entities/notification.enum';
-import { IEventRepository } from '../../event/repositories/event.repository';
-import { IAchievementRepository } from '../../achievement/repositories/achievement.repository';
-import { IFriendRequestRepository } from '../../friend-request/repositories/friend-request.repository';
+import { IGroupRepository } from '@modules/group/repositories/group.repository';
+import { IPostRepository } from '@modules/post/repositories/post.repository';
+import { ICommentRepository } from '@modules/comment/repositories/comment.repository';
+import { ReferenceModel } from '@modules/notification/entities/notification.enum';
+import { IEventRepository } from '@modules/event/repositories/event.repository';
+import { IAchievementRepository } from '@modules/achievement/repositories/achievement.repository';
+import { IFriendRequestRepository } from '@modules/friend-request/repositories/friend-request.repository';
 // Nếu có Event/Achievement repository thì import tương tự
 
 @Injectable()

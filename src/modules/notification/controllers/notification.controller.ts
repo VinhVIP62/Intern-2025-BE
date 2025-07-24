@@ -20,7 +20,7 @@ import { ResponseEntity } from '@common/types';
 import {
 	NotificationResponseDto,
 	NotificationPaginationResponseDto,
-} from '../dto/notification.dto';
+} from '@modules/notification/dto';
 
 @ApiTags('Notification')
 @Controller('notifications')
