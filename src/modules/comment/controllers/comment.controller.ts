@@ -14,7 +14,7 @@ import {
 	Put,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody } from '@nestjs/swagger';
-import { CommentService } from '../providers/comment.service';
+import { CommentService } from '@modules/comment/providers/comment.service';
 import { ResponseEntity } from '@common/types';
 import {
 	CommentResponseDto,
@@ -24,7 +24,7 @@ import {
 	CreateReplyDto,
 	UpdateCommentVisibilityDto,
 	TagUsersDto,
-} from '../dto/comment.dto';
+} from '@modules/comment/dto/comment.dto';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { Public } from '@common/decorators';
 import { RolesGuard } from '@common/guards';

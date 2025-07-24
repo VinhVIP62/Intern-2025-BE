@@ -1,20 +1,20 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { SearchController } from './controllers/search.controller';
-import { SearchService } from './providers/search.service';
-import { UserModule } from '../user/user.module';
-import { PostModule } from '../post/post.module';
-import { EventModule } from '../event/event.module';
-import { GroupModule } from '../group/group.module';
-import { ISearchRepository } from './repositories/search.repository';
-import { SearchRepositoryImpl } from './repositories/search.repository.impl';
-import { User, UserSchema } from '../user/entities/user.schema';
-import { Post, PostSchema } from '../post/entities/post.schema';
-import { Event, EventSchema } from '../event/entities/event.schema';
-import { Group, GroupSchema } from '../group/entities/group.schema';
-import { SearchHistory, SearchHistorySchema } from './entities/searchHistory.schema';
-import { ISearchHistoryRepository } from './repositories/searchHistory.repository';
-import { SearchHistoryRepositoryImpl } from './repositories/searchHistory.repository.impl';
+import { SearchController } from '@modules/search/controllers/search.controller';
+import { SearchService } from '@modules/search/providers/search.service';
+import { UserModule } from '@modules/user/user.module';
+import { PostModule } from '@modules/post/post.module';
+import { EventModule } from '@modules/event/event.module';
+import { GroupModule } from '@modules/group/group.module';
+import { ISearchRepository } from '@modules/search/repositories/search.repository';
+import { SearchRepositoryImpl } from '@modules/search/repositories/search.repository.impl';
+import { User, UserSchema } from '@modules/user/entities/user.schema';
+import { Post, PostSchema } from '@modules/post/entities/post.schema';
+import { Event, EventSchema } from '@modules/event/entities/event.schema';
+import { Group, GroupSchema } from '@modules/group/entities/group.schema';
+import { SearchHistory, SearchHistorySchema } from '@modules/search/entities/searchHistory.schema';
+import { ISearchHistoryRepository } from '@modules/search/repositories/searchHistory.repository';
+import { SearchHistoryRepositoryImpl } from '@modules/search/repositories/searchHistory.repository.impl';
 
 @Module({
 	imports: [

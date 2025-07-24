@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { FriendRequestStatus } from '../entities/friend-request.enum';
+import { FriendRequestStatus } from '@modules/friend-request/entities/friend-request.enum';
 
 export interface IFriendRequestRepository {
 	createFriendRequest(

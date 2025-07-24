@@ -6,9 +6,9 @@ import {
 } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { I18nContext } from 'nestjs-i18n';
-import { IFriendRequestRepository } from '../repositories/friend-request.repository';
-import { FriendRequestStatus } from '../entities/friend-request.enum';
-import { CreateFriendRequestDto } from '../dto';
+import { IFriendRequestRepository } from '@modules/friend-request/repositories/friend-request.repository';
+import { FriendRequestStatus } from '@modules/friend-request/entities/friend-request.enum';
+import { CreateFriendRequestDto } from '@modules/friend-request/dto';
 import { IUserRepository } from '@modules/user/repositories/user.repository';
 import { UserService } from '@modules/user/providers/user.service';
 

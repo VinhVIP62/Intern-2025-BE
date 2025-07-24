@@ -1,14 +1,14 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { IUserRepository } from '../repositories/user.repository';
-import { User } from '../entities/user.schema';
-import { ResponseProfileDto } from '../dto/response/response-profile.dto';
-import { UpdateProfileDto } from '../dto/request/update-profile.dto';
+import { IUserRepository } from '@modules/user/repositories/user.repository';
+import { User } from '@modules/user/entities/user.schema';
+import { ResponseProfileDto } from '@modules/user/dto/response/response-profile.dto';
+import { UpdateProfileDto } from '@modules/user/dto/request/update-profile.dto';
 import { plainToClass } from 'class-transformer';
 import { I18nContext } from 'nestjs-i18n';
 import * as bcrypt from 'bcrypt';
-import { SportType, ActivityLevel } from '../enums/user.enum';
-import { PaginatedUserBasicInfoResponseDto } from '../dto/response/user-response.dto';
-import { UserBasicInfoDto } from '../dto/request/user-basic-info.dto';
+import { SportType, ActivityLevel } from '@modules/user/enums/user.enum';
+import { PaginatedUserBasicInfoResponseDto } from '@modules/user/dto/response/user-response.dto';
+import { UserBasicInfoDto } from '@modules/user/dto/request/user-basic-info.dto';
 
 @Injectable()
 export class UserService {

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { IGroupRepository } from './group.repository';
-import { Group } from '../entities/group.schema';
+import { IGroupRepository } from '@modules/group/repositories/group.repository';
+import { Group } from '@modules/group/entities/group.schema';
 import {
 	CreateGroupDto,
 	UpdateGroupDto,
@@ -10,9 +10,9 @@ import {
 	GroupResponseDto,
 	PaginatedSimpleGroupsResponseDto,
 	SimpleGroupResponseDto,
-} from '../dto';
+} from '@modules/group/dto';
 import { SportType } from '@modules/user/enums/user.enum';
-import { User } from '../../user/entities/user.schema';
+import { User } from '@modules/user/entities/user.schema';
 
 @Injectable()
 export class GroupRepositoryImpl implements IGroupRepository {

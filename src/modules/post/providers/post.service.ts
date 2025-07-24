@@ -14,12 +14,12 @@ import {
 	UpdatePostDto,
 	TrendingHashtagsResponseDto,
 } from '@modules/post/dto';
-import { FileService } from '../../file/providers/file.service';
+import { FileService } from '@modules/file/providers/file.service';
 import { PostAccessLevel, PostType } from '@modules/post/entities/post.enum';
-import { NotificationService } from '../../notification/providers/notification.service';
-import { NotificationType, ReferenceModel } from '../../notification/entities/notification.enum';
-import { UserService } from '../../user/providers/user.service';
-import { CommentService } from '../../comment/providers/comment.service';
+import { NotificationService } from '@modules/notification/providers/notification.service';
+import { NotificationType, ReferenceModel } from '@modules/notification/entities/notification.enum';
+import { UserService } from '@modules/user/providers/user.service';
+import { CommentService } from '@modules/comment/providers/comment.service';
 import { FILE_TYPE_CONSTANTS } from '@common/constants/file-types.constant';
 import { PostStatus } from '@modules/post/entities/post.enum';
 

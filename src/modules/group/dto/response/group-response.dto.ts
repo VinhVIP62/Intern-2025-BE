@@ -18,7 +18,7 @@ import { SportType, ActivityLevel } from '@modules/user/enums/user.enum';
 import { BasePaginatedResponseDto } from '@common/dto/base-pagination.dto';
 import { BasePaginationMetaDto } from '@common/dto/base-pagination.dto';
 import { LocationDto } from '@modules/user/dto/request/update-profile.dto';
-import { JoinConditionsDto } from '../request/group-request.dto';
+import { JoinConditionsDto } from '@modules/group/dto/request/group-request.dto';
 
 export class GroupResponseDto {
 	@ApiProperty({ description: 'Group ID', example: '507f1f77bcf86cd799439011' })

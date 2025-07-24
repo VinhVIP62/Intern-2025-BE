@@ -2,9 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { IEventRepository } from './event.repository';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Event } from '../entities/event.schema';
-import { RSVPStatus, EventInvitationStatus } from '../entities/event.enum';
-import { EventInvitation, EventInvitationSchema } from '../entities/event-invitation.schema';
+import { Event } from '@modules/event/entities/event.schema';
+import { RSVPStatus, EventInvitationStatus } from '@modules/event/entities/event.enum';
+import {
+	EventInvitation,
+	EventInvitationSchema,
+} from '@modules/event/entities/event-invitation.schema';
 
 @Injectable()
 export class EventRepositoryImpl implements IEventRepository {

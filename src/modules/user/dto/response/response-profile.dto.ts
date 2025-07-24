@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose, Transform } from 'class-transformer';
-import { ActivityLevel, SportType } from '../../enums/user.enum';
+import { ActivityLevel, SportType } from '@modules/user/enums/user.enum';
 
 export class ResponseProfileDto {
 	@ApiProperty({ description: 'ID của người dùng' })

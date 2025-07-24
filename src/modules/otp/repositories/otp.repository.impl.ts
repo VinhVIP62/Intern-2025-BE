@@ -2,8 +2,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Otp } from '../entities/otp.schema';
-import { IOtpRepository } from './otp.repository';
+import { Otp } from '@modules/otp/entities/otp.schema';
+import { IOtpRepository } from '@modules/otp/repositories/otp.repository';
 
 @Injectable()
 export class OtpRepositoryImpl implements IOtpRepository {

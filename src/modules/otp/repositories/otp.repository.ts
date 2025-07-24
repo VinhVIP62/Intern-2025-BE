@@ -1,4 +1,4 @@
-import { Otp } from '../entities/otp.schema';
+import { Otp } from '@modules/otp/entities/otp.schema';
 
 export abstract class IOtpRepository {
 	abstract create(email: string, otp: string): Promise<Otp>;

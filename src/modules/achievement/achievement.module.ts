@@ -8,10 +8,10 @@ import { AchievementRepositoryImpl } from './repositories/achievement.repository
 import { IUserAchievementRepository } from './repositories/user-achievement.repository';
 import { UserAchievementRepositoryImpl } from './repositories/user-achievement.repository.impl';
 import { UserAchievement, UserAchievementSchema } from './entities/user-achievement.schema';
-import { UserModule } from '../user/user.module';
-import { EventModule } from '../event/event.module';
-import { PostModule } from '../post/post.module';
-import { NotificationModule } from '../notification/notification.module';
+import { UserModule } from '@modules/user/user.module';
+import { EventModule } from '@modules/event/event.module';
+import { PostModule } from '@modules/post/post.module';
+import { NotificationModule } from '@modules/notification/notification.module';
 
 @Module({
 	imports: [

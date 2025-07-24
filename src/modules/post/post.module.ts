@@ -5,12 +5,12 @@ import { PostController } from './controllers/post.controller';
 import { PostService } from './providers/post.service';
 import { IPostRepository } from './repositories/post.repository';
 import { PostRepositoryImpl } from './repositories/post.repository.impl';
-import { FileModule } from '../file/file.module';
-import { NotificationModule } from '../notification/notification.module';
+import { FileModule } from '@modules/file/file.module';
+import { NotificationModule } from '@modules/notification/notification.module';
 import { UserSchema } from '@modules/user/entities/user.schema';
 import { User } from '@modules/user/entities/user.schema';
-import { UserModule } from '../user/user.module';
-import { CommentModule } from '../comment/comment.module';
+import { UserModule } from '@modules/user/user.module';
+import { CommentModule } from '@modules/comment/comment.module';
 
 @Module({
 	imports: [

@@ -1,6 +1,6 @@
 // src/modules/user/repositories/user.repository.ts
 import { Injectable } from '@nestjs/common';
-import { User } from '../entities/user.schema';
+import { User } from '@modules/user/entities/user.schema';
 
 @Injectable()
 export abstract class IUserRepository {

@@ -14,14 +14,14 @@ import {
 	ForbiddenException,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody } from '@nestjs/swagger';
-import { FriendRequestService } from '../providers/friend-request.service';
+import { FriendRequestService } from '@modules/friend-request/providers/friend-request.service';
 import { ResponseEntity } from '@common/types';
 import {
 	CreateFriendRequestDto,
 	FriendRequestResponseDto,
 	PaginatedFriendRequestsResponseDto,
 	FriendshipStatusResponseDto,
-} from '../dto';
+} from '@modules/friend-request/dto';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { RolesGuard } from '@common/guards';
 import { Roles } from '@common/decorators';

@@ -6,7 +6,7 @@ import {
 	GroupResponseDto,
 	PaginatedSimpleGroupsResponseDto,
 	SimpleGroupResponseDto,
-} from '../dto';
+} from '@modules/group/dto';
 import { SportType } from '@modules/user/enums/user.enum';
 
 export interface IGroupRepository {

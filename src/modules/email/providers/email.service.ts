@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
-import { SendEmailDto } from '../dto/request/send-email.dto';
-import { ResponseEmailDto } from '../dto/response/response-email.dto';
+import { SendEmailDto } from '@modules/email/dto/request/send-email.dto';
+import { ResponseEmailDto } from '@modules/email/dto/response/response-email.dto';
 import { IEnvVars } from '@configs/config';
 import { randomInt } from 'crypto';
 import { OtpService } from '@modules/otp/providers/otp.service';

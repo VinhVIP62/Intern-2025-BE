@@ -12,7 +12,7 @@ import {
 	Req,
 } from '@nestjs/common';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import { FileService } from '../providers/file.service';
+import { FileService } from '@modules/file/providers/file.service';
 import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
 import { RolesGuard } from '@common/guards/roles.guard';
 import { Role } from '@common/enum/roles.enum';
@@ -23,7 +23,7 @@ import { Public } from '@common/decorators/public.decorator';
 import { ResponseEntity } from '@common/types';
 import { UploadApiResponse, DeleteApiResponse } from 'cloudinary';
 import { I18n, I18nContext } from 'nestjs-i18n';
-import { DeleteFilesDto } from '../file.dto';
+import { DeleteFilesDto } from '@modules/file/file.dto';
 
 @Controller('file')
 export class FileController {

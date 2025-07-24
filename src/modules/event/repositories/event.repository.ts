@@ -1,4 +1,4 @@
-import { RSVPStatus, EventInvitationStatus } from '../entities/event.enum';
+import { RSVPStatus, EventInvitationStatus } from '@modules/event/entities/event.enum';
 
 export interface IEventRepository {
 	findManyByIds(ids: string[]): Promise<any[]>;

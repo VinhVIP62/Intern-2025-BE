@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
-import { IEventRepository } from '../repositories/event.repository';
-import { EventStatus, OrganizerType, RSVPStatus } from '../entities/event.enum';
+import { IEventRepository } from '@modules/event/repositories/event.repository';
+import { EventStatus, OrganizerType, RSVPStatus } from '@modules/event/entities/event.enum';
 import { GroupService } from '@modules/group/providers/group.service';
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { isValidObjectId } from 'mongoose';
-import { EventInvitationStatus } from '../entities/event.enum';
+import { EventInvitationStatus } from '@modules/event/entities/event.enum';
 import { UserService } from '@modules/user/providers/user.service';
 import { NotificationService } from '@modules/notification/providers/notification.service';
 import { NotificationType, ReferenceModel } from '@modules/notification/entities/notification.enum';

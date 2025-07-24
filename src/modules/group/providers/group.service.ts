@@ -5,7 +5,7 @@ import {
 	NotFoundException,
 } from '@nestjs/common';
 import { I18nContext } from 'nestjs-i18n';
-import { IGroupRepository } from '../repositories/group.repository';
+import { IGroupRepository } from '@modules/group/repositories/group.repository';
 import {
 	CreateGroupDto,
 	UpdateGroupDto,
@@ -14,8 +14,8 @@ import {
 	PaginatedSimpleGroupsResponseDto,
 } from '@modules/group/dto';
 import { SportType, ActivityLevel } from '@modules/user/enums/user.enum';
-import { NotificationService } from '../../notification/providers/notification.service';
-import { NotificationType, ReferenceModel } from '../../notification/entities/notification.enum';
+import { NotificationService } from '@modules/notification/providers/notification.service';
+import { NotificationType, ReferenceModel } from '@modules/notification/entities/notification.enum';
 import { CreatePostDto } from '@modules/post/dto';
 import { PostService } from '@modules/post/providers/post.service';
 import { PostStatus } from '@modules/post/entities/post.enum';

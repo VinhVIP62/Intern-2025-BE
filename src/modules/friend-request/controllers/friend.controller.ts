@@ -15,7 +15,7 @@ import { RolesGuard } from '@common/guards';
 import { Roles } from '@common/decorators';
 import { Role } from '@common/enum';
 import { ResponseEntity } from '@common/types';
-import { FriendRequestService } from '../providers/friend-request.service';
+import { FriendRequestService } from '@modules/friend-request/providers/friend-request.service';
 import { PaginatedFriendsResponseDto, MutualFriendsResponseDto } from '@modules/friend-request/dto';
 import { PaginationQuery } from '@common/decorators/pagination-query.decorator';
 import { PaginationQueryDto } from '@common/dto/pagination-query.dto';

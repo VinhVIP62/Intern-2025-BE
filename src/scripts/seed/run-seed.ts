@@ -14,27 +14,24 @@ import {
 } from './seed';
 
 // Import mongoose models
-import { User, UserSchema } from '../../modules/user/entities/user.schema';
-import { Group, GroupSchema } from '../../modules/group/entities/group.schema';
+import { User, UserSchema } from '@modules/user/entities/user.schema';
+import { Group, GroupSchema } from '@modules/group/entities/group.schema';
 import {
 	FriendRequest,
 	FriendRequestSchema,
-} from '../../modules/friend-request/entities/friend-request.schema';
-import { Comment, CommentSchema } from '../../modules/comment/entities/comment.schema';
-import {
-	Achievement,
-	AchievementSchema,
-} from '../../modules/achievement/entities/achievement.schema';
+} from '@modules/friend-request/entities/friend-request.schema';
+import { Comment, CommentSchema } from '@modules/comment/entities/comment.schema';
+import { Achievement, AchievementSchema } from '@modules/achievement/entities/achievement.schema';
 import {
 	UserAchievement,
 	UserAchievementSchema,
-} from '../../modules/achievement/entities/user-achievement.schema';
-import { Post, PostSchema } from '../../modules/post/entities/post.schema';
-import { Event, EventSchema } from '../../modules/event/entities/event.schema';
+} from '@modules/achievement/entities/user-achievement.schema';
+import { Post, PostSchema } from '@modules/post/entities/post.schema';
+import { Event, EventSchema } from '@modules/event/entities/event.schema';
 import {
 	Notification,
 	NotificationSchema,
-} from '../../modules/notification/entities/notification.schema';
+} from '@modules/notification/entities/notification.schema';
 
 const MONGO_URI = process.env.DATABASE_URI || 'mongodb://localhost:27017/alobo-sport-hub';
 
