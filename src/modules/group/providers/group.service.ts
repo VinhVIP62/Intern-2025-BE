@@ -12,7 +12,7 @@ import {
 	PaginatedGroupsResponseDto,
 	GroupResponseDto,
 	PaginatedSimpleGroupsResponseDto,
-} from '../dto/group.dto';
+} from '@modules/group/dto';
 import { SportType, ActivityLevel } from '@modules/user/enums/user.enum';
 import { NotificationService } from '../../notification/providers/notification.service';
 import { NotificationType, ReferenceModel } from '../../notification/entities/notification.enum';

@@ -32,7 +32,7 @@ import {
 	GroupResponseDto,
 	PaginatedGroupsResponseDto,
 	PaginatedSimpleGroupsResponseDto,
-} from '../dto/group.dto';
+} from '@modules/group/dto';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { SportType } from '@modules/user/enums/user.enum';
 import { Public } from '@common/decorators';
