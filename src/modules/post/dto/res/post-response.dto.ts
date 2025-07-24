@@ -35,8 +35,8 @@ export class ResponsePostDto {
 	userId!: string;
 
 	@Expose()
-	@Transform(({ obj }) => {
-		const user = (obj as WithPopulated<SocialPost>)?.userIdPopulated as User | null;
+	@Transform(({ obj }: { obj: WithPopulated<SocialPost> }) => {
+		const user = obj?.userIdPopulated as User | null;
 		if (!user) return null;
 		return {
 			username: user.username,
@@ -61,8 +61,8 @@ export class ResponsePostDto {
 	deletedBy!: string | null;
 
 	@Expose()
-	@Transform(({ obj }) => {
-		const user = (obj as WithPopulated<SocialPost>)?.deletedByPopulated as User | null;
+	@Transform(({ obj }: { obj: WithPopulated<SocialPost> }) => {
+		const user = obj?.deletedByPopulated as User | null;
 		if (!user) return null;
 		return {
 			username: user.username,

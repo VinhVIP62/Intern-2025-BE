@@ -26,8 +26,8 @@ export class ResponseCommentDto {
 	rootType!: string;
 
 	@Expose()
-	@Transform(({ obj }) => {
-		const user = (obj as WithPopulated<Comment>)?.userIdPopulated as User | null;
+	@Transform(({ obj }: { obj: WithPopulated<Comment> }) => {
+		const user = obj?.userIdPopulated as User | null;
 		if (!user) return null;
 		return {
 			username: user.username,

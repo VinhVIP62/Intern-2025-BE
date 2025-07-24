@@ -37,8 +37,8 @@ export class ResponseProfileDto extends ResponseUserDto {
 	deletedBy!: string | null;
 
 	@Expose()
-	@Transform(({ obj }) => {
-		const user = (obj as WithPopulated<User>)?.deletedByPopulated as User | null;
+	@Transform(({ obj }: { obj: WithPopulated<User> }) => {
+		const user = obj?.deletedByPopulated as User | null;
 		if (!user) return null;
 		return {
 			username: user.username,

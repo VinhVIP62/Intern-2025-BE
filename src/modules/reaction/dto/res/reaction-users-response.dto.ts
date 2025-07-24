@@ -12,10 +12,12 @@ export class ResponseReactionUsersDto {
 	id!: string;
 
 	@Expose()
-	@Transform(({ obj }) => ((obj as WithPopulated<Reaction>).userIdPopulated as User)?.avatarUrl)
+	@Transform(
+		({ obj }: { obj: WithPopulated<Reaction> }) => (obj.userIdPopulated as User)?.avatarUrl,
+	)
 	avatarUrl!: string;
 
 	@Expose()
-	@Transform(({ obj }) => ((obj as WithPopulated<Reaction>).userIdPopulated as User)?.username)
+	@Transform(({ obj }: { obj: WithPopulated<Reaction> }) => (obj.userIdPopulated as User)?.username)
 	username!: string;
 }
