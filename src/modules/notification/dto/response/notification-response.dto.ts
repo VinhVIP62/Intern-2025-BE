@@ -88,4 +88,7 @@ export class NotificationResponseDto {
 export class NotificationPaginationResponseDto extends BasePaginationMetaDto {
 	@ApiProperty({ type: [NotificationResponseDto] })
 	notifications: NotificationResponseDto[];
+
+	@ApiProperty({ type: Number, description: 'Số lượng thông báo chưa đọc' })
+	unreadCount: number;
 }

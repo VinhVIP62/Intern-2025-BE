@@ -206,4 +206,12 @@ export class NotificationRepositoryImpl implements INotificationRepository {
 		const notification = new this.notificationModel(data);
 		return await notification.save();
 	}
+
+	async countUnreadByUser(userId: string): Promise<number> {
+		const filter: any = { recipient: userId, isActive: true, isRead: false };
+		if (typeof filter.recipient === 'string') {
+			filter.recipient = new Types.ObjectId(filter.recipient);
+		}
+		return this.notificationModel.countDocuments(filter);
+	}
 }

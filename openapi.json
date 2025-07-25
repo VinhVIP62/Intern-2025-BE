@@ -7854,6 +7854,10 @@
             "items": {
               "$ref": "#/components/schemas/NotificationResponseDto"
             }
+          },
+          "unreadCount": {
+            "type": "number",
+            "description": "Số lượng thông báo chưa đọc"
           }
         },
         "required": [
@@ -7862,7 +7866,8 @@
           "totalPages",
           "hasNextPage",
           "hasPrevPage",
-          "notifications"
+          "notifications",
+          "unreadCount"
         ]
       },
       "UpdatePostDto": {

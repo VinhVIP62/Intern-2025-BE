@@ -184,4 +184,8 @@ export class NotificationService {
 	async deleteByCondition(condition: any) {
 		return this.notificationRepository.deleteByCondition(condition);
 	}
+
+	async getUnreadCount(userId: string): Promise<number> {
+		return this.notificationRepository.countUnreadByUser(userId);
+	}
 }

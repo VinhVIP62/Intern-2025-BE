@@ -74,6 +74,7 @@ export class NotificationController {
 		);
 
 		const totalPages = Math.ceil(total / (query.limit ?? 10));
+		const unreadCount = await this.notificationService.getUnreadCount(userId);
 		return {
 			success: true,
 			data: {
@@ -82,6 +83,7 @@ export class NotificationController {
 				page: query.page ?? 1,
 				limit: query.limit ?? 10,
 				totalPages,
+				unreadCount,
 			},
 			message: i18n.t('notification.LIST_RETRIEVED_SUCCESS'),
 		};

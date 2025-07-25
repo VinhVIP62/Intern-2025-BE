@@ -19,6 +19,8 @@ export interface INotificationRepository {
 	createNotification(data: any): Promise<any>;
 
 	deleteByCondition(condition: any): Promise<any>;
+
+	countUnreadByUser(userId: string): Promise<number>;
 }
 
 export const INotificationRepository = Symbol('INotificationRepository');
