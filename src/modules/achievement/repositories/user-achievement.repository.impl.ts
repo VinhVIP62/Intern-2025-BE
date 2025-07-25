@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserAchievement } from '@modules/achievement/entities/user-achievement.schema';
-import { IUserAchievementRepository } from '@modules/achievement/repositories/user-achievement.repository';
+import { IUserAchievementRepository } from '@modules/achievement/interfaces/user-achievement.repository';
 
 @Injectable()
 export class UserAchievementRepositoryImpl implements IUserAchievementRepository {

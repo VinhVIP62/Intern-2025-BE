@@ -19,7 +19,7 @@ import { ICommentRepository } from '@modules/comment/repositories/comment.reposi
 import { CommentRepositoryImpl } from '@modules/comment/repositories/comment.repository.impl';
 import { IEventRepository } from '@modules/event/repositories/event.repository';
 import { EventRepositoryImpl } from '@modules/event/repositories/event.repository.impl';
-import { IAchievementRepository } from '@modules/achievement/repositories/achievement.repository';
+import { IAchievementRepository } from '@modules/achievement/interfaces/achievement.repository';
 import { AchievementRepositoryImpl } from '@modules/achievement/repositories/achievement.repository.impl';
 import { IFriendRequestRepository } from '@modules/friend-request/repositories/friend-request.repository';
 import { FriendRequestRepositoryImpl } from '@modules/friend-request/repositories/friend-request.repository.impl';

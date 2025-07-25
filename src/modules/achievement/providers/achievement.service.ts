@@ -1,8 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { AchievementCriteriaKey } from '@modules/achievement/achievement-criteria.constant';
 import { UserStatsDto } from '@modules/achievement/dto/user-stats.dto';
-import { IAchievementRepository } from '@modules/achievement/repositories/achievement.repository';
-import { IUserAchievementRepository } from '@modules/achievement/repositories/user-achievement.repository';
+import { IAchievementRepository } from '@modules/achievement/interfaces/achievement.repository';
+import { IUserAchievementRepository } from '@modules/achievement/interfaces/user-achievement.repository';
 import { UserService } from '@modules/user/providers/user.service';
 import { EventService } from '@modules/event/providers/event.service';
 import { PostService } from '@modules/post/providers/post.service';
