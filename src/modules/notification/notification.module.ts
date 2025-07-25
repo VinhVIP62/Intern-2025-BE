@@ -11,7 +11,7 @@ import { User, UserSchema } from '@modules/user/entities/user.schema';
 import { Group, GroupSchema } from '@modules/group/entities/group.schema';
 import { Post, PostSchema } from '@modules/post/entities/post.schema';
 import { Comment, CommentSchema } from '@modules/comment/entities/comment.schema';
-import { IGroupRepository } from '@modules/group/repositories/group.repository';
+import { IGroupRepository } from '@modules/group/interfaces/group.repository';
 import { GroupRepositoryImpl } from '@modules/group/repositories/group.repository.impl';
 import { IPostRepository } from '@modules/post/repositories/post.repository';
 import { PostRepositoryImpl } from '@modules/post/repositories/post.repository.impl';
