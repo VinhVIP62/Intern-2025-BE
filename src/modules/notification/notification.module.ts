@@ -13,7 +13,7 @@ import { Post, PostSchema } from '@modules/post/entities/post.schema';
 import { Comment, CommentSchema } from '@modules/comment/entities/comment.schema';
 import { IGroupRepository } from '@modules/group/interfaces/group.repository';
 import { GroupRepositoryImpl } from '@modules/group/repositories/group.repository.impl';
-import { IPostRepository } from '@modules/post/repositories/post.repository';
+import { IPostRepository } from '@modules/post/interfaces/post.repository';
 import { PostRepositoryImpl } from '@modules/post/repositories/post.repository.impl';
 import { ICommentRepository } from '@modules/comment/interfaces/comment.repository';
 import { CommentRepositoryImpl } from '@modules/comment/repositories/comment.repository.impl';
