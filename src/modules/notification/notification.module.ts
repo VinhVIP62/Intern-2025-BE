@@ -15,7 +15,7 @@ import { IGroupRepository } from '@modules/group/repositories/group.repository';
 import { GroupRepositoryImpl } from '@modules/group/repositories/group.repository.impl';
 import { IPostRepository } from '@modules/post/repositories/post.repository';
 import { PostRepositoryImpl } from '@modules/post/repositories/post.repository.impl';
-import { ICommentRepository } from '@modules/comment/repositories/comment.repository';
+import { ICommentRepository } from '@modules/comment/interfaces/comment.repository';
 import { CommentRepositoryImpl } from '@modules/comment/repositories/comment.repository.impl';
 import { IEventRepository } from '@modules/event/repositories/event.repository';
 import { EventRepositoryImpl } from '@modules/event/repositories/event.repository.impl';

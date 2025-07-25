@@ -7,7 +7,7 @@ import { IUserRepository } from '@modules/user/repositories/user.repository';
 import { NOTIFICATION_MESSAGE_KEYS } from '@common/constants/message-key.constant';
 import { IGroupRepository } from '@modules/group/repositories/group.repository';
 import { IPostRepository } from '@modules/post/repositories/post.repository';
-import { ICommentRepository } from '@modules/comment/repositories/comment.repository';
+import { ICommentRepository } from '@modules/comment/interfaces/comment.repository';
 import { ReferenceModel } from '@modules/notification/entities/notification.enum';
 import { IEventRepository } from '@modules/event/repositories/event.repository';
 import { IAchievementRepository } from '@modules/achievement/interfaces/achievement.repository';

@@ -23,7 +23,7 @@ import {
 import {
 	ICommentRepository,
 	ICommentRepository as ICommentRepositoryToken,
-} from '@modules/comment/repositories/comment.repository';
+} from '@modules/comment/interfaces/comment.repository';
 
 @Injectable()
 export class CommentService {

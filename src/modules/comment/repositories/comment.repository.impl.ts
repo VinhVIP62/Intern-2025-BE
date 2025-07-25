@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { ICommentRepository } from './comment.repository';
+import { ICommentRepository } from '../interfaces/comment.repository';
 import { Comment } from '@modules/comment/entities/comment.schema';
 import { Post } from '@modules/post/entities/post.schema';
 import {
