@@ -4,7 +4,7 @@ import { Comment, CommentSchema } from './entities/comment.schema';
 import { Post, PostSchema } from '@modules/post/entities/post.schema';
 import { CommentController } from './controllers/comment.controller';
 import { CommentService } from './providers/comment.service';
-import { ICommentRepository } from './repositories/comment.repository';
+import { ICommentRepository } from './interfaces/comment.repository';
 import { CommentRepositoryImpl } from './repositories/comment.repository.impl';
 import { NotificationModule } from '@modules/notification/notification.module';
 

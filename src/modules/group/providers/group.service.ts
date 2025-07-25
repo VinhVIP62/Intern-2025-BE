@@ -5,7 +5,7 @@ import {
 	NotFoundException,
 } from '@nestjs/common';
 import { I18nContext } from 'nestjs-i18n';
-import { IGroupRepository } from '@modules/group/repositories/group.repository';
+import { IGroupRepository } from '@modules/group/interfaces/group.repository';
 import {
 	CreateGroupDto,
 	UpdateGroupDto,

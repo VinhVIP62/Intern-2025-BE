@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { Post, PostSchema } from './entities/post.schema';
 import { PostController } from './controllers/post.controller';
 import { PostService } from './providers/post.service';
-import { IPostRepository } from './repositories/post.repository';
+import { IPostRepository } from './interfaces/post.repository';
 import { PostRepositoryImpl } from './repositories/post.repository.impl';
 import { FileModule } from '@modules/file/file.module';
 import { NotificationModule } from '@modules/notification/notification.module';

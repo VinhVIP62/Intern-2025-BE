@@ -5,7 +5,7 @@ import { User } from '@modules/user/entities/user.schema';
 import { Post } from '@modules/post/entities/post.schema';
 import { Event } from '@modules/event/entities/event.schema';
 import { SportType, ActivityLevel } from '@modules/user/enums/user.enum';
-import { ISearchRepository } from './search.repository';
+import { ISearchRepository } from '../interfaces/search.repository';
 import { PostStatus } from '@modules/post/entities/post.enum';
 import { Group } from '@modules/group/entities/group.schema';
 @Injectable()

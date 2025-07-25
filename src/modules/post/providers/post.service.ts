@@ -4,7 +4,7 @@ import {
 	BadRequestException,
 	ForbiddenException,
 } from '@nestjs/common';
-import { IPostRepository } from '@modules/post/repositories/post.repository';
+import { IPostRepository } from '@modules/post/interfaces/post.repository';
 import { Post } from '@modules/post/entities/post.schema';
 import { I18nContext } from 'nestjs-i18n';
 import {

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
-import { IEventRepository } from '@modules/event/repositories/event.repository';
+import { IEventRepository } from '@modules/event/interfaces/event.repository';
 import { EventStatus, OrganizerType, RSVPStatus } from '@modules/event/entities/event.enum';
 import { GroupService } from '@modules/group/providers/group.service';
 import { HttpException, HttpStatus } from '@nestjs/common';

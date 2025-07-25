@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { INotificationRepository } from './notification.repository';
+import { INotificationRepository } from '../interfaces/notification.repository';
 import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { Notification } from '@modules/notification/entities/notification.schema';

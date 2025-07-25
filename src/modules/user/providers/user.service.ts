@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { IUserRepository } from '@modules/user/repositories/user.repository';
+import { IUserRepository } from '@modules/user/interfaces/user.repository';
 import { User } from '@modules/user/entities/user.schema';
 import { ResponseProfileDto } from '@modules/user/dto/response/response-profile.dto';
 import { UpdateProfileDto } from '@modules/user/dto/request/update-profile.dto';

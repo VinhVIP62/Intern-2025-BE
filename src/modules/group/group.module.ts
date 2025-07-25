@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { GroupController } from './controllers/group.controller';
 import { GroupService } from './providers/group.service';
 import { Group, GroupSchema } from './entities/group.schema';
-import { IGroupRepository } from './repositories/group.repository';
+import { IGroupRepository } from './interfaces/group.repository';
 import { GroupRepositoryImpl } from './repositories/group.repository.impl';
 import { Post, PostSchema } from '@modules/post/entities/post.schema';
 import { NotificationModule } from '@modules/notification/notification.module';
