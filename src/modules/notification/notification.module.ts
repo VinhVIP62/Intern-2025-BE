@@ -3,7 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { NotificationController } from './controllers/notification.controller';
 import { NotificationService } from './providers/notification.service';
 import { Notification, NotificationSchema } from './entities/notification.schema';
-import { INotificationRepository } from './repositories/notification.repository';
+import { INotificationRepository } from './interfaces/notification.repository';
 import { NotificationRepositoryImpl } from './repositories/notification.repository.impl';
 import { IUserRepository } from '@modules/user/repositories/user.repository';
 import { UserRepositoryImpl } from '@modules/user/repositories/user.repository.impl';

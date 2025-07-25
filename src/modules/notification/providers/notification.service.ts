@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { INotificationRepository } from '@modules/notification/repositories/notification.repository';
+import { INotificationRepository } from '@modules/notification/interfaces/notification.repository';
 import { I18nContext } from 'nestjs-i18n';
 import { CreateNotificationDto } from '@modules/notification/dto';
 import admin from '../../../firebase';
