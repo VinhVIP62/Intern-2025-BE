@@ -515,7 +515,11 @@ export class EventController {
 		schema: {
 			example: {
 				success: true,
-				data: { rsvpStatus: 'going', invitationStatus: 'pending' },
+				data: {
+					rsvpStatus: 'going',
+					invitationStatus: 'pending',
+					invitationId: '6881b23c4993645c015035d4',
+				},
 				message: '...',
 			},
 		},

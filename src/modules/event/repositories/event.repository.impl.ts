@@ -223,7 +223,11 @@ export class EventRepositoryImpl implements IEventRepository {
 	async getUserEventStatus(
 		eventId: string,
 		userId: string,
-	): Promise<{ rsvpStatus: RSVPStatus | null; invitationStatus: EventInvitationStatus | null }> {
+	): Promise<{
+		rsvpStatus: RSVPStatus | null;
+		invitationStatus: EventInvitationStatus | null;
+		invitationId: string | null;
+	}> {
 		// Get RSVP status
 		const event = await this.eventModel.findById(eventId).lean();
 		let rsvpStatus: RSVPStatus | null = null;
@@ -234,6 +238,7 @@ export class EventRepositoryImpl implements IEventRepository {
 		// Get invitation status
 		const invitation = await this.invitationModel.findOne({ eventId, recipientId: userId }).lean();
 		const invitationStatus: EventInvitationStatus | null = invitation ? invitation.status : null;
-		return { rsvpStatus, invitationStatus };
+		const invitationId: string | null = invitation ? invitation._id?.toString() : null;
+		return { rsvpStatus, invitationStatus, invitationId };
 	}
 }

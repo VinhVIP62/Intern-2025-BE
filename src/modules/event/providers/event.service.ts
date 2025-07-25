@@ -370,7 +370,11 @@ export class EventService {
 	async getUserEventStatus(
 		eventId: string,
 		userId: string,
-	): Promise<{ rsvpStatus: RSVPStatus | null; invitationStatus: EventInvitationStatus | null }> {
+	): Promise<{
+		rsvpStatus: RSVPStatus | null;
+		invitationStatus: EventInvitationStatus | null;
+		invitationId: string | null;
+	}> {
 		return this.eventRepository.getUserEventStatus(eventId, userId);
 	}
 }

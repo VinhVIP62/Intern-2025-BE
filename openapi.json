@@ -1810,7 +1810,8 @@
                     "success": true,
                     "data": {
                       "rsvpStatus": "going",
-                      "invitationStatus": "pending"
+                      "invitationStatus": "pending",
+                      "invitationId": "6881b23c4993645c015035d4"
                     },
                     "message": "..."
                   }

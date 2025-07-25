@@ -59,7 +59,11 @@ export interface IEventRepository {
 	getUserEventStatus(
 		eventId: string,
 		userId: string,
-	): Promise<{ rsvpStatus: RSVPStatus | null; invitationStatus: EventInvitationStatus | null }>;
+	): Promise<{
+		rsvpStatus: RSVPStatus | null;
+		invitationStatus: EventInvitationStatus | null;
+		invitationId: string | null;
+	}>;
 }
 
 export const IEventRepository = Symbol('IEventRepository');
