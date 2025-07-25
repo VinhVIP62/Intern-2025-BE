@@ -7,6 +7,8 @@ export type WithPopulated<T> = T & {
 	[K in keyof T as `${string & K}Populated`]?: unknown;
 };
 
+type ExpandArray<T> = T extends Array<infer U> | ReadonlyArray<infer U> ? T | U : T;
+
 export type QuerriableType<T> = {
-	[P in keyof T]?: T[P] extends Array<infer U> | ReadonlyArray<infer U> ? T[P] | U : T[P];
+	[P in keyof T]?: ExpandArray<T[P]>;
 } & Partial<IBaseEntity>;
