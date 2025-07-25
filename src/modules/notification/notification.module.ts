@@ -17,7 +17,7 @@ import { IPostRepository } from '@modules/post/repositories/post.repository';
 import { PostRepositoryImpl } from '@modules/post/repositories/post.repository.impl';
 import { ICommentRepository } from '@modules/comment/interfaces/comment.repository';
 import { CommentRepositoryImpl } from '@modules/comment/repositories/comment.repository.impl';
-import { IEventRepository } from '@modules/event/repositories/event.repository';
+import { IEventRepository } from '@modules/event/interfaces/event.repository';
 import { EventRepositoryImpl } from '@modules/event/repositories/event.repository.impl';
 import { IAchievementRepository } from '@modules/achievement/interfaces/achievement.repository';
 import { AchievementRepositoryImpl } from '@modules/achievement/repositories/achievement.repository.impl';

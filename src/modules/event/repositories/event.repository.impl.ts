@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IEventRepository } from './event.repository';
+import { IEventRepository } from '../interfaces/event.repository';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Event } from '@modules/event/entities/event.schema';

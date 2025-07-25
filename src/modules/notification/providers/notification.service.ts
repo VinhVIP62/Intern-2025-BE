@@ -9,7 +9,7 @@ import { IGroupRepository } from '@modules/group/repositories/group.repository';
 import { IPostRepository } from '@modules/post/repositories/post.repository';
 import { ICommentRepository } from '@modules/comment/interfaces/comment.repository';
 import { ReferenceModel } from '@modules/notification/entities/notification.enum';
-import { IEventRepository } from '@modules/event/repositories/event.repository';
+import { IEventRepository } from '@modules/event/interfaces/event.repository';
 import { IAchievementRepository } from '@modules/achievement/interfaces/achievement.repository';
 import { IFriendRequestRepository } from '@modules/friend-request/repositories/friend-request.repository';
 // Nếu có Event/Achievement repository thì import tương tự
