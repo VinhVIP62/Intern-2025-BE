@@ -3,7 +3,7 @@ import { INotificationRepository } from '@modules/notification/interfaces/notifi
 import { I18nContext } from 'nestjs-i18n';
 import { CreateNotificationDto } from '@modules/notification/dto';
 import admin from '../../../firebase';
-import { IUserRepository } from '@modules/user/repositories/user.repository';
+import { IUserRepository } from '@modules/user/interfaces/user.repository';
 import { NOTIFICATION_MESSAGE_KEYS } from '@common/constants/message-key.constant';
 import { IGroupRepository } from '@modules/group/interfaces/group.repository';
 import { IPostRepository } from '@modules/post/interfaces/post.repository';

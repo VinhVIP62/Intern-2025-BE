@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from '@modules/user/entities/user.schema';
-import { IUserRepository } from '@modules/user/repositories/user.repository';
+import { IUserRepository } from '@modules/user/interfaces/user.repository';
 import { EntityNotFound } from '@common/exceptions/EntityNotFound.error';
 
 @Injectable()

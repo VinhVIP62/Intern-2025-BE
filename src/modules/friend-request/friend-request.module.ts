@@ -7,7 +7,7 @@ import { FriendsController } from './controllers/friend.controller';
 import { FriendRequestService } from './providers/friend-request.service';
 import { IFriendRequestRepository } from './interfaces/friend-request.repository';
 import { FriendRequestRepositoryImpl } from './repositories/friend-request.repository.impl';
-import { IUserRepository } from '@modules/user/repositories/user.repository';
+import { IUserRepository } from '@modules/user/interfaces/user.repository';
 import { UserRepositoryImpl } from '@modules/user/repositories/user.repository.impl';
 import { UserModule } from '@modules/user/user.module';
 

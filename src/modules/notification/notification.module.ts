@@ -5,7 +5,7 @@ import { NotificationService } from './providers/notification.service';
 import { Notification, NotificationSchema } from './entities/notification.schema';
 import { INotificationRepository } from './interfaces/notification.repository';
 import { NotificationRepositoryImpl } from './repositories/notification.repository.impl';
-import { IUserRepository } from '@modules/user/repositories/user.repository';
+import { IUserRepository } from '@modules/user/interfaces/user.repository';
 import { UserRepositoryImpl } from '@modules/user/repositories/user.repository.impl';
 import { User, UserSchema } from '@modules/user/entities/user.schema';
 import { Group, GroupSchema } from '@modules/group/entities/group.schema';
