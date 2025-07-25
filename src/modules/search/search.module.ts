@@ -6,14 +6,14 @@ import { UserModule } from '@modules/user/user.module';
 import { PostModule } from '@modules/post/post.module';
 import { EventModule } from '@modules/event/event.module';
 import { GroupModule } from '@modules/group/group.module';
-import { ISearchRepository } from '@modules/search/repositories/search.repository';
+import { ISearchRepository } from '@modules/search/interfaces/search.repository';
 import { SearchRepositoryImpl } from '@modules/search/repositories/search.repository.impl';
 import { User, UserSchema } from '@modules/user/entities/user.schema';
 import { Post, PostSchema } from '@modules/post/entities/post.schema';
 import { Event, EventSchema } from '@modules/event/entities/event.schema';
 import { Group, GroupSchema } from '@modules/group/entities/group.schema';
 import { SearchHistory, SearchHistorySchema } from '@modules/search/entities/searchHistory.schema';
-import { ISearchHistoryRepository } from '@modules/search/repositories/searchHistory.repository';
+import { ISearchHistoryRepository } from '@modules/search/interfaces/searchHistory.repository';
 import { SearchHistoryRepositoryImpl } from '@modules/search/repositories/searchHistory.repository.impl';
 
 @Module({

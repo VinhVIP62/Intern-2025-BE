@@ -7,10 +7,10 @@ import {
 	SearchFilterType,
 	SearchResultDto,
 } from '@modules/search/dto';
-import { ISearchRepository } from '@modules/search/repositories/search.repository';
+import { ISearchRepository } from '@modules/search/interfaces/search.repository';
 import { PostService } from '@modules/post/providers/post.service';
 import { Types } from 'mongoose';
-import { ISearchHistoryRepository } from '@modules/search/repositories/searchHistory.repository';
+import { ISearchHistoryRepository } from '@modules/search/interfaces/searchHistory.repository';
 import { UserService } from '@modules/user/providers/user.service';
 import { GroupService } from '@modules/group/providers/group.service';
 import { EventService } from '@modules/event/providers/event.service';

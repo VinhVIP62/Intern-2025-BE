@@ -13,7 +13,7 @@ import {
 	SearchFilterType,
 } from '@modules/search/dto';
 import { SearchService } from '@modules/search/providers/search.service';
-import { ISearchHistoryRepository } from '@modules/search/repositories/searchHistory.repository';
+import { ISearchHistoryRepository } from '@modules/search/interfaces/searchHistory.repository';
 import {
 	CreateSearchHistoryDto,
 	CreateSearchHistoryInternalDto,
