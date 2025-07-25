@@ -1,5 +1,5 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
-import { IOtpRepository } from '@modules/otp/repositories/otp.repository';
+import { IOtpRepository } from '@modules/otp/interfaces/otp.repository';
 import { I18nService, I18nContext } from 'nestjs-i18n';
 
 @Injectable()
