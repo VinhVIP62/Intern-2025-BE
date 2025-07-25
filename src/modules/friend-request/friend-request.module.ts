@@ -5,7 +5,7 @@ import { User, UserSchema } from '@modules/user/entities/user.schema';
 import { FriendRequestController } from './controllers/friend-request.controller';
 import { FriendsController } from './controllers/friend.controller';
 import { FriendRequestService } from './providers/friend-request.service';
-import { IFriendRequestRepository } from './repositories/friend-request.repository';
+import { IFriendRequestRepository } from './interfaces/friend-request.repository';
 import { FriendRequestRepositoryImpl } from './repositories/friend-request.repository.impl';
 import { IUserRepository } from '@modules/user/repositories/user.repository';
 import { UserRepositoryImpl } from '@modules/user/repositories/user.repository.impl';

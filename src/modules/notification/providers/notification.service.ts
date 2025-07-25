@@ -11,7 +11,7 @@ import { ICommentRepository } from '@modules/comment/interfaces/comment.reposito
 import { ReferenceModel } from '@modules/notification/entities/notification.enum';
 import { IEventRepository } from '@modules/event/interfaces/event.repository';
 import { IAchievementRepository } from '@modules/achievement/interfaces/achievement.repository';
-import { IFriendRequestRepository } from '@modules/friend-request/repositories/friend-request.repository';
+import { IFriendRequestRepository } from '@modules/friend-request/interfaces/friend-request.repository';
 // Nếu có Event/Achievement repository thì import tương tự
 
 @Injectable()

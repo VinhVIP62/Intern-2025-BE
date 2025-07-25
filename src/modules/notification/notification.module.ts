@@ -21,7 +21,7 @@ import { IEventRepository } from '@modules/event/interfaces/event.repository';
 import { EventRepositoryImpl } from '@modules/event/repositories/event.repository.impl';
 import { IAchievementRepository } from '@modules/achievement/interfaces/achievement.repository';
 import { AchievementRepositoryImpl } from '@modules/achievement/repositories/achievement.repository.impl';
-import { IFriendRequestRepository } from '@modules/friend-request/repositories/friend-request.repository';
+import { IFriendRequestRepository } from '@modules/friend-request/interfaces/friend-request.repository';
 import { FriendRequestRepositoryImpl } from '@modules/friend-request/repositories/friend-request.repository.impl';
 import { Achievement, AchievementSchema } from '@modules/achievement/entities/achievement.schema';
 import {
