@@ -74,13 +74,18 @@ export class EventController {
 	}
 
 	@Get()
-	@ApiOperation({ summary: 'Lấy danh sách sự kiện' })
+	@ApiOperation({
+		summary: 'Lấy danh sách sự kiện',
+		description:
+			'Lấy danh sách sự kiện với thông tin chi tiết. Nếu organizerType là GROUP, sẽ bao gồm danh sách admin của nhóm.',
+	})
 	@ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
 	@ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
 	@ApiQuery({ name: 'sport', required: false, enum: Object.values(SportType) })
 	@ApiResponse({
 		status: 200,
-		description: 'Lấy danh sách sự kiện thành công',
+		description:
+			'Lấy danh sách sự kiện thành công. Organizer sẽ bao gồm danh sách admin nếu là Group.',
 		type: PaginatedEventsResponseDto,
 	})
 	async getAllEvents(
@@ -110,9 +115,17 @@ export class EventController {
 	}
 
 	@Get(':eventId')
-	@ApiOperation({ summary: 'Lấy chi tiết sự kiện theo ID' })
+	@ApiOperation({
+		summary: 'Lấy chi tiết sự kiện theo ID',
+		description:
+			'Lấy thông tin chi tiết sự kiện. Nếu organizerType là GROUP, sẽ bao gồm danh sách admin của nhóm.',
+	})
 	@ApiParam({ name: 'eventId', description: 'ID sự kiện', example: '507f1f77bcf86cd799439011' })
-	@ApiResponse({ status: 200, description: 'Lấy sự kiện thành công', type: EventResponseDto })
+	@ApiResponse({
+		status: 200,
+		description: 'Lấy sự kiện thành công. Organizer sẽ bao gồm danh sách admin nếu là Group.',
+		type: EventResponseDto,
+	})
 	@ApiResponse({ status: 404, description: 'Không tìm thấy sự kiện' })
 	async getEventById(@Param('eventId') eventId: string, @I18n() i18n: I18nContext) {
 		const event = await this.eventService.getEventById(eventId);
@@ -133,10 +146,18 @@ export class EventController {
 	}
 
 	@Put(':eventId')
-	@ApiOperation({ summary: 'Cập nhật sự kiện' })
+	@ApiOperation({
+		summary: 'Cập nhật sự kiện',
+		description:
+			'Cập nhật thông tin sự kiện. Nếu organizerType là GROUP, response sẽ bao gồm danh sách admin của nhóm.',
+	})
 	@ApiParam({ name: 'eventId', description: 'ID sự kiện', example: '507f1f77bcf86cd799439011' })
 	@ApiBody({ type: UpdateEventDto })
-	@ApiResponse({ status: 200, description: 'Cập nhật sự kiện thành công', type: EventResponseDto })
+	@ApiResponse({
+		status: 200,
+		description: 'Cập nhật sự kiện thành công. Organizer sẽ bao gồm danh sách admin nếu là Group.',
+		type: EventResponseDto,
+	})
 	@ApiResponse({ status: 400, description: 'Dữ liệu không hợp lệ' })
 	@ApiResponse({ status: 404, description: 'Không tìm thấy sự kiện' })
 	async updateEvent(
@@ -178,9 +199,16 @@ export class EventController {
 	@Post(':eventId/join')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
-	@ApiOperation({ summary: 'Tham gia sự kiện' })
+	@ApiOperation({
+		summary: 'Tham gia sự kiện',
+		description:
+			'Tham gia sự kiện. Response sẽ bao gồm thông tin sự kiện với organizer (bao gồm admin nếu là Group).',
+	})
 	@ApiParam({ name: 'eventId', description: 'ID sự kiện', example: '507f1f77bcf86cd799439011' })
-	@ApiResponse({ status: 200, description: 'Tham gia sự kiện thành công' })
+	@ApiResponse({
+		status: 200,
+		description: 'Tham gia sự kiện thành công. Organizer sẽ bao gồm danh sách admin nếu là Group.',
+	})
 	@ApiResponse({ status: 400, description: 'Tham gia sự kiện thất bại' })
 	async joinEvent(@Request() req, @Param('eventId') eventId: string, @I18n() i18n: I18nContext) {
 		try {
@@ -200,9 +228,16 @@ export class EventController {
 	@Delete(':eventId/leave')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
-	@ApiOperation({ summary: 'Rời sự kiện' })
+	@ApiOperation({
+		summary: 'Rời sự kiện',
+		description:
+			'Rời khỏi sự kiện. Response sẽ bao gồm thông tin sự kiện với organizer (bao gồm admin nếu là Group).',
+	})
 	@ApiParam({ name: 'eventId', description: 'ID sự kiện', example: '507f1f77bcf86cd799439011' })
-	@ApiResponse({ status: 200, description: 'Rời sự kiện thành công' })
+	@ApiResponse({
+		status: 200,
+		description: 'Rời sự kiện thành công. Organizer sẽ bao gồm danh sách admin nếu là Group.',
+	})
 	@ApiResponse({ status: 400, description: 'Rời sự kiện thất bại' })
 	async leaveEvent(@Request() req, @Param('eventId') eventId: string, @I18n() i18n: I18nContext) {
 		try {
@@ -222,10 +257,17 @@ export class EventController {
 	@Put(':eventId/rsvp')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
-	@ApiOperation({ summary: 'RSVP sự kiện' })
+	@ApiOperation({
+		summary: 'RSVP sự kiện',
+		description:
+			'Đánh dấu trạng thái tham gia sự kiện. Response sẽ bao gồm thông tin sự kiện với organizer (bao gồm admin nếu là Group).',
+	})
 	@ApiParam({ name: 'eventId', description: 'ID sự kiện', example: '507f1f77bcf86cd799439011' })
 	@ApiQuery({ name: 'status', required: true, enum: ['going', 'interested', 'not_going'] })
-	@ApiResponse({ status: 200, description: 'RSVP thành công' })
+	@ApiResponse({
+		status: 200,
+		description: 'RSVP thành công. Organizer sẽ bao gồm danh sách admin nếu là Group.',
+	})
 	@ApiResponse({ status: 400, description: 'RSVP thất bại' })
 	async rsvpEvent(
 		@Request() req,
@@ -443,14 +485,19 @@ export class EventController {
 	@Get('user/:userId')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
-	@ApiOperation({ summary: 'Lấy danh sách sự kiện mà user đã tham gia theo userId' })
+	@ApiOperation({
+		summary: 'Lấy danh sách sự kiện mà user đã tham gia theo userId',
+		description:
+			'Lấy danh sách sự kiện mà user đã tham gia. Nếu organizerType là GROUP, sẽ bao gồm danh sách admin của nhóm.',
+	})
 	@ApiParam({ name: 'userId', description: 'ID user', example: '507f1f77bcf86cd799439011' })
 	@ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
 	@ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
 	@ApiQuery({ name: 'key', required: false, type: String, example: 'football' })
 	@ApiResponse({
 		status: 200,
-		description: 'Lấy danh sách sự kiện của user thành công',
+		description:
+			'Lấy danh sách sự kiện của user thành công. Organizer sẽ bao gồm danh sách admin nếu là Group.',
 		type: PaginatedUserEventsResponseDto,
 	})
 	async getUserEvents(
@@ -483,9 +530,49 @@ export class EventController {
 	@Get('list/recommendations')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
-	@ApiOperation({ summary: 'Gợi ý sự kiện cho user hiện tại' })
+	@ApiOperation({
+		summary: 'Gợi ý sự kiện cho user hiện tại',
+		description:
+			'Lấy danh sách sự kiện được gợi ý cho user. Nếu organizerType là GROUP, sẽ bao gồm danh sách admin của nhóm.',
+	})
 	@ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
 	@ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+	@ApiResponse({
+		status: 200,
+		description:
+			'Lấy danh sách sự kiện gợi ý thành công. Organizer sẽ bao gồm danh sách admin nếu là Group.',
+		schema: {
+			example: {
+				success: true,
+				data: {
+					events: [
+						{
+							_id: '507f1f77bcf86cd799439011',
+							title: 'Football Match',
+							organizer: {
+								_id: '507f1f77bcf86cd799439012',
+								name: 'Football Club',
+								organizerType: 'Group',
+								admins: [
+									{
+										_id: '507f1f77bcf86cd799439013',
+										firstName: 'John',
+										lastName: 'Doe',
+										fullName: 'John Doe',
+										avatar: 'https://example.com/avatar.jpg',
+									},
+								],
+							},
+						},
+					],
+					total: 1,
+					page: 1,
+					limit: 10,
+				},
+				message: 'Lấy danh sách sự kiện gợi ý thành công',
+			},
+		},
+	})
 	async getEventRecommendations(
 		@Request() req,
 		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,

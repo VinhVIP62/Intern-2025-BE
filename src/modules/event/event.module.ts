@@ -10,10 +10,12 @@ import { EventInvitation, EventInvitationSchema } from './entities/event-invitat
 import { UserModule } from '@modules/user/user.module';
 import { NotificationService } from '@modules/notification/providers/notification.service';
 import { NotificationModule } from '@modules/notification/notification.module';
+import { Group, GroupSchema } from '@modules/group/entities/group.schema';
 @Module({
 	imports: [
 		MongooseModule.forFeature([{ name: Event.name, schema: EventSchema }]),
 		MongooseModule.forFeature([{ name: EventInvitation.name, schema: EventInvitationSchema }]),
+		MongooseModule.forFeature([{ name: Group.name, schema: GroupSchema }]),
 		forwardRef(() => GroupModule),
 		forwardRef(() => UserModule),
 		forwardRef(() => NotificationModule),

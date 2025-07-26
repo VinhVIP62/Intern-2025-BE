@@ -3,18 +3,60 @@ import { IEventRepository } from '../interfaces/event.repository';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Event } from '@modules/event/entities/event.schema';
-import { RSVPStatus, EventInvitationStatus } from '@modules/event/entities/event.enum';
+import {
+	RSVPStatus,
+	EventInvitationStatus,
+	OrganizerType,
+} from '@modules/event/entities/event.enum';
 import {
 	EventInvitation,
 	EventInvitationSchema,
 } from '@modules/event/entities/event-invitation.schema';
+import { Group } from '@modules/group/entities/group.schema';
 
 @Injectable()
 export class EventRepositoryImpl implements IEventRepository {
 	constructor(
 		@InjectModel(Event.name) private readonly eventModel: Model<Event>,
 		@InjectModel(EventInvitation.name) private readonly invitationModel: Model<EventInvitation>,
+		@InjectModel(Group.name) private readonly groupModel: Model<Group>,
 	) {}
+
+	/**
+	 * Enhance event with group admin data if organizerType is GROUP
+	 */
+	private async enhanceEventWithGroupAdmins(event: any): Promise<any> {
+		if (event && event.organizerType === OrganizerType.GROUP && event.organizer) {
+			const group = await this.groupModel
+				.findById(event.organizer._id || event.organizer)
+				.populate({
+					path: 'admins',
+					select: 'firstName lastName avatar fullName',
+				})
+				.lean({ virtuals: true });
+
+			if (group) {
+				// If organizer is already populated (has _id), just add admins
+				if (event.organizer._id) {
+					event.organizer.admins = group.admins;
+				} else {
+					// If organizer is just an ObjectId, replace with full group data
+					event.organizer = {
+						...group,
+						admins: group.admins,
+					};
+				}
+			}
+		}
+		return event;
+	}
+
+	/**
+	 * Enhance multiple events with group admin data
+	 */
+	private async enhanceEventsWithGroupAdmins(events: any[]): Promise<any[]> {
+		return Promise.all(events.map(event => this.enhanceEventWithGroupAdmins(event)));
+	}
 
 	async findManyByIds(ids: string[]): Promise<Event[]> {
 		return this.eventModel.find({ _id: { $in: ids } }).lean();
@@ -36,24 +78,34 @@ export class EventRepositoryImpl implements IEventRepository {
 					path: 'organizer',
 					select: 'firstName lastName avatar fullName name description',
 				})
-				.lean(),
+				.lean({ virtuals: true }),
 			this.eventModel.countDocuments(query),
 		]);
-		return { events, total };
+
+		// Enhance events with group admin data if organizerType is GROUP
+		const enhancedEvents = await this.enhanceEventsWithGroupAdmins(events);
+
+		return { events: enhancedEvents, total };
 	}
 
 	async findById(id: string): Promise<any> {
-		return this.eventModel
+		const event = await this.eventModel
 			.findById(id)
 			.populate({
 				path: 'organizer',
 				select: 'firstName lastName avatar fullName name description',
 			})
-			.lean();
+			.lean({ virtuals: true });
+
+		// Enhance event with group admin data if organizerType is GROUP
+		return this.enhanceEventWithGroupAdmins(event);
 	}
 
 	async updateById(id: string, update: any): Promise<any> {
-		return this.eventModel.findByIdAndUpdate(id, update, { new: true }).lean();
+		const event = await this.eventModel.findByIdAndUpdate(id, update, { new: true }).lean();
+
+		// Enhance event with group admin data if organizerType is GROUP
+		return this.enhanceEventWithGroupAdmins(event);
 	}
 
 	async deleteById(id: string): Promise<any> {
@@ -62,42 +114,49 @@ export class EventRepositoryImpl implements IEventRepository {
 
 	// Join event: add userId to participants if not already present
 	async joinEvent(eventId: string, userId: string): Promise<any> {
-		return this.eventModel
+		const event = await this.eventModel
 			.findByIdAndUpdate(
 				eventId,
 				{ $addToSet: { participants: userId }, $inc: { participantCount: 1 } },
 				{ new: true },
 			)
 			.lean();
+
+		// Enhance event with group admin data if organizerType is GROUP
+		return this.enhanceEventWithGroupAdmins(event);
 	}
 
 	// Leave event: remove userId from participants
 	async leaveEvent(eventId: string, userId: string): Promise<any> {
-		return this.eventModel
+		const event = await this.eventModel
 			.findByIdAndUpdate(
 				eventId,
 				{ $pull: { participants: userId }, $inc: { participantCount: -1 } },
 				{ new: true },
 			)
 			.lean();
+
+		// Enhance event with group admin data if organizerType is GROUP
+		return this.enhanceEventWithGroupAdmins(event);
 	}
 
 	// RSVP event: set RSVP status for user (store in a rsvps subdocument)
 	async rsvpEvent(eventId: string, userId: string, status: RSVPStatus): Promise<any> {
 		// Add or update RSVP status in a rsvps array [{ userId, status }]
-		return this.eventModel
-			.findByIdAndUpdate(
-				eventId,
-				{
-					$pull: { rsvps: { userId } },
-				},
-				{ new: false },
-			)
-			.then(() =>
-				this.eventModel
-					.findByIdAndUpdate(eventId, { $addToSet: { rsvps: { userId, status } } }, { new: true })
-					.lean(),
-			);
+		await this.eventModel.findByIdAndUpdate(
+			eventId,
+			{
+				$pull: { rsvps: { userId } },
+			},
+			{ new: false },
+		);
+
+		const event = await this.eventModel
+			.findByIdAndUpdate(eventId, { $addToSet: { rsvps: { userId, status } } }, { new: true })
+			.lean();
+
+		// Enhance event with group admin data if organizerType is GROUP
+		return this.enhanceEventWithGroupAdmins(event);
 	}
 
 	// Get paginated participants with user info
@@ -111,7 +170,7 @@ export class EventRepositoryImpl implements IEventRepository {
 				path: 'participants',
 				select: 'firstName lastName avatar fullName',
 			})
-			.lean();
+			.lean({ virtuals: true });
 		if (!event) return { participants: [], total: 0 };
 		const total = event.participants.length;
 		const start = (options.page - 1) * options.limit;
@@ -178,10 +237,14 @@ export class EventRepositoryImpl implements IEventRepository {
 					path: 'organizer',
 					select: 'firstName lastName avatar fullName name description',
 				})
-				.lean(),
+				.lean({ virtuals: true }),
 			this.eventModel.countDocuments(query),
 		]);
-		return { events, total };
+
+		// Enhance events with group admin data if organizerType is GROUP
+		const enhancedEvents = await this.enhanceEventsWithGroupAdmins(events);
+
+		return { events: enhancedEvents, total };
 	}
 
 	// Cancel invitation: chỉ cho phép sender hoặc recipient xóa
@@ -212,7 +275,7 @@ export class EventRepositoryImpl implements IEventRepository {
 					path: 'recipientId',
 					select: 'firstName lastName avatar fullName',
 				})
-				.lean(),
+				.lean({ virtuals: true }),
 			this.invitationModel.countDocuments(query),
 		]);
 		return { invitations, total };
@@ -220,7 +283,15 @@ export class EventRepositoryImpl implements IEventRepository {
 
 	// Tìm sự kiện gợi ý theo query, limit, skip (phân trang)
 	async findRecommendedEvents(query: any, limit: number, skip: number): Promise<any[]> {
-		return this.eventModel.find(query).sort({ startDate: 1 }).skip(skip).limit(limit).lean();
+		const events = await this.eventModel
+			.find(query)
+			.sort({ startDate: 1 })
+			.skip(skip)
+			.limit(limit)
+			.lean();
+
+		// Enhance events with group admin data if organizerType is GROUP
+		return this.enhanceEventsWithGroupAdmins(events);
 	}
 
 	// Đếm tổng số sự kiện phù hợp query (phân trang)

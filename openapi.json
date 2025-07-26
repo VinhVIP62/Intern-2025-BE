@@ -1156,6 +1156,7 @@
         ]
       },
       "get": {
+        "description": "Lấy danh sách sự kiện với thông tin chi tiết. Nếu organizerType là GROUP, sẽ bao gồm danh sách admin của nhóm.",
         "operationId": "EventController_getAllEvents_v1",
         "parameters": [
           {
@@ -1204,7 +1205,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Lấy danh sách sự kiện thành công",
+            "description": "Lấy danh sách sự kiện thành công. Organizer sẽ bao gồm danh sách admin nếu là Group.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1222,6 +1223,7 @@
     },
     "/api/v1/events/{eventId}": {
       "get": {
+        "description": "Lấy thông tin chi tiết sự kiện. Nếu organizerType là GROUP, sẽ bao gồm danh sách admin của nhóm.",
         "operationId": "EventController_getEventById_v1",
         "parameters": [
           {
@@ -1237,7 +1239,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Lấy sự kiện thành công",
+            "description": "Lấy sự kiện thành công. Organizer sẽ bao gồm danh sách admin nếu là Group.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1256,6 +1258,7 @@
         ]
       },
       "put": {
+        "description": "Cập nhật thông tin sự kiện. Nếu organizerType là GROUP, response sẽ bao gồm danh sách admin của nhóm.",
         "operationId": "EventController_updateEvent_v1",
         "parameters": [
           {
@@ -1281,7 +1284,7 @@
         },
         "responses": {
           "200": {
-            "description": "Cập nhật sự kiện thành công",
+            "description": "Cập nhật sự kiện thành công. Organizer sẽ bao gồm danh sách admin nếu là Group.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1335,6 +1338,7 @@
     },
     "/api/v1/events/{eventId}/join": {
       "post": {
+        "description": "Tham gia sự kiện. Response sẽ bao gồm thông tin sự kiện với organizer (bao gồm admin nếu là Group).",
         "operationId": "EventController_joinEvent_v1",
         "parameters": [
           {
@@ -1350,7 +1354,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Tham gia sự kiện thành công"
+            "description": "Tham gia sự kiện thành công. Organizer sẽ bao gồm danh sách admin nếu là Group."
           },
           "400": {
             "description": "Tham gia sự kiện thất bại"
@@ -1364,6 +1368,7 @@
     },
     "/api/v1/events/{eventId}/leave": {
       "delete": {
+        "description": "Rời khỏi sự kiện. Response sẽ bao gồm thông tin sự kiện với organizer (bao gồm admin nếu là Group).",
         "operationId": "EventController_leaveEvent_v1",
         "parameters": [
           {
@@ -1379,7 +1384,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Rời sự kiện thành công"
+            "description": "Rời sự kiện thành công. Organizer sẽ bao gồm danh sách admin nếu là Group."
           },
           "400": {
             "description": "Rời sự kiện thất bại"
@@ -1393,6 +1398,7 @@
     },
     "/api/v1/events/{eventId}/rsvp": {
       "put": {
+        "description": "Đánh dấu trạng thái tham gia sự kiện. Response sẽ bao gồm thông tin sự kiện với organizer (bao gồm admin nếu là Group).",
         "operationId": "EventController_rsvpEvent_v1",
         "parameters": [
           {
@@ -1421,7 +1427,7 @@
         ],
         "responses": {
           "200": {
-            "description": "RSVP thành công"
+            "description": "RSVP thành công. Organizer sẽ bao gồm danh sách admin nếu là Group."
           },
           "400": {
             "description": "RSVP thất bại"
@@ -1693,6 +1699,7 @@
     },
     "/api/v1/events/user/{userId}": {
       "get": {
+        "description": "Lấy danh sách sự kiện mà user đã tham gia. Nếu organizerType là GROUP, sẽ bao gồm danh sách admin của nhóm.",
         "operationId": "EventController_getUserEvents_v1",
         "parameters": [
           {
@@ -1735,7 +1742,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Lấy danh sách sự kiện của user thành công",
+            "description": "Lấy danh sách sự kiện của user thành công. Organizer sẽ bao gồm danh sách admin nếu là Group.",
             "content": {
               "application/json": {
                 "schema": {
@@ -1753,6 +1760,7 @@
     },
     "/api/v1/events/list/recommendations": {
       "get": {
+        "description": "Lấy danh sách sự kiện được gợi ý cho user. Nếu organizerType là GROUP, sẽ bao gồm danh sách admin của nhóm.",
         "operationId": "EventController_getEventRecommendations_v1",
         "parameters": [
           {
@@ -1776,7 +1784,42 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "Lấy danh sách sự kiện gợi ý thành công. Organizer sẽ bao gồm danh sách admin nếu là Group.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "example": {
+                    "success": true,
+                    "data": {
+                      "events": [
+                        {
+                          "_id": "507f1f77bcf86cd799439011",
+                          "title": "Football Match",
+                          "organizer": {
+                            "_id": "507f1f77bcf86cd799439012",
+                            "name": "Football Club",
+                            "organizerType": "Group",
+                            "admins": [
+                              {
+                                "_id": "507f1f77bcf86cd799439013",
+                                "firstName": "John",
+                                "lastName": "Doe",
+                                "fullName": "John Doe",
+                                "avatar": "https://example.com/avatar.jpg"
+                              }
+                            ]
+                          }
+                        }
+                      ],
+                      "total": 1,
+                      "page": 1,
+                      "limit": 10
+                    },
+                    "message": "Lấy danh sách sự kiện gợi ý thành công"
+                  }
+                }
+              }
+            }
           }
         },
         "summary": "Gợi ý sự kiện cho user hiện tại",
@@ -6197,6 +6240,81 @@
           "maxParticipants"
         ]
       },
+      "GroupAdminDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "ID của admin"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "Tên đầu của admin"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Tên cuối của admin"
+          },
+          "fullName": {
+            "type": "string",
+            "description": "Tên đầy đủ của admin"
+          },
+          "avatar": {
+            "type": "string",
+            "description": "Ảnh đại diện của admin"
+          }
+        },
+        "required": [
+          "_id",
+          "firstName",
+          "lastName",
+          "fullName"
+        ]
+      },
+      "EventOrganizerDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "ID của organizer"
+          },
+          "firstName": {
+            "type": "string",
+            "description": "Tên đầu (cho User) hoặc tên nhóm (cho Group)"
+          },
+          "lastName": {
+            "type": "string",
+            "description": "Tên cuối (cho User)"
+          },
+          "fullName": {
+            "type": "string",
+            "description": "Tên đầy đủ (cho User) hoặc tên nhóm (cho Group)"
+          },
+          "name": {
+            "type": "string",
+            "description": "Tên nhóm (cho Group)"
+          },
+          "description": {
+            "type": "string",
+            "description": "Mô tả (cho Group)"
+          },
+          "avatar": {
+            "type": "string",
+            "description": "Ảnh đại diện"
+          },
+          "admins": {
+            "description": "Danh sách admin của nhóm (chỉ có khi organizerType là GROUP)",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GroupAdminDto"
+            }
+          }
+        },
+        "required": [
+          "_id",
+          "fullName"
+        ]
+      },
       "ObjectId": {
         "type": "object",
         "properties": {}
@@ -6221,10 +6339,10 @@
             "description": "Ảnh sự kiện"
           },
           "organizer": {
-            "description": "ID người tổ chức",
+            "description": "Thông tin người tổ chức (User hoặc Group). Nếu là Group, sẽ bao gồm danh sách admin.",
             "allOf": [
               {
-                "$ref": "#/components/schemas/ObjectId"
+                "$ref": "#/components/schemas/EventOrganizerDto"
               }
             ]
           },
@@ -6234,7 +6352,7 @@
               "User",
               "Group"
             ],
-            "description": "Loại organizer"
+            "description": "Loại organizer: User hoặc Group. Nếu là Group, organizer sẽ bao gồm danh sách admin."
           },
           "sport": {
             "type": "string",

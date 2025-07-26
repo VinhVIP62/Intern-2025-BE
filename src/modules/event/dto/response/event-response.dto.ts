@@ -20,6 +20,55 @@ import { SportType } from '@modules/user/enums/user.enum';
 import { BasePaginationMetaDto } from '@common/dto/base-pagination.dto';
 import { EventLocationDto } from '@modules/event/dto/event.dto';
 
+// DTO for group admin information
+export class GroupAdminDto {
+	@ApiProperty({ description: 'ID của admin' })
+	_id: string;
+
+	@ApiProperty({ description: 'Tên đầu của admin' })
+	firstName: string;
+
+	@ApiProperty({ description: 'Tên cuối của admin' })
+	lastName: string;
+
+	@ApiProperty({ description: 'Tên đầy đủ của admin' })
+	fullName: string;
+
+	@ApiProperty({ description: 'Ảnh đại diện của admin', required: false })
+	avatar?: string;
+}
+
+// Enhanced organizer DTO that can be either User or Group
+export class EventOrganizerDto {
+	@ApiProperty({ description: 'ID của organizer' })
+	_id: string;
+
+	@ApiProperty({ description: 'Tên đầu (cho User) hoặc tên nhóm (cho Group)', required: false })
+	firstName?: string;
+
+	@ApiProperty({ description: 'Tên cuối (cho User)', required: false })
+	lastName?: string;
+
+	@ApiProperty({ description: 'Tên đầy đủ (cho User) hoặc tên nhóm (cho Group)' })
+	fullName?: string;
+
+	@ApiProperty({ description: 'Tên nhóm (cho Group)', required: false })
+	name?: string;
+
+	@ApiProperty({ description: 'Mô tả (cho Group)', required: false })
+	description?: string;
+
+	@ApiProperty({ description: 'Ảnh đại diện', required: false })
+	avatar?: string;
+
+	@ApiProperty({
+		type: [GroupAdminDto],
+		description: 'Danh sách admin của nhóm (chỉ có khi organizerType là GROUP)',
+		required: false,
+	})
+	admins?: GroupAdminDto[];
+}
+
 export class EventResponseDto {
 	@ApiProperty({ description: 'ID sự kiện' })
 	_id: string;
@@ -33,10 +82,18 @@ export class EventResponseDto {
 	@ApiProperty({ description: 'Ảnh sự kiện', required: false })
 	image?: string;
 
-	@ApiProperty({ description: 'ID người tổ chức' })
-	organizer: Types.ObjectId;
+	@ApiProperty({
+		type: EventOrganizerDto,
+		description:
+			'Thông tin người tổ chức (User hoặc Group). Nếu là Group, sẽ bao gồm danh sách admin.',
+	})
+	organizer: EventOrganizerDto;
 
-	@ApiProperty({ enum: OrganizerType, description: 'Loại organizer' })
+	@ApiProperty({
+		enum: OrganizerType,
+		description:
+			'Loại organizer: User hoặc Group. Nếu là Group, organizer sẽ bao gồm danh sách admin.',
+	})
 	organizerType: OrganizerType;
 
 	@ApiProperty({ enum: SportType, description: 'Môn thể thao' })
