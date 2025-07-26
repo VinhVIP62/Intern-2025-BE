@@ -30,8 +30,20 @@ export class EventService {
 		}));
 	}
 
-	async createEvent(data: any): Promise<any> {
-		return this.eventRepository.create(data);
+	async createEvent(data: any, currentUserId: string): Promise<any> {
+		// Tạo sự kiện mới
+		const event = await this.eventRepository.create(data);
+
+		// Tự động thêm user hiện tại làm người tham gia sự kiện
+		if (event && event._id) {
+			const updatedEvent = await this.eventRepository.joinEvent(
+				event._id.toString(),
+				currentUserId,
+			);
+			return updatedEvent;
+		}
+
+		return event;
 	}
 
 	async getAllEvents(query: any, options: any): Promise<{ events: any[]; total: number }> {

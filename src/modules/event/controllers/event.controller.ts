@@ -46,17 +46,26 @@ export class EventController {
 	constructor(private readonly eventService: EventService) {}
 
 	@Post()
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Tạo sự kiện mới' })
 	@ApiBody({ type: CreateEventDto })
 	@ApiResponse({ status: 201, description: 'Tạo sự kiện thành công', type: EventResponseDto })
 	@ApiResponse({ status: 400, description: 'Dữ liệu không hợp lệ' })
-	async createEvent(@Body() createEventDto: CreateEventDto, @I18n() i18n: I18nContext) {
+	async createEvent(
+		@Request() req,
+		@Body() createEventDto: CreateEventDto,
+		@I18n() i18n: I18nContext,
+	) {
 		try {
-			const event = await this.eventService.createEvent({
-				...createEventDto,
-				startDate: new Date(createEventDto.startDate),
-				endDate: new Date(createEventDto.endDate),
-			});
+			const event = await this.eventService.createEvent(
+				{
+					...createEventDto,
+					startDate: new Date(createEventDto.startDate),
+					endDate: new Date(createEventDto.endDate),
+				},
+				req.user.id,
+			);
 			return {
 				success: true,
 				data: event,
