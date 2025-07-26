@@ -170,7 +170,15 @@ export class EventRepositoryImpl implements IEventRepository {
 			query.title = { $regex: key, $options: 'i' };
 		}
 		const [events, total] = await Promise.all([
-			this.eventModel.find(query).skip(skip).limit(limit).lean(),
+			this.eventModel
+				.find(query)
+				.skip(skip)
+				.limit(limit)
+				.populate({
+					path: 'organizer',
+					select: 'firstName lastName avatar fullName name description',
+				})
+				.lean(),
 			this.eventModel.countDocuments(query),
 		]);
 		return { events, total };
