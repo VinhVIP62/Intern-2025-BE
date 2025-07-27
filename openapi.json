@@ -5332,6 +5332,30 @@
         ]
       }
     },
+    "/api/v1/achievements/user/{userId}": {
+      "get": {
+        "operationId": "AchievementController_getCompletedAchievements_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy thành công"
+          }
+        },
+        "summary": "Lấy danh sách achievement đã hoàn thành của user theo userId",
+        "tags": [
+          "Achievement"
+        ]
+      }
+    },
     "/api/v1/achievements/unlock": {
       "post": {
         "operationId": "AchievementController_unlockAchievement_v1",

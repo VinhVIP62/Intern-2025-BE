@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Request, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Request, UseGuards, Query, Param } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { RolesGuard } from '@common/guards';
@@ -43,13 +43,13 @@ export class AchievementController {
 	async getUserAchievements(@Request() req, @I18n() i18n: I18nContext) {
 		const userId = req.user.id;
 		const allAchievements = await this.achievementRepo.findAllAchievements();
-		const userAchievements = await this.userAchievementRepo.findUserAchievements(userId);
-
-		const passed = userAchievements.filter(a => a.progress === 100).length;
-		const inProgress = userAchievements.filter(a => a.progress < 100).length;
 		const total = allAchievements.length;
 
-		const achievementsWithName = allAchievements.map(achievement => ({
+		const userAchievements = await this.userAchievementRepo.findUserAchievements(userId);
+		const passed = userAchievements.filter(a => a.progress === 100).length;
+		const inProgress = userAchievements.filter(a => a.progress < 100).length;
+
+		const achievementsWithName = userAchievements.map(achievement => ({
 			...achievement,
 			name: i18n.t(`achievement.${achievement.name}`),
 		}));
@@ -60,6 +60,28 @@ export class AchievementController {
 			inProgress,
 			data: achievementsWithName,
 			message: i18n.t('achievement.USER_LIST_SUCCESS'),
+		};
+	}
+
+	@Get('user/:userId')
+	@UseGuards(RolesGuard)
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Lấy danh sách achievement đã hoàn thành của user theo userId' })
+	@ApiResponse({ status: 200, description: 'Lấy thành công' })
+	async getCompletedAchievements(@Param('userId') userId: string, @I18n() i18n: I18nContext) {
+		const userAchievements = await this.userAchievementRepo.findUserAchievements(userId);
+		const completedAchievements = userAchievements.filter(a => a.progress === 100);
+
+		const achievementsWithName = completedAchievements.map(achievement => ({
+			...achievement,
+			name: i18n.t(`achievement.${achievement.name}`),
+		}));
+
+		return {
+			success: true,
+			total: completedAchievements.length,
+			data: achievementsWithName,
+			message: i18n.t('achievement.COMPLETED_LIST_SUCCESS'),
 		};
 	}
 
