@@ -201,7 +201,16 @@ export class EventRepositoryImpl implements IEventRepository {
 		const query: any = { recipientId: userId };
 		if (status) query.status = status;
 		const [invitations, total] = await Promise.all([
-			this.invitationModel.find(query).skip(skip).limit(limit).populate('eventId').lean(),
+			this.invitationModel
+				.find(query)
+				.skip(skip)
+				.limit(limit)
+				.populate('eventId')
+				.populate({
+					path: 'senderId',
+					select: 'firstName lastName avatar fullName',
+				})
+				.lean({ virtuals: true }),
 			this.invitationModel.countDocuments(query),
 		]);
 		return { invitations, total };
