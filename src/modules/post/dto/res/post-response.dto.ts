@@ -1,6 +1,6 @@
 import { Exclude, Expose, Transform, Type } from 'class-transformer';
 
-import { WithPopulated } from '@common/crud/entities';
+import { Populated } from '@common/crud/entities';
 import { Visibility } from '@common/enums';
 
 import { User } from '@modules/user/entities';
@@ -35,7 +35,7 @@ export class ResponsePostDto {
 	userId!: string;
 
 	@Expose()
-	@Transform(({ obj }: { obj: WithPopulated<SocialPost> }) => {
+	@Transform(({ obj }: { obj: Populated<SocialPost> }) => {
 		const user = obj?.userIdPopulated as User | null;
 		if (!user) return null;
 		return {
@@ -61,7 +61,7 @@ export class ResponsePostDto {
 	deletedBy!: string | null;
 
 	@Expose()
-	@Transform(({ obj }: { obj: WithPopulated<SocialPost> }) => {
+	@Transform(({ obj }: { obj: Populated<SocialPost> }) => {
 		const user = obj?.deletedByPopulated as User | null;
 		if (!user) return null;
 		return {

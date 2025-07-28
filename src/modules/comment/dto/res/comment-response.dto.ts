@@ -1,6 +1,6 @@
 import { Exclude, Expose, Transform, Type } from 'class-transformer';
 
-import { WithPopulated } from '@common/crud/entities';
+import { Populated } from '@common/crud/entities';
 
 import { Comment } from '@modules/comment/entities';
 import { User } from '@modules/user/entities';
@@ -26,7 +26,7 @@ export class ResponseCommentDto {
 	rootType!: string;
 
 	@Expose()
-	@Transform(({ obj }: { obj: WithPopulated<Comment> }) => {
+	@Transform(({ obj }: { obj: Populated<Comment> }) => {
 		const user = obj?.userIdPopulated as User | null;
 		if (!user) return null;
 		return {

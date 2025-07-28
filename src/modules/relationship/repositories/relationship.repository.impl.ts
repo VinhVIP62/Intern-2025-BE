@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model, PipelineStage } from 'mongoose';
 
-import { WithPopulated } from '@common/crud/entities';
+import { Populated } from '@common/crud/entities';
 import { MongooseRepositoryImpl } from '@common/crud/repos';
 import { EntityNotFound } from '@common/exceptions';
 import { OffsetPaginationOption } from '@common/types/data';
@@ -29,7 +29,7 @@ export class FriendshipRepositoryImpl
 		return this.exists(filterOptions);
 	}
 
-	async acceptFriendRequest(uid: string, requestId: string): Promise<WithPopulated<Friendship>> {
+	async acceptFriendRequest(uid: string, requestId: string): Promise<Populated<Friendship>> {
 		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
 		const filterOptions = this.transformFilter({
 			id: requestId,
@@ -49,7 +49,7 @@ export class FriendshipRepositoryImpl
 		return acceptedRequest;
 	}
 
-	async denyFriendRequest(uid: string, requestId: string): Promise<WithPopulated<Friendship>> {
+	async denyFriendRequest(uid: string, requestId: string): Promise<Populated<Friendship>> {
 		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
 		const filterOptions = this.transformFilter({
 			id: requestId,

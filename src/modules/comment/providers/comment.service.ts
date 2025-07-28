@@ -1,7 +1,7 @@
 import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import { MemoryStoredFile } from 'nestjs-form-data';
 
-import { WithPopulated } from '@common/crud/entities';
+import { CreateType, Populated } from '@common/crud/entities';
 import { Action } from '@common/enums';
 import { CursorPaginationOption } from '@common/types/data';
 
@@ -22,7 +22,7 @@ import { ICommentRepository, ICommentRepositoryToken } from '../repositories';
 export type DeletedCommentsSummary = { deletedComments: number; deletedReactions: number };
 
 export type PaginatedCommentsWithCursor = {
-	foundComments: (WithPopulated<Comment> & Pick<ReactionCount, 'counts'>)[];
+	foundComments: (Populated<Comment> & Pick<ReactionCount, 'counts'>)[];
 	nextCursor: string;
 };
 
@@ -36,7 +36,11 @@ export class CommentService {
 		private readonly caslFilterFactory: CaslFilterFactory,
 	) {}
 
-	async checkAccessTo(id: string, action: Action, options?: UserAbilityOptions): Promise<Comment> {
+	async checkAccessTo(
+		id: string,
+		action: Action,
+		options?: UserAbilityOptions,
+	): Promise<Populated<Comment>> {
 		const filter = this.caslFilterFactory.createFilterForUser(Comment, action, options);
 		const foundComment = this.commentRepository.findOneByOrFail({ id, ...filter }).catch(() => {
 			throw new ForbiddenException();
@@ -45,18 +49,18 @@ export class CommentService {
 	}
 
 	async createComment(
-		data: Partial<Comment> & Pick<Comment, 'userId' | 'targetId'> & { files?: MemoryStoredFile[] },
-	): Promise<WithPopulated<Comment>> {
+		data: CreateType<Comment> & { files?: MemoryStoredFile[] },
+	): Promise<Populated<Comment>> {
 		if (data.files) data.fileUrls = await this.fileHostService.files2Urls(data.files);
 		const createdComment = this.commentRepository.create(data);
 		return createdComment;
 	}
 
-	async getCommentsCountOf(targetId: string) {
+	async getCommentsCountOf(targetId: string): Promise<number> {
 		return this.commentRepository.count({ targetId });
 	}
 
-	async getCommentsCountOfRoot(rootId: string) {
+	async getCommentsCountOfRoot(rootId: string): Promise<number> {
 		return this.commentRepository.count({ rootId });
 	}
 
@@ -83,7 +87,7 @@ export class CommentService {
 	async updateComment(
 		id: string,
 		data: Partial<Pick<Comment, 'content' | 'fileUrls'>> & { files?: MemoryStoredFile[] },
-	): Promise<WithPopulated<Comment>> {
+	): Promise<Populated<Comment>> {
 		const filter = this.caslFilterFactory.createFilterForUser(Comment, Action.UPDATE);
 		if (data.files) data.fileUrls = await this.fileHostService.files2Urls(data.files);
 		const updatedComment = this.commentRepository.findOneByAndUpdate({ id, ...filter }, data);

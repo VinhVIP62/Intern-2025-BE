@@ -5,7 +5,7 @@ import { Complete } from '@common/types/utils';
 
 // import { User } from '@modules/user/entities';
 
-import { WithPopulated } from '../querry-type';
+import { Populated } from '../querry-type';
 import { ISoftDeletableEntity } from '../softdeletable-entity.type';
 import { BaseEntitySchemaDef } from './base-entity.schema';
 import { toString } from './oid-to-string';
@@ -13,7 +13,7 @@ import { toString } from './oid-to-string';
 @Schema()
 export class SoftDeletableEntitySchemaDef
 	extends BaseEntitySchemaDef
-	implements WithPopulated<Complete<ISoftDeletableEntity>>
+	implements Populated<Complete<ISoftDeletableEntity>>
 {
 	@Prop({ type: Boolean, default: false, index: true })
 	deleted!: boolean;

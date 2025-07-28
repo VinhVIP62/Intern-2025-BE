@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 
-import { WithPopulated } from '@common/crud/entities';
+import { Populated } from '@common/crud/entities';
 import { BaseEntitySchemaDef, toString } from '@common/crud/entities/mongoose-schema';
 import { Complete } from '@common/types/utils';
 
@@ -18,7 +18,7 @@ import { EventParticipant, EventParticipantRole } from './event-participant.enti
 })
 export class EventParticipantSchemaDef
 	extends BaseEntitySchemaDef
-	implements WithPopulated<Complete<EventParticipant>>
+	implements Populated<Complete<EventParticipant>>
 {
 	@Prop({
 		type: mongoose.Schema.Types.ObjectId,

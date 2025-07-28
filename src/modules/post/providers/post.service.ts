@@ -1,7 +1,7 @@
 import { ForbiddenException, Inject, Injectable } from '@nestjs/common';
 import { MemoryStoredFile } from 'nestjs-form-data';
 
-import { WithPopulated } from '@common/crud/entities';
+import { CreateType, Populated } from '@common/crud/entities';
 import { Action } from '@common/enums';
 import { CursorPaginationOption } from '@common/types/data';
 
@@ -32,8 +32,8 @@ export class PostService {
 	}
 
 	async createPost(
-		data: Partial<SocialPost> & { files?: MemoryStoredFile[] },
-	): Promise<WithPopulated<SocialPost>> {
+		data: CreateType<SocialPost> & { files?: MemoryStoredFile[] },
+	): Promise<Populated<SocialPost>> {
 		if (data.files) data.fileUrls = await this.fileHostService.files2Urls(data.files);
 		const createdPost = this.postRepository.create(data);
 		return createdPost;
@@ -43,7 +43,7 @@ export class PostService {
 		id: string,
 		postType: PostType,
 		data: Partial<SocialPost> & { files?: MemoryStoredFile[]; deletedFilesIdx?: number[] },
-	): Promise<WithPopulated<SocialPost> | null> {
+	): Promise<Populated<SocialPost> | null> {
 		const filter = this.caslFilterFactory.createFilterForUser(SocialPost, Action.UPDATE);
 		if (data.files) data.fileUrls = await this.fileHostService.files2Urls(data.files);
 		const createdPost =
@@ -53,16 +53,13 @@ export class PostService {
 		return createdPost;
 	}
 
-	async deletePost(
-		id: string,
-		deletedById: string | null = null,
-	): Promise<WithPopulated<SocialPost>> {
+	async deletePost(id: string, deletedById: string | null = null): Promise<Populated<SocialPost>> {
 		const filter = this.caslFilterFactory.createFilterForUser(SocialPost, Action.DELETE);
 		const deletedPost = this.postRepository.findOneByAndSoftDelete({ id, ...filter }, deletedById);
 		return deletedPost;
 	}
 
-	async getPost(id: string): Promise<WithPopulated<SocialPost> | null> {
+	async getPost(id: string): Promise<Populated<SocialPost> | null> {
 		const filter = this.caslFilterFactory.createFilterForUser(SocialPost, Action.READ);
 		const foundPost = this.postRepository.findOneBy({ id, ...filter });
 		return foundPost;
@@ -72,7 +69,7 @@ export class PostService {
 		userId: string,
 		options?: CursorPaginationOption<string>,
 	): Promise<{
-		foundPosts: WithPopulated<SocialPost>[];
+		foundPosts: Populated<SocialPost>[];
 		nextCursor: string;
 	}> {
 		const filter = this.caslFilterFactory.createFilterForUser(SocialPost, Action.READ);

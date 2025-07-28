@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import bcrypt from 'bcrypt';
 import { HydratedDocument, ValidatorProps } from 'mongoose';
 
-import { WithPopulated } from '@common/crud/entities';
+import { Populated } from '@common/crud/entities';
 import { SoftDeletableEntitySchemaDef } from '@common/crud/entities/mongoose-schema';
 import { Role } from '@common/enums';
 import { Complete } from '@common/types/utils';
@@ -47,7 +47,7 @@ export class GoogleLoginInfoSubDoc implements GoogleLoginInfo {
 })
 export class UserSchemaDef
 	extends SoftDeletableEntitySchemaDef
-	implements WithPopulated<Complete<User>>
+	implements Populated<Complete<User>>
 {
 	@Prop({ required: true, unique: true, index: 'text' })
 	username!: string;

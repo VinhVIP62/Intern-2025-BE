@@ -24,12 +24,12 @@ export class AuthService {
 	}
 
 	async register(username: string, password: string, mail: string, phone: string): Promise<Tokens> {
-		const user = await this.userService.create({ username, password, mail, phone });
+		const user = await this.userService.register({ username, password, mail, phone });
 		const tokens = await this.tokenService.generateTokens(createPayload(user), true);
 		return tokens;
 	}
 
-	async loginWithGoogle(user: User) {
+	async loginWithGoogle(user: User): Promise<Tokens> {
 		const tokens = await this.tokenService.generateTokens(createPayload(user), true);
 		return tokens;
 	}
@@ -60,10 +60,9 @@ export class AuthService {
 			googleLoginInfo: { id: profile.id },
 		});
 		if (!foundUsers.length) {
-			const createdUser = await this.userService.create({
+			const createdUser = await this.userService.registerGoogle({
 				avatarUrl: profile.photos?.[0]?.value || null,
 				googleLoginInfo: { id: profile.id },
-				hasFinishedSetup: false,
 				mail: profile.emails?.[0]?.value || null,
 				username: profile.username || profile.displayName.replace(/\s+/g, '') + randomUUID(),
 				password: null,

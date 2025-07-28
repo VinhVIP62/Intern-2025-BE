@@ -23,11 +23,11 @@ export class TokenService {
 		};
 	}
 
-	private async generateAccessToken(payload: Payload) {
+	private async generateAccessToken(payload: Payload): Promise<string> {
 		return this.AccessTokenService.signAsync(payload);
 	}
 
-	private async generateRefreshToken(payload: Payload) {
+	private async generateRefreshToken(payload: Payload): Promise<string> {
 		const token = await this.RefreshTokenService.signAsync(payload);
 		return token;
 	}

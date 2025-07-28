@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, Virtual } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument, ValidatorProps } from 'mongoose';
 
-import { WithPopulated } from '@common/crud/entities';
+import { Populated } from '@common/crud/entities';
 import { BaseEntitySchemaDef, toString } from '@common/crud/entities/mongoose-schema';
 import { Complete } from '@common/types/utils';
 import { uniqueArrayValidatorForOID } from '@common/validators';
@@ -19,7 +19,7 @@ import { FriendStatus, Friendship } from './friendship.entity';
 })
 export class FriendshipSchemaDef
 	extends BaseEntitySchemaDef
-	implements WithPopulated<Complete<Friendship>>
+	implements Populated<Complete<Friendship>>
 {
 	@Prop({
 		type: [mongoose.Schema.Types.ObjectId],

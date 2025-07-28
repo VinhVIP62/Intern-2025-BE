@@ -1,13 +1,24 @@
-import { QuerriableType, WithPopulated } from '@common/crud/entities';
-import { ISoftDeleteBaseRepository } from '@common/crud/repos';
+import { CreateType, Populated, QuerriableType } from '@common/crud/entities';
+import { ISoftDeleteBaseRepository, QueryOptions } from '@common/crud/repos';
 
 import { User } from '../entities';
+import { UserGoogleRegister, UserRegister } from '../types';
 
 export interface IUserRepository extends ISoftDeleteBaseRepository<User> {
-	findOneByUsername(username: string): Promise<WithPopulated<User> | null>;
+	createForRegistration(
+		data: CreateType<UserRegister>,
+		queryOptions?: QueryOptions<User>,
+	): Promise<Populated<User>>;
+
+	createForGoogleRegistration(
+		data: CreateType<UserGoogleRegister>,
+		queryOptions?: QueryOptions<User>,
+	): Promise<Populated<User>>;
+
+	findOneByUsername(username: string): Promise<Populated<User> | null>;
 
 	/** Find a user matching the where options & match criterias to still be able to login */
-	findOneLoginable(where: QuerriableType<User>): Promise<WithPopulated<User> | null>;
+	findOneLoginable(where: QuerriableType<User>): Promise<Populated<User> | null>;
 }
 
 export const IUserRepositoryToken = Symbol('IUserRepository');

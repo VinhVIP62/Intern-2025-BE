@@ -36,13 +36,13 @@ export class CreatePostDto {
 	@IsArray()
 	@IsOptional()
 	@IsValidId({ each: true })
-	visibleToUsersIds?: string[];
+	visibleToUsersIds: string[] = [];
 
 	@Expose()
 	@IsArray()
 	@IsOptional()
 	@IsValidId({ each: true })
-	invisibleToUsersIds?: string[];
+	invisibleToUsersIds: string[] = [];
 }
 
 export class CreateFilePostDto extends CreatePostDto {

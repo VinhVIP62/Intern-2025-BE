@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, Virtual } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 
-import { WithPopulated } from '@common/crud/entities';
+import { Populated } from '@common/crud/entities';
 import { SoftDeletableEntitySchemaDef, toString } from '@common/crud/entities/mongoose-schema';
 import { Visibility } from '@common/enums';
 import { Complete } from '@common/types/utils';
@@ -20,7 +20,7 @@ import { SocialPost } from './social-post.entity';
 })
 export class SocialPostSchemaDef
 	extends SoftDeletableEntitySchemaDef
-	implements WithPopulated<Complete<SocialPost>>
+	implements Populated<Complete<SocialPost>>
 {
 	@Prop({ type: String, enum: Visibility, required: true, index: true })
 	visibility!: Visibility;
@@ -34,8 +34,7 @@ export class SocialPostSchemaDef
 	@Prop({ type: [String], default: null })
 	fileUrls!: string[] | null;
 
-	// [PLA] not implemented
-	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Event', default: null, get: toString })
+	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: Event.name, default: null, get: toString })
 	embeddedEventId!: string | null;
 
 	@Prop({

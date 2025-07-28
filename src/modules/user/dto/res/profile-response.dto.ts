@@ -1,6 +1,6 @@
 import { Exclude, Expose, Transform, Type } from 'class-transformer';
 
-import { WithPopulated } from '@common/crud/entities';
+import { Populated } from '@common/crud/entities';
 
 import { GoogleLoginInfo, Location, User } from '../../entities';
 import { ResponseUserDto } from './user-response.dto';
@@ -37,7 +37,7 @@ export class ResponseProfileDto extends ResponseUserDto {
 	deletedBy!: string | null;
 
 	@Expose()
-	@Transform(({ obj }: { obj: WithPopulated<User> }) => {
+	@Transform(({ obj }: { obj: Populated<User> }) => {
 		const user = obj?.deletedByPopulated as User | null;
 		if (!user) return null;
 		return {

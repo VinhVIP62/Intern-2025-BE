@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, Virtual } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 
-import { WithPopulated } from '@common/crud/entities';
+import { Populated } from '@common/crud/entities';
 import { BaseEntitySchemaDef, toString } from '@common/crud/entities/mongoose-schema';
 import { Complete } from '@common/types/utils';
 
@@ -16,10 +16,7 @@ import { Comment, CommentRootType } from './comment.entity';
 		getters: true,
 	},
 })
-export class CommentSchemaDef
-	extends BaseEntitySchemaDef
-	implements WithPopulated<Complete<Comment>>
-{
+export class CommentSchemaDef extends BaseEntitySchemaDef implements Populated<Complete<Comment>> {
 	@Prop({
 		type: mongoose.Schema.Types.ObjectId,
 		index: true,
@@ -57,6 +54,7 @@ export class CommentSchemaDef
 			localField: '_id',
 			foreignField: 'targetId',
 			count: true,
+			getters: true,
 		},
 	})
 	childrenCount!: number;

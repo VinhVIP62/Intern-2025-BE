@@ -3,10 +3,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import { FilterQuery, Model } from 'mongoose';
 
 import { GRACE_PERIOD } from '@common/constants';
-import { QuerriableType, WithPopulated } from '@common/crud/entities';
-import { MongooseSoftDeleteRepositoryImpl } from '@common/crud/repos';
+import { CreateType, Populated, QuerriableType } from '@common/crud/entities';
+import { MongooseSoftDeleteRepositoryImpl, QueryOptions } from '@common/crud/repos';
 
 import { User } from '../entities';
+import { UserGoogleRegister, UserRegister } from '../types';
 import { IUserRepository } from './user.repository';
 
 @Injectable()
@@ -20,12 +21,26 @@ export class UserRepositoryImpl
 		});
 	}
 
-	async findOneByUsername(username: string): Promise<WithPopulated<User> | null> {
+	async createForRegistration(
+		data: CreateType<UserRegister>,
+		queryOptions?: QueryOptions<User>,
+	): Promise<Populated<User>> {
+		return this.createSoft(data, queryOptions);
+	}
+
+	async createForGoogleRegistration(
+		data: CreateType<UserGoogleRegister>,
+		queryOptions?: QueryOptions<User>,
+	): Promise<Populated<User>> {
+		return this.createSoft(data, queryOptions);
+	}
+
+	async findOneByUsername(username: string): Promise<Populated<User> | null> {
 		const foundUser = this.findOneBy({ username });
 		return foundUser;
 	}
 
-	async findOneLoginable(where: QuerriableType<User>): Promise<WithPopulated<User> | null> {
+	async findOneLoginable(where: QuerriableType<User>): Promise<Populated<User> | null> {
 		const filter: FilterQuery<User> = this.transformFilter({
 			...where,
 			$or: [

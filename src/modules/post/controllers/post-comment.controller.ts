@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 
-import { WithPopulated } from '@common/crud/entities';
+import { Populated } from '@common/crud/entities';
 import { PriorityRole, ResponseTransform } from '@common/decorators';
 import { Action, Role } from '@common/enums';
 import { ValidateIdPipe } from '@common/pipes';
@@ -73,7 +73,7 @@ export class PostCommentController {
 	async getComments(
 		@Param('postid', ValidateIdPipe) postId: string,
 		@Query() query: GetCommentsDto,
-	): Promise<CursorPaginatedData<WithPopulated<ResponseCommentDto>>> {
+	): Promise<CursorPaginatedData<Populated<ResponseCommentDto>>> {
 		await this.postService.checkAccessTo(postId, Action.READ);
 		const foundComments = await this.commentService.getCommentsOf(postId, query);
 		return new CursorPaginatedData(
@@ -117,7 +117,7 @@ export class PostCommentController {
 		@Param('postid', ValidateIdPipe) postId: string,
 		@Param('commentid', ValidateIdPipe) commentId: string,
 		@Query() query: GetCommentsDto,
-	): Promise<CursorPaginatedData<WithPopulated<ResponseCommentDto>>> {
+	): Promise<CursorPaginatedData<Populated<ResponseCommentDto>>> {
 		const post = await this.postService.checkAccessTo(postId, Action.READ);
 		await this.commentService.checkAccessTo(commentId, Action.READ, { post });
 		const foundReplies = await this.commentService.getCommentsOf(commentId, query);

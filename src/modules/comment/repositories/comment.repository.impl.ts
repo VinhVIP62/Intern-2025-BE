@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, PipelineStage } from 'mongoose';
 
-import { WithPopulated } from '@common/crud/entities';
-import { MongooseRepositoryImpl } from '@common/crud/repos';
+import { CreateType, Populated } from '@common/crud/entities';
+import { MongooseRepositoryImpl, QueryOptions } from '@common/crud/repos';
 import { SORT } from '@common/enums';
 import { CursorPaginationOption } from '@common/types/data';
 
@@ -25,10 +25,17 @@ export class CommentRepositoryImpl
 		});
 	}
 
+	async createComment(
+		data: CreateType<Comment>,
+		queryOptions?: QueryOptions<Comment>,
+	): Promise<Populated<Comment>> {
+		return this.create(data, queryOptions);
+	}
+
 	async findCommentsCursorPaginated(
 		targetId: string,
 		options?: CursorPaginationOption<string>,
-	): Promise<WithPopulated<Comment>[]> {
+	): Promise<Populated<Comment>[]> {
 		const filterOptions = {
 			targetId,
 			...(options?.cursor && this.transformFilter({ _id: { $gt: options?.cursor } })),

@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { WithPopulated } from '@common/crud/entities';
+import { Populated } from '@common/crud/entities';
 import { OffsetPaginationOption } from '@common/types/data';
 
 import { Block, FriendStatus, Friendship } from '../entities';
@@ -29,7 +29,7 @@ export class RelationshipService {
 			.then(isFriend => (isFriend ? RelationshipType.FRIEND : RelationshipType.NONE));
 	}
 
-	async sendFriendRequest(actor: string, toUserId: string): Promise<WithPopulated<Friendship>> {
+	async sendFriendRequest(actor: string, toUserId: string): Promise<Populated<Friendship>> {
 		const foundRequest = await this.friendshipRepository.findOneBy({
 			userIds: [actor, toUserId].toSorted() as [string, string],
 		});
@@ -37,11 +37,12 @@ export class RelationshipService {
 			return this.friendshipRepository.create({
 				userIds: [actor, toUserId].toSorted() as [string, string],
 				requestedFrom: actor,
+				status: FriendStatus.PENDING,
 			});
 		return foundRequest;
 	}
 
-	async cancelFriendRequest(actor: string, toUserId: string): Promise<WithPopulated<Friendship>> {
+	async cancelFriendRequest(actor: string, toUserId: string): Promise<Populated<Friendship>> {
 		return this.friendshipRepository.findOneByAndDelete({
 			userIds: [actor, toUserId].toSorted() as [string, string],
 			requestedFrom: actor,
@@ -49,15 +50,15 @@ export class RelationshipService {
 		});
 	}
 
-	async denyFriendRequest(actor: string, requestId: string): Promise<WithPopulated<Friendship>> {
+	async denyFriendRequest(actor: string, requestId: string): Promise<Populated<Friendship>> {
 		return this.friendshipRepository.denyFriendRequest(actor, requestId);
 	}
 
-	async acceptFriendRequest(actor: string, requestId: string): Promise<WithPopulated<Friendship>> {
+	async acceptFriendRequest(actor: string, requestId: string): Promise<Populated<Friendship>> {
 		return this.friendshipRepository.acceptFriendRequest(actor, requestId);
 	}
 
-	async unfriend(actor: string, withUserId: string): Promise<WithPopulated<Friendship>> {
+	async unfriend(actor: string, withUserId: string): Promise<Populated<Friendship>> {
 		return this.friendshipRepository.findOneByAndDelete({
 			userIds: [actor, withUserId].toSorted() as [string, string],
 			status: FriendStatus.ACCEPTED,
@@ -85,18 +86,15 @@ export class RelationshipService {
 		return foundRequests;
 	}
 
-	async block(actor: string, toUserId: string): Promise<WithPopulated<Block>> {
+	async block(actor: string, toUserId: string): Promise<Populated<Block>> {
 		const blockInfo = { fromUserId: actor, toUserId };
 		return this.blockRepository.upsert(blockInfo, blockInfo);
 	}
 
-	async unblock(actor: string, toUserId: string): Promise<WithPopulated<Block>> {
+	async unblock(actor: string, toUserId: string): Promise<Populated<Block>> {
 		return this.blockRepository.findOneByAndDelete({ fromUserId: actor, toUserId });
 	}
-	async getBlockList(
-		uid: string,
-		options?: OffsetPaginationOption,
-	): Promise<WithPopulated<Block>[]> {
+	async getBlockList(uid: string, options?: OffsetPaginationOption): Promise<Populated<Block>[]> {
 		const limitOptions = options?.limit || 10;
 		const skipOptions = (options?.page || 0) * limitOptions;
 		const foundBlocks = this.blockRepository.find(

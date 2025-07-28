@@ -1,4 +1,4 @@
-import { QuerriableType, WithPopulated } from '@common/crud/entities';
+import { Populated, QuerriableType } from '@common/crud/entities';
 import { ISoftDeleteBaseRepository } from '@common/crud/repos';
 import { CursorPaginationOption } from '@common/types/data';
 
@@ -8,13 +8,13 @@ export interface IPostRepository extends ISoftDeleteBaseRepository<SocialPost> {
 	fetchFeed(
 		where: QuerriableType<SocialPost>,
 		options?: CursorPaginationOption<string>,
-	): Promise<WithPopulated<SocialPost>[]>;
+	): Promise<Populated<SocialPost>[]>;
 
 	findOneAndUpdateWithFiles(
 		where: QuerriableType<SocialPost>,
 		data: Partial<SocialPost>,
 		deletedFilesIdx?: number[],
-	): Promise<WithPopulated<SocialPost>>;
+	): Promise<Populated<SocialPost>>;
 }
 
 export const IPostRepositoryToken = Symbol('IPostRepository');

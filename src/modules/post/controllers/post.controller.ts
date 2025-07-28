@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 
-import { WithPopulated } from '@common/crud/entities';
+import { Populated } from '@common/crud/entities';
 import { PriorityRole, ResponseTransform } from '@common/decorators';
 import { Action, Role } from '@common/enums';
 import { UnionValidationPipe, ValidateIdPipe } from '@common/pipes';
@@ -42,7 +42,7 @@ export class PostController {
 	async createPost(
 		@Req() request: AuthenticatedRequest,
 		@Body() body: CreateFilePostDto,
-	): Promise<WithPopulated<ResponsePostDto>> {
+	): Promise<Populated<ResponsePostDto>> {
 		const createdPost = await this.postService.createPost({ ...body, userId: request.user.id });
 		return plainToInstanceStrict(ResponsePostDto, createdPost);
 	}
@@ -51,7 +51,7 @@ export class PostController {
 	@Delete(':postid')
 	async deletePost(
 		@Param('postid', ValidateIdPipe) postId: string,
-	): Promise<WithPopulated<ResponsePostDto>> {
+	): Promise<Populated<ResponsePostDto>> {
 		await this.postService.checkAccessTo(postId, Action.DELETE);
 		const deletedPost = await this.postService.deletePost(postId);
 		return plainToInstanceStrict(ResponsePostDto, deletedPost);
@@ -73,7 +73,7 @@ export class PostController {
 			}),
 		)
 		body: UpdateEventPostDto | UpdateFilePostDto | UpdateSharePostDto,
-	): Promise<WithPopulated<ResponsePostDto>> {
+	): Promise<Populated<ResponsePostDto>> {
 		await this.postService.checkAccessTo(postId, Action.UPDATE);
 		const updatedPost = await this.postService.updatePost(postId, body.postType, body);
 		return plainToInstanceStrict(ResponsePostDto, updatedPost);
@@ -85,7 +85,7 @@ export class PostController {
 	async getFeed(
 		@Req() request: AuthenticatedRequest,
 		@Query() query: FeedPostDto,
-	): Promise<CursorPaginatedData<WithPopulated<ResponsePostDto>>> {
+	): Promise<CursorPaginatedData<Populated<ResponsePostDto>>> {
 		const feedPosts = await this.postService.getFeeds(request.user.id, query);
 		return new CursorPaginatedData(
 			feedPosts.nextCursor,
@@ -97,7 +97,7 @@ export class PostController {
 	@Get(':postid')
 	async getPost(
 		@Param('postid', ValidateIdPipe) postId: string,
-	): Promise<WithPopulated<ResponsePostDto>> {
+	): Promise<Populated<ResponsePostDto>> {
 		await this.postService.checkAccessTo(postId, Action.READ);
 		const foundPost = await this.postService.getPost(postId);
 		return plainToInstanceStrict(ResponsePostDto, foundPost);
@@ -109,7 +109,7 @@ export class PostController {
 		@Param('postid', ValidateIdPipe) postId: string,
 		@Req() request: AuthenticatedRequest,
 		@Body() body: CreateSharePostDto,
-	): Promise<WithPopulated<ResponsePostDto>> {
+	): Promise<Populated<ResponsePostDto>> {
 		await this.postService.checkAccessTo(postId, Action.READ);
 		const createdPost = await this.postService.createPost({
 			...body,

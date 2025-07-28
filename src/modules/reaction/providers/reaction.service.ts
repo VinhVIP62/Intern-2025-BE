@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 
-import { WithPopulated } from '@common/crud/entities';
+import { Populated } from '@common/crud/entities';
 import { CursorPaginationOption } from '@common/types/data';
 
 import { Reaction } from '../entities';
@@ -20,11 +20,11 @@ export class ReactionService {
 	async upsertReaction(
 		options: Pick<Reaction, 'userId' | 'targetId'>,
 		value: number,
-	): Promise<WithPopulated<Reaction>> {
+	): Promise<Populated<Reaction>> {
 		return this.reactionRepository.upsert(options, { reactionValue: value });
 	}
 
-	async delete(options: Pick<Reaction, 'userId' | 'targetId'>): Promise<WithPopulated<Reaction>> {
+	async delete(options: Pick<Reaction, 'userId' | 'targetId'>): Promise<Populated<Reaction>> {
 		const deletedReaction = this.reactionRepository.findOneByAndDelete(options);
 		return deletedReaction;
 	}

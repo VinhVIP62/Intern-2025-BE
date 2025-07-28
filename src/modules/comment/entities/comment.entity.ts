@@ -14,5 +14,6 @@ export class Comment extends IBaseEntity {
 	content!: string;
 	fileUrls!: string[] | null;
 
-	childrenCount!: number;
+	// virtual fields
+	childrenCount?: number;
 }

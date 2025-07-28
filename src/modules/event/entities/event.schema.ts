@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 
-import { WithPopulated } from '@common/crud/entities';
+import { Populated } from '@common/crud/entities';
 import { SoftDeletableEntitySchemaDef, toString } from '@common/crud/entities/mongoose-schema';
 import { Complete } from '@common/types/utils';
 
@@ -18,7 +18,7 @@ import { Event } from './event.entity';
 })
 export class EventSchemaDef
 	extends SoftDeletableEntitySchemaDef
-	implements WithPopulated<Complete<Event>>
+	implements Populated<Complete<Event>>
 {
 	@Prop({
 		type: mongoose.Schema.Types.ObjectId,

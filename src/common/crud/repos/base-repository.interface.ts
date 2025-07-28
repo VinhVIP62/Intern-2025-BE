@@ -1,14 +1,20 @@
 import { SORT } from '@common/enums';
 import { LowerBound } from '@common/types/utils';
 
-import { IBaseEntity, ISoftDeletableEntity, QuerriableType, WithPopulated } from '../entities';
+import {
+	CreateType,
+	IBaseEntity,
+	ISoftDeletableEntity,
+	Populated,
+	QuerriableType,
+} from '../entities';
 
-export type SortOptions<T> = Partial<Record<keyof WithPopulated<T>, SORT>>;
+export type SortOptions<T> = Partial<Record<keyof Populated<T>, SORT>>;
 
 /** will be appended to each repo methods */
 export type RepoOptions<T> = {
 	filter?: QuerriableType<T>;
-	/** Array of path, if you don't want the path transformed to fit the type WithPopulated, add an underscore after the path. (eg. `PathName_`) */
+	/** Array of path, if you don't want the path transformed to fit the type Populated, add an underscore after the path. (eg. `PathName_`) */
 	populate?: string[];
 	sort?: SortOptions<T>;
 };
@@ -26,34 +32,30 @@ export type QueryOptions<T> = {
 
 export interface IBaseRepository<T extends IBaseEntity> {
 	repoOptions: RepoOptions<T>;
-	create(data: Partial<T>, queryOptions?: QueryOptions<T>): Promise<WithPopulated<T>>;
+	/** `create` but with looser type restriction */
+	createSoft(data: Partial<T>, queryOptions?: QueryOptions<T>): Promise<Populated<T>>;
+	create(data: CreateType<T>, queryOptions?: QueryOptions<T>): Promise<Populated<T>>;
 	upsert(
 		where: QuerriableType<T>,
 		data: Partial<T>,
 		queryOptions?: QueryOptions<T>,
-	): Promise<WithPopulated<T>>;
-	update(id: string, data: Partial<T>, queryOptions?: QueryOptions<T>): Promise<WithPopulated<T>>;
-	delete(id: string, queryOptions?: QueryOptions<T>): Promise<WithPopulated<T>>;
-	findOneBy(
-		where: QuerriableType<T>,
-		queryOptions?: QueryOptions<T>,
-	): Promise<WithPopulated<T> | null>;
-	findOneByOrFail(
-		where: QuerriableType<T>,
-		queryOptions?: QueryOptions<T>,
-	): Promise<WithPopulated<T>>;
-	findOneById(id: string, queryOptions?: QueryOptions<T>): Promise<WithPopulated<T> | null>;
-	findOneByIdOrFail(id: string, queryOptions?: QueryOptions<T>): Promise<WithPopulated<T>>;
-	find(where: QuerriableType<T>, queryOptions?: QueryOptions<T>): Promise<WithPopulated<T>[]>;
+	): Promise<Populated<T>>;
+	update(id: string, data: Partial<T>, queryOptions?: QueryOptions<T>): Promise<Populated<T>>;
+	delete(id: string, queryOptions?: QueryOptions<T>): Promise<Populated<T>>;
+	findOneBy(where: QuerriableType<T>, queryOptions?: QueryOptions<T>): Promise<Populated<T> | null>;
+	findOneByOrFail(where: QuerriableType<T>, queryOptions?: QueryOptions<T>): Promise<Populated<T>>;
+	findOneById(id: string, queryOptions?: QueryOptions<T>): Promise<Populated<T> | null>;
+	findOneByIdOrFail(id: string, queryOptions?: QueryOptions<T>): Promise<Populated<T>>;
+	find(where: QuerriableType<T>, queryOptions?: QueryOptions<T>): Promise<Populated<T>[]>;
 	findOneByAndUpdate(
 		where: QuerriableType<T>,
 		data: Partial<T>,
 		queryOptions?: QueryOptions<T>,
-	): Promise<WithPopulated<T>>;
+	): Promise<Populated<T>>;
 	findOneByAndDelete(
 		where: QuerriableType<T>,
 		queryOptions?: QueryOptions<T>,
-	): Promise<WithPopulated<T>>;
+	): Promise<Populated<T>>;
 	count(where: QuerriableType<T>, queryOptions?: QueryOptions<T>): Promise<number>;
 	exists(where: QuerriableType<T>, queryOptions?: QueryOptions<T>): Promise<boolean>;
 }
@@ -68,11 +70,11 @@ export interface ISoftDeleteBaseRepository<
 		id: string,
 		deletedBy: string | null,
 		queryOptions?: QueryOptions<T>,
-	): Promise<WithPopulated<T>>;
+	): Promise<Populated<T>>;
 	findOneByAndSoftDelete(
 		where: QuerriableType<T>,
 		deletedBy: string | null,
 		queryOptions?: QueryOptions<T>,
-	): Promise<WithPopulated<T>>;
-	restore(id: string, queryOptions?: QueryOptions<T>): Promise<WithPopulated<T>>;
+	): Promise<Populated<T>>;
+	restore(id: string, queryOptions?: QueryOptions<T>): Promise<Populated<T>>;
 }

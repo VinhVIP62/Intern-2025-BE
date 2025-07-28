@@ -15,7 +15,7 @@ export class MongooseSessionService implements ISessionService<ClientSession> {
 		return req.db.mongoose.session;
 	}
 
-	set(session: ClientSession | null) {
+	set(session: ClientSession | null): void {
 		const req = CustomRequestCtx.get().req;
 		req.db.mongoose.session = session;
 	}

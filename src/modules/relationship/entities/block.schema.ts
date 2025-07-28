@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory, Virtual } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 
-import { WithPopulated } from '@common/crud/entities';
+import { Populated } from '@common/crud/entities';
 import { BaseEntitySchemaDef, toString } from '@common/crud/entities/mongoose-schema';
 import { Complete } from '@common/types/utils';
 
@@ -16,7 +16,7 @@ import { Block } from './block.entity';
 		getters: true,
 	},
 })
-export class BlockSchemaDef extends BaseEntitySchemaDef implements WithPopulated<Complete<Block>> {
+export class BlockSchemaDef extends BaseEntitySchemaDef implements Populated<Complete<Block>> {
 	@Prop({
 		type: mongoose.Schema.Types.ObjectId,
 		index: true,

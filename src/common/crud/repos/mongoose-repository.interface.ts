@@ -1,3 +1,6 @@
+/**
+ * A lot of type assertion due to the excessive use of LowerBound type
+ */
 import { Model, PopulateOptions, SortOrder } from 'mongoose';
 
 import { SORT } from '@common/enums';
@@ -7,7 +10,7 @@ import { Class, LowerBound } from '@common/types/utils/';
 import { CustomRequestCtx } from '@shared/modules/request-ctx/types';
 
 import { IBaseEntity } from '../entities/base-entity.type.js';
-import { QuerriableType, WithPopulated } from '../entities/querry-type.js';
+import { CreateType, Populated, QuerriableType } from '../entities/querry-type.js';
 import { ISoftDeletableEntity } from '../entities/softdeletable-entity.type.js';
 import {
 	IBaseRepository,
@@ -185,7 +188,7 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 	//#endregion
 
 	//#region MAIN
-	async create(data: Partial<T>, queryOptions?: QueryOptions<T>): Promise<T> {
+	async createSoft(data: Partial<T>, queryOptions?: QueryOptions<T>): Promise<Populated<T>> {
 		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
 		const populateOptions = this.transformPopulate(queryOptions);
 		const createdEntity = new this.entityModel(data);
@@ -194,11 +197,15 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 		return populatedEntity.toObject();
 	}
 
+	async create(data: CreateType<T>, queryOptions?: QueryOptions<T>): Promise<Populated<T>> {
+		return this.createSoft(data, queryOptions);
+	}
+
 	async upsert(
 		where: QuerriableType<T>,
 		data: Partial<T>,
 		queryOptions?: QueryOptions<T>,
-	): Promise<WithPopulated<T>> {
+	): Promise<Populated<T>> {
 		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
 		const filterOptions = this.transformFilter(where, queryOptions);
 		const populateOptions = this.transformPopulate(queryOptions);
@@ -217,17 +224,21 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 		return upsertedEntity;
 	}
 
-	async update(id: string, data: Partial<T>, queryOptions?: QueryOptions<T>): Promise<T> {
+	async update(
+		id: string,
+		data: Partial<T>,
+		queryOptions?: QueryOptions<T>,
+	): Promise<Populated<T>> {
 		const filterOptions = { id } as QuerriableType<T>;
 		return this.findOneByAndUpdate(filterOptions, data, queryOptions);
 	}
 
-	async delete(id: string, queryOptions?: QueryOptions<T>): Promise<T> {
+	async delete(id: string, queryOptions?: QueryOptions<T>): Promise<Populated<T>> {
 		const filterOptions = { id } as QuerriableType<T>;
 		return this.findOneByAndDelete(filterOptions, queryOptions);
 	}
 
-	async findOneById(id: string, queryOptions?: QueryOptions<T>): Promise<WithPopulated<T> | null> {
+	async findOneById(id: string, queryOptions?: QueryOptions<T>): Promise<Populated<T> | null> {
 		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
 		const filterOptions = this.transformFilter({ id }, queryOptions);
 		const populateOptions = this.transformPopulate(queryOptions);
@@ -241,7 +252,7 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 		return foundEntity || null;
 	}
 
-	async findOneByIdOrFail(id: string, queryOptions?: QueryOptions<T>): Promise<WithPopulated<T>> {
+	async findOneByIdOrFail(id: string, queryOptions?: QueryOptions<T>): Promise<Populated<T>> {
 		const foundEntity = await this.findOneById(id, queryOptions);
 		if (!foundEntity) throw new EntityNotFound(this.entityClass);
 		return foundEntity;
@@ -250,7 +261,7 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 	async findOneBy(
 		where: QuerriableType<T>,
 		queryOptions?: QueryOptions<T>,
-	): Promise<WithPopulated<T> | null> {
+	): Promise<Populated<T> | null> {
 		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
 		const filterOptions = this.transformFilter(where, queryOptions);
 		const populateOptions = this.transformPopulate(queryOptions);
@@ -267,7 +278,7 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 	async findOneByOrFail(
 		where: QuerriableType<T>,
 		queryOptions?: QueryOptions<T>,
-	): Promise<WithPopulated<T>> {
+	): Promise<Populated<T>> {
 		const foundEntity = await this.findOneBy(where, queryOptions);
 		if (!foundEntity) throw new EntityNotFound(this.entityClass);
 		return foundEntity;
@@ -277,7 +288,7 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 		where: QuerriableType<T>,
 		data: Partial<T>,
 		queryOptions?: QueryOptions<T>,
-	): Promise<WithPopulated<T>> {
+	): Promise<Populated<T>> {
 		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
 		const filterOptions = this.transformFilter(where, queryOptions);
 		const populateOptions = this.transformPopulate(queryOptions);
@@ -298,7 +309,7 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 	async findOneByAndDelete(
 		where: QuerriableType<T>,
 		queryOptions?: QueryOptions<T>,
-	): Promise<WithPopulated<T>> {
+	): Promise<Populated<T>> {
 		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
 		const filterOptions = this.transformFilter(where, queryOptions);
 		const populateOptions = this.transformPopulate(queryOptions);
@@ -313,17 +324,14 @@ export class MongooseRepositoryImpl<T extends IBaseEntity> implements IBaseRepos
 		return deletedEntity;
 	}
 
-	async find(
-		where: QuerriableType<T>,
-		queryOptions?: QueryOptions<T>,
-	): Promise<WithPopulated<T>[]> {
+	async find(where: QuerriableType<T>, queryOptions?: QueryOptions<T>): Promise<Populated<T>[]> {
 		const session = CustomRequestCtx.get().req.db.mongoose.session || null;
 		const filterOptions = this.transformFilter(where, queryOptions);
 		const sortOptions = this.transformSort(queryOptions);
 		const skipOptions = queryOptions?.skip || 0;
 		const limitOptions = queryOptions?.limit || 0;
 		const populateOptions = this.transformPopulate(queryOptions);
-		const foundEntities: WithPopulated<T>[] = [];
+		const foundEntities: Populated<T>[] = [];
 		const query = this.entityModel
 			.find(filterOptions)
 			.sort(sortOptions)
@@ -387,23 +395,33 @@ export class MongooseSoftDeleteRepositoryImpl<
 		this.mergeRepoOptions(repoOptions);
 	}
 
-	/** [PLA] not finished as this does not soft delete related entities */
+	/** [NPLA] not finished as this does not soft delete related entities */
+	/**
+	 * [NPLAU - 26/07/25] I will consider this finished, as there is no way to properly and safely
+	 * cascade using mongoose or mongo. I believe doing cascade manually inside service might be
+	 * my best bet.
+	 */
 	async softDelete(
 		id: string,
 		deletedBy: string | null = null,
 		queryOptions?: QueryOptions<T>,
-	): Promise<WithPopulated<T>> {
+	): Promise<Populated<T>> {
 		// Still have to assert type, but dw we already have a check above
 		const filterOptions = { id } as QuerriableType<T>;
 		return this.findOneByAndSoftDelete(filterOptions, deletedBy, queryOptions);
 	}
 
-	/** [PLA] not finished as this does not soft delete related entities */
+	/** [NPLA] not finished as this does not soft delete related entities */
+	/**
+	 * [NPLAU - 26/07/25] I will consider this finished, as there is no way to properly and safely
+	 * cascade using mongoose or mongo. I believe doing cascade manually inside service might be
+	 * my best bet.
+	 */
 	async findOneByAndSoftDelete(
 		where: QuerriableType<T>,
 		deletedBy: string | null = null,
 		queryOptions?: QueryOptions<T>,
-	): Promise<WithPopulated<T>> {
+	): Promise<Populated<T>> {
 		const updatedData = {
 			deleted: true,
 			deletedBy,
@@ -412,16 +430,17 @@ export class MongooseSoftDeleteRepositoryImpl<
 		return this.findOneByAndUpdate(where, updatedData, queryOptions);
 	}
 
-	/** [PLA] not finished as this does not recover related entities */
-	async restore(id: string, queryOptions?: QueryOptions<T>): Promise<T> {
-		return this.update(
-			id,
-			{ deleted: false, deletedBy: null, deletedAt: null } as Partial<WithPopulated<T>>,
-			{
-				...queryOptions,
-				doNotUseRepoOptions: ['filter'],
-			},
-		);
+	/** [NPLA] not finished as this does not recover related entities */
+	/**
+	 * [NPLAU - 26/07/25] I will consider this finished, as there is no way to properly and safely
+	 * cascade using mongoose or mongo. I believe doing cascade manually inside service might be
+	 * my best bet.
+	 */
+	async restore(id: string, queryOptions?: QueryOptions<T>): Promise<Populated<T>> {
+		return this.update(id, { deleted: false, deletedBy: null, deletedAt: null } as Partial<T>, {
+			...queryOptions,
+			doNotUseRepoOptions: ['filter'],
+		});
 	}
 }
 //#endregion
