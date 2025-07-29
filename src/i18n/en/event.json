@@ -28,5 +28,6 @@
 	"INVITATION_STATUS_INVALID": "Invitation status is invalid",
 	"RECOMMENDATIONS_RETRIEVED_SUCCESS": "Recommended events retrieved successfully",
 	"USER_EVENT_STATUS_RETRIEVED_SUCCESS": "User event status retrieved successfully",
-	"NO_VALID_USERS_TO_INVITE": "No valid users to invite"
+	"NO_VALID_USERS_TO_INVITE": "No valid users to invite",
+	"USERS_ALREADY_PARTICIPANTS": "All users are already participants in this event"
 }

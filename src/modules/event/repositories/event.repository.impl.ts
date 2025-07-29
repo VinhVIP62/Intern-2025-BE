@@ -329,6 +329,18 @@ export class EventRepositoryImpl implements IEventRepository {
 		}));
 	}
 
+	// Check if users are already participants in the event
+	async checkExistingParticipants(eventId: string, userIds: string[]): Promise<string[]> {
+		const event = await this.eventModel.findById(eventId).select('participants').lean();
+
+		if (!event || !event.participants) {
+			return [];
+		}
+
+		const participantIds = event.participants.map((id: any) => id.toString());
+		return userIds.filter(userId => participantIds.includes(userId));
+	}
+
 	// Tìm sự kiện gợi ý theo query, limit, skip (phân trang)
 	async findRecommendedEvents(query: any, limit: number, skip: number): Promise<any[]> {
 		const events = await this.eventModel

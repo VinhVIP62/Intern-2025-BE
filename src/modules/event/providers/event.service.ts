@@ -186,16 +186,35 @@ export class EventService {
 			);
 		}
 
+		// Kiểm tra nếu user đã tham gia event này rồi
+		const existingParticipants = await this.eventRepository.checkExistingParticipants(
+			eventId,
+			userIds,
+		);
+
+		// Lọc ra những userId chưa tham gia event
+		const nonParticipantUserIds = userIds.filter(userId => !existingParticipants.includes(userId));
+
+		// Nếu tất cả user đã tham gia event rồi
+		if (nonParticipantUserIds.length === 0) {
+			throw new HttpException(
+				{ success: false, message: i18n?.t('event.USERS_ALREADY_PARTICIPANTS') },
+				HttpStatus.BAD_REQUEST,
+			);
+		}
+
 		// Kiểm tra nếu đã tồn tại lời mời từ senderId gửi tới recipientId tham gia eventId này
 		const existingInvitations = await this.eventRepository.checkExistingInvitations(
 			eventId,
 			senderId,
-			userIds,
+			nonParticipantUserIds,
 		);
 
 		// Lọc ra những userId chưa có lời mời
 		const existingRecipientIds = existingInvitations.map(inv => inv.recipientId);
-		const newUserIds = userIds.filter(userId => !existingRecipientIds.includes(userId));
+		const newUserIds = nonParticipantUserIds.filter(
+			userId => !existingRecipientIds.includes(userId),
+		);
 
 		// Nếu không có userId nào mới để mời, trả về luôn
 		if (newUserIds.length === 0) {

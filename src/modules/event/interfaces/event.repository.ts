@@ -57,6 +57,9 @@ export interface IEventRepository {
 		recipientIds: string[],
 	): Promise<{ eventId: string; senderId: string; recipientId: string }[]>;
 
+	// Check if users are already participants in the event
+	checkExistingParticipants(eventId: string, userIds: string[]): Promise<string[]>;
+
 	// Tìm sự kiện gợi ý theo query, limit, skip (phân trang)
 	findRecommendedEvents(query: any, limit: number, skip: number): Promise<any[]>;
 
