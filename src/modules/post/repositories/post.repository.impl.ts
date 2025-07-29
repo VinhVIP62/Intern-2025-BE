@@ -657,6 +657,7 @@ export class PostRepositoryImpl implements IPostRepository {
 					select: 'firstName lastName avatar fullName',
 				})
 				.sort({
+					updatedAt: -1,
 					likeCount: -1,
 					commentCount: -1,
 					shareCount: -1,
