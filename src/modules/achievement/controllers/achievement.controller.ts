@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Request, UseGuards, Query, Param } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiBody , ApiBearerAuth} from '@nestjs/swagger';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { RolesGuard } from '@common/guards';
 import { Roles } from '@common/decorators';
@@ -37,6 +37,7 @@ export class AchievementController {
 
 	@Get('personal')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Lấy achievement và tiến trình thực hiện của user hiện tại' })
 	@ApiResponse({ status: 200, description: 'Lấy thành công' })
@@ -68,6 +69,7 @@ export class AchievementController {
 
 	@Get('user/:userId')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Lấy danh sách achievement đã hoàn thành của user theo userId' })
 	@ApiResponse({ status: 200, description: 'Lấy thành công' })
@@ -93,6 +95,7 @@ export class AchievementController {
 
 	@Post('unlock')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Unlock achievement cho user thủ công' })
 	@ApiBody({ type: AchievementProgressDto })
@@ -113,6 +116,7 @@ export class AchievementController {
 
 	@Post('progress')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Cập nhật tiến trình achievement cho user thủ công' })
 	@ApiBody({ type: AchievementProgressDto })
@@ -137,6 +141,7 @@ export class AchievementController {
 
 	@Post('auto-update')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Tự động check và update achievement cho user hiện tại' })
 	@ApiResponse({ status: 200, description: 'Cập nhật và unlock thành công' })

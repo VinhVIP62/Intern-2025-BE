@@ -10,7 +10,14 @@ import {
 	Version,
 	BadRequestException,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
+import {
+	ApiTags,
+	ApiOperation,
+	ApiResponse,
+	ApiParam,
+	ApiQuery,
+	ApiBearerAuth,
+} from '@nestjs/swagger';
 import { NotificationService } from '@modules/notification/providers/notification.service';
 import { RolesGuard } from '@common/guards';
 import { Roles } from '@common/decorators';
@@ -33,6 +40,7 @@ export class NotificationController {
 	@Get()
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Lấy danh sách thông báo của người dùng hiện tại' })
 	@ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
 	@ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
@@ -93,6 +101,7 @@ export class NotificationController {
 	@Put(':notificationId/read')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Đánh dấu thông báo đã đọc' })
 	@ApiParam({ name: 'notificationId', description: 'ID của thông báo' })
 	@ApiResponse({ status: 200, description: 'Đánh dấu thông báo đã đọc thành công' })
@@ -100,21 +109,19 @@ export class NotificationController {
 		@Param('notificationId') notificationId: string,
 		@I18n() i18n: I18nContext,
 	): Promise<ResponseEntity<null>> {
-		try {
-			await this.notificationService.markAsRead(notificationId, i18n);
-			return {
-				success: true,
-				message: i18n.t('notification.MARK_READ_SUCCESS'),
-			};
-		} catch (e) {
-			throw new BadRequestException(e.message);
-		}
+		await this.notificationService.markAsRead(notificationId, i18n);
+
+		return {
+			success: true,
+			message: i18n.t('notification.MARK_READ_SUCCESS'),
+		};
 	}
 
 	@Version('1')
 	@Put('read-all')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Đánh dấu tất cả thông báo đã đọc' })
 	@ApiResponse({ status: 200, description: 'Đánh dấu tất cả thông báo đã đọc thành công' })
 	async markAllAsRead(@Request() req, @I18n() i18n: I18nContext): Promise<ResponseEntity<null>> {
@@ -130,6 +137,7 @@ export class NotificationController {
 	@Put(':notificationId/unread')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Đánh dấu thông báo là chưa đọc' })
 	@ApiParam({ name: 'notificationId', description: 'ID của thông báo' })
 	@ApiResponse({ status: 200, description: 'Đánh dấu thông báo là chưa đọc thành công' })
@@ -137,40 +145,36 @@ export class NotificationController {
 		@Param('notificationId') notificationId: string,
 		@I18n() i18n: I18nContext,
 	): Promise<ResponseEntity<null>> {
-		try {
-			await this.notificationService.markAsUnread(notificationId, i18n);
-			return {
-				success: true,
-				message: i18n.t('notification.MARK_UNREAD_SUCCESS'),
-			};
-		} catch (e) {
-			throw new BadRequestException(e.message);
-		}
+		await this.notificationService.markAsUnread(notificationId, i18n);
+
+		return {
+			success: true,
+			message: i18n.t('notification.MARK_UNREAD_SUCCESS'),
+		};
 	}
 
 	@Version('1')
 	@Delete('clear-all')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
-	@ApiOperation({ summary: 'Xóa (ẩn) tất cả thông báo của user' })
+	@ApiBearerAuth()
+	@ApiOperation({ summary: 'Xóa tất cả thông báo' })
 	@ApiResponse({ status: 200, description: 'Xóa tất cả thông báo thành công' })
 	async clearAll(@Request() req, @I18n() i18n: I18nContext): Promise<ResponseEntity<null>> {
-		try {
-			const userId = req.user.id;
-			await this.notificationService.clearAll(userId);
-			return {
-				success: true,
-				message: i18n.t('notification.CLEAR_ALL_SUCCESS'),
-			};
-		} catch (e) {
-			throw new BadRequestException(e.message);
-		}
+		const userId = req.user.id;
+		await this.notificationService.clearAll(userId);
+
+		return {
+			success: true,
+			message: i18n.t('notification.CLEAR_ALL_SUCCESS'),
+		};
 	}
 
 	@Version('1')
 	@Delete(':notificationId')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Xóa (ẩn) một thông báo cụ thể' })
 	@ApiParam({ name: 'notificationId', description: 'ID của thông báo' })
 	@ApiResponse({ status: 200, description: 'Xóa thông báo thành công' })
@@ -178,14 +182,11 @@ export class NotificationController {
 		@Param('notificationId') notificationId: string,
 		@I18n() i18n: I18nContext,
 	): Promise<ResponseEntity<null>> {
-		try {
-			await this.notificationService.deleteNotification(notificationId, i18n);
-			return {
-				success: true,
-				message: i18n.t('notification.DELETE_SUCCESS'),
-			};
-		} catch (e) {
-			throw new BadRequestException(e.message);
-		}
+		await this.notificationService.deleteNotification(notificationId, i18n);
+
+		return {
+			success: true,
+			message: i18n.t('notification.DELETE_SUCCESS'),
+		};
 	}
 }

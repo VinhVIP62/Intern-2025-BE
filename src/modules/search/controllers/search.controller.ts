@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Query, Version, UseGuards, Request, Body } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiBody , ApiBearerAuth} from '@nestjs/swagger';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { Public } from '@common/decorators';
 import { RolesGuard } from '@common/guards';
@@ -38,6 +38,7 @@ export class SearchController {
 	@Version('1')
 	@Get('all')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Tìm kiếm tất cả các loại (user, post, event, ...)' })
 	@ApiQuery({ name: 'key', required: false, description: 'Từ khóa tìm kiếm' })
@@ -73,6 +74,7 @@ export class SearchController {
 	@Version('1')
 	@Post()
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Tìm kiếm theo loại (user, post, event, ...)' })
 	@ApiBody({ type: SearchQueryDto, description: 'Body chứa các tham số tìm kiếm' })
@@ -93,6 +95,7 @@ export class SearchController {
 	@Version('1')
 	@Get('history')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Lấy lịch sử tìm kiếm' })
 	@ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
@@ -133,6 +136,7 @@ export class SearchController {
 	@Version('1')
 	@Post('history')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Thêm lịch sử tìm kiếm' })
 	@ApiBody({ type: CreateSearchHistoryDto })
