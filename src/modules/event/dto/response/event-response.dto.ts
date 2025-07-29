@@ -15,7 +15,12 @@ import {
 	IsNumber,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { EventStatus, OrganizerType } from '@modules/event/entities/event.enum';
+import {
+	EventStatus,
+	OrganizerType,
+	RSVPStatus,
+	EventInvitationStatus,
+} from '@modules/event/entities/event.enum';
 import { SportType } from '@modules/user/enums/user.enum';
 import { BasePaginationMetaDto } from '@common/dto/base-pagination.dto';
 import { EventLocationDto } from '@modules/event/dto/event.dto';
@@ -212,7 +217,20 @@ export class PaginatedNearbyEventsResponseDto extends BasePaginationMetaDto {
 	events: EventResponseDto[];
 }
 
+export class UserEventResponseDto extends EventResponseDto {
+	@ApiProperty({
+		enum: RSVPStatus,
+		description: 'Trạng thái RSVP của user cho sự kiện này',
+		required: false,
+		example: 'going',
+	})
+	userRSVPStatus?: RSVPStatus | null;
+}
+
 export class PaginatedUserEventsResponseDto extends BasePaginationMetaDto {
-	@ApiProperty({ type: [EventResponseDto], description: 'Danh sách sự kiện của user' })
-	events: EventResponseDto[];
+	@ApiProperty({
+		type: [UserEventResponseDto],
+		description: 'Danh sách sự kiện của user với thông tin RSVP status',
+	})
+	events: UserEventResponseDto[];
 }

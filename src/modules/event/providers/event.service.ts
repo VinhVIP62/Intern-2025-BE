@@ -317,7 +317,23 @@ export class EventService {
 		limit: number,
 		key?: string,
 	): Promise<{ events: any[]; total: number }> {
-		return this.eventRepository.findEventsByUserId(userId, page, limit, key);
+		const result = await this.eventRepository.findEventsByUserId(userId, page, limit, key);
+
+		// Add RSVP status for each event
+		const eventsWithRSVP = await Promise.all(
+			result.events.map(async event => {
+				const userEventStatus = await this.getUserEventStatus(event._id.toString(), userId);
+				return {
+					...event,
+					userRSVPStatus: userEventStatus.rsvpStatus,
+				};
+			}),
+		);
+
+		return {
+			events: eventsWithRSVP,
+			total: result.total,
+		};
 	}
 
 	// Cancel invitation

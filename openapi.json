@@ -7351,6 +7351,154 @@
           "invitations"
         ]
       },
+      "UserEventResponseDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "ID sự kiện"
+          },
+          "title": {
+            "type": "string",
+            "description": "Tiêu đề sự kiện"
+          },
+          "description": {
+            "type": "string",
+            "description": "Mô tả"
+          },
+          "image": {
+            "type": "string",
+            "description": "Ảnh sự kiện"
+          },
+          "organizer": {
+            "description": "Thông tin người tổ chức (User hoặc Group). Nếu là Group, sẽ bao gồm danh sách admin.",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EventOrganizerDto"
+              }
+            ]
+          },
+          "organizerType": {
+            "type": "string",
+            "enum": [
+              "User",
+              "Group"
+            ],
+            "description": "Loại organizer: User hoặc Group. Nếu là Group, organizer sẽ bao gồm danh sách admin."
+          },
+          "sport": {
+            "type": "string",
+            "enum": [
+              "football",
+              "basketball",
+              "tennis",
+              "badminton",
+              "volleyball",
+              "table_tennis",
+              "swimming",
+              "running",
+              "cycling",
+              "yoga",
+              "gym",
+              "martial_arts",
+              "boxing",
+              "golf",
+              "rock_climbing"
+            ],
+            "description": "Môn thể thao"
+          },
+          "startDate": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Thời gian bắt đầu"
+          },
+          "endDate": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Thời gian kết thúc"
+          },
+          "location": {
+            "description": "Địa điểm",
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/EventLocationDto"
+              }
+            ]
+          },
+          "minParticipants": {
+            "type": "number",
+            "description": "Số lượng tham gia tối thiểu"
+          },
+          "maxParticipants": {
+            "type": "number",
+            "description": "Số lượng tham gia tối đa"
+          },
+          "participants": {
+            "description": "Danh sách người tham gia",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ObjectId"
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "upcoming",
+              "ongoing",
+              "completed",
+              "cancelled"
+            ],
+            "description": "Trạng thái sự kiện"
+          },
+          "participantCount": {
+            "type": "number",
+            "description": "Số lượng người tham gia"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Thời gian tạo"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Thời gian cập nhật"
+          },
+          "organizerUser": {
+            "type": "object",
+            "description": "Thông tin người tổ chức"
+          },
+          "participantUsers": {
+            "description": "Danh sách thông tin người tham gia",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "userRSVPStatus": {
+            "type": "string",
+            "enum": [
+              "going",
+              "interested",
+              "not_going"
+            ],
+            "description": "Trạng thái RSVP của user cho sự kiện này",
+            "example": "going"
+          }
+        },
+        "required": [
+          "_id",
+          "title",
+          "organizer",
+          "organizerType",
+          "sport",
+          "startDate",
+          "endDate",
+          "location",
+          "maxParticipants",
+          "status"
+        ]
+      },
       "PaginatedUserEventsResponseDto": {
         "type": "object",
         "properties": {
@@ -7385,10 +7533,10 @@
             "example": false
           },
           "events": {
-            "description": "Danh sách sự kiện của user",
+            "description": "Danh sách sự kiện của user với thông tin RSVP status",
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/EventResponseDto"
+              "$ref": "#/components/schemas/UserEventResponseDto"
             }
           }
         },
