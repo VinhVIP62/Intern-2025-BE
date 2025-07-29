@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Post } from '../entities/post.schema';
-import { IProfileRepository } from '@modules/user/repositories/profile.repository';
-import { IReactRepository } from '../repositories/react.repository';
+import { IProfileRepository } from '@modules/user/repositories/interfaces/profile.repository';
+import { IReactRepository } from '../repositories/interfaces/react.repository';
 import { TaggedUserMapper } from './taggedUser.mapper';
 
 @Injectable()

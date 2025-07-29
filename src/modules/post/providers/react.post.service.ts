@@ -1,7 +1,7 @@
 import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
-import { IReactRepository } from '../repositories/react.repository';
-import { IPostRepository } from '../repositories/post.repository';
-import { ReactType } from '@common/enum/react.type.enum';
+import { IReactRepository } from '../repositories/interfaces/react.repository';
+import { IPostRepository } from '../repositories/interfaces/post.repository';
+import { ReactType } from '@common/enum/post/react.type.enum';
 
 @Injectable()
 export class ReactService {

@@ -11,6 +11,7 @@ import {
 } from '../modules';
 import { FriendModule } from '@modules/friend/friend.module';
 import { SearchModule } from '@modules/search/search.module';
+import { ChatModule } from '@modules/chat/chat.module';
 
 @Module({
 	imports: [
@@ -39,6 +40,7 @@ import { SearchModule } from '@modules/search/search.module';
 		UserModule,
 		FriendModule,
 		SearchModule,
+		ChatModule,
 	],
 })
 export class RouteModule {}

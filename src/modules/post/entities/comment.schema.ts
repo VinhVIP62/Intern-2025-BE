@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { randomUUID } from 'node:crypto';
-import { ReactType } from '@common/enum/react.type.enum';
+import { ReactType } from '@common/enum/post/react.type.enum';
 
 @Schema({ timestamps: true })
 export class Comment {

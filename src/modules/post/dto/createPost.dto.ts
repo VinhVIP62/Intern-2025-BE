@@ -1,4 +1,4 @@
-import { PostState } from '@common/enum/post.state.enum';
+import { PostState } from '@common/enum/post/post.state.enum';
 import { IsString, IsOptional, IsArray, IsEnum } from 'class-validator';
 
 export class CreatePostDto {

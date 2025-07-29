@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { ICommentRepository } from '../repositories/comment.repository';
-import { IPostRepository } from '../repositories/post.repository';
+import { ICommentRepository } from '../repositories/interfaces/comment.repository';
+import { IPostRepository } from '../repositories/interfaces/post.repository';
 import { CreateCommentDto } from '../dto/createComment.dto';
 import { CmtMapper } from '../mapper/cmt.mapper';
 import { Comment } from '../entities/comment.schema';
@@ -23,7 +23,6 @@ export class CommentService {
 		const taggedUserIds = MentionHelper.extractUserIdsFromContent(body.content);
 		if (parentId) {
 			const isExistParentCmt = await this.commentRepo.existParent(parentId);
-			console.log(isExistParentCmt);
 			if (!isExistParentCmt) {
 				throw new NotFoundException('post.NOT_FOUND');
 			}
@@ -49,8 +48,8 @@ export class CommentService {
 		return this.cmtMapper.toRespose(cmt);
 	}
 
-	async findByPost(postId: string) {
-		const cmts = await this.commentRepo.findByPostId(postId);
+	async findByPost(postId: string, limit: number = 10, before?: Date) {
+		const cmts = await this.commentRepo.findByPostId(postId, limit, before);
 		const result = await Promise.all(
 			cmts.map(cmt => {
 				return this.cmtMapper.toRespose(cmt);

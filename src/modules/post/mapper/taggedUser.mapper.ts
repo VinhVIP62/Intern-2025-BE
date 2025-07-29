@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IProfileRepository } from '@modules/user/repositories/profile.repository';
+import { IProfileRepository } from '@modules/user/repositories/interfaces/profile.repository';
 
 @Injectable()
 export class TaggedUserMapper {

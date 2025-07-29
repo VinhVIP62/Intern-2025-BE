@@ -32,6 +32,10 @@ export class SearchController {
 	@Version('1')
 	@Public()
 	async reindexProfile() {
+		try {
+			await this.searchService.deleteIndex('profile');
+		} catch (e) {}
+		await this.searchService.createIndexProfileWithVietnameseSupport();
 		return this.searchService.reindexProfiles();
 	}
 
@@ -39,8 +43,11 @@ export class SearchController {
 	@Version('1')
 	@ApiOperation({ summary: 'Tìm kiếm hồ sơ người dùng' })
 	@Response()
-	async searchProfiles(@Query('keyword') keyword: string): Promise<ResponseEntity<any>> {
-		const result = await this.searchService.searchProfile(keyword);
+	async searchProfiles(
+		@Query('keyword') keyword: string,
+		@Query('page') page: number = 1,
+	): Promise<ResponseEntity<any>> {
+		const result = await this.searchService.searchProfile(keyword, page);
 		return {
 			success: true,
 			data: result,
@@ -53,9 +60,10 @@ export class SearchController {
 	async searchPosts(
 		@Req() request: Request,
 		@Query('keyword') keyword: string,
+		@Query('page') page: number = 1,
 	): Promise<ResponseEntity<any>> {
 		const user = request.user as { id: string };
-		const res = await this.searchService.searchPost(user.id, keyword);
+		const res = await this.searchService.searchPost(user.id, keyword, page);
 		return {
 			success: true,
 			data: res,
@@ -66,6 +74,11 @@ export class SearchController {
 	@Version('1')
 	@Public()
 	async reindexPosts() {
+		try {
+			await this.searchService.deleteIndex('post');
+		} catch (e) {}
+
+		await this.searchService.createIndexPostWithVietnameseSupport();
 		return this.searchService.reindexPosts();
 	}
 
@@ -75,12 +88,24 @@ export class SearchController {
 	async searchEvents(
 		@Req() request: Request,
 		@Query('keyword') keyword: string,
+		@Query('page') page: number = 1,
 	): Promise<ResponseEntity<any>> {
 		const user = request.user as { id: string };
-		const res = await this.searchService.searchEvent(user.id, keyword);
+		const res = await this.searchService.searchEvent(user.id, keyword, page);
 		return {
 			success: true,
 			data: res,
 		};
+	}
+
+	@Get('events/reindex')
+	@Version('1')
+	@Public()
+	async reindexEvents() {
+		try {
+			await this.searchService.deleteIndex('event');
+		} catch (e) {}
+		await this.searchService.createIndexEventWithVietnameseSupport();
+		return this.searchService.reindexEvents();
 	}
 }

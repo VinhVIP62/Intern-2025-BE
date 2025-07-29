@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { UserController } from './controllers/user.controller';
 import { UserService } from './providers/user.service';
-import { UserRepositoryImpl } from './repositories/user.repository.impl';
-import { IUserRepository } from './repositories/user.repository';
+import { UserRepositoryImpl } from './repositories/implements/user.repository.impl';
+import { IUserRepository } from './repositories/interfaces/user.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './entities/user.schema';
 import { ProfileService } from './providers/profile.service';
-import { ProfileRepositoryImpl } from './repositories/profile.repository.impl';
-import { IProfileRepository } from './repositories/profile.repository';
+import { ProfileRepositoryImpl } from './repositories/implements/profile.repository.impl';
+import { IProfileRepository } from './repositories/interfaces/profile.repository';
 import { Profile } from './entities/profile.schema';
 import { ProfileSchema } from './entities/profile.schema';
 import { ProfileController } from './controllers/profile.controller';

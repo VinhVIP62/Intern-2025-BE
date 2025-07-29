@@ -13,9 +13,12 @@ import { ThrottlerGuard, ThrottlerModule, ThrottlerModuleOptions } from '@nestjs
 import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 import { ResponsePagingInterceptor } from '@common/interceptors/responsePaging.interceptor';
 import { RedisModule } from './redis/redis.module';
+import { SocketModule } from './websocket/socket.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
 	imports: [
+		ScheduleModule.forRoot(),
 		ConfigModule.forRoot({
 			expandVariables: true,
 			cache: true,
@@ -37,6 +40,7 @@ import { RedisModule } from './redis/redis.module';
 		LoggerModule,
 		RouteModule,
 		RedisModule,
+		SocketModule,
 		ThrottlerModule.forRootAsync({
 			inject: [ConfigService],
 			useFactory: (config: ConfigService): ThrottlerModuleOptions => ({

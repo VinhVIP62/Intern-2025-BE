@@ -1,0 +1,15 @@
+{
+	"NOT_FOUND": "Notification not found.",
+	"UPDATE_FAILED": "Notification update failed.",
+	"friend_request_pending": "{fromUserName} has sent you a friend request.",
+	"friend_request_accepted": "{fromUserName} accepted your friend request.",
+	"friend_request_rejected": "{fromUserName} don't wanna be your friend.",
+	"tagged_with_title": "{fromUserName} tagged you in the post \"{postTitle}\".",
+	"event_invited": "You have been invited to event: {eventTitle} by {fromUserName}.",
+    "event_rsvp_reply": "{fromUserName} {rsvp} your event: {eventTitle}.",
+    "event_interest": "{fromUserName} is interested in your event: {eventTitle}.",
+    "event_join_request": "{fromUserName} requested to join your event: {eventTitle}.",
+	"event_within_24h": "Your event {eventTitle} is happening within 24 hours.",
+	"event_deleted": "Your event {eventTitle} has been deleted.",
+	"event_reply_request": "{fromUserName} {rsvp} your request to join the event: {eventTitle}."
+}

@@ -64,6 +64,33 @@ export class FriendController {
 		};
 	}
 
+	@Get('pendinglist')
+	@Version('1')
+	@Response()
+	async pendingList(@Req() req: Request): Promise<ResponseEntity<any>> {
+		const user = req.user as { id: string };
+		const friends = await this.friendService.getPendingList(user.id);
+		return {
+			success: true,
+			data: friends,
+		};
+	}
+
+	@Get('friendlist/:userId')
+	@Version('1')
+	@Response()
+	async getFriendList(
+		@Req() request: Request,
+		@Param('userId') userId: string,
+	): Promise<ResponseEntity<any>> {
+		const myId = request.user as { id: string };
+		const friendList = await this.friendService.getFriendList(myId.id, userId);
+		return {
+			success: true,
+			data: friendList,
+		};
+	}
+
 	@Get('isfriend/:friendId')
 	@Version('1')
 	@Response()

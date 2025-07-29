@@ -1,4 +1,4 @@
-import { RSVP } from '@common/enum/event.member.enum';
+import { RSVP } from '@common/enum/event/event.member.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema({ timestamps: true })

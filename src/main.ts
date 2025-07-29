@@ -54,7 +54,7 @@ async function bootstrap() {
 		credentials: true,
 	});
 
-	await app.listen(configService.get('port', { infer: true })!);
+	await app.listen(configService.get('port', { infer: true })!, '0.0.0.0');
 }
 
 bootstrap().catch(console.error);

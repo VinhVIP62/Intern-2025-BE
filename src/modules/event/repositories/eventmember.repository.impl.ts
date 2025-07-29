@@ -3,7 +3,7 @@ import { IEventMemberRepository } from './eventmember.repository';
 import { EventMember } from '../entities/eventmember.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { RSVP } from '@common/enum/event.member.enum';
+import { RSVP } from '@common/enum/event/event.member.enum';
 
 @Injectable()
 export class EventMemberRepository implements IEventMemberRepository {

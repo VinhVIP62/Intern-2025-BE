@@ -1,4 +1,4 @@
-import { EventState } from '@common/enum/event.state';
+import { EventState } from '@common/enum/event/event.state';
 import {
 	IsEnum,
 	IsNotEmpty,
@@ -8,9 +8,10 @@ import {
 	ValidateNested,
 	IsDateString,
 	ArrayNotEmpty,
+	IsNumber,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { Sports } from '@common/enum/sports.enum';
+import { Sports } from '@common/enum/user/sports.enum';
 import { IsGeoCoordinates } from '@common/validators/is.geo.coordinate';
 import { AddressDto } from '@modules/user/dto/address.dto';
 
@@ -61,4 +62,8 @@ export class CreateEventDto {
 	@IsOptional()
 	@IsString({ each: true })
 	mediaUrls?: string[];
+
+	@IsOptional()
+	@IsNumber()
+	maxMem?: number;
 }

@@ -1,6 +1,6 @@
 import { IsArray, IsDateString, IsEnum, IsOptional, IsString, IsUUID } from 'class-validator';
-import { Sports } from '@common/enum/sports.enum';
-import { SportLevel } from '@common/enum/sport-level.enum';
+import { Sports } from '@common/enum/user/sports.enum';
+import { SportLevel } from '@common/enum/user/sport-level.enum';
 import { AddressDto } from './address.dto';
 
 export class UpdateProfileDto {

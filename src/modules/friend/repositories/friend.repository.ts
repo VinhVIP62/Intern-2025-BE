@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Friend } from '../entities/friend.schema';
-import { FriendState } from '@common/enum/friend.state.enum';
+import { FriendState } from '@common/enum/friend/friend.state.enum';
 
 @Injectable()
 export abstract class IFriendRepository {
@@ -13,5 +13,6 @@ export abstract class IFriendRepository {
 		state: FriendState,
 	): Promise<Friend | null>;
 	abstract getAccepted(userId: string): Promise<Friend[]>;
+	abstract getPending(userId: string): Promise<Friend[]>;
 	abstract deleteRequest(fromUserId: string, toUserId: string): Promise<Friend | null>;
 }

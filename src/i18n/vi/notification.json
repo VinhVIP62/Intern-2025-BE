@@ -1,0 +1,15 @@
+{
+	"NOT_FOUND": "Thông báo không tìm thấy.",
+	"UPDATE_FAILED": "Cập nhật thông báo thất bại.",
+	"friend_request_pending": "{fromUserName} đã gửi lời mời kết bạn.",
+	"friend_request_accepted": "{fromUserName} đã chấp nhận lời mời kết bạn.",
+	"friend_request_rejected": "{fromUserName} không đồng ý là bạn bè rồi.",
+	"tagged_with_title": "{fromUserName} đã tag bạn trong bài viết \"{postTitle}\".",
+	"event_invited": "Bạn đã được mời tham gia sự kiện: {eventTitle} bởi {fromUserName}.",
+	"event_rsvp_reply": "{fromUserName} {rsvp} sự kiện của bạn: {eventTitle}.",
+	"event_interest": "{fromUserName} quan tâm đến sự kiện của bạn: {eventTitle}.",
+	"event_join_request": "{fromUserName} đã yêu cầu tham gia sự kiện của bạn: {eventTitle}.",
+	"event_within_24h": "Sự kiện của bạn {eventTitle} sẽ diễn ra trong vòng 24 giờ tới.",
+	"event_deleted": "Sự kiện của bạn {eventTitle} đã bị xóa.",
+	"event_reply_request": "{fromUserName} {rsvp} yêu cầu của bạn để tham gia sự kiện: {eventTitle}."
+}

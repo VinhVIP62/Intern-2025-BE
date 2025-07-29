@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { FriendState } from '@common/enum/friend.state.enum';
+import { FriendState } from '@common/enum/friend/friend.state.enum';
 
 @Schema({ timestamps: true })
 export class Friend {

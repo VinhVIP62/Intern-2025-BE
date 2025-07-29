@@ -1,3 +1,4 @@
 {
-    "NOT_FOUND" : "Your event is not found"
+    "NOT_FOUND" : "Your event is not found",
+    "MAX_MEMBERS_REACHED": "The maximum number of members for this event has been reached. You cannot RSVP at this time."
 }

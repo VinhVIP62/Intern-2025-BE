@@ -1,4 +1,4 @@
-import { Role } from '@common/enum/roles.enum';
+import { Role } from '@common/enum/user/roles.enum';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
 	IsArray,

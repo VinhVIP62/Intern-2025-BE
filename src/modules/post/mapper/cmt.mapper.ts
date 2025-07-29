@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { Comment } from '../entities/comment.schema';
-import { IProfileRepository } from '@modules/user/repositories/profile.repository';
-import { ICommentRepository } from '../repositories/comment.repository';
-import { IReactCommentRepository } from '../repositories/react.comment.repository';
+import { IProfileRepository } from '@modules/user/repositories/interfaces/profile.repository';
+import { ICommentRepository } from '../repositories/interfaces/comment.repository';
+import { IReactCommentRepository } from '../repositories/interfaces/react.comment.repository';
 import { TaggedUserMapper } from './taggedUser.mapper';
 
 @Injectable()

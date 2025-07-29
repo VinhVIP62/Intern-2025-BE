@@ -1,7 +1,7 @@
 import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
-import { ICommentRepository } from '../repositories/comment.repository';
-import { ReactType } from '@common/enum/react.type.enum';
-import { IReactCommentRepository } from '../repositories/react.comment.repository';
+import { ICommentRepository } from '../repositories/interfaces/comment.repository';
+import { ReactType } from '@common/enum/post/react.type.enum';
+import { IReactCommentRepository } from '../repositories/interfaces/react.comment.repository';
 
 @Injectable()
 export class ReactCmtService {

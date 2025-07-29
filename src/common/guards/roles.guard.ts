@@ -1,7 +1,7 @@
 import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from '@common/constants';
-import { Role } from '@common/enum';
+import { Role } from '@common/enum/user/roles.enum';
 import { Request } from 'express';
 
 @Injectable()
