@@ -5,6 +5,7 @@ import { Types } from 'mongoose';
 export interface ISearchHistoryRepository {
 	create(userId: Types.ObjectId, dto: CreateSearchHistoryInternalDto): Promise<SearchHistory>;
 	findByUserId(userId: Types.ObjectId, limit?: number): Promise<SearchHistory[]>;
+	findById(id: Types.ObjectId): Promise<SearchHistory | null>;
 	findAll(limit?: number): Promise<SearchHistory[]>;
 	delete(id: Types.ObjectId): Promise<void>;
 	findByUserIdPagination(

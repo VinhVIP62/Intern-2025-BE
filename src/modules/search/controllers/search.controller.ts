@@ -1,5 +1,24 @@
-import { Controller, Get, Post, Query, Version, UseGuards, Request, Body } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiQuery, ApiBody , ApiBearerAuth} from '@nestjs/swagger';
+import {
+	Controller,
+	Get,
+	Post,
+	Query,
+	Version,
+	UseGuards,
+	Request,
+	Body,
+	Delete,
+	Param,
+} from '@nestjs/common';
+import {
+	ApiTags,
+	ApiOperation,
+	ApiResponse,
+	ApiQuery,
+	ApiBody,
+	ApiBearerAuth,
+	ApiParam,
+} from '@nestjs/swagger';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { Public } from '@common/decorators';
 import { RolesGuard } from '@common/guards';
@@ -163,6 +182,31 @@ export class SearchController {
 		return {
 			success: true,
 			message: i18n.t('search.CREATE_HISTORY_SUCCESS'),
+		};
+	}
+
+	@Version('1')
+	@Delete('history/:id')
+	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({ summary: 'Xóa lịch sử tìm kiếm theo ID' })
+	@ApiParam({
+		name: 'id',
+		description: 'ID của lịch sử tìm kiếm',
+		example: '507f1f77bcf86cd799439011',
+	})
+	@ApiResponse({ status: 200, description: 'Xóa lịch sử tìm kiếm thành công' })
+	async deleteSearchHistory(
+		@Param('id') id: string,
+		@Request() req,
+		@I18n() i18n: I18nContext,
+	): Promise<ResponseEntity<null>> {
+		const userId = req.user?.id;
+		await this.searchService.deleteSearchHistory(id, userId, i18n);
+		return {
+			success: true,
+			message: i18n.t('search.DELETE_HISTORY_SUCCESS'),
 		};
 	}
 }

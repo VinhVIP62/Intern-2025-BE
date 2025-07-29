@@ -14,6 +14,7 @@ import { ISearchHistoryRepository } from '@modules/search/interfaces/searchHisto
 import { UserService } from '@modules/user/providers/user.service';
 import { GroupService } from '@modules/group/providers/group.service';
 import { EventService } from '@modules/event/providers/event.service';
+import { NotFoundException } from '@nestjs/common';
 
 @Injectable()
 export class SearchService {
@@ -219,6 +220,7 @@ export class SearchService {
 		// Enhance search history with basic data
 		const enhancedData = result.data.map((history: any) => {
 			const enhanced: any = {
+				_id: history._id?.toString?.() || '',
 				userId: history.userId?.toString?.() || '',
 				text: history.text,
 				hashtag: history.hashtag,
@@ -283,5 +285,21 @@ export class SearchService {
 			data: filteredData,
 			total: result.total,
 		};
+	}
+
+	async deleteSearchHistory(historyId: string, userId: string, i18n: I18nContext): Promise<void> {
+		// Verify that the search history exists and belongs to the user
+		const history = await this.searchHistoryRepository.findById(new Types.ObjectId(historyId));
+
+		if (!history) {
+			throw new NotFoundException(i18n.t('search.SEARCH_HISTORY_NOT_FOUND'));
+		}
+
+		// Check if the history belongs to the user
+		if (history.userId.toString() !== userId) {
+			throw new NotFoundException(i18n.t('search.UNAUTHORIZED_TO_DELETE'));
+		}
+
+		await this.searchHistoryRepository.delete(new Types.ObjectId(historyId));
 	}
 }

@@ -23,6 +23,10 @@ export class SearchHistoryRepositoryImpl implements ISearchHistoryRepository {
 		return this.searchHistoryModel.find({ userId }).sort({ createdAt: -1 }).limit(limit).lean();
 	}
 
+	async findById(id: Types.ObjectId): Promise<SearchHistory | null> {
+		return this.searchHistoryModel.findById(id).lean();
+	}
+
 	async findByUserIdPagination(
 		userId: Types.ObjectId,
 		page = 1,

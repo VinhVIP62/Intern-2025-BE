@@ -6161,6 +6161,37 @@
           "Search"
         ]
       }
+    },
+    "/api/v1/search/history/{id}": {
+      "delete": {
+        "operationId": "SearchController_deleteSearchHistory_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID của lịch sử tìm kiếm",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Xóa lịch sử tìm kiếm thành công"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Xóa lịch sử tìm kiếm theo ID",
+        "tags": [
+          "Search"
+        ]
+      }
     }
   },
   "info": {

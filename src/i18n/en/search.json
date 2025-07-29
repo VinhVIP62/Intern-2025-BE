@@ -4,5 +4,8 @@
 	"SEARCH_NO_RESULT": "No result found",
 	"SEARCH_ERROR": "Search error",
 	"CREATE_HISTORY_SUCCESS": "Create search history success",
-	"FETCH_HISTORY_SUCCESS": "Fetch search history success"
+	"FETCH_HISTORY_SUCCESS": "Fetch search history success",
+	"DELETE_HISTORY_SUCCESS": "Delete search history success",
+	"SEARCH_HISTORY_NOT_FOUND": "Search history not found",
+	"UNAUTHORIZED_TO_DELETE": "Unauthorized to delete search history"
 }
