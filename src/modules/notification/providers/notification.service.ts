@@ -32,24 +32,40 @@ export class NotificationService {
 		// Lấy FCM token của user nhận qua repository
 		const recipient = await this.userRepository.findOneById(data.recipient);
 		const lang = recipient?.deviceLanguage || 'vi';
+
+		// Kiểm tra FCM token trước khi gửi
 		if (recipient?.fcmToken) {
-			await admin.messaging().send({
-				token: recipient.fcmToken,
-				notification: {
-					title: i18n.t('notification.NEW_NOTIFICATION', { lang }),
-					body: await this.translateNotificationMessage(
-						data.message,
-						i18n,
-						data.sender,
-						data.referenceModel,
-						data.referenceId,
-						lang,
-					),
-				},
-				data: {
-					notificationId: notification._id.toString(),
-				},
-			});
+			try {
+				await admin.messaging().send({
+					token: recipient.fcmToken,
+					notification: {
+						title: i18n.t('notification.NEW_NOTIFICATION', { lang }),
+						body: await this.translateNotificationMessage(
+							data.message,
+							i18n,
+							data.sender,
+							data.referenceModel,
+							data.referenceId,
+							lang,
+						),
+					},
+					data: {
+						notificationId: notification._id.toString(),
+					},
+				});
+			} catch (error) {
+				// Log lỗi nhưng không fail toàn bộ operation
+				console.warn(`Failed to send FCM notification to user ${data.recipient}:`, error.message);
+
+				// Nếu token không hợp lệ, có thể xóa token này
+				if (
+					error.message.includes('Requested entity was not found') ||
+					error.message.includes('Invalid registration token')
+				) {
+					// Có thể thêm logic để xóa invalid FCM token
+					console.warn(`Invalid FCM token for user ${data.recipient}, consider removing it`);
+				}
+			}
 		}
 		return notification;
 	}
