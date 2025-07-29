@@ -253,7 +253,12 @@ export class EventService {
 		limit: number,
 		i18n?: any,
 	): Promise<{ invitations: any[]; total: number }> {
-		return this.eventRepository.getUserEventInvitations(userId, page, limit);
+		return this.eventRepository.getUserEventInvitations(
+			userId,
+			page,
+			limit,
+			EventInvitationStatus.PENDING,
+		);
 	}
 
 	async respondToInvitation(

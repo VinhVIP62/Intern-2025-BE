@@ -378,7 +378,9 @@ export class EventController {
 	@UseGuards(RolesGuard)
 	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
-	@ApiOperation({ summary: 'Lấy danh sách lời mời tham gia sự kiện của user hiện tại' })
+	@ApiOperation({
+		summary: 'Lấy danh sách lời mời tham gia sự kiện đang pending của user hiện tại',
+	})
 	@ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
 	@ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
 	@ApiResponse({

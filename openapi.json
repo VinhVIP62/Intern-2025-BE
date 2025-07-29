@@ -1766,7 +1766,7 @@
             "bearer": []
           }
         ],
-        "summary": "Lấy danh sách lời mời tham gia sự kiện của user hiện tại",
+        "summary": "Lấy danh sách lời mời tham gia sự kiện đang pending của user hiện tại",
         "tags": [
           "Event"
         ]
