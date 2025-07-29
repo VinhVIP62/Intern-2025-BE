@@ -13,7 +13,15 @@ import {
 	Delete,
 	Put,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody } from '@nestjs/swagger';
+import {
+	ApiTags,
+	ApiOperation,
+	ApiResponse,
+	ApiParam,
+	ApiQuery,
+	ApiBody,
+	ApiBearerAuth,
+} from '@nestjs/swagger';
 import { CommentService } from '@modules/comment/providers/comment.service';
 import { ResponseEntity } from '@common/types';
 import {
@@ -42,6 +50,7 @@ export class CommentController {
 	@Post('posts/:postId/comments')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Tạo comment mới cho bài đăng' })
 	@ApiParam({
 		name: 'postId',
@@ -166,6 +175,7 @@ export class CommentController {
 	@Put(':commentId')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Cập nhật comment' })
 	@ApiParam({
 		name: 'commentId',
@@ -241,6 +251,7 @@ export class CommentController {
 	@Delete(':commentId')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Xóa comment' })
 	@ApiParam({
 		name: 'commentId',
@@ -287,6 +298,7 @@ export class CommentController {
 	@Post(':commentId/reply')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Tạo reply cho comment' })
 	@ApiParam({
 		name: 'commentId',
@@ -355,6 +367,7 @@ export class CommentController {
 	@Put(':commentId/hidden')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Ẩn comment' })
 	@ApiParam({
 		name: 'commentId',
@@ -407,6 +420,7 @@ export class CommentController {
 	@Put(':commentId/show')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Hiện comment' })
 	@ApiParam({
 		name: 'commentId',
@@ -459,6 +473,7 @@ export class CommentController {
 	@Post(':commentId/like')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Like comment' })
 	@ApiParam({
 		name: 'commentId',
@@ -497,6 +512,7 @@ export class CommentController {
 	@Post(':commentId/unlike')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Unlike comment' })
 	@ApiParam({
 		name: 'commentId',
@@ -535,6 +551,7 @@ export class CommentController {
 	@Post(':commentId/tagged-users')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Tag users vào comment' })
 	@ApiParam({
 		name: 'commentId',
@@ -590,6 +607,7 @@ export class CommentController {
 	@Put(':commentId/tagged-users')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Cập nhật danh sách tagged users (thay thế toàn bộ)' })
 	@ApiParam({
 		name: 'commentId',

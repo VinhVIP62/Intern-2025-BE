@@ -23,6 +23,7 @@ import {
 	ApiQuery,
 	ApiBody,
 	ApiConsumes,
+	ApiBearerAuth,
 } from '@nestjs/swagger';
 import { PostService } from '@modules/post/providers/post.service';
 import { ResponseEntity } from '@common/types';
@@ -55,6 +56,7 @@ export class PostController {
 	@Post()
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@UseInterceptors(
 		FilesInterceptor('files', FILE_TYPE_CONSTANTS.MAX_FILES_COUNT, {
 			limits: {
@@ -170,6 +172,7 @@ export class PostController {
 	@Version('1')
 	@Get()
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Lấy danh sách bài đăng (newsfeed) của user hiện tại' })
 	@ApiQuery({
@@ -222,6 +225,7 @@ export class PostController {
 	@Get(':postId')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Lấy thông tin chi tiết bài đăng theo ID' })
 	@ApiParam({
 		name: 'postId',
@@ -254,6 +258,7 @@ export class PostController {
 	@Version('1')
 	@Get('user/:userId')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Lấy danh sách bài đăng của người dùng theo ID' })
 	@ApiParam({
@@ -305,6 +310,7 @@ export class PostController {
 	@Put(':postId')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@UseInterceptors(
 		FilesInterceptor('files', FILE_TYPE_CONSTANTS.MAX_FILES_COUNT, {
 			limits: {
@@ -382,6 +388,7 @@ export class PostController {
 	@Delete(':postId')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Xóa bài đăng' })
 	@ApiParam({
 		name: 'postId',
@@ -529,6 +536,7 @@ export class PostController {
 	@Version('1')
 	@Put(':postId/tag-friends')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Tag bạn bè vào bài đăng (thay thế toàn bộ danh sách)' })
 	@ApiParam({ name: 'postId', description: 'ID của bài đăng', example: '507f1f77bcf86cd799439011' })
@@ -570,6 +578,7 @@ export class PostController {
 	@Version('1')
 	@Post(':postId/like')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Like một bài đăng' })
 	@ApiParam({ name: 'postId', description: 'ID của bài đăng', example: '507f1f77bcf86cd799439011' })
@@ -592,6 +601,7 @@ export class PostController {
 	@Version('1')
 	@Delete(':postId/like')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Bỏ like một bài đăng' })
 	@ApiParam({ name: 'postId', description: 'ID của bài đăng', example: '507f1f77bcf86cd799439011' })
@@ -692,6 +702,7 @@ export class PostController {
 	@Version('1')
 	@Delete(':postId/clear-url')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Xóa images và video của bài đăng (clearUrl)' })
 	@ApiParam({ name: 'postId', description: 'ID của bài đăng', example: '507f1f77bcf86cd799439011' })

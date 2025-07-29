@@ -172,6 +172,11 @@
             "description": "Không tìm thấy người dùng"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Đổi mật khẩu",
         "tags": [
           "User"
@@ -192,8 +197,16 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized - Token không hợp lệ hoặc thiếu"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy thông tin profile của người dùng hiện tại",
         "tags": [
           "User"
@@ -215,8 +228,16 @@
         "responses": {
           "200": {
             "description": "Cập nhật profile thành công"
+          },
+          "401": {
+            "description": "Unauthorized - Token không hợp lệ hoặc thiếu"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Cập nhật thông tin profile của người dùng hiện tại",
         "tags": [
           "User"
@@ -247,8 +268,16 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized - Token không hợp lệ hoặc thiếu"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy thông tin profile của người dùng theo ID",
         "tags": [
           "User"
@@ -294,8 +323,16 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized - Token không hợp lệ hoặc thiếu"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Upload avatar image for current user",
         "tags": [
           "User"
@@ -341,8 +378,16 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized - Token không hợp lệ hoặc thiếu"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Upload cover image for current user",
         "tags": [
           "User"
@@ -423,8 +468,16 @@
         "responses": {
           "200": {
             "description": "Cập nhật skill levels thành công"
+          },
+          "401": {
+            "description": "Unauthorized - Token không hợp lệ hoặc thiếu"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Cập nhật trình độ kỹ năng cho từng môn thể thao",
         "tags": [
           "User"
@@ -465,8 +518,16 @@
         "responses": {
           "200": {
             "description": "Xóa môn thể thao yêu thích thành công"
+          },
+          "401": {
+            "description": "Unauthorized - Token không hợp lệ hoặc thiếu"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Xóa 1 môn thể thao khỏi danh sách yêu thích và skillLevels",
         "tags": [
           "User"
@@ -510,8 +571,16 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized - Token không hợp lệ hoặc thiếu"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Tìm kiếm bạn bè theo tên (key trong fullname, không phân biệt hoa thường, có phân trang)",
         "tags": [
           "User"
@@ -543,10 +612,18 @@
               }
             }
           },
+          "401": {
+            "description": "Unauthorized - Token không hợp lệ hoặc thiếu"
+          },
           "404": {
             "description": "Không tìm thấy người dùng"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy thông tin cơ bản của người dùng theo ID",
         "tags": [
           "User"
@@ -575,8 +652,16 @@
         "responses": {
           "200": {
             "description": "Cập nhật FCM token thành công"
+          },
+          "401": {
+            "description": "Unauthorized - Token không hợp lệ hoặc thiếu"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Cập nhật FCM token cho user",
         "tags": [
           "User"
@@ -599,8 +684,16 @@
         "responses": {
           "200": {
             "description": "Cập nhật ngôn ngữ thiết bị thành công"
+          },
+          "401": {
+            "description": "Unauthorized - Token không hợp lệ hoặc thiếu"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Cập nhật ngôn ngữ thiết bị cho user",
         "tags": [
           "User"
@@ -626,6 +719,11 @@
             "description": "Chặn thành công"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Chặn người dùng",
         "tags": [
           "User Management"
@@ -649,6 +747,11 @@
             "description": "Bỏ chặn thành công"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Bỏ chặn người dùng",
         "tags": [
           "User Management"
@@ -674,6 +777,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy danh sách người dùng đã chặn",
         "tags": [
           "User Management"
@@ -699,6 +807,11 @@
             "description": "Theo dõi thành công"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Theo dõi người dùng",
         "tags": [
           "User Follow"
@@ -722,6 +835,11 @@
             "description": "Bỏ theo dõi thành công"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Bỏ theo dõi người dùng",
         "tags": [
           "User Follow"
@@ -734,7 +852,7 @@
         "parameters": [
           {
             "name": "userId",
-            "required": true,
+            "required": false,
             "in": "query",
             "description": "ID của người dùng (default = current user)",
             "schema": {
@@ -783,6 +901,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy danh sách người theo dõi",
         "tags": [
           "User Follow"
@@ -844,6 +967,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy danh sách đang theo dõi",
         "tags": [
           "User Follow"
@@ -869,6 +997,11 @@
             "description": "Xóa follower thành công"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Xóa follower khỏi tài khoản của bạn",
         "tags": [
           "User Follow"
@@ -916,6 +1049,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Upload file",
         "tags": [
           "File"
@@ -968,6 +1106,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Upload multiple files",
         "tags": [
           "File"
@@ -1012,6 +1155,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Delete multiple files by file URLs",
         "tags": [
           "File"
@@ -1150,6 +1298,11 @@
             "description": "Dữ liệu không hợp lệ"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Tạo sự kiện mới",
         "tags": [
           "Event"
@@ -1300,6 +1453,11 @@
             "description": "Không tìm thấy sự kiện"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Cập nhật sự kiện",
         "tags": [
           "Event"
@@ -1330,6 +1488,11 @@
             "description": "Không tìm thấy sự kiện"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Xóa sự kiện",
         "tags": [
           "Event"
@@ -1360,6 +1523,11 @@
             "description": "Tham gia sự kiện thất bại"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Tham gia sự kiện",
         "tags": [
           "Event"
@@ -1390,6 +1558,11 @@
             "description": "Rời sự kiện thất bại"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Rời sự kiện",
         "tags": [
           "Event"
@@ -1433,6 +1606,11 @@
             "description": "RSVP thất bại"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "RSVP sự kiện",
         "tags": [
           "Event"
@@ -1484,6 +1662,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy danh sách người tham gia sự kiện",
         "tags": [
           "Event"
@@ -1532,6 +1715,11 @@
             "description": "Không tìm thấy sự kiện"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Mời người dùng tham gia sự kiện",
         "tags": [
           "Event"
@@ -1573,6 +1761,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy danh sách lời mời tham gia sự kiện của user hiện tại",
         "tags": [
           "Event"
@@ -1617,6 +1810,11 @@
             "description": "Lấy danh sách lời mời đã gửi thành công"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy danh sách người dùng đã được user hiện tại mời tham gia sự kiện",
         "tags": [
           "Event"
@@ -1659,6 +1857,11 @@
             "description": "Không tìm thấy lời mời"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Phản hồi lời mời sự kiện (accept/reject)",
         "tags": [
           "Event"
@@ -1691,6 +1894,11 @@
             "description": "Không tìm thấy lời mời"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Hủy lời mời tham gia sự kiện (cho phép sender hoặc recipient xóa)",
         "tags": [
           "Event"
@@ -1752,6 +1960,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy danh sách sự kiện mà user đã tham gia theo userId",
         "tags": [
           "Event"
@@ -1822,6 +2035,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Gợi ý sự kiện cho user hiện tại",
         "tags": [
           "Event"
@@ -1863,6 +2081,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy trạng thái RSVP và invitation của user hiện tại với event",
         "tags": [
           "Event"
@@ -1901,6 +2124,11 @@
             "description": "Không có quyền truy cập"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Tạo nhóm mới",
         "tags": [
           "Group"
@@ -2123,6 +2351,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy danh sách group mà user hiện tại hoặc userId được mời",
         "tags": [
           "Group"
@@ -2212,6 +2445,11 @@
             "description": "Không tìm thấy nhóm"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Cập nhật thông tin nhóm",
         "tags": [
           "Group"
@@ -2245,6 +2483,11 @@
             "description": "Không tìm thấy nhóm"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Xóa nhóm",
         "tags": [
           "Group"
@@ -2280,6 +2523,11 @@
             "description": "Không tìm thấy nhóm"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Tham gia nhóm",
         "tags": [
           "Group"
@@ -2315,6 +2563,11 @@
             "description": "Không tìm thấy nhóm"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Rời khỏi nhóm",
         "tags": [
           "Group"
@@ -2388,6 +2641,11 @@
             "description": "Không tìm thấy nhóm hoặc người dùng"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Thay đổi vai trò thành viên (admin/member)",
         "tags": [
           "Group"
@@ -2564,6 +2822,11 @@
             "description": "Không tìm thấy nhóm hoặc yêu cầu"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Phê duyệt yêu cầu tham gia nhóm",
         "tags": [
           "Group"
@@ -2629,6 +2892,11 @@
             "description": "Không tìm thấy nhóm"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Mời người dùng tham gia nhóm",
         "tags": [
           "Group"
@@ -2664,6 +2932,11 @@
             "description": "Không tìm thấy nhóm hoặc lời mời"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Chấp nhận lời mời tham gia nhóm",
         "tags": [
           "Group"
@@ -2699,6 +2972,11 @@
             "description": "Không tìm thấy nhóm hoặc lời mời"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Từ chối lời mời tham gia nhóm",
         "tags": [
           "Group"
@@ -2821,6 +3099,11 @@
             "description": "Không tìm thấy nhóm hoặc bài viết"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Phê duyệt hoặc từ chối bài viết trong nhóm",
         "tags": [
           "Group"
@@ -2856,6 +3139,11 @@
             "description": "Không tìm thấy nhóm"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Tạo bài viết mới trong nhóm",
         "tags": [
           "Group"
@@ -2904,6 +3192,11 @@
             "description": "Không tìm thấy nhóm hoặc thành viên"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Xóa thành viên khỏi nhóm (chỉ admin)",
         "tags": [
           "Group"
@@ -2952,6 +3245,11 @@
             "description": "Không tìm thấy nhóm hoặc lời mời"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Hủy lời mời tham gia nhóm (chỉ admin)",
         "tags": [
           "Group"
@@ -3029,6 +3327,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy danh sách bài đăng của user trong group, có thể lọc theo status",
         "tags": [
           "Group"
@@ -3088,6 +3391,11 @@
             "description": "Không tìm thấy nhóm hoặc bài viết"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy danh sách bài viết đang chờ duyệt (pending) trong nhóm",
         "tags": [
           "Group"
@@ -3138,6 +3446,11 @@
             "description": "Không tìm thấy nhóm"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy danh sách user chờ duyệt vào group (chỉ admin)",
         "tags": [
           "Group"
@@ -3182,6 +3495,11 @@
             "description": "Lấy danh sách nhóm đã gửi yêu cầu thành công"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy danh sách group user đã gửi yêu cầu tham gia",
         "tags": [
           "Group"
@@ -3232,6 +3550,11 @@
             "description": "Không tìm thấy nhóm"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy danh sách user được mời vào group (chỉ admin được xem)",
         "tags": [
           "Group"
@@ -3264,6 +3587,11 @@
             "description": "Không tìm thấy nhóm"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "User hủy yêu cầu tham gia nhóm (rút khỏi waitingList)",
         "tags": [
           "Group"
@@ -3314,6 +3642,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy danh sách thông báo của người dùng hiện tại",
         "tags": [
           "Notification"
@@ -3339,6 +3672,11 @@
             "description": "Đánh dấu thông báo đã đọc thành công"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Đánh dấu thông báo đã đọc",
         "tags": [
           "Notification"
@@ -3354,6 +3692,11 @@
             "description": "Đánh dấu tất cả thông báo đã đọc thành công"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Đánh dấu tất cả thông báo đã đọc",
         "tags": [
           "Notification"
@@ -3379,6 +3722,11 @@
             "description": "Đánh dấu thông báo là chưa đọc thành công"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Đánh dấu thông báo là chưa đọc",
         "tags": [
           "Notification"
@@ -3394,7 +3742,12 @@
             "description": "Xóa tất cả thông báo thành công"
           }
         },
-        "summary": "Xóa (ẩn) tất cả thông báo của user",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Xóa tất cả thông báo",
         "tags": [
           "Notification"
         ]
@@ -3419,6 +3772,11 @@
             "description": "Xóa thông báo thành công"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Xóa (ẩn) một thông báo cụ thể",
         "tags": [
           "Notification"
@@ -3457,6 +3815,11 @@
             "description": "Không có quyền truy cập"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Tạo bài đăng mới",
         "tags": [
           "Post"
@@ -3524,6 +3887,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy danh sách bài đăng (newsfeed) của user hiện tại",
         "tags": [
           "Post"
@@ -3638,6 +4006,11 @@
             "description": "Không tìm thấy bài đăng"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy thông tin chi tiết bài đăng theo ID",
         "tags": [
           "Post"
@@ -3691,6 +4064,11 @@
             "description": "Không tìm thấy bài đăng"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Cập nhật bài đăng",
         "tags": [
           "Post"
@@ -3724,6 +4102,11 @@
             "description": "Không tìm thấy bài đăng"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Xóa bài đăng",
         "tags": [
           "Post"
@@ -3777,6 +4160,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy danh sách bài đăng của người dùng theo ID",
         "tags": [
           "Post"
@@ -3955,6 +4343,11 @@
             "description": "Không có quyền chỉnh sửa bài đăng này"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Tag bạn bè vào bài đăng (thay thế toàn bộ danh sách)",
         "tags": [
           "Post"
@@ -3994,6 +4387,11 @@
             "description": "Không tìm thấy bài đăng"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Like một bài đăng",
         "tags": [
           "Post"
@@ -4031,6 +4429,11 @@
             "description": "Không tìm thấy bài đăng"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Bỏ like một bài đăng",
         "tags": [
           "Post"
@@ -4220,6 +4623,11 @@
             "description": "Không có quyền chỉnh sửa bài đăng này"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Xóa images và video của bài đăng (clearUrl)",
         "tags": [
           "Post"
@@ -4288,6 +4696,11 @@
             "description": "Không tìm thấy bài đăng hoặc comment cha"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Tạo comment mới cho bài đăng",
         "tags": [
           "Comment"
@@ -4405,6 +4818,11 @@
             "description": "Không tìm thấy comment"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Cập nhật comment",
         "tags": [
           "Comment"
@@ -4438,6 +4856,11 @@
             "description": "Không tìm thấy comment"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Xóa comment",
         "tags": [
           "Comment"
@@ -4501,6 +4924,11 @@
             "description": "Không tìm thấy comment cha"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Tạo reply cho comment",
         "tags": [
           "Comment"
@@ -4543,6 +4971,11 @@
             "description": "Không tìm thấy comment"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Ẩn comment",
         "tags": [
           "Comment"
@@ -4585,6 +5018,11 @@
             "description": "Không tìm thấy comment"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Hiện comment",
         "tags": [
           "Comment"
@@ -4627,6 +5065,11 @@
             "description": "Không tìm thấy comment"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Like comment",
         "tags": [
           "Comment"
@@ -4669,6 +5112,11 @@
             "description": "Không tìm thấy comment"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Unlike comment",
         "tags": [
           "Comment"
@@ -4741,6 +5189,11 @@
             "description": "Không tìm thấy comment"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Tag users vào comment",
         "tags": [
           "Comment"
@@ -4811,6 +5264,11 @@
             "description": "Không tìm thấy comment"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Cập nhật danh sách tagged users (thay thế toàn bộ)",
         "tags": [
           "Comment"
@@ -4849,6 +5307,11 @@
             "description": "Không có quyền truy cập"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Gửi lời mời kết bạn",
         "tags": [
           "Friend Request"
@@ -4906,6 +5369,11 @@
             "description": "Không có quyền truy cập"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy danh sách lời mời kết bạn",
         "tags": [
           "Friend Request"
@@ -4945,6 +5413,11 @@
             "description": "Không có quyền truy cập"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Kiểm tra trạng thái bạn bè giữa người dùng hiện tại và người dùng khác",
         "tags": [
           "Friend Request"
@@ -4990,6 +5463,11 @@
             "description": "Không tìm thấy lời mời kết bạn"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Chấp nhận lời mời kết bạn",
         "tags": [
           "Friend Request"
@@ -5035,6 +5513,11 @@
             "description": "Không tìm thấy lời mời kết bạn"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Từ chối lời mời kết bạn",
         "tags": [
           "Friend Request"
@@ -5095,6 +5578,11 @@
             "description": "Không tìm thấy lời mời kết bạn"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Chỉnh sửa lời nhắn của lời mời kết bạn (chỉ sender, khi pending)",
         "tags": [
           "Friend Request"
@@ -5143,6 +5631,11 @@
             "description": "Không tìm thấy lời mời kết bạn"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Hủy lời mời kết bạn (chỉ sender, khi pending)",
         "tags": [
           "Friend Request"
@@ -5199,6 +5692,11 @@
             "description": "Không có quyền truy cập"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy danh sách bạn bè của người dùng hiện tại",
         "tags": [
           "Friends"
@@ -5234,6 +5732,11 @@
             "description": "Không tìm thấy người dùng"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Xóa bạn bè",
         "tags": [
           "Friends"
@@ -5296,6 +5799,11 @@
             "description": "Không tìm thấy người dùng"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy danh sách bạn bè chung với người dùng khác (người này có thể chưa phải là bạn bè)",
         "tags": [
           "Friends"
@@ -5326,6 +5834,11 @@
             "description": "Lấy thành công"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy achievement và tiến trình thực hiện của user hiện tại",
         "tags": [
           "Achievement"
@@ -5350,6 +5863,11 @@
             "description": "Lấy thành công"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy danh sách achievement đã hoàn thành của user theo userId",
         "tags": [
           "Achievement"
@@ -5375,6 +5893,11 @@
             "description": "Unlock thành công"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Unlock achievement cho user thủ công",
         "tags": [
           "Achievement"
@@ -5400,6 +5923,11 @@
             "description": "Cập nhật thành công"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Cập nhật tiến trình achievement cho user thủ công",
         "tags": [
           "Achievement"
@@ -5415,6 +5943,11 @@
             "description": "Cập nhật và unlock thành công"
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Tự động check và update achievement cho user hiện tại",
         "tags": [
           "Achievement"
@@ -5479,6 +6012,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Tìm kiếm tất cả các loại (user, post, event, ...)",
         "tags": [
           "Search"
@@ -5512,6 +6050,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Tìm kiếm theo loại (user, post, event, ...)",
         "tags": [
           "Search"
@@ -5553,6 +6096,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Lấy lịch sử tìm kiếm",
         "tags": [
           "Search"
@@ -5583,6 +6131,11 @@
             }
           }
         },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "summary": "Thêm lịch sử tìm kiếm",
         "tags": [
           "Search"

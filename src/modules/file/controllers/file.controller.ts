@@ -17,7 +17,7 @@ import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
 import { RolesGuard } from '@common/guards/roles.guard';
 import { Role } from '@common/enum/roles.enum';
 import { Roles } from '@common/decorators/roles.decorator';
-import { ApiBody, ApiProperty, ApiResponse, ApiConsumes } from '@nestjs/swagger';
+import { ApiBody, ApiProperty, ApiResponse, ApiConsumes, ApiBearerAuth } from '@nestjs/swagger';
 import { ApiOperation } from '@nestjs/swagger';
 import { Public } from '@common/decorators/public.decorator';
 import { ResponseEntity } from '@common/types';
@@ -33,6 +33,7 @@ export class FileController {
 	@Post('upload')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Upload file' })
 	@ApiConsumes('multipart/form-data')
 	@ApiBody({
@@ -87,6 +88,7 @@ export class FileController {
 	@Post('upload-multiple')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Upload multiple files' })
 	@ApiConsumes('multipart/form-data')
 	@ApiBody({
@@ -146,6 +148,7 @@ export class FileController {
 	@Delete('delete-multiple')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Delete multiple files by file URLs' })
 	@ApiBody({
 		description: 'Delete multiple files by URLs',

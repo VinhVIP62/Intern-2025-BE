@@ -13,7 +13,7 @@ import {
 	NotFoundException,
 	ForbiddenException,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery, ApiBody , ApiBearerAuth} from '@nestjs/swagger';
 import { FriendRequestService } from '@modules/friend-request/providers/friend-request.service';
 import { ResponseEntity } from '@common/types';
 import {
@@ -37,6 +37,7 @@ export class FriendRequestController {
 	@Version('1')
 	@Post()
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Gửi lời mời kết bạn' })
 	@ApiBody({ type: CreateFriendRequestDto })
@@ -81,6 +82,7 @@ export class FriendRequestController {
 	@Version('1')
 	@Get()
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Lấy danh sách lời mời kết bạn' })
 	@ApiQuery({
@@ -137,6 +139,7 @@ export class FriendRequestController {
 	@Version('1')
 	@Get('check-friendship')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({
 		summary: 'Kiểm tra trạng thái bạn bè giữa người dùng hiện tại và người dùng khác',
@@ -189,6 +192,7 @@ export class FriendRequestController {
 	@Version('1')
 	@Put(':requestId/accept')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Chấp nhận lời mời kết bạn' })
 	@ApiParam({
@@ -240,6 +244,7 @@ export class FriendRequestController {
 	@Version('1')
 	@Put(':requestId/decline')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Từ chối lời mời kết bạn' })
 	@ApiParam({
@@ -291,6 +296,7 @@ export class FriendRequestController {
 	@Version('1')
 	@Put(':requestId/message')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Chỉnh sửa lời nhắn của lời mời kết bạn (chỉ sender, khi pending)' })
 	@ApiParam({
@@ -342,6 +348,7 @@ export class FriendRequestController {
 	@Version('1')
 	@Put(':requestId/cancel')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Hủy lời mời kết bạn (chỉ sender, khi pending)' })
 	@ApiParam({

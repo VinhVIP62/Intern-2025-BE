@@ -26,6 +26,7 @@ import {
 	ApiParam,
 	ApiConsumes,
 	ApiOkResponse,
+	ApiBearerAuth,
 } from '@nestjs/swagger';
 import { UserService } from '@modules/user/providers/user.service';
 import { ResponseEntity } from '@common/types';
@@ -83,6 +84,7 @@ export class UserController {
 	@Post('change-password')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Đổi mật khẩu' })
 	@ApiBody({
 		schema: {
@@ -122,11 +124,16 @@ export class UserController {
 	@Get('profile')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Lấy thông tin profile của người dùng hiện tại' })
 	@ApiResponse({
 		status: 200,
 		description: 'Lấy thông tin profile thành công',
 		type: ResponseProfileDto,
+	})
+	@ApiResponse({
+		status: 401,
+		description: 'Unauthorized - Token không hợp lệ hoặc thiếu',
 	})
 	async getCurrentUserProfile(
 		@Request() req,
@@ -146,12 +153,17 @@ export class UserController {
 	@Get(':userId/profile')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Lấy thông tin profile của người dùng theo ID' })
 	@ApiParam({ name: 'userId', description: 'ID của người dùng' })
 	@ApiResponse({
 		status: 200,
 		description: 'Lấy thông tin profile thành công',
 		type: ResponseProfileDto,
+	})
+	@ApiResponse({
+		status: 401,
+		description: 'Unauthorized - Token không hợp lệ hoặc thiếu',
 	})
 	async getUserProfile(
 		@Param('userId') userId: string,
@@ -170,11 +182,16 @@ export class UserController {
 	@Put('profile')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Cập nhật thông tin profile của người dùng hiện tại' })
 	@ApiBody({ type: UpdateProfileDto })
 	@ApiResponse({
 		status: 200,
 		description: 'Cập nhật profile thành công',
+	})
+	@ApiResponse({
+		status: 401,
+		description: 'Unauthorized - Token không hợp lệ hoặc thiếu',
 	})
 	async updateCurrentUserProfile(
 		@Request() req,
@@ -194,6 +211,7 @@ export class UserController {
 	@Post('avatar-image')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@UseInterceptors(FileInterceptor('file'))
 	@ApiOperation({ summary: 'Upload avatar image for current user' })
 	@ApiConsumes('multipart/form-data')
@@ -225,6 +243,10 @@ export class UserController {
 			},
 		},
 	})
+	@ApiResponse({
+		status: 401,
+		description: 'Unauthorized - Token không hợp lệ hoặc thiếu',
+	})
 	async uploadAvatarImage(
 		@Request() req,
 		@UploadedFile() file: Express.Multer.File,
@@ -248,6 +270,7 @@ export class UserController {
 	@Post('cover-image')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@UseInterceptors(FileInterceptor('file'))
 	@ApiOperation({ summary: 'Upload cover image for current user' })
 	@ApiConsumes('multipart/form-data')
@@ -278,6 +301,10 @@ export class UserController {
 				message: 'Tải lên tệp tin thành công',
 			},
 		},
+	})
+	@ApiResponse({
+		status: 401,
+		description: 'Unauthorized - Token không hợp lệ hoặc thiếu',
 	})
 	async uploadCoverImage(
 		@Request() req,
@@ -321,6 +348,7 @@ export class UserController {
 	@Put('skills')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Cập nhật trình độ kỹ năng cho từng môn thể thao' })
 	@ApiBody({
 		description: 'Skill levels',
@@ -337,6 +365,10 @@ export class UserController {
 	@ApiResponse({
 		status: 200,
 		description: 'Cập nhật skill levels thành công',
+	})
+	@ApiResponse({
+		status: 401,
+		description: 'Unauthorized - Token không hợp lệ hoặc thiếu',
 	})
 	async updateSkillLevels(
 		@Request() req,
@@ -370,6 +402,7 @@ export class UserController {
 	@Delete('favorite-sport/:sportType')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Xóa 1 môn thể thao khỏi danh sách yêu thích và skillLevels' })
 	@ApiParam({
 		name: 'sportType',
@@ -379,6 +412,10 @@ export class UserController {
 	@ApiResponse({
 		status: 200,
 		description: 'Xóa môn thể thao yêu thích thành công',
+	})
+	@ApiResponse({
+		status: 401,
+		description: 'Unauthorized - Token không hợp lệ hoặc thiếu',
 	})
 	async removeFavoriteSport(
 		@Request() req,
@@ -420,6 +457,7 @@ export class UserController {
 	@Get('friends/search')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({
 		summary:
 			'Tìm kiếm bạn bè theo tên (key trong fullname, không phân biệt hoa thường, có phân trang)',
@@ -437,6 +475,10 @@ export class UserController {
 				message: { type: 'string' },
 			},
 		},
+	})
+	@ApiResponse({
+		status: 401,
+		description: 'Unauthorized - Token không hợp lệ hoặc thiếu',
 	})
 	async getFriendsByKey(
 		@Request() req,
@@ -460,12 +502,17 @@ export class UserController {
 	@Get(':userId/basic-info')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Lấy thông tin cơ bản của người dùng theo ID' })
 	@ApiParam({ name: 'userId', description: 'ID của người dùng' })
 	@ApiResponse({
 		status: 200,
 		description: 'Lấy thông tin cơ bản thành công',
 		type: UserBasicInfoDto,
+	})
+	@ApiResponse({
+		status: 401,
+		description: 'Unauthorized - Token không hợp lệ hoặc thiếu',
 	})
 	@ApiResponse({
 		status: 404,
@@ -488,9 +535,14 @@ export class UserController {
 	@Put('fcm-token')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Cập nhật FCM token cho user' })
 	@ApiBody({ schema: { type: 'object', properties: { fcmToken: { type: 'string' } } } })
 	@ApiResponse({ status: 200, description: 'Cập nhật FCM token thành công' })
+	@ApiResponse({
+		status: 401,
+		description: 'Unauthorized - Token không hợp lệ hoặc thiếu',
+	})
 	async updateFcmToken(
 		@Request() req,
 		@Body('fcmToken') fcmToken: string,
@@ -508,8 +560,13 @@ export class UserController {
 	@Put('device-language')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Cập nhật ngôn ngữ thiết bị cho user' })
 	@ApiResponse({ status: 200, description: 'Cập nhật ngôn ngữ thiết bị thành công' })
+	@ApiResponse({
+		status: 401,
+		description: 'Unauthorized - Token không hợp lệ hoặc thiếu',
+	})
 	async updateDeviceLanguage(
 		@Request() req,
 		@Query('lang') lang: string,

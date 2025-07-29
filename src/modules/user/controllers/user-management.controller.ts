@@ -1,5 +1,5 @@
 import { Controller, Post, Delete, Get, Request, Param, UseGuards, Version } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam , ApiBearerAuth} from '@nestjs/swagger';
 import { UserService } from '@modules/user/providers/user.service';
 import { RolesGuard } from '@common/guards';
 import { Roles } from '@common/decorators';
@@ -16,6 +16,7 @@ export class UserManagementController {
 	@Version('1')
 	@Post(':userId/block')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Chặn người dùng' })
 	@ApiParam({ name: 'userId', description: 'ID của người dùng cần chặn' })
@@ -35,6 +36,7 @@ export class UserManagementController {
 	@Version('1')
 	@Delete(':userId/block')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Bỏ chặn người dùng' })
 	@ApiParam({ name: 'userId', description: 'ID của người dùng cần bỏ chặn' })
@@ -54,6 +56,7 @@ export class UserManagementController {
 	@Version('1')
 	@Get('blocked')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Lấy danh sách người dùng đã chặn' })
 	@ApiResponse({ status: 200, description: 'Danh sách đã chặn', type: [UserBasicInfoDto] })

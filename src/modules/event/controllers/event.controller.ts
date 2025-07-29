@@ -47,6 +47,7 @@ export class EventController {
 
 	@Post()
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Tạo sự kiện mới' })
 	@ApiBody({ type: CreateEventDto })
@@ -155,6 +156,9 @@ export class EventController {
 	}
 
 	@Put(':eventId')
+	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
+	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({
 		summary: 'Cập nhật sự kiện',
 		description:
@@ -192,6 +196,9 @@ export class EventController {
 	}
 
 	@Delete(':eventId')
+	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
+	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Xóa sự kiện' })
 	@ApiParam({ name: 'eventId', description: 'ID sự kiện', example: '507f1f77bcf86cd799439011' })
 	@ApiResponse({ status: 200, description: 'Xóa sự kiện thành công' })
@@ -207,6 +214,7 @@ export class EventController {
 
 	@Post(':eventId/join')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({
 		summary: 'Tham gia sự kiện',
@@ -236,6 +244,7 @@ export class EventController {
 
 	@Delete(':eventId/leave')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({
 		summary: 'Rời sự kiện',
@@ -265,6 +274,7 @@ export class EventController {
 
 	@Put(':eventId/rsvp')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({
 		summary: 'RSVP sự kiện',
@@ -302,6 +312,7 @@ export class EventController {
 
 	@Get(':eventId/participants')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Lấy danh sách người tham gia sự kiện' })
 	@ApiParam({ name: 'eventId', description: 'ID sự kiện', example: '507f1f77bcf86cd799439011' })
@@ -340,6 +351,7 @@ export class EventController {
 
 	@Post(':eventId/invite')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Mời người dùng tham gia sự kiện' })
 	@ApiParam({ name: 'eventId', description: 'ID sự kiện', example: '507f1f77bcf86cd799439011' })
@@ -364,6 +376,7 @@ export class EventController {
 
 	@Get('invitations/current-user')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Lấy danh sách lời mời tham gia sự kiện của user hiện tại' })
 	@ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
@@ -401,6 +414,7 @@ export class EventController {
 
 	@Get(':eventId/invitations/sent')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Lấy danh sách người dùng đã được user hiện tại mời tham gia sự kiện' })
 	@ApiParam({ name: 'eventId', description: 'ID sự kiện', example: '507f1f77bcf86cd799439011' })
@@ -437,6 +451,7 @@ export class EventController {
 
 	@Post('invitations/:invitationId/respond')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Phản hồi lời mời sự kiện (accept/reject)' })
 	@ApiParam({ name: 'invitationId', description: 'ID lời mời', example: '...' })
@@ -473,6 +488,7 @@ export class EventController {
 
 	@Delete('invitations/:invitationId')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Hủy lời mời tham gia sự kiện (cho phép sender hoặc recipient xóa)' })
 	@ApiParam({ name: 'invitationId', description: 'ID lời mời', example: '...' })
@@ -493,6 +509,7 @@ export class EventController {
 
 	@Get('user/:userId')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({
 		summary: 'Lấy danh sách sự kiện mà user đã tham gia theo userId',
@@ -538,6 +555,7 @@ export class EventController {
 
 	@Get('list/recommendations')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({
 		summary: 'Gợi ý sự kiện cho user hiện tại',
@@ -602,6 +620,7 @@ export class EventController {
 
 	@Get(':eventId/user-status')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Lấy trạng thái RSVP và invitation của user hiện tại với event' })
 	@ApiParam({ name: 'eventId', description: 'ID sự kiện', example: '507f1f77bcf86cd799439011' })

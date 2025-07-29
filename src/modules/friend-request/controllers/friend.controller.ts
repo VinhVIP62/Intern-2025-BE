@@ -9,7 +9,7 @@ import {
 	Version,
 	BadRequestException,
 } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags , ApiBearerAuth} from '@nestjs/swagger';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { RolesGuard } from '@common/guards';
 import { Roles } from '@common/decorators';
@@ -28,6 +28,7 @@ export class FriendsController {
 	@Version('1')
 	@Get()
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Lấy danh sách bạn bè của người dùng hiện tại' })
 	@ApiQuery({
@@ -84,6 +85,7 @@ export class FriendsController {
 	@Version('1')
 	@Delete(':friendId')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Xóa bạn bè' })
 	@ApiParam({
@@ -130,6 +132,7 @@ export class FriendsController {
 	@Version('1')
 	@Get(':userId/mutual')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({
 		summary:

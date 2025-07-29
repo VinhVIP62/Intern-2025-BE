@@ -9,7 +9,14 @@ import {
 	Version,
 	Query,
 } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiResponse, ApiParam, ApiQuery } from '@nestjs/swagger';
+import {
+	ApiTags,
+	ApiOperation,
+	ApiResponse,
+	ApiParam,
+	ApiQuery,
+	ApiBearerAuth,
+} from '@nestjs/swagger';
 import { UserService } from '@modules/user/providers/user.service';
 import { RolesGuard } from '@common/guards';
 import { Roles } from '@common/decorators';
@@ -28,6 +35,7 @@ export class FollowController {
 	@Version('1')
 	@Post(':userId/follow')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Theo dõi người dùng' })
 	@ApiParam({ name: 'userId', description: 'ID của người dùng cần theo dõi' })
@@ -47,6 +55,7 @@ export class FollowController {
 	@Version('1')
 	@Delete(':userId/follow')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Bỏ theo dõi người dùng' })
 	@ApiParam({ name: 'userId', description: 'ID của người dùng cần bỏ theo dõi' })
@@ -65,11 +74,14 @@ export class FollowController {
 
 	@Version('1')
 	@Get('followers')
+	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
+	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Lấy danh sách người theo dõi' })
 	@ApiQuery({
 		name: 'userId',
 		description: 'ID của người dùng (default = current user)',
-		required: true,
+		required: false,
 	})
 	@ApiQuery({
 		name: 'key',
@@ -114,6 +126,9 @@ export class FollowController {
 
 	@Version('1')
 	@Get('following')
+	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
+	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Lấy danh sách đang theo dõi' })
 	@ApiQuery({
 		name: 'userId',
@@ -164,6 +179,7 @@ export class FollowController {
 	@Version('1')
 	@Delete('followers/:followerId')
 	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
 	@ApiOperation({ summary: 'Xóa follower khỏi tài khoản của bạn' })
 	@ApiParam({ name: 'followerId', description: 'ID của follower cần xóa' })

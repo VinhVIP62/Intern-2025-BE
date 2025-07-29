@@ -23,6 +23,7 @@ import {
 	ApiQuery,
 	ApiBody,
 	ApiConsumes,
+	ApiBearerAuth,
 } from '@nestjs/swagger';
 import { GroupService } from '@modules/group/providers/group.service';
 import { ResponseEntity } from '@common/types';
@@ -58,6 +59,7 @@ export class GroupController {
 	@Post()
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Tạo nhóm mới' })
 	@ApiBody({ type: CreateGroupDto })
 	@ApiResponse({
@@ -210,6 +212,7 @@ export class GroupController {
 	@Get('invited')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Lấy danh sách group mà user hiện tại hoặc userId được mời' })
 	@ApiQuery({ name: 'userId', required: false, type: String, example: '507f1f77bcf86cd799439011' })
 	@ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
@@ -289,6 +292,7 @@ export class GroupController {
 	@Put(':groupId')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Cập nhật thông tin nhóm' })
 	@ApiParam({
 		name: 'groupId',
@@ -336,6 +340,7 @@ export class GroupController {
 	@Delete(':groupId')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Xóa nhóm' })
 	@ApiParam({
 		name: 'groupId',
@@ -377,6 +382,7 @@ export class GroupController {
 	@Post(':groupId/join')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Tham gia nhóm' })
 	@ApiParam({
 		name: 'groupId',
@@ -416,6 +422,7 @@ export class GroupController {
 	@Delete(':groupId/leave')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Rời khỏi nhóm' })
 	@ApiParam({
 		name: 'groupId',
@@ -454,6 +461,7 @@ export class GroupController {
 	@Put(':groupId/members/:userId/role')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Thay đổi vai trò thành viên (admin/member)' })
 	@ApiParam({
 		name: 'groupId',
@@ -605,6 +613,7 @@ export class GroupController {
 	@Post(':groupId/requests/:userId/approve')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Phê duyệt yêu cầu tham gia nhóm' })
 	@ApiParam({
 		name: 'groupId',
@@ -677,6 +686,7 @@ export class GroupController {
 	@Post(':groupId/invite')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Mời người dùng tham gia nhóm' })
 	@ApiParam({
 		name: 'groupId',
@@ -736,6 +746,7 @@ export class GroupController {
 	@Post(':groupId/invitation/accept')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Chấp nhận lời mời tham gia nhóm' })
 	@ApiParam({
 		name: 'groupId',
@@ -775,6 +786,7 @@ export class GroupController {
 	@Post(':groupId/invitation/reject')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Từ chối lời mời tham gia nhóm' })
 	@ApiParam({
 		name: 'groupId',
@@ -867,6 +879,7 @@ export class GroupController {
 	@Put(':groupId/posts/:postId/approve')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Phê duyệt hoặc từ chối bài viết trong nhóm' })
 	@ApiParam({
 		name: 'groupId',
@@ -939,6 +952,7 @@ export class GroupController {
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
 	@UseInterceptors(FilesInterceptor('files'))
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Tạo bài viết mới trong nhóm' })
 	@ApiConsumes('multipart/form-data')
 	@ApiBody({
@@ -985,6 +999,7 @@ export class GroupController {
 	@Delete(':groupId/members/:userId')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Xóa thành viên khỏi nhóm (chỉ admin)' })
 	@ApiParam({
 		name: 'groupId',
@@ -1033,6 +1048,7 @@ export class GroupController {
 	@Delete(':groupId/invite/:userId')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Hủy lời mời tham gia nhóm (chỉ admin)' })
 	@ApiParam({
 		name: 'groupId',
@@ -1081,6 +1097,7 @@ export class GroupController {
 	@Get('posts/user')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Lấy danh sách bài đăng của user trong group, có thể lọc theo status' })
 	@ApiQuery({
 		name: 'groupId',
@@ -1155,6 +1172,7 @@ export class GroupController {
 	@Get(':groupId/posts/pending')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Lấy danh sách bài viết đang chờ duyệt (pending) trong nhóm' })
 	@ApiParam({
 		name: 'groupId',
@@ -1217,6 +1235,7 @@ export class GroupController {
 	@Get(':groupId/waiting-list')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Lấy danh sách user chờ duyệt vào group (chỉ admin)' })
 	@ApiParam({ name: 'groupId', description: 'ID của nhóm', example: '507f1f77bcf86cd799439011' })
 	@ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
@@ -1248,6 +1267,7 @@ export class GroupController {
 	@Get('users/groups-waiting')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Lấy danh sách group user đã gửi yêu cầu tham gia' })
 	@ApiParam({
 		name: 'userId',
@@ -1280,6 +1300,7 @@ export class GroupController {
 	@Get(':groupId/invite-list')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Lấy danh sách user được mời vào group (chỉ admin được xem)' })
 	@ApiParam({ name: 'groupId', description: 'ID của nhóm', example: '507f1f77bcf86cd799439011' })
 	@ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
@@ -1311,6 +1332,7 @@ export class GroupController {
 	@Delete(':groupId/waiting-list/cancel')
 	@UseGuards(RolesGuard)
 	@Roles(Role.USER, Role.ADMIN)
+	@ApiBearerAuth()
 	@ApiOperation({ summary: 'User hủy yêu cầu tham gia nhóm (rút khỏi waitingList)' })
 	@ApiParam({ name: 'groupId', description: 'ID của nhóm', example: '507f1f77bcf86cd799439011' })
 	@ApiResponse({ status: 200, description: 'Hủy yêu cầu tham gia nhóm thành công' })
