@@ -139,7 +139,7 @@ export class EventRepositoryImpl implements IEventRepository {
 		// Delete any pending invitations for this user and event
 		await this.invitationModel.deleteMany({
 			eventId,
-			$or: [{ senderId: userId }, { recipientId: userId }],
+			$or: [{ recipientId: userId }],
 		});
 
 		// Enhance event with group admin data if organizerType is GROUP

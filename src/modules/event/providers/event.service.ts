@@ -133,7 +133,39 @@ export class EventService {
 
 	// Leave event
 	async leaveEvent(eventId: string, userId: string): Promise<any> {
-		return this.eventRepository.leaveEvent(eventId, userId);
+		const result = await this.eventRepository.leaveEvent(eventId, userId);
+
+		// Delete related event invitation notifications for this user and event
+		// This includes notifications where the user is the recipient
+		await this.notificationService.deleteByCondition({
+			recipient: userId,
+			type: NotificationType.EVENT_INVITATION,
+			referenceId: eventId,
+			referenceModel: ReferenceModel.EVENT,
+		});
+
+		// Also delete notifications for invitations that this user sent to others for this event
+		await this.notificationService.deleteByCondition({
+			sender: userId,
+			type: NotificationType.EVENT_INVITATION,
+			referenceId: eventId,
+			referenceModel: ReferenceModel.EVENT,
+		});
+
+		// Delete notifications for accepted/rejected invitations related to this event
+		await this.notificationService.deleteByCondition({
+			$or: [{ recipient: userId }, { sender: userId }],
+			type: {
+				$in: [
+					NotificationType.EVENT_INVITATION_ACCEPTED,
+					NotificationType.EVENT_INVITATION_REJECTED,
+				],
+			},
+			referenceId: eventId,
+			referenceModel: ReferenceModel.EVENT,
+		});
+
+		return result;
 	}
 
 	// RSVP event
