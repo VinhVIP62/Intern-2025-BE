@@ -205,7 +205,13 @@ export class EventRepositoryImpl implements IEventRepository {
 				.find(query)
 				.skip(skip)
 				.limit(limit)
-				.populate('eventId')
+				.populate({
+					path: 'eventId',
+					populate: {
+						path: 'organizer',
+						select: 'firstName lastName avatar fullName name description',
+					},
+				})
 				.populate({
 					path: 'senderId',
 					select: 'firstName lastName avatar fullName',
@@ -213,7 +219,18 @@ export class EventRepositoryImpl implements IEventRepository {
 				.lean({ virtuals: true }),
 			this.invitationModel.countDocuments(query),
 		]);
-		return { invitations, total };
+
+		// Enhance events with group admin data if organizerType is GROUP
+		const enhancedInvitations = await Promise.all(
+			invitations.map(async invitation => {
+				if (invitation.eventId) {
+					invitation.eventId = await this.enhanceEventWithGroupAdmins(invitation.eventId);
+				}
+				return invitation;
+			}),
+		);
+
+		return { invitations: enhancedInvitations, total };
 	}
 
 	async respondToInvitation(
