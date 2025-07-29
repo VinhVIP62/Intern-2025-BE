@@ -49,9 +49,12 @@ export class AchievementController {
 		const passed = userAchievements.filter(a => a.progress === 100).length;
 		const inProgress = userAchievements.filter(a => a.progress < 100).length;
 
-		const achievementsWithName = userAchievements.map(achievement => ({
-			...achievement,
-			name: i18n.t(`achievement.${achievement.name}`),
+		const achievementsWithName = userAchievements.map(userAchievement => ({
+			...userAchievement,
+			achievement: {
+				...userAchievement.achievement,
+				name: i18n.t(`achievement.${userAchievement.achievement.name}`),
+			},
 		}));
 		return {
 			success: true,
@@ -72,9 +75,12 @@ export class AchievementController {
 		const userAchievements = await this.userAchievementRepo.findUserAchievements(userId);
 		const completedAchievements = userAchievements.filter(a => a.progress === 100);
 
-		const achievementsWithName = completedAchievements.map(achievement => ({
-			...achievement,
-			name: i18n.t(`achievement.${achievement.name}`),
+		const achievementsWithName = completedAchievements.map(userAchievement => ({
+			...userAchievement,
+			achievement: {
+				...userAchievement.achievement,
+				name: i18n.t(`achievement.${userAchievement.achievement.name}`),
+			},
 		}));
 
 		return {
