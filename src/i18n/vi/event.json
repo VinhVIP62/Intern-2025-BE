@@ -27,5 +27,6 @@
 	"INVITATION_NOT_FOUND_OR_NO_PERMISSION": "Không tìm thấy lời mời hoặc bạn không có quyền hủy",
 	"INVITATION_STATUS_INVALID": "Trạng thái lời mời không hợp lệ",
 	"RECOMMENDATIONS_RETRIEVED_SUCCESS": "Lấy sự kiện gợi ý thành công",
-	"USER_EVENT_STATUS_RETRIEVED_SUCCESS": "Lấy trạng thái của bạn với sự kiện thành công"
+	"USER_EVENT_STATUS_RETRIEVED_SUCCESS": "Lấy trạng thái của bạn với sự kiện thành công",
+	"NO_VALID_USERS_TO_INVITE": "Không có người dùng hợp lệ để mời"
 }

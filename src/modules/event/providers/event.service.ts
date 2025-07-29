@@ -185,11 +185,32 @@ export class EventService {
 				HttpStatus.NOT_FOUND,
 			);
 		}
-		await this.eventRepository.inviteUsersToEvent(eventId, senderId, userIds);
+
+		// Kiểm tra nếu đã tồn tại lời mời từ senderId gửi tới recipientId tham gia eventId này
+		const existingInvitations = await this.eventRepository.checkExistingInvitations(
+			eventId,
+			senderId,
+			userIds,
+		);
+
+		// Lọc ra những userId chưa có lời mời
+		const existingRecipientIds = existingInvitations.map(inv => inv.recipientId);
+		const newUserIds = userIds.filter(userId => !existingRecipientIds.includes(userId));
+
+		// Nếu không có userId nào mới để mời, trả về luôn
+		if (newUserIds.length === 0) {
+			throw new HttpException(
+				{ success: false, message: i18n?.t('event.NO_VALID_USERS_TO_INVITE') },
+				HttpStatus.BAD_REQUEST,
+			);
+		}
+
+		// Tạo lời mời cho những user chưa có
+		await this.eventRepository.inviteUsersToEvent(eventId, senderId, newUserIds);
 
 		// Send notifications to invited users (except sender)
 		await Promise.all(
-			userIds
+			newUserIds
 				.filter(invitedUserId => invitedUserId !== senderId)
 				.map(invitedUserId =>
 					this.notificationService.createNotification(

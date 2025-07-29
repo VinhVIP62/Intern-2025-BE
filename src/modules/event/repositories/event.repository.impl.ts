@@ -307,6 +307,28 @@ export class EventRepositoryImpl implements IEventRepository {
 		return { invitations, total };
 	}
 
+	// Check if invitations already exist for given eventId, senderId, and recipientIds
+	async checkExistingInvitations(
+		eventId: string,
+		senderId: string,
+		recipientIds: string[],
+	): Promise<{ eventId: string; senderId: string; recipientId: string }[]> {
+		const existingInvitations = await this.invitationModel
+			.find({
+				eventId,
+				senderId,
+				recipientId: { $in: recipientIds },
+			})
+			.select('eventId senderId recipientId')
+			.lean();
+
+		return existingInvitations.map(invitation => ({
+			eventId: invitation.eventId.toString(),
+			senderId: invitation.senderId.toString(),
+			recipientId: invitation.recipientId.toString(),
+		}));
+	}
+
 	// Tìm sự kiện gợi ý theo query, limit, skip (phân trang)
 	async findRecommendedEvents(query: any, limit: number, skip: number): Promise<any[]> {
 		const events = await this.eventModel

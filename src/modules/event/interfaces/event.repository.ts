@@ -50,6 +50,13 @@ export interface IEventRepository {
 		limit: number,
 	): Promise<{ invitations: any[]; total: number }>;
 
+	// Check if invitations already exist for given eventId, senderId, and recipientIds
+	checkExistingInvitations(
+		eventId: string,
+		senderId: string,
+		recipientIds: string[],
+	): Promise<{ eventId: string; senderId: string; recipientId: string }[]>;
+
 	// Tìm sự kiện gợi ý theo query, limit, skip (phân trang)
 	findRecommendedEvents(query: any, limit: number, skip: number): Promise<any[]>;
 
