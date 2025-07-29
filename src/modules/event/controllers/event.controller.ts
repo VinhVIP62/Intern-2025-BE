@@ -666,38 +666,4 @@ export class EventController {
 			message: i18n.t('event.RECOMMENDATIONS_RETRIEVED_SUCCESS'),
 		};
 	}
-
-	@Get(':eventId/user-status')
-	@UseGuards(RolesGuard)
-	@ApiBearerAuth()
-	@Roles(Role.USER, Role.ADMIN)
-	@ApiOperation({ summary: 'Lấy trạng thái RSVP và invitation của user hiện tại với event' })
-	@ApiParam({ name: 'eventId', description: 'ID sự kiện', example: '507f1f77bcf86cd799439011' })
-	@ApiResponse({
-		status: 200,
-		description: 'Lấy trạng thái thành công',
-		schema: {
-			example: {
-				success: true,
-				data: {
-					rsvpStatus: 'going',
-					invitationStatus: 'pending',
-					invitationId: '6881b23c4993645c015035d4',
-				},
-				message: '...',
-			},
-		},
-	})
-	async getUserEventStatus(
-		@Request() req,
-		@Param('eventId') eventId: string,
-		@I18n() i18n: I18nContext,
-	) {
-		const status = await this.eventService.getUserEventStatus(eventId, req.user.id);
-		return {
-			success: true,
-			data: status,
-			message: i18n.t('event.USER_EVENT_STATUS_RETRIEVED_SUCCESS'),
-		};
-	}
 }

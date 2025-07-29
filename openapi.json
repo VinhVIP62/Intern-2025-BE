@@ -2112,52 +2112,6 @@
         ]
       }
     },
-    "/api/v1/events/{eventId}/user-status": {
-      "get": {
-        "operationId": "EventController_getUserEventStatus_v1",
-        "parameters": [
-          {
-            "name": "eventId",
-            "required": true,
-            "in": "path",
-            "description": "ID sự kiện",
-            "schema": {
-              "example": "507f1f77bcf86cd799439011",
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Lấy trạng thái thành công",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "example": {
-                    "success": true,
-                    "data": {
-                      "rsvpStatus": "going",
-                      "invitationStatus": "pending",
-                      "invitationId": "6881b23c4993645c015035d4"
-                    },
-                    "message": "..."
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Lấy trạng thái RSVP và invitation của user hiện tại với event",
-        "tags": [
-          "Event"
-        ]
-      }
-    },
     "/api/v1/groups": {
       "post": {
         "operationId": "GroupController_createGroup_v1",
