@@ -273,6 +273,30 @@ export class EventRepositoryImpl implements IEventRepository {
 		return { events: enhancedEvents, total };
 	}
 
+	async findSimpleEventsByUserId(
+		userId: string,
+		page: number,
+		limit: number,
+		key?: string,
+	): Promise<{ events: any[]; total: number }> {
+		const skip = (page - 1) * limit;
+		const query: any = { participants: userId };
+		if (key && key.trim() !== '') {
+			query.title = { $regex: key, $options: 'i' };
+		}
+		const [events, total] = await Promise.all([
+			this.eventModel
+				.find(query)
+				.select('_id title description image sport status')
+				.skip(skip)
+				.limit(limit)
+				.lean({ virtuals: true }),
+			this.eventModel.countDocuments(query),
+		]);
+
+		return { events, total };
+	}
+
 	// Cancel invitation: chỉ cho phép sender hoặc recipient xóa
 	async cancelInvitation(invitationId: string, userId: string): Promise<any> {
 		return this.invitationModel

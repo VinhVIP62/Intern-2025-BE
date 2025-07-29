@@ -1971,6 +1971,72 @@
         ]
       }
     },
+    "/api/v1/events/user/{userId}/simple": {
+      "get": {
+        "description": "Lấy danh sách sự kiện với thông tin cơ bản mà user đã tham gia. Trả về ít field hơn so với API đầy đủ.",
+        "operationId": "EventController_getSimpleUserEvents_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "description": "ID user",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
+            "name": "key",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": "football",
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 10,
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "example": 1,
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy danh sách sự kiện cơ bản của user thành công với thông tin RSVP status.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedSimpleEventsResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Lấy danh sách sự kiện cơ bản mà user đã tham gia theo userId",
+        "tags": [
+          "Event"
+        ]
+      }
+    },
     "/api/v1/events/list/recommendations": {
       "get": {
         "description": "Lấy danh sách sự kiện được gợi ý cho user. Nếu organizerType là GROUP, sẽ bao gồm danh sách admin của nhóm.",
@@ -7537,6 +7603,124 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/UserEventResponseDto"
+            }
+          }
+        },
+        "required": [
+          "page",
+          "limit",
+          "totalPages",
+          "hasNextPage",
+          "hasPrevPage",
+          "events"
+        ]
+      },
+      "SimpleEventResponseDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "ID sự kiện"
+          },
+          "title": {
+            "type": "string",
+            "description": "Tiêu đề sự kiện"
+          },
+          "description": {
+            "type": "string",
+            "description": "Mô tả"
+          },
+          "image": {
+            "type": "string",
+            "description": "Ảnh sự kiện"
+          },
+          "sport": {
+            "type": "string",
+            "enum": [
+              "football",
+              "basketball",
+              "tennis",
+              "badminton",
+              "volleyball",
+              "table_tennis",
+              "swimming",
+              "running",
+              "cycling",
+              "yoga",
+              "gym",
+              "martial_arts",
+              "boxing",
+              "golf",
+              "rock_climbing"
+            ],
+            "description": "Môn thể thao"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "upcoming",
+              "ongoing",
+              "completed",
+              "cancelled"
+            ],
+            "description": "Trạng thái sự kiện"
+          },
+          "userRSVPStatus": {
+            "type": "string",
+            "enum": [
+              "going",
+              "interested",
+              "not_going"
+            ],
+            "description": "Trạng thái RSVP của user cho sự kiện này",
+            "example": "going"
+          }
+        },
+        "required": [
+          "_id",
+          "title",
+          "sport",
+          "status"
+        ]
+      },
+      "PaginatedSimpleEventsResponseDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "description": "Tổng số items",
+            "example": 100
+          },
+          "page": {
+            "type": "number",
+            "description": "Trang hiện tại",
+            "example": 1
+          },
+          "limit": {
+            "type": "number",
+            "description": "Số lượng items trên mỗi trang",
+            "example": 10
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Tổng số trang",
+            "example": 10
+          },
+          "hasNextPage": {
+            "type": "boolean",
+            "description": "Có trang tiếp theo không",
+            "example": true
+          },
+          "hasPrevPage": {
+            "type": "boolean",
+            "description": "Có trang trước không",
+            "example": false
+          },
+          "events": {
+            "description": "Danh sách sự kiện với thông tin cơ bản",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SimpleEventResponseDto"
             }
           }
         },

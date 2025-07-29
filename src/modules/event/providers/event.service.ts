@@ -336,6 +336,31 @@ export class EventService {
 		};
 	}
 
+	async findSimpleEventsByUserId(
+		userId: string,
+		page: number,
+		limit: number,
+		key?: string,
+	): Promise<{ events: any[]; total: number }> {
+		const result = await this.eventRepository.findSimpleEventsByUserId(userId, page, limit, key);
+
+		// Add RSVP status for each event
+		const eventsWithRSVP = await Promise.all(
+			result.events.map(async event => {
+				const userEventStatus = await this.getUserEventStatus(event._id.toString(), userId);
+				return {
+					...event,
+					userRSVPStatus: userEventStatus.rsvpStatus,
+				};
+			}),
+		);
+
+		return {
+			events: eventsWithRSVP,
+			total: result.total,
+		};
+	}
+
 	// Cancel invitation
 	private async getInvitationById(invitationId: string): Promise<any> {
 		// eventRepository is IEventRepository, but we need the concrete implementation for invitationModel

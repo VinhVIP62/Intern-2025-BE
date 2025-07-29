@@ -24,6 +24,8 @@ import {
 	EventInvitationResponseDto,
 	PaginatedEventInvitationsResponseDto,
 	PaginatedUserEventsResponseDto,
+	PaginatedSimpleEventsResponseDto,
+	SimpleEventResponseDto,
 } from '@modules/event/dto';
 import { SportType } from '@modules/user/enums/user.enum';
 import {
@@ -535,6 +537,51 @@ export class EventController {
 		@Query('key') key?: string,
 	): Promise<{ success: boolean; data: PaginatedUserEventsResponseDto; message: string }> {
 		const { events, total } = await this.eventService.findEventsByUserId(
+			userId,
+			query.page ?? 1,
+			query.limit ?? 10,
+			key,
+		);
+		return {
+			success: true,
+			data: {
+				events,
+				total,
+				page: query.page ?? 1,
+				limit: query.limit ?? 10,
+				totalPages: Math.ceil(total / (query.limit ?? 10)),
+				hasNextPage: (query.page ?? 1) * (query.limit ?? 10) < total,
+				hasPrevPage: (query.page ?? 1) > 1,
+			},
+			message: i18n.t('event.USER_EVENTS_RETRIEVED_SUCCESS'),
+		};
+	}
+
+	@Get('user/:userId/simple')
+	@UseGuards(RolesGuard)
+	@ApiBearerAuth()
+	@Roles(Role.USER, Role.ADMIN)
+	@ApiOperation({
+		summary: 'Lấy danh sách sự kiện cơ bản mà user đã tham gia theo userId',
+		description:
+			'Lấy danh sách sự kiện với thông tin cơ bản mà user đã tham gia. Trả về ít field hơn so với API đầy đủ.',
+	})
+	@ApiParam({ name: 'userId', description: 'ID user', example: '507f1f77bcf86cd799439011' })
+	@ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+	@ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+	@ApiQuery({ name: 'key', required: false, type: String, example: 'football' })
+	@ApiResponse({
+		status: 200,
+		description: 'Lấy danh sách sự kiện cơ bản của user thành công với thông tin RSVP status.',
+		type: PaginatedSimpleEventsResponseDto,
+	})
+	async getSimpleUserEvents(
+		@Param('userId') userId: string,
+		@I18n() i18n: I18nContext,
+		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
+		@Query('key') key?: string,
+	): Promise<{ success: boolean; data: PaginatedSimpleEventsResponseDto; message: string }> {
+		const { events, total } = await this.eventService.findSimpleEventsByUserId(
 			userId,
 			query.page ?? 1,
 			query.limit ?? 10,

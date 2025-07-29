@@ -217,6 +217,42 @@ export class PaginatedNearbyEventsResponseDto extends BasePaginationMetaDto {
 	events: EventResponseDto[];
 }
 
+export class SimpleEventResponseDto {
+	@ApiProperty({ description: 'ID sự kiện' })
+	_id: string;
+
+	@ApiProperty({ description: 'Tiêu đề sự kiện' })
+	title: string;
+
+	@ApiProperty({ description: 'Mô tả', required: false })
+	description?: string;
+
+	@ApiProperty({ description: 'Ảnh sự kiện', required: false })
+	image?: string;
+
+	@ApiProperty({ enum: SportType, description: 'Môn thể thao' })
+	sport: SportType;
+
+	@ApiProperty({ enum: EventStatus, description: 'Trạng thái sự kiện' })
+	status: EventStatus;
+
+	@ApiProperty({
+		enum: RSVPStatus,
+		description: 'Trạng thái RSVP của user cho sự kiện này',
+		required: false,
+		example: 'going',
+	})
+	userRSVPStatus?: RSVPStatus | null;
+}
+
+export class PaginatedSimpleEventsResponseDto extends BasePaginationMetaDto {
+	@ApiProperty({
+		type: [SimpleEventResponseDto],
+		description: 'Danh sách sự kiện với thông tin cơ bản',
+	})
+	events: SimpleEventResponseDto[];
+}
+
 export class UserEventResponseDto extends EventResponseDto {
 	@ApiProperty({
 		enum: RSVPStatus,

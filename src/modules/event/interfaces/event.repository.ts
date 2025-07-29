@@ -42,6 +42,14 @@ export interface IEventRepository {
 		key?: string,
 	): Promise<{ events: any[]; total: number }>;
 
+	// Simple User Events - trả về thông tin cơ bản
+	findSimpleEventsByUserId(
+		userId: string,
+		page: number,
+		limit: number,
+		key?: string,
+	): Promise<{ events: any[]; total: number }>;
+
 	// Get invitations sent by current user for a specific event
 	getSentInvitations(
 		eventId: string,
