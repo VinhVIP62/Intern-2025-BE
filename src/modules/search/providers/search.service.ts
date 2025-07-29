@@ -270,8 +270,17 @@ export class SearchService {
 			return enhanced;
 		});
 
+		// Filter out objects that only contain userId and createdAt (no meaningful data)
+		const filteredData = enhancedData.filter(item => {
+			// Remove objects that have user, group, or event as null
+			if (item.user === null || item.group === null || item.event === null) {
+				return false;
+			}
+			return true;
+		});
+
 		return {
-			data: enhancedData,
+			data: filteredData,
 			total: result.total,
 		};
 	}
