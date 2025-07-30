@@ -10,6 +10,9 @@ import { ISessionService } from './session.service';
 export class MongooseSessionService implements ISessionService<ClientSession> {
 	constructor(@InjectConnection() private readonly connection: Connection) {}
 
+	private sessionCount = 0;
+	private failNextOperations = false;
+
 	get(): ClientSession | null {
 		const req = CustomRequestCtx.get().req;
 		return req.db.mongoose.session;
@@ -21,6 +24,7 @@ export class MongooseSessionService implements ISessionService<ClientSession> {
 	}
 
 	async start(): Promise<ClientSession> {
+		this.sessionCount++;
 		let session = this.get();
 		if (session) return session;
 		session = await this.connection.startSession();
@@ -29,21 +33,24 @@ export class MongooseSessionService implements ISessionService<ClientSession> {
 		return session;
 	}
 
-	async commit(): Promise<void> {
-		const session = this.get();
-		if (session) await session.commitTransaction();
-	}
-
 	async abort(): Promise<void> {
 		const session = this.get();
-		if (session) await session.abortTransaction();
+		if (session) {
+			await session.abortTransaction();
+			session.startTransaction();
+		}
+		this.failNextOperations = true;
 	}
 
 	async end(): Promise<void> {
 		const session = this.get();
-		if (session) {
+		if (session && this.sessionCount == 1) {
+			if (this.failNextOperations) await session.abortTransaction();
+			else await session.commitTransaction();
 			await session.endSession();
+			this.failNextOperations = false;
 			this.set(null);
 		}
+		this.sessionCount = Math.max(0, this.sessionCount - 1);
 	}
 }

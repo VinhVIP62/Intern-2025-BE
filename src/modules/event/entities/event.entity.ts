@@ -8,8 +8,7 @@ export class Event extends ISoftDeletableEntity {
 	description!: string;
 	startAt!: Date;
 	endAt!: Date;
-	// [PLA] implement a geocoding service for location
-	// location: string;
+	location!: string;
 	isPrivate!: boolean;
 	allowInvite!: boolean;
 	isCanceled!: boolean;

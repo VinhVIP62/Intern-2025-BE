@@ -110,7 +110,6 @@ export class CommentService {
 			...filter,
 		});
 		const deletedReactions = await this.reactionService.deleteMany(deletedCommentIds);
-		await this.sessionService.commit();
 		await this.sessionService.end();
 		return { deletedComments: deletedCommentIds.length, deletedReactions };
 	}

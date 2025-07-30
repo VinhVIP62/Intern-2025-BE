@@ -47,6 +47,9 @@ export class EventSchemaDef
 	@Prop({ type: Date, required: true })
 	endAt!: Date;
 
+	@Prop({ type: String, required: true })
+	location!: string;
+
 	@Prop({ type: Boolean, default: true })
 	isPrivate!: boolean;
 

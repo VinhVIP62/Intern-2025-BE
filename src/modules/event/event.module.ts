@@ -1,9 +1,20 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { NestjsFormDataModule } from 'nestjs-form-data';
+
+import { PostModule } from '@modules/post';
+
+import { DataServiceModule, FileHostModule } from '@shared/modules';
 
 import { EventController } from './controllers/event.controller';
 import { Event, EventParticipant, EventParticipantSchema, EventSchema } from './entities';
 import { EventService } from './providers/event.service';
+import {
+	EventParticipantRepositoryImpl,
+	EventRepositoryImpl,
+	IEventParticipantRepositoryToken,
+	IEventRepositoryToken,
+} from './repositories';
 
 @Module({
 	imports: [
@@ -17,8 +28,22 @@ import { EventService } from './providers/event.service';
 				schema: EventParticipantSchema,
 			},
 		]),
+		DataServiceModule,
+		PostModule,
+		FileHostModule,
+		NestjsFormDataModule,
 	],
 	controllers: [EventController],
-	providers: [EventService],
+	providers: [
+		EventService,
+		{
+			provide: IEventParticipantRepositoryToken,
+			useClass: EventParticipantRepositoryImpl,
+		},
+		{
+			provide: IEventRepositoryToken,
+			useClass: EventRepositoryImpl,
+		},
+	],
 })
 export class EventModule {}

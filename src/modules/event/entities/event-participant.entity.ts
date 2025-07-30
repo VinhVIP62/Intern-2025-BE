@@ -7,6 +7,7 @@ export enum EventParticipantRole {
 }
 
 export class EventParticipant extends IBaseEntity {
+	eventId!: string;
 	userId!: string;
 	role!: EventParticipantRole;
 }

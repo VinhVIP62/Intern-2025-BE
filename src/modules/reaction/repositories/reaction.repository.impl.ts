@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model, PipelineStage } from 'mongoose';
 
-import { MongooseRepositoryImpl } from '@common/crud/repos';
+import { MongooseRepositoryImpl, SortOptions } from '@common/crud/repos';
 import { SORT } from '@common/enums';
 import { CursorPaginationOption } from '@common/types/data';
 
@@ -72,7 +72,7 @@ export class ReactionRepositoryImpl
 			reactionValue,
 			...(options?.cursor && { userId: { $gt: new mongoose.Types.ObjectId(options?.cursor) } }),
 		});
-		const sortOptions = { userId: SORT.ASC };
+		const sortOptions: SortOptions<Reaction> = { userId: SORT.ASC };
 		const limitOptions = options?.limit || 10;
 		const populateOptions = this.transformPopulate({ customRepoOptions: { populate: ['userId'] } });
 

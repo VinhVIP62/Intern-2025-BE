@@ -31,13 +31,6 @@ export class ResponseUserDto {
 	sports!: Sport[];
 }
 
-// @Exclude()
-// export class LimitedUserResponseDto extends OmitType(ResponseUserDto, [
-// 	'id',
-// 	'location',
-// 	'roles',
-// ]) {}
-
 export class LimitedUserResponseDto extends OmitType(ResponseUserDto, ['location', 'roles']) {}
 
 export const MoreLimitedUserResponseDto = (

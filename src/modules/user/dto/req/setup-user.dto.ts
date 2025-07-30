@@ -49,13 +49,13 @@ export class SetupUserDto {
 	@HasMimeType(['image/*'])
 	@IsDefined()
 	@IsFile()
-	declare avatar: MemoryStoredFile;
+	avatar!: MemoryStoredFile;
 
 	@Expose()
 	@Type(() => LocationDto)
 	@IsNotEmpty()
 	@ValidateNested()
-	declare location: LocationDto;
+	location!: LocationDto;
 
 	@Expose()
 	@Transform(({ value }) => {
@@ -68,5 +68,5 @@ export class SetupUserDto {
 	@ArrayUnique((dto: SportDto) => dto.name, {
 		message: "sport's names must be unique",
 	})
-	declare sports: SportDto[];
+	sports!: SportDto[];
 }
