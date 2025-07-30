@@ -21,4 +21,5 @@ export class SocialPost extends ISoftDeletableEntity {
 	visibleToCommunityId!: string | null;
 	visibleToUsersIds!: string[];
 	invisibleToUsersIds!: string[];
+	sharedCount?: number;
 }

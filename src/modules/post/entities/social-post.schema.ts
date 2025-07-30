@@ -118,6 +118,17 @@ export class SocialPostSchemaDef
 		},
 	})
 	invisibleToUsersIdsPopulated!: any[];
+
+	@Virtual({
+		options: {
+			ref: SocialPost.name,
+			localField: '_id',
+			foreignField: 'parentPostId',
+			count: true,
+			getters: true,
+		},
+	})
+	sharedCount!: number;
 }
 
 export const SocialPostSchema = SchemaFactory.createForClass(SocialPostSchemaDef);

@@ -61,6 +61,9 @@ export class ResponsePostDto {
 	deletedBy!: string | null;
 
 	@Expose()
+	sharedCount!: number;
+
+	@Expose()
 	@Transform(({ obj }: { obj: Populated<SocialPost> }) => {
 		const user = obj?.deletedByPopulated as User | null;
 		if (!user) return null;
