@@ -1,8 +1,8 @@
 import { IBaseEntity } from '@common/crud/entities';
+import { SystemEntity } from '@common/enums';
 
-export enum CommentRootType {
-	POST = 'post',
-}
+export const commentRootTypeEnumValues = [SystemEntity.POST] as const;
+export type CommentRootType = (typeof commentRootTypeEnumValues)[number];
 
 export class Comment extends IBaseEntity {
 	userId!: string;

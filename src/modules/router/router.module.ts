@@ -13,6 +13,7 @@ import { UserModule } from '@modules/user';
 	imports: [
 		RouterModule.register([
 			{ path: '/auth', module: AuthModule },
+			{ path: '/notifications', module: NotificationModule },
 			{
 				path: '/admin',
 				module: AdminModule,
@@ -21,7 +22,6 @@ import { UserModule } from '@modules/user';
 				path: '/client',
 				children: [
 					{ path: '/events', module: EventModule },
-					{ path: '/notifications', module: NotificationModule },
 					{
 						path: '/posts',
 						module: PostModule,

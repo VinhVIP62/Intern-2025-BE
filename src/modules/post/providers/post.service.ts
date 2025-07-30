@@ -5,6 +5,8 @@ import { CreateType, Populated } from '@common/crud/entities';
 import { Action } from '@common/enums';
 import { CursorPaginationOption } from '@common/types/data';
 
+import { NotificationService } from '@modules/notification/providers';
+
 import { CaslFilterFactory, FileHostService, UserAbilityOptions } from '@shared/modules';
 
 import { SocialPost } from '../entities';
@@ -17,6 +19,7 @@ export class PostService {
 		@Inject(IPostRepositoryToken) private readonly postRepository: IPostRepository,
 		private readonly fileHostService: FileHostService,
 		private readonly caslFilterFactory: CaslFilterFactory,
+		private readonly notificationService: NotificationService,
 	) {}
 
 	async checkAccessTo(
@@ -35,7 +38,8 @@ export class PostService {
 		data: CreateType<SocialPost> & { files?: MemoryStoredFile[] },
 	): Promise<Populated<SocialPost>> {
 		if (data.files) data.fileUrls = await this.fileHostService.files2Urls(data.files);
-		const createdPost = this.postRepository.create(data);
+		const createdPost = await this.postRepository.create(data);
+		await this.notificationService.subscribeToTopic(createdPost.id);
 		return createdPost;
 	}
 

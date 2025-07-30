@@ -3,6 +3,9 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Populated } from '@common/crud/entities';
 import { OffsetPaginationOption } from '@common/types/data';
 
+import { NotificationType } from '@modules/notification/enums';
+import { NotificationService } from '@modules/notification/providers';
+
 import { Block, FriendStatus, Friendship } from '../entities';
 import { RelationshipType } from '../enums';
 import {
@@ -19,6 +22,7 @@ export class RelationshipService {
 		@Inject(IFriendshipRepositoryToken)
 		private readonly friendshipRepository: IFriendshipRepository,
 		@Inject(IBlockRepositoryToken) private readonly blockRepository: IBlockRepository,
+		private readonly notificationService: NotificationService,
 	) {}
 
 	async getRelationship(userId: [string, string]): Promise<RelationshipType> {
@@ -33,12 +37,18 @@ export class RelationshipService {
 		const foundRequest = await this.friendshipRepository.findOneBy({
 			userIds: [actor, toUserId].toSorted() as [string, string],
 		});
-		if (!foundRequest)
-			return this.friendshipRepository.create({
+		if (!foundRequest) {
+			const createdRequest = await this.friendshipRepository.create({
 				userIds: [actor, toUserId].toSorted() as [string, string],
 				requestedFrom: actor,
 				status: FriendStatus.PENDING,
 			});
+			await this.notificationService.createAndSendNotification(
+				NotificationType.FRIEND_REQUEST,
+				createdRequest,
+			);
+			return createdRequest;
+		}
 		return foundRequest;
 	}
 
@@ -55,7 +65,12 @@ export class RelationshipService {
 	}
 
 	async acceptFriendRequest(actor: string, requestId: string): Promise<Populated<Friendship>> {
-		return this.friendshipRepository.acceptFriendRequest(actor, requestId);
+		const acceptedRequest = await this.friendshipRepository.acceptFriendRequest(actor, requestId);
+		await this.notificationService.createAndSendNotification(
+			NotificationType.FRIEND_ACCEPTED,
+			acceptedRequest,
+		);
+		return acceptedRequest;
 	}
 
 	async unfriend(actor: string, withUserId: string): Promise<Populated<Friendship>> {

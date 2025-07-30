@@ -3,11 +3,12 @@ import mongoose, { HydratedDocument } from 'mongoose';
 
 import { Populated } from '@common/crud/entities';
 import { BaseEntitySchemaDef, toString } from '@common/crud/entities/mongoose-schema';
+import { SystemEntity } from '@common/enums';
 import { Complete } from '@common/types/utils';
 
 import { User } from '@modules/user/entities';
 
-import { Reaction } from './reaction.entity';
+import { Reaction, reactionTargetTypeEnumValues } from './reaction.entity';
 
 @Schema({
 	timestamps: true,
@@ -42,7 +43,10 @@ export class ReactionSchemaDef
 	@Prop({ type: mongoose.Schema.Types.ObjectId, index: true, required: true, get: toString })
 	targetId!: string;
 
-	@Prop({ type: Number })
+	@Prop({ type: String, enum: reactionTargetTypeEnumValues, required: true })
+	targetType!: SystemEntity.POST | SystemEntity.COMMENT;
+
+	@Prop({ type: Number, required: true })
 	reactionValue!: number;
 }
 

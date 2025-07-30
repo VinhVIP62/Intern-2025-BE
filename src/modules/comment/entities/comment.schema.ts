@@ -7,7 +7,7 @@ import { Complete } from '@common/types/utils';
 
 import { User } from '@modules/user/entities';
 
-import { Comment, CommentRootType } from './comment.entity';
+import { Comment, CommentRootType, commentRootTypeEnumValues } from './comment.entity';
 
 @Schema({
 	timestamps: true,
@@ -36,13 +36,13 @@ export class CommentSchemaDef extends BaseEntitySchemaDef implements Populated<C
 	})
 	userIdPopulated!: any;
 
-	@Prop({ type: mongoose.Schema.Types.ObjectId, required: true, index: true })
+	@Prop({ type: mongoose.Schema.Types.ObjectId, required: true, index: true, get: toString })
 	rootId!: string;
 
-	@Prop({ type: String, enum: CommentRootType, required: true, index: true })
+	@Prop({ type: String, enum: commentRootTypeEnumValues, required: true, index: true })
 	rootType!: CommentRootType;
 
-	@Prop({ type: mongoose.Schema.Types.ObjectId, index: true, required: true })
+	@Prop({ type: mongoose.Schema.Types.ObjectId, index: true, required: true, get: toString })
 	targetId!: string;
 
 	@Prop({ type: [String], default: null })

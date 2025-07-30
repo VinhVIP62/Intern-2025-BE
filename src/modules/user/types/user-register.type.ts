@@ -1,10 +1,10 @@
 import { User } from '../entities';
 
-export type UserRegister = Pick<
+export type UserRegisterInput = Pick<
 	User,
 	'username' | 'password' | 'mail' | 'phone' | 'hasFinishedSetup'
 >;
-export type UserGoogleRegister = Pick<
+export type UserGoogleRegisterInput = Pick<
 	User,
 	'avatarUrl' | 'username' | 'password' | 'mail' | 'googleLoginInfo' | 'hasFinishedSetup'
 >;

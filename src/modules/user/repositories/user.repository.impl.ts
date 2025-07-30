@@ -7,7 +7,7 @@ import { CreateType, Populated, QuerriableType } from '@common/crud/entities';
 import { MongooseSoftDeleteRepositoryImpl, QueryOptions } from '@common/crud/repos';
 
 import { User } from '../entities';
-import { UserGoogleRegister, UserRegister } from '../types';
+import { UserGoogleRegisterInput, UserRegisterInput } from '../types';
 import { IUserRepository } from './user.repository';
 
 @Injectable()
@@ -22,14 +22,14 @@ export class UserRepositoryImpl
 	}
 
 	async createForRegistration(
-		data: CreateType<UserRegister>,
+		data: CreateType<UserRegisterInput>,
 		queryOptions?: QueryOptions<User>,
 	): Promise<Populated<User>> {
 		return this.createSoft(data, queryOptions);
 	}
 
 	async createForGoogleRegistration(
-		data: CreateType<UserGoogleRegister>,
+		data: CreateType<UserGoogleRegisterInput>,
 		queryOptions?: QueryOptions<User>,
 	): Promise<Populated<User>> {
 		return this.createSoft(data, queryOptions);

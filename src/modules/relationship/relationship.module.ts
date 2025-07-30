@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
+import { NotificationModule } from '@modules/notification';
+
 import { Block, BlockSchema, Friendship, FriendshipSchema } from './entities';
 import { RelationshipService } from './providers';
 import {
@@ -24,6 +26,7 @@ import {
 				schema: BlockSchema,
 			},
 		]),
+		NotificationModule,
 	],
 	providers: [
 		RelationshipService,

@@ -7,7 +7,7 @@ import { Role } from '@common/enums';
 
 import { User } from '../entities';
 import { IUserRepository, IUserRepositoryToken } from '../repositories/user.repository';
-import { UserGoogleRegister, UserRegister } from '../types';
+import { UserGoogleRegisterInput, UserRegisterInput } from '../types';
 
 @Injectable()
 export class UserService {
@@ -22,14 +22,14 @@ export class UserService {
 	}
 
 	async register(
-		data: Omit<CreateType<UserRegister>, 'hasFinishedSetup'>,
+		data: Omit<CreateType<UserRegisterInput>, 'hasFinishedSetup'>,
 	): Promise<Populated<User>> {
 		const newUser = this.userRepository.createForRegistration({ ...data, hasFinishedSetup: false });
 		return newUser;
 	}
 
 	async registerGoogle(
-		data: Omit<CreateType<UserGoogleRegister>, 'hasFinishedSetup'>,
+		data: Omit<CreateType<UserGoogleRegisterInput>, 'hasFinishedSetup'>,
 	): Promise<Populated<User>> {
 		const newUser = this.userRepository.createForGoogleRegistration({
 			...data,

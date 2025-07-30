@@ -10,10 +10,10 @@ import {
 import { Injectable } from '@nestjs/common';
 import mongoose from 'mongoose';
 
-import { Action, Role, Visibility } from '@common/enums';
+import { Action, Role, SystemEntity, Visibility } from '@common/enums';
 
 import { Sub } from '@modules/auth/types';
-import { Comment, CommentRootType } from '@modules/comment/entities';
+import { Comment } from '@modules/comment/entities';
 import { SocialPost } from '@modules/post/entities';
 import { User } from '@modules/user/entities';
 
@@ -94,7 +94,7 @@ export class CaslAbilityFactory {
 					// cannot do anything with comment not belonging to post
 					cannot(Action.MANAGE, Comment, {
 						rootId: { $ne: new mongoose.Types.ObjectId(options.post.id) as unknown as string },
-						rootType: { $ne: CommentRootType.POST },
+						rootType: { $ne: SystemEntity.POST },
 					});
 				// cannot do anything with comment on post with no read access
 				else cannot(Action.MANAGE, Comment);

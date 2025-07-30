@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { NestjsFormDataModule } from 'nestjs-form-data';
 
+import { NotificationModule } from '@modules/notification';
 import { ReactionModule } from '@modules/reaction';
 
 import { CaslModule, DataServiceModule, FileHostModule } from '@shared/modules';
@@ -23,6 +24,7 @@ import { CommentRepositoryImpl, ICommentRepositoryToken } from './repositories';
 		ReactionModule,
 		CaslModule,
 		DataServiceModule,
+		NotificationModule,
 	],
 	providers: [
 		CommentService,

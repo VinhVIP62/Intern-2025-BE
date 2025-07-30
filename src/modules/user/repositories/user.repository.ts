@@ -2,16 +2,16 @@ import { CreateType, Populated, QuerriableType } from '@common/crud/entities';
 import { ISoftDeleteBaseRepository, QueryOptions } from '@common/crud/repos';
 
 import { User } from '../entities';
-import { UserGoogleRegister, UserRegister } from '../types';
+import { UserGoogleRegisterInput, UserRegisterInput } from '../types';
 
 export interface IUserRepository extends ISoftDeleteBaseRepository<User> {
 	createForRegistration(
-		data: CreateType<UserRegister>,
+		data: CreateType<UserRegisterInput>,
 		queryOptions?: QueryOptions<User>,
 	): Promise<Populated<User>>;
 
 	createForGoogleRegistration(
-		data: CreateType<UserGoogleRegister>,
+		data: CreateType<UserGoogleRegisterInput>,
 		queryOptions?: QueryOptions<User>,
 	): Promise<Populated<User>>;
 

@@ -1,6 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConditionalModule, ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
@@ -65,6 +66,15 @@ import { CustomRequestCtxModule, LoggerModule } from '@shared/modules';
 			errorMessage: 'Rate limit reached',
 		}),
 		CustomRequestCtxModule,
+		EventEmitterModule.forRoot({
+			wildcard: false,
+			delimiter: '.',
+			newListener: true,
+			removeListener: true,
+			maxListeners: 10,
+			verboseMemoryLeak: true,
+			ignoreErrors: false,
+		}),
 		/* dev modules for testing */
 		ConditionalModule.registerWhen(
 			DevModule,

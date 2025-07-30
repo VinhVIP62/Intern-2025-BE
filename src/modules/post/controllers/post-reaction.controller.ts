@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Put, Query, Req, Version } from '@nestjs/common';
 
 import { PriorityRole, ResponseTransform } from '@common/decorators';
-import { Action, Role } from '@common/enums';
+import { Action, Role, SystemEntity } from '@common/enums';
 import { ValidateIdPipe } from '@common/pipes';
 import { AuthenticatedRequest, CursorPaginatedData } from '@common/types/data';
 import { plainToInstanceStrict } from '@common/utils';
@@ -51,7 +51,7 @@ export class PostReactionController {
 	): Promise<ResponseReactionDto> {
 		await this.postService.checkAccessTo(postId, Action.READ);
 		const reaction = this.reactionService.upsertReaction(
-			{ userId: request.user.id, targetId: postId },
+			{ userId: request.user.id, targetId: postId, targetType: SystemEntity.POST },
 			body.reactionValue,
 		);
 		return plainToInstanceStrict(ResponseReactionDto, reaction);

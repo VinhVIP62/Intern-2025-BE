@@ -15,7 +15,7 @@ import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 
 import { Populated } from '@common/crud/entities';
 import { PriorityRole, ResponseTransform } from '@common/decorators';
-import { Action, Role } from '@common/enums';
+import { Action, Role, SystemEntity } from '@common/enums';
 import { ValidateIdPipe } from '@common/pipes';
 import { AuthenticatedRequest, CursorPaginatedData } from '@common/types/data';
 import { plainToInstanceStrict } from '@common/utils';
@@ -28,7 +28,6 @@ import {
 	ResponseCommentDto,
 	UpdateCommentDto,
 } from '@modules/comment/dto';
-import { CommentRootType } from '@modules/comment/entities';
 import { PostService } from '@modules/post/providers';
 import {
 	GetReactionUsersDto,
@@ -60,7 +59,7 @@ export class PostCommentController {
 		const createdComment = await this.commentService.createComment({
 			...body,
 			rootId: postId,
-			rootType: CommentRootType.POST,
+			rootType: SystemEntity.POST,
 			targetId: postId,
 			userId: request.user.id,
 		});
@@ -103,7 +102,7 @@ export class PostCommentController {
 		const createdComment = await this.commentService.createComment({
 			...body,
 			rootId: postId,
-			rootType: CommentRootType.POST,
+			rootType: SystemEntity.POST,
 			targetId: commentId,
 			userId: request.user.id,
 		});
@@ -185,7 +184,7 @@ export class PostCommentController {
 		const post = await this.postService.checkAccessTo(postId, Action.READ);
 		await this.commentService.checkAccessTo(commentId, Action.READ, { post });
 		const reaction = this.reactionService.upsertReaction(
-			{ userId: request.user.id, targetId: commentId },
+			{ userId: request.user.id, targetId: commentId, targetType: SystemEntity.COMMENT },
 			body.reactionValue,
 		);
 		return plainToInstanceStrict(ResponseReactionDto, reaction);

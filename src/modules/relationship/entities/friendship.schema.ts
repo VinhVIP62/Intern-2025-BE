@@ -55,7 +55,7 @@ export class FriendshipSchemaDef
 	})
 	userIdsPopulated!: [any, any];
 
-	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name, required: true })
+	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: User.name, required: true, get: toString })
 	requestedFrom!: string;
 
 	@Prop({ type: String, enum: FriendStatus, default: FriendStatus.PENDING, required: true })
