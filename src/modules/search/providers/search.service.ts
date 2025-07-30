@@ -37,11 +37,11 @@ export class SearchService {
 	): Promise<PaginatedSearchResultDto> {
 		const { key, page = 1, limit = 10, timeRange } = query;
 		// Save search history if userId and key exist
-		if (userId && key) {
-			const history = await this.searchHistoryRepository.create(new Types.ObjectId(userId), {
-				text: key,
-			});
-		}
+		// if (userId && key) {
+		// 	const history = await this.searchHistoryRepository.create(new Types.ObjectId(userId), {
+		// 		text: key,
+		// 	});
+		// }
 		// Parallel search for all types
 		const [userRes, postRes, eventRes, groupRes, hashtagRes, locationRes] = await Promise.all([
 			this.searchRepository.searchUsers(key, undefined, undefined, page, limit),
@@ -87,11 +87,11 @@ export class SearchService {
 	): Promise<PaginatedSearchResultDto> {
 		const { key, filter, sportType, level, page = 1, limit = 10, timeRange } = query;
 		// Save search history if userId and key exist
-		if (userId && key) {
-			const history = await this.searchHistoryRepository.create(new Types.ObjectId(userId), {
-				text: key,
-			});
-		}
+		// if (userId && key) {
+		// 	const history = await this.searchHistoryRepository.create(new Types.ObjectId(userId), {
+		// 		text: key,
+		// 	});
+		// }
 		const data: SearchResultDto[] = [];
 		let maxTotal = 0;
 		for (const f of filter) {
