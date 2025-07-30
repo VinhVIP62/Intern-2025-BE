@@ -47,7 +47,7 @@ export class UserController {
 	}
 
 	@Version('1')
-	@Get(':userid')
+	@Get('other/:userid')
 	@PriorityRole(Role.SETTING_UP)
 	async profileOf(@Param('userid') userId: string): Promise<ResponseProfileDto> {
 		const profile = await this.userService.findOneById(userId);

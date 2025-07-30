@@ -22,28 +22,6 @@ import { RelationshipService } from '@modules/relationship/providers';
 export class UserRelationshipController {
 	constructor(private readonly relationshipService: RelationshipService) {}
 
-	@Post(':userid/friend-request')
-	async addFriend(
-		@Param('userid', ValidateIdPipe) userId: string,
-		@Req() request: AuthenticatedRequest,
-	): Promise<ResponseFriendshipDto> {
-		const from = request.user.id;
-		const to = userId;
-		const friendRequest = await this.relationshipService.sendFriendRequest(from, to);
-		return plainToInstanceStrict(ResponseFriendshipDto, friendRequest);
-	}
-
-	@Delete(':userid/friend-request')
-	async cancelFriendRequest(
-		@Param('userid', ValidateIdPipe) userId: string,
-		@Req() request: AuthenticatedRequest,
-	): Promise<ResponseFriendshipDto> {
-		const from = request.user.id;
-		const to = userId;
-		const friendRequest = await this.relationshipService.cancelFriendRequest(from, to);
-		return plainToInstanceStrict(ResponseFriendshipDto, friendRequest);
-	}
-
 	@Delete('friends/:requestid')
 	async denyFriendRequest(
 		@Param('requestid', ValidateIdPipe) requestId: string,
@@ -65,17 +43,6 @@ export class UserRelationshipController {
 			request.user.id,
 			requestId,
 		);
-		return plainToInstanceStrict(ResponseFriendshipDto, friendRequest);
-	}
-
-	@Delete(':userid/unfriend')
-	async unfriend(
-		@Param('userid', ValidateIdPipe) userId: string,
-		@Req() request: AuthenticatedRequest,
-	): Promise<ResponseFriendshipDto> {
-		const from = request.user.id;
-		const to = userId;
-		const friendRequest = await this.relationshipService.unfriend(from, to);
 		return plainToInstanceStrict(ResponseFriendshipDto, friendRequest);
 	}
 
@@ -107,20 +74,6 @@ export class UserRelationshipController {
 			query.page,
 			query.limit,
 			plainToInstanceStrict(ResponseFriendshipDto, friendRequests),
-		);
-	}
-
-	@Get(':userid/friends')
-	@ResponseTransform({ pagination: true })
-	async getFriendListOf(
-		@Param('userid', ValidateIdPipe) userId: string,
-		@Query() query: GetFriendListDto,
-	): Promise<OffsetPaginatedData<ResponseFriendshipListDto>> {
-		const foundFriendList = await this.relationshipService.getFriendListOf(userId);
-		return new OffsetPaginatedData<ResponseFriendshipListDto>(
-			query.page,
-			query.limit,
-			plainToInstanceStrict(ResponseFriendshipListDto, foundFriendList),
 		);
 	}
 
@@ -158,5 +111,52 @@ export class UserRelationshipController {
 			query.limit,
 			plainToInstanceStrict(ResponseBlockListDto, blockList),
 		);
+	}
+
+	@Get(':userid/friends')
+	@ResponseTransform({ pagination: true })
+	async getFriendListOf(
+		@Param('userid', ValidateIdPipe) userId: string,
+		@Query() query: GetFriendListDto,
+	): Promise<OffsetPaginatedData<ResponseFriendshipListDto>> {
+		const foundFriendList = await this.relationshipService.getFriendListOf(userId);
+		return new OffsetPaginatedData<ResponseFriendshipListDto>(
+			query.page,
+			query.limit,
+			plainToInstanceStrict(ResponseFriendshipListDto, foundFriendList),
+		);
+	}
+
+	@Delete(':userid/unfriend')
+	async unfriend(
+		@Param('userid', ValidateIdPipe) userId: string,
+		@Req() request: AuthenticatedRequest,
+	): Promise<ResponseFriendshipDto> {
+		const from = request.user.id;
+		const to = userId;
+		const friendRequest = await this.relationshipService.unfriend(from, to);
+		return plainToInstanceStrict(ResponseFriendshipDto, friendRequest);
+	}
+
+	@Post(':userid/friend-request')
+	async addFriend(
+		@Param('userid', ValidateIdPipe) userId: string,
+		@Req() request: AuthenticatedRequest,
+	): Promise<ResponseFriendshipDto> {
+		const from = request.user.id;
+		const to = userId;
+		const friendRequest = await this.relationshipService.sendFriendRequest(from, to);
+		return plainToInstanceStrict(ResponseFriendshipDto, friendRequest);
+	}
+
+	@Delete(':userid/friend-request')
+	async cancelFriendRequest(
+		@Param('userid', ValidateIdPipe) userId: string,
+		@Req() request: AuthenticatedRequest,
+	): Promise<ResponseFriendshipDto> {
+		const from = request.user.id;
+		const to = userId;
+		const friendRequest = await this.relationshipService.cancelFriendRequest(from, to);
+		return plainToInstanceStrict(ResponseFriendshipDto, friendRequest);
 	}
 }
