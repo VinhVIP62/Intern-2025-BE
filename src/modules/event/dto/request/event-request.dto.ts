@@ -75,6 +75,11 @@ export class CreateEventDto {
 	@IsInt()
 	@Min(1)
 	maxParticipants: number;
+
+	@ApiProperty({ enum: EventStatus, description: 'Trạng thái sự kiện', required: false })
+	@IsOptional()
+	@IsEnum(EventStatus)
+	status?: EventStatus;
 }
 
 export class UpdateEventDto {

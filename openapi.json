@@ -6855,6 +6855,16 @@
           "maxParticipants": {
             "type": "number",
             "description": "Số lượng tham gia tối đa"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "upcoming",
+              "ongoing",
+              "completed",
+              "cancelled"
+            ],
+            "description": "Trạng thái sự kiện"
           }
         },
         "required": [
