@@ -5667,6 +5667,16 @@
         "operationId": "FriendsController_getFriendsList_v1",
         "parameters": [
           {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "description": "ID của user cần lấy danh sách bạn bè (nếu không truyền -> sử dụng current user)",
+            "schema": {
+              "example": "507f1f77bcf86cd799439011",
+              "type": "string"
+            }
+          },
+          {
             "name": "search",
             "required": false,
             "in": "query",
@@ -5717,7 +5727,7 @@
             "bearer": []
           }
         ],
-        "summary": "Lấy danh sách bạn bè của người dùng hiện tại",
+        "summary": "Lấy danh sách bạn bè của user theo userId",
         "tags": [
           "Friends"
         ]

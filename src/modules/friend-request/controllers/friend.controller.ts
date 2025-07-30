@@ -9,7 +9,14 @@ import {
 	Version,
 	BadRequestException,
 } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiQuery, ApiResponse, ApiTags , ApiBearerAuth} from '@nestjs/swagger';
+import {
+	ApiOperation,
+	ApiParam,
+	ApiQuery,
+	ApiResponse,
+	ApiTags,
+	ApiBearerAuth,
+} from '@nestjs/swagger';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { RolesGuard } from '@common/guards';
 import { Roles } from '@common/decorators';
@@ -30,7 +37,14 @@ export class FriendsController {
 	@UseGuards(RolesGuard)
 	@ApiBearerAuth()
 	@Roles(Role.USER, Role.ADMIN)
-	@ApiOperation({ summary: 'Lấy danh sách bạn bè của người dùng hiện tại' })
+	@ApiOperation({ summary: 'Lấy danh sách bạn bè của user theo userId' })
+	@ApiQuery({
+		name: 'userId',
+		required: false,
+		type: String,
+		description: 'ID của user cần lấy danh sách bạn bè (nếu không truyền -> sử dụng current user)',
+		example: '507f1f77bcf86cd799439011',
+	})
 	@ApiQuery({
 		name: 'page',
 		required: false,
@@ -65,10 +79,13 @@ export class FriendsController {
 		@Request() req,
 		@I18n() i18n: I18nContext,
 		@PaginationQuery(PaginationQueryDto) query: PaginationQueryDto,
+		@Query('userId') userId?: string,
 		@Query('search') search?: string,
 	): Promise<ResponseEntity<PaginatedFriendsResponseDto>> {
+		const targetUserId = userId || req.user.id;
+
 		const result = await this.friendRequestService.getFriendsList(
-			req.user.id,
+			targetUserId,
 			i18n,
 			query.page ?? 1,
 			query.limit ?? 10,
