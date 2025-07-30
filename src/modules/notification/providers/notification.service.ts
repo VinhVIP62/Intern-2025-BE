@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 
 import { Populated } from '@common/crud/entities';
 import { SystemEntity } from '@common/enums';
+import { CursorPaginationOption } from '@common/types/data';
 import { plainToInstanceStrict } from '@common/utils';
 
 import { Comment } from '@modules/comment/entities';
@@ -23,6 +24,11 @@ import {
 	INotificationSubscriberRepositoryToken,
 } from '../repositories';
 import { NotificationCreateInput } from '../types';
+
+export type PaginatedNotificationsWithCursor = {
+	foundNotifications: Populated<Notification>[];
+	nextCursor: string;
+};
 
 type NotificationCreationMap = {
 	[NotificationType.EVENT_INVITE]: (
@@ -180,5 +186,23 @@ export class NotificationService {
 		const notifications = await this.notificationCreationMap[type](...values);
 		notifications.forEach(notification => this.alertNotification(notification));
 		return notifications;
+	}
+
+	async getNotificationsOf(
+		userId: string,
+		options?: CursorPaginationOption<string>,
+	): Promise<PaginatedNotificationsWithCursor> {
+		const foundNotifications =
+			await this.notificationRepository.getPaginatedNotificationsWithCursorOf(userId, options);
+		const nextCursor = foundNotifications.at(-1)?.id || '';
+		return { foundNotifications: foundNotifications, nextCursor };
+	}
+
+	async readNotification(notificationId: string): Promise<Populated<Notification>> {
+		const readNotification = this.notificationRepository.findOneByAndUpdate(
+			{ id: notificationId },
+			{ isRead: true },
+		);
+		return readNotification;
 	}
 }
