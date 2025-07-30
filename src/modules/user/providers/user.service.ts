@@ -61,8 +61,8 @@ export class UserService {
 		return foundUser;
 	}
 
-	async findOneById(id: string): Promise<Populated<User> | null> {
-		const foundUser = this.userRepository.findOneById(id);
+	async findOneById(id: string): Promise<Populated<User>> {
+		const foundUser = this.userRepository.findOneByIdOrFail(id);
 		return foundUser;
 	}
 

@@ -4,6 +4,7 @@ import {
 	Delete,
 	Get,
 	Inject,
+	Param,
 	Patch,
 	Req,
 	Version,
@@ -13,7 +14,6 @@ import { FormDataRequest, MemoryStoredFile } from 'nestjs-form-data';
 
 import { PriorityRole } from '@common/decorators';
 import { Role } from '@common/enums';
-import { EntityNotFound } from '@common/exceptions';
 import { AuthenticatedRequest } from '@common/types/data';
 import { plainToInstanceStrict } from '@common/utils';
 
@@ -28,7 +28,6 @@ import {
 	SetupUserDto,
 	UpdateUserDto,
 } from '../dto';
-import { User } from '../entities';
 import { UserService } from '../providers';
 
 @PriorityRole(Role.USER)
@@ -44,7 +43,14 @@ export class UserController {
 	@PriorityRole(Role.SETTING_UP)
 	async profile(@Req() request: AuthenticatedRequest): Promise<ResponseProfileDto> {
 		const profile = await this.userService.findOneById(request.user.id);
-		if (!profile) throw new EntityNotFound(User);
+		return plainToInstanceStrict(ResponseProfileDto, profile);
+	}
+
+	@Version('1')
+	@Get(':userid')
+	@PriorityRole(Role.SETTING_UP)
+	async profileOf(@Param('userid') userId: string): Promise<ResponseProfileDto> {
+		const profile = await this.userService.findOneById(userId);
 		return plainToInstanceStrict(ResponseProfileDto, profile);
 	}
 
@@ -108,7 +114,6 @@ export class UserController {
 	@PriorityRole(Role.SETTING_UP)
 	async getProfiles(): Promise<LimitedUserResponseDto[]> {
 		const foundUser = await this.userService.findAny({});
-		if (!foundUser) throw new EntityNotFound(User);
 		return plainToInstanceStrict(LimitedUserResponseDto, foundUser);
 	}
 }
