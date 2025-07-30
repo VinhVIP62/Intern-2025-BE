@@ -25,6 +25,7 @@ import { PostService } from '@modules/post/providers';
 
 import {
 	CreateEventDto,
+	InviteEventDto,
 	ResponseEventDto,
 	SearchEventMembersDto,
 	SearchEventsDto,
@@ -149,5 +150,16 @@ export class EventController {
 			postType: PostType.EVENT,
 		});
 		return plainToInstanceStrict(ResponsePostDto, createdPost);
+	}
+
+	@Version('1')
+	@Post(':eventid/invite')
+	async inviteToEvent(
+		@Param('eventid', ValidateIdPipe) eventId: string,
+		@Body() body: InviteEventDto,
+		@Req() req: AuthenticatedRequest,
+	) {
+		const fromUserId = req.user.id;
+		return await this.eventService.inviteUserToEvent(eventId, fromUserId, body.toUserId);
 	}
 }

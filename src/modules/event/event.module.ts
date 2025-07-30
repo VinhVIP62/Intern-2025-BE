@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { NestjsFormDataModule } from 'nestjs-form-data';
 
+import { NotificationModule } from '@modules/notification';
 import { PostModule } from '@modules/post';
 
 import { DataServiceModule, FileHostModule } from '@shared/modules';
@@ -32,6 +33,7 @@ import {
 		PostModule,
 		FileHostModule,
 		NestjsFormDataModule,
+		NotificationModule,
 	],
 	controllers: [EventController],
 	providers: [

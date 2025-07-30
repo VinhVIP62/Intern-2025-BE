@@ -6,6 +6,7 @@ import { SystemEntity } from '@common/enums';
 import { plainToInstanceStrict } from '@common/utils';
 
 import { Comment } from '@modules/comment/entities';
+import { Event } from '@modules/event/entities';
 import { Reaction } from '@modules/reaction/entities';
 import { Friendship } from '@modules/relationship/entities';
 
@@ -24,6 +25,11 @@ import {
 import { NotificationCreateInput } from '../types';
 
 type NotificationCreationMap = {
+	[NotificationType.EVENT_INVITE]: (
+		event: Event,
+		fromUserId: string,
+		toUserId: string,
+	) => Promise<Populated<Notification>[]>;
 	[NotificationType.COMMENTED]: (comment: Comment) => Promise<Populated<Notification>[]>;
 	[NotificationType.FRIEND_ACCEPTED]: (
 		friendship: Friendship,
@@ -41,6 +47,24 @@ export class NotificationService {
 		private readonly notificationSubscriberRepository: INotificationSubscriberRepository,
 		private readonly sseService: SseService,
 	) {}
+
+	private createNotifcationOnEventInvitation = async (
+		event: Event,
+		fromUserId: string,
+		toUserId: string,
+	): Promise<Populated<Notification>[]> => {
+		const notification = await this.notificationRepository.createNotification({
+			actorsIds: [],
+			addActorIds: [fromUserId],
+			actorType: SystemEntity.USER,
+			targetId: event.id,
+			targetType: SystemEntity.EVENT,
+			toUserId,
+			isRead: false,
+			notifType: NotificationType.EVENT_INVITE,
+		});
+		return [notification];
+	};
 
 	private createNotificationOnComment = async (
 		comment: Comment,
@@ -64,7 +88,7 @@ export class NotificationService {
 	private createNotificationOnFriendAcceptance = async (
 		friendship: Friendship,
 	): Promise<Populated<Notification>[]> => {
-		const createdNotification = await this.notificationRepository.createNotification({
+		const notification = await this.notificationRepository.createNotification({
 			actorsIds: [],
 			addActorIds: [friendship.requestedFrom],
 			actorType: SystemEntity.USER,
@@ -74,13 +98,13 @@ export class NotificationService {
 			isRead: false,
 			notifType: NotificationType.FRIEND_ACCEPTED,
 		});
-		return [createdNotification];
+		return [notification];
 	};
 
 	private createNotificationOnFriendRequest = async (
 		friendship: Friendship,
 	): Promise<Populated<Notification>[]> => {
-		const createdNotification = await this.notificationRepository.createNotification({
+		const notification = await this.notificationRepository.createNotification({
 			actorsIds: [],
 			addActorIds: [friendship.requestedFrom],
 			actorType: SystemEntity.USER,
@@ -90,7 +114,7 @@ export class NotificationService {
 			isRead: false,
 			notifType: NotificationType.FRIEND_REQUEST,
 		});
-		return [createdNotification];
+		return [notification];
 	};
 
 	private createNotificationOnReaction = async (
@@ -113,6 +137,7 @@ export class NotificationService {
 	};
 
 	private notificationCreationMap: NotificationCreationMap = {
+		[NotificationType.EVENT_INVITE]: this.createNotifcationOnEventInvitation,
 		[NotificationType.COMMENTED]: this.createNotificationOnComment,
 		[NotificationType.FRIEND_ACCEPTED]: this.createNotificationOnFriendAcceptance,
 		[NotificationType.FRIEND_REQUEST]: this.createNotificationOnFriendRequest,
