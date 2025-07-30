@@ -378,7 +378,11 @@ export class EventRepositoryImpl implements IEventRepository {
 			.sort({ startDate: 1 })
 			.skip(skip)
 			.limit(limit)
-			.lean();
+			.populate({
+				path: 'organizer',
+				select: 'firstName lastName avatar fullName name description',
+			})
+			.lean({ virtuals: true });
 
 		// Enhance events with group admin data if organizerType is GROUP
 		return this.enhanceEventsWithGroupAdmins(events);
