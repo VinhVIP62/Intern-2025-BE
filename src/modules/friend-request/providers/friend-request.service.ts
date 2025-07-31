@@ -70,6 +70,7 @@ export class FriendRequestService {
 			page,
 			limit,
 			type,
+			FriendRequestStatus.PENDING,
 		);
 
 		return result;

@@ -13,6 +13,7 @@ export interface IFriendRequestRepository {
 		page: number,
 		limit: number,
 		type: 'sent' | 'received',
+		status?: FriendRequestStatus,
 	): Promise<{
 		friendRequests: any[];
 		total: number;

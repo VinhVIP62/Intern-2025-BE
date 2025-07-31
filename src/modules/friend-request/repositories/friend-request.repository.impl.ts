@@ -35,6 +35,7 @@ export class FriendRequestRepositoryImpl implements IFriendRequestRepository {
 		page: number,
 		limit: number,
 		type: 'sent' | 'received',
+		status?: FriendRequestStatus,
 	): Promise<{
 		friendRequests: any[];
 		total: number;
@@ -44,7 +45,12 @@ export class FriendRequestRepositoryImpl implements IFriendRequestRepository {
 		hasNextPage: boolean;
 		hasPrevPage: boolean;
 	}> {
-		const query = type === 'sent' ? { sender: userId } : { recipient: userId };
+		const query: any = type === 'sent' ? { sender: userId } : { recipient: userId };
+
+		// Add status filter if provided
+		if (status) {
+			query.status = status;
+		}
 
 		const total = await this.friendRequestModel.countDocuments(query);
 		const totalPages = Math.ceil(total / limit);
