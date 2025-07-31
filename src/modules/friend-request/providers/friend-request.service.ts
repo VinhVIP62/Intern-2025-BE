@@ -11,6 +11,8 @@ import { FriendRequestStatus } from '@modules/friend-request/entities/friend-req
 import { CreateFriendRequestDto } from '@modules/friend-request/dto';
 import { IUserRepository } from '@modules/user/interfaces/user.repository';
 import { UserService } from '@modules/user/providers/user.service';
+import { NotificationService } from '@modules/notification/providers/notification.service';
+import { NotificationType, ReferenceModel } from '@modules/notification/entities/notification.enum';
 
 @Injectable()
 export class FriendRequestService {
@@ -18,6 +20,7 @@ export class FriendRequestService {
 		private readonly friendRequestRepository: IFriendRequestRepository,
 		private readonly userRepository: IUserRepository,
 		private readonly userService: UserService,
+		private readonly notificationService: NotificationService,
 	) {}
 
 	async createFriendRequest(
@@ -51,7 +54,18 @@ export class FriendRequestService {
 			new Types.ObjectId(recipientId),
 			message,
 		);
-
+		// Send notification to recipient
+		await this.notificationService.createNotification(
+			{
+				recipient: recipientId,
+				sender: senderId,
+				type: NotificationType.FRIEND_REQUEST,
+				message: `@${senderId} MESSAGE_SENT_FRIEND_REQUEST`,
+				referenceId: friendRequest._id.toString(),
+				referenceModel: ReferenceModel.FRIEND_REQUEST,
+			},
+			i18n,
+		);
 		// Auto-follow recipient after sending friend request
 		await this.userService.followUser(senderId, recipientId, i18n);
 
@@ -94,6 +108,19 @@ export class FriendRequestService {
 
 		await this.friendRequestRepository.deleteFriendRequest(requestId);
 
+		// Send notification to sender that their friend request was accepted
+		await this.notificationService.createNotification(
+			{
+				recipient: friendRequest.sender._id.toString(),
+				sender: friendRequest.recipient._id.toString(),
+				type: NotificationType.FRIEND_REQUEST_ACCEPTED,
+				message: `@${friendRequest.recipient._id.toString()} MESSAGE_ACCEPTED_FRIEND_REQUEST`,
+				referenceId: requestId,
+				referenceModel: ReferenceModel.FRIEND_REQUEST,
+			},
+			i18n,
+		);
+
 		// Update friends arrays for both users
 		await this.updateUsersFriendsArrays(
 			friendRequest.sender.toString(),
@@ -119,6 +146,19 @@ export class FriendRequestService {
 		}
 
 		await this.friendRequestRepository.deleteFriendRequest(requestId);
+
+		// Send notification to sender that their friend request was declined
+		await this.notificationService.createNotification(
+			{
+				recipient: friendRequest.sender._id.toString(),
+				sender: friendRequest.recipient._id.toString(),
+				type: NotificationType.FRIEND_REQUEST_DECLINED,
+				message: `@${friendRequest.recipient._id.toString()} MESSAGE_DECLINED_FRIEND_REQUEST`,
+				referenceId: requestId,
+				referenceModel: ReferenceModel.FRIEND_REQUEST,
+			},
+			i18n,
+		);
 	}
 
 	async checkFriendshipStatus(currentUserId: string, targetUserId: string, i18n: I18nContext) {
@@ -250,7 +290,26 @@ export class FriendRequestService {
 		if (friendRequest.status !== FriendRequestStatus.PENDING) {
 			throw new BadRequestException(i18n.t('friend-request.REQUEST_NOT_PENDING'));
 		}
-		return await this.friendRequestRepository.updateFriendRequestMessage(requestId, message);
+
+		const updatedRequest = await this.friendRequestRepository.updateFriendRequestMessage(
+			requestId,
+			message,
+		);
+
+		// Send notification to recipient that the friend request message was updated
+		await this.notificationService.createNotification(
+			{
+				recipient: friendRequest.recipient._id.toString(),
+				sender: senderId,
+				type: NotificationType.FRIEND_REQUEST,
+				message: `@${senderId} MESSAGE_UPDATED_FRIEND_REQUEST`,
+				referenceId: requestId,
+				referenceModel: ReferenceModel.FRIEND_REQUEST,
+			},
+			i18n,
+		);
+
+		return updatedRequest;
 	}
 
 	async cancelFriendRequest(requestId: string, senderId: string, i18n: I18nContext) {
@@ -265,6 +324,19 @@ export class FriendRequestService {
 			throw new BadRequestException(i18n.t('friend-request.REQUEST_NOT_PENDING'));
 		}
 		await this.friendRequestRepository.deleteFriendRequest(requestId);
+
+		// Send notification to recipient that the friend request was cancelled
+		await this.notificationService.createNotification(
+			{
+				recipient: friendRequest.recipient._id.toString(),
+				sender: senderId,
+				type: NotificationType.FRIEND_REQUEST,
+				message: `@${senderId} MESSAGE_CANCELLED_FRIEND_REQUEST`,
+				referenceId: requestId,
+				referenceModel: ReferenceModel.FRIEND_REQUEST,
+			},
+			i18n,
+		);
 
 		// Auto-unfollow recipient after cancelling friend request
 		await this.userService.unfollowUser(senderId, friendRequest.recipient.toString(), i18n);

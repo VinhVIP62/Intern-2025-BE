@@ -31,5 +31,10 @@
 	"MESSAGE_POST_APPROVED": "Your post has been approved",
 	"MESSAGE_POST_REJECTED": "Your post has been rejected",
 	"NEW_NOTIFICATION": "New Notification",
-	"MESSAGE_UNLOCKED_ACHIEVEMENT": "has unlocked the achievement"
+	"MESSAGE_UNLOCKED_ACHIEVEMENT": "has unlocked the achievement",
+	"MESSAGE_SENT_FRIEND_REQUEST": "sent you a friend request",
+	"MESSAGE_ACCEPTED_FRIEND_REQUEST": "accepted your friend request",
+	"MESSAGE_DECLINED_FRIEND_REQUEST": "declined your friend request",
+	"MESSAGE_UPDATED_FRIEND_REQUEST": "updated your friend request",
+	"MESSAGE_CANCELLED_FRIEND_REQUEST": "cancelled your friend request"
 }

@@ -10,6 +10,7 @@ import { FriendRequestRepositoryImpl } from './repositories/friend-request.repos
 import { IUserRepository } from '@modules/user/interfaces/user.repository';
 import { UserRepositoryImpl } from '@modules/user/repositories/user.repository.impl';
 import { UserModule } from '@modules/user/user.module';
+import { NotificationModule } from '@modules/notification/notification.module';
 
 @Module({
 	imports: [
@@ -18,6 +19,7 @@ import { UserModule } from '@modules/user/user.module';
 			{ name: User.name, schema: UserSchema },
 		]),
 		UserModule,
+		NotificationModule,
 	],
 	controllers: [FriendRequestController, FriendsController],
 	providers: [

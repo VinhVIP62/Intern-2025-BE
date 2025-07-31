@@ -8785,6 +8785,8 @@
             "type": "string",
             "enum": [
               "friend_request",
+              "friend_request_accepted",
+              "friend_request_declined",
               "event_invitation",
               "group_invitation",
               "group_invitation_accepted",

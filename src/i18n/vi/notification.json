@@ -31,5 +31,10 @@
 	"MESSAGE_POST_APPROVED": "Bài viết của bạn đã được phê duyệt",
 	"MESSAGE_POST_REJECTED": "Bài viết của bạn đã được từ chối",
 	"NEW_NOTIFICATION": "Thông báo mới",
-	"MESSAGE_UNLOCKED_ACHIEVEMENT": "đã mở khóa thành tích"
+	"MESSAGE_UNLOCKED_ACHIEVEMENT": "đã mở khóa thành tích",
+	"MESSAGE_SENT_FRIEND_REQUEST": "đã gửi lời mời kết bạn",
+	"MESSAGE_ACCEPTED_FRIEND_REQUEST": "đã chấp nhận lời mời kết bạn của bạn",
+	"MESSAGE_DECLINED_FRIEND_REQUEST": "đã từ chối lời mời kết bạn của bạn",
+	"MESSAGE_UPDATED_FRIEND_REQUEST": "đã cập nhật lời mời kết bạn của bạn",
+	"MESSAGE_CANCELLED_FRIEND_REQUEST": "đã hủy lời mời kết bạn của bạn"
 }
