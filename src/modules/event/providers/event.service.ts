@@ -15,6 +15,8 @@ import { RejectMemberDto } from '../dto/reject.members.dto';
 import { NotificationService } from '@modules/notification/providers/notification.service';
 import { LocationDto } from '../dto/location.dto';
 import { DeleteMemberDto } from '../dto/delete.members.dto';
+import { IFriendRepository } from '@modules/friend/repositories/friend.repository';
+import { FriendInEvent } from '../dto/friendsInEvent.dto';
 
 @Injectable()
 export class EventService {
@@ -24,6 +26,7 @@ export class EventService {
 		private readonly eventMemberRepo: IEventMemberRepository,
 		private readonly userRepo: IUserRepository,
 		private readonly profileRepo: IProfileRepository,
+		private readonly friendRepo: IFriendRepository,
 		private readonly searchService: SearchService,
 		private readonly notificationService: NotificationService,
 	) {}
@@ -384,5 +387,27 @@ export class EventService {
 			}),
 		);
 		return res;
+	}
+
+	async friendsInEvent(userId: string, eventId: string): Promise<FriendInEvent[]> {
+		const friends = await this.friendRepo.getAccepted(userId);
+		const result = await Promise.all(
+			friends.map(async friend => {
+				const friendId = friend.fromUserId === userId ? friend.toUserId : friend.fromUserId;
+				const invitaion = await this.eventMemberRepo.getByUserIdAndEventId(friendId, eventId);
+				let state: RSVP = RSVP.NONE;
+				if (invitaion) state = invitaion.state;
+				const friendProfile = await this.profileRepo.findById(friendId);
+				const res: FriendInEvent = {
+					friendId: friendId,
+					friendAvatarUrl: friendProfile.avatarUrl,
+					friendFirstname: friendProfile.firstName,
+					friendLastname: friendProfile.lastName,
+					state: state,
+				};
+				return res;
+			}),
+		);
+		return result;
 	}
 }

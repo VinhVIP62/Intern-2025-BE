@@ -18,6 +18,8 @@ import { NotificationService } from '@modules/notification/providers/notificatio
 import { NotificationMapper } from '@modules/notification/mapper/notification.mapper';
 import { SocketModule } from 'src/websocket/socket.module';
 import { ChatModule } from '@modules/chat/chat.module';
+import { IFriendRepository } from '@modules/friend/repositories/friend.repository';
+import { FriendRepository } from '@modules/friend/repositories/friend.repository.impl';
 
 @Module({
 	imports: [
@@ -45,6 +47,10 @@ import { ChatModule } from '@modules/chat/chat.module';
 		{
 			provide: IEventRepository,
 			useClass: EventRepositoryImpl,
+		},
+		{
+			provide: IFriendRepository,
+			useClass: FriendRepository,
 		},
 		EventMapper,
 		NotificationService,

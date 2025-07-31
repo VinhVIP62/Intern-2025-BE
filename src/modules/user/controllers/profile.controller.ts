@@ -11,9 +11,6 @@ import { Request } from 'express';
 
 @Controller('profile')
 export class ProfileController {
-	// Các phương thức sẽ được định nghĩa ở đây
-	// Ví dụ: getProfile, updateProfile, deleteProfile, v.v.
-
 	constructor(private readonly profileService: ProfileService) {}
 
 	@Get()
@@ -22,7 +19,6 @@ export class ProfileController {
 	@ApiResponse({ status: 200, description: 'Thành công lấy thông tin hồ sơ người dùng' })
 	@Response()
 	async getProfile(@Query('userId') userId: string): Promise<ResponseEntity<ProfileResponseDto>> {
-		// Logic để lấy thông tin hồ sơ người dùng
 		const response = await this.profileService.getProfile(userId);
 		return {
 			success: true,

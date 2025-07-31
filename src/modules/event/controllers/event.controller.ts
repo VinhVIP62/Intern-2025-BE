@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, Get, Patch, Param, Delete, Put } from '@nestjs/common';
+import { Body, Controller, Post, Req, Get, Patch, Param, Delete, Put, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateEventDto } from '../dto/createEvent.dto';
 import { Response } from '@common/decorators/response.decorator';
@@ -10,6 +10,7 @@ import { RSVPDto } from '../dto/rsvp.dto';
 import { AcceptMemberDto } from '../dto/accept.members.dto';
 import { LocationDto } from '../dto/location.dto';
 import { DeleteMemberDto } from '../dto/delete.members.dto';
+import { FriendInEvent } from '../dto/friendsInEvent.dto';
 
 @ApiTags('Events')
 @Controller({
@@ -264,6 +265,20 @@ export class EventController {
 	async within24hEvents(@Req() request: Request): Promise<ResponseEntity<any>> {
 		const user = request.user as { id: string };
 		const res = await this.eventService.within24h(user.id);
+		return {
+			success: true,
+			data: res,
+		};
+	}
+
+	@Get('/friendsInEvent/:eventId')
+	@Response()
+	async friendInEvent(
+		@Query('eventId') eventId: string,
+		@Req() request: Request,
+	): Promise<ResponseEntity<FriendInEvent[]>> {
+		const user = request.user as { id: string };
+		const res = await this.eventService.friendsInEvent(user.id, eventId);
 		return {
 			success: true,
 			data: res,

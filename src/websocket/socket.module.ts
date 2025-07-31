@@ -1,4 +1,3 @@
-// socket.module.ts
 import { Module } from '@nestjs/common';
 import { SocketUserService } from './socket.user.service';
 import { RealtimeGateway } from './gateway';

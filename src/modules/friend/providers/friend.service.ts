@@ -1,4 +1,3 @@
-// friend.service.ts
 import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
 import { IFriendRepository } from '../repositories/friend.repository';
 import { FriendState } from '@common/enum/friend/friend.state.enum';
@@ -79,6 +78,7 @@ export class FriendService {
 
 	async isFriend(userId: string, friendId: string) {
 		const existed = await this.friendRepository.findBetween(userId, friendId);
+		if (existed?.state === FriendState.ACCEPTED) return existed.state;
 		if (existed?.fromUserId === userId) {
 			return {
 				fromMe: true,

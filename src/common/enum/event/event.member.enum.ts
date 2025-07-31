@@ -5,4 +5,5 @@ export enum RSVP {
 	INTERESTED = 'interested',
 	REJECTED = 'rejected',
 	PENDING = 'pending',
+	NONE = 'none',
 }

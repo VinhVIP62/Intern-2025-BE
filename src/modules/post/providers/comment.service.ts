@@ -45,24 +45,24 @@ export class CommentService {
 			commentsCount: (post.commentsCount ?? 0) + 1,
 		});
 
-		return this.cmtMapper.toRespose(cmt);
+		return this.cmtMapper.toRespose(cmt, userId);
 	}
 
-	async findByPost(postId: string, limit: number = 10, before?: Date) {
+	async findByPost(userId: string, postId: string, limit: number = 10, before?: Date) {
 		const cmts = await this.commentRepo.findByPostId(postId, limit, before);
 		const result = await Promise.all(
 			cmts.map(cmt => {
-				return this.cmtMapper.toRespose(cmt);
+				return this.cmtMapper.toRespose(cmt, userId);
 			}),
 		);
 		return result;
 	}
 
-	async findChild(parentCmtId: string) {
+	async findChild(userId: string, parentCmtId: string) {
 		const cmts = await this.commentRepo.findChildCmt(parentCmtId);
 		const result = await Promise.all(
 			cmts.map(cmt => {
-				return this.cmtMapper.toRespose(cmt);
+				return this.cmtMapper.toRespose(cmt, userId);
 			}),
 		);
 		return result;
