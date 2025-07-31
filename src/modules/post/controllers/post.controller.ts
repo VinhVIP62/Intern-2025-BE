@@ -25,6 +25,7 @@ import {
 	CreateSharePostDto,
 	FeedPostDto,
 	ResponsePostDto,
+	SharePostDto,
 	UpdateEventPostDto,
 	UpdateFilePostDto,
 	UpdateSharePostDto,
@@ -120,7 +121,7 @@ export class PostController {
 	async sharePost(
 		@Param('postid', ValidateIdPipe) postId: string,
 		@Req() request: AuthenticatedRequest,
-		@Body() body: CreateSharePostDto,
+		@Body() body: SharePostDto,
 	): Promise<Populated<ResponsePostDto>> {
 		await this.postService.checkAccessTo(postId, Action.READ);
 		const createdPost = await this.postService.createPost({

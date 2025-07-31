@@ -31,13 +31,20 @@ export class SocialPostSchemaDef
 	@Prop({ type: [String], default: null })
 	fileUrls!: string[] | null;
 
-	@Prop({ type: mongoose.Schema.Types.ObjectId, ref: Event.name, default: null, get: toString })
+	@Prop({
+		type: mongoose.Schema.Types.ObjectId,
+		ref: Event.name,
+		default: null,
+		immutable: true,
+		get: toString,
+	})
 	embeddedEventId!: string | null;
 
 	@Prop({
 		type: mongoose.Schema.Types.ObjectId,
 		ref: SocialPost.name,
 		default: null,
+		immutable: true,
 		get: toString,
 	})
 	parentPostId!: string | null;
@@ -52,7 +59,7 @@ export class SocialPostSchemaDef
 	})
 	parentPostIdPopulated!: any;
 
-	@Prop({ type: String, enum: PostType, required: true, default: PostType.FILES })
+	@Prop({ type: String, enum: PostType, required: true, default: PostType.FILES, immutable: true })
 	postType!: PostType;
 
 	@Prop({

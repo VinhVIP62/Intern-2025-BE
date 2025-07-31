@@ -30,5 +30,7 @@ export class UpdateFilePostDto extends UpdatePostDto(CreateFilePostDto) {
 	@Min(0, { each: true })
 	deletedFilesIdx?: number[];
 }
-export class UpdateSharePostDto extends UpdatePostDto(CreateSharePostDto) {}
-export class UpdateEventPostDto extends UpdatePostDto(CreateEventPostDto) {}
+export class UpdateSharePostDto extends OmitType(UpdatePostDto(CreateSharePostDto), [
+	'parentPostId',
+]) {}
+export class UpdateEventPostDto extends OmitType(UpdatePostDto(CreateEventPostDto), ['eventId']) {}
