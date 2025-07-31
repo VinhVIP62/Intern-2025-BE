@@ -754,6 +754,239 @@
         ]
       }
     },
+    "/api/v1/notifications": {
+      "get": {
+        "operationId": "NotificationController_getUserNotifications_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Trang hiện tại",
+            "schema": {
+              "example": "1",
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng mỗi trang",
+            "schema": {
+              "example": "10",
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedNotificationResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Lấy danh sách thông báo theo người dùng (phân trang)",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/api/v1/notifications/{id}/read": {
+      "patch": {
+        "operationId": "NotificationController_markAsRead_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID thông báo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Đánh dấu thông báo là đã đọc",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/api/v1/notifications/{id}": {
+      "delete": {
+        "operationId": "NotificationController_delete_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID thông báo",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Xoá thông báo",
+        "tags": [
+          "Notifications"
+        ]
+      }
+    },
+    "/api/v1/user-device": {
+      "post": {
+        "operationId": "UserDeviceController_registerDevice_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDeviceDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Đăng ký thiết bị thành công"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Đăng ký thiết bị để nhận thông báo push (FCM)",
+        "tags": [
+          "User Device"
+        ]
+      },
+      "delete": {
+        "operationId": "UserDeviceController_unregisterDevice_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Hủy đăng ký thiết bị thành công"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Hủy đăng ký thiết bị (ngừng nhận thông báo)",
+        "tags": [
+          "User Device"
+        ]
+      }
+    },
+    "/api/v1/events/explore": {
+      "get": {
+        "operationId": "EventController_exploreEvents_v1",
+        "parameters": [
+          {
+            "name": "sportId",
+            "required": false,
+            "in": "query",
+            "description": "ID môn thể thao",
+            "schema": {
+              "example": "60ff1c0c...",
+              "type": "string"
+            }
+          },
+          {
+            "name": "creatorId",
+            "required": false,
+            "in": "query",
+            "description": "ID người tạo sự kiện",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "requiresApproval",
+            "required": false,
+            "in": "query",
+            "description": "Có yêu cầu phê duyệt hay không",
+            "schema": {
+              "example": "true",
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Trang hiện tại",
+            "schema": {
+              "example": "1",
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng mỗi trang",
+            "schema": {
+              "example": "10",
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Lấy thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedEventResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Khám phá sự kiện gần bạn (dựa trên location đã lưu)",
+        "tags": [
+          "Events"
+        ]
+      }
+    },
     "/api/v1/events/{id}": {
       "get": {
         "operationId": "EventController_getEventDetail_v1",
@@ -880,7 +1113,7 @@
             "bearer": []
           }
         ],
-        "summary": "Gửi yêu cầu tham gia sự kiện",
+        "summary": "Người dùng gửi yêu cầu tham gia sự kiện",
         "tags": [
           "Events"
         ]
@@ -935,7 +1168,14 @@
         ],
         "responses": {
           "200": {
-            "description": "Danh sách yêu cầu tham gia"
+            "description": "Danh sách yêu cầu tham gia",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedEventJoinRequestDto"
+                }
+              }
+            }
           }
         },
         "security": [
@@ -943,7 +1183,7 @@
             "bearer": []
           }
         ],
-        "summary": "Lấy danh sách yêu cầu tham gia sự kiện theo status & phân trang",
+        "summary": "Chủ sự kiện lấy danh sách yêu cầu tham gia sự kiện theo status & phân trang",
         "tags": [
           "Events"
         ]
@@ -990,7 +1230,283 @@
             "bearer": []
           }
         ],
-        "summary": "Phản hồi yêu cầu tham gia sự kiện (accept / reject)",
+        "summary": "Chủ sự kiện phản hồi yêu cầu tham gia sự kiện (accept / reject)",
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/api/v1/events/{id}/invite/{userId}": {
+      "post": {
+        "operationId": "EventController_inviteUserToEvent_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Mời thành công"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Chủ sự kiện mời người khác tham gia sự kiện",
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/api/v1/events/me/event-invitations": {
+      "get": {
+        "operationId": "EventController_getEventInvitations_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Trang hiện tại",
+            "schema": {
+              "example": "1",
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng mỗi trang",
+            "schema": {
+              "example": "10",
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Danh sách lời mời",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedEventInvitationDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Người dùng lấy danh sách lời mời tham gia sự kiện đã nhận",
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/api/v1/events/{eventId}/invitations/respond": {
+      "patch": {
+        "operationId": "EventController_respondInvitation_v1",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRespondJoinRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Phản hồi thành công"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Người dùng phản hồi lời mời tham gia sự kiện (accept/reject)",
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/api/v1/events/{id}/participants": {
+      "get": {
+        "operationId": "EventController_getEventParticipants_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Trang hiện tại",
+            "schema": {
+              "example": "1",
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng mỗi trang",
+            "schema": {
+              "example": "10",
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Danh sách người tham gia sự kiện",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedEventJoinRequestDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Xem danh sách người tham gia sự kiện (accepted)",
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/api/v1/events/me/events/created": {
+      "get": {
+        "operationId": "EventController_getCreatedEvents_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Trang hiện tại",
+            "schema": {
+              "example": "1",
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng mỗi trang",
+            "schema": {
+              "example": "10",
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Danh sách sự kiện đã tạo",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedEventResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Lấy danh sách sự kiện do người dùng tạo",
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/api/v1/events/me/events/joined": {
+      "get": {
+        "operationId": "EventController_getJoinedEvents_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Trang hiện tại",
+            "schema": {
+              "example": "1",
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng mỗi trang",
+            "schema": {
+              "example": "10",
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Danh sách sự kiện đã tham gia",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedEventResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Lấy danh sách sự kiện đã tham gia",
         "tags": [
           "Events"
         ]
@@ -1093,6 +1609,55 @@
         ]
       }
     },
+    "/api/v1/posts/feed": {
+      "get": {
+        "description": "Lấy các bài viết public nếu chưa đăng nhập, hoặc thêm bài viết của bạn bè nếu đã đăng nhập. (phân trang, lọc)",
+        "operationId": "PostController_getFeedPosts_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Trang hiện tại",
+            "schema": {
+              "example": "1",
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số bài viết mỗi trang",
+            "schema": {
+              "example": "10",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Danh sách bài viết",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedFeedPostResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Lấy newsfeed",
+        "tags": [
+          "Posts"
+        ]
+      }
+    },
     "/api/v1/posts/{id}": {
       "get": {
         "operationId": "PostController_getPostById_v1",
@@ -1126,52 +1691,6 @@
           }
         ],
         "summary": "Lấy chi tiết bài viết",
-        "tags": [
-          "Posts"
-        ]
-      },
-      "patch": {
-        "operationId": "PostController_updatePost_v1",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "description": "ID bài viết",
-            "schema": {
-              "example": "60f8b5e8b3e2f828d8f6e3b5",
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdatePostDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PostResponseDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Cập nhật bài viết (chỉ tác giả)",
         "tags": [
           "Posts"
         ]
@@ -1312,6 +1831,43 @@
         ]
       }
     },
+    "/api/v1/comments/{id}/revoke": {
+      "patch": {
+        "operationId": "CommentController_revokeComment_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID comment",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Thu hồi comment (chỉ người tạo comment được quyền)",
+        "tags": [
+          "Comments"
+        ]
+      }
+    },
     "/api/v1/likes": {
       "post": {
         "operationId": "LikeController_createOrUpdateLike_v1",
@@ -1421,7 +1977,451 @@
         ]
       }
     },
-    "/api/v1/search": {
+    "/api/v1/saved-posts": {
+      "post": {
+        "operationId": "SavedPostController_createSavedList_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSavedPostListDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseSavedPostListDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Tạo danh sách lưu bài viết mới",
+        "tags": [
+          "SavedPost"
+        ]
+      },
+      "get": {
+        "operationId": "SavedPostController_getSavedPostLists_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Trang hiện tại",
+            "schema": {
+              "example": "1",
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số bài viết mỗi trang",
+            "schema": {
+              "example": "10",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedSavedPostListDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Lấy danh sách các saved post list của người dùng",
+        "tags": [
+          "SavedPost"
+        ]
+      }
+    },
+    "/api/v1/saved-posts/{id}/add": {
+      "post": {
+        "operationId": "SavedPostController_addPostsToSavedList_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID của SavedPostList",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddPostToSavedListDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Thêm thành công"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Thêm các bài viết vào danh sách lưu cụ thể",
+        "tags": [
+          "SavedPost"
+        ]
+      }
+    },
+    "/api/v1/saved-posts/{id}/posts": {
+      "get": {
+        "operationId": "SavedPostController_getSavedPosts_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID danh sách đã lưu",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Trang hiện tại",
+            "schema": {
+              "example": "1",
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số bài viết mỗi trang",
+            "schema": {
+              "example": "10",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PaginatedPostResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Lấy danh sách bài viết trong danh sách đã lưu",
+        "tags": [
+          "SavedPost"
+        ]
+      }
+    },
+    "/api/v1/saved-posts/{id}/remove": {
+      "post": {
+        "operationId": "SavedPostController_removeSavedPost_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID danh sách đã lưu",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RemoveSavedPostDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Gỡ bài viết khỏi danh sách thành công"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Gỡ bài viết khỏi danh sách đã lưu",
+        "tags": [
+          "SavedPost"
+        ]
+      }
+    },
+    "/api/v1/saved-posts/{id}": {
+      "delete": {
+        "operationId": "SavedPostController_deleteSavedPostList_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID danh sách đã lưu",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Xoá thành công"
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Xoá một danh sách đã lưu của người dùng",
+        "tags": [
+          "SavedPost"
+        ]
+      }
+    },
+    "/api/v1/blocked-users": {
+      "post": {
+        "operationId": "BlockedUserController_blockUser_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBlockDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseBlockDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Chặn một người dùng với một loại hành vi cụ thể (post, message, etc)",
+        "tags": [
+          "Blocked Users"
+        ]
+      },
+      "get": {
+        "operationId": "BlockedUserController_getBlockedUsers_v1",
+        "parameters": [
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "Lọc theo loại block",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ResponseBlockDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Lấy danh sách người dùng bị chặn (có thể lọc theo loại)",
+        "tags": [
+          "Blocked Users"
+        ]
+      }
+    },
+    "/api/v1/blocked-users/{id}": {
+      "delete": {
+        "operationId": "BlockedUserController_unblockUser_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID người dùng bị chặn",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": true,
+            "in": "query",
+            "description": "Loại hành vi bị chặn (post, message, etc)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Bỏ chặn người dùng theo blockType cụ thể",
+        "tags": [
+          "Blocked Users"
+        ]
+      }
+    },
+    "/api/v1/blocked-users/{id}/check": {
+      "get": {
+        "operationId": "BlockedUserController_isBlocked_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID người cần kiểm tra",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "Loại block (post, message, etc)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Kiểm tra xem người dùng đã bị chặn hay chưa (có thể theo loại)",
+        "tags": [
+          "Blocked Users"
+        ]
+      }
+    },
+    "/api/v1/search/all": {
+      "get": {
+        "operationId": "SearchController_searchAll_v1",
+        "parameters": [
+          {
+            "name": "keyword",
+            "required": true,
+            "in": "query",
+            "description": "Từ khóa tìm kiếm",
+            "schema": {
+              "example": "Ngày mới",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Tìm kiếm bài viết, sự kiện, người dùng theo từ khoá",
+        "tags": [
+          "Search"
+        ]
+      }
+    },
+    "/api/v1/search/posts": {
       "get": {
         "operationId": "SearchController_searchPosts_v1",
         "parameters": [
@@ -1446,7 +2446,38 @@
             "bearer": []
           }
         ],
-        "summary": "Tìm kiếm bài viết, người dùng theo từ khoá",
+        "summary": "Tìm kiếm bài viết theo từ khoá",
+        "tags": [
+          "Search"
+        ]
+      }
+    },
+    "/api/v1/search/events": {
+      "get": {
+        "operationId": "SearchController_searchEvents_v1",
+        "parameters": [
+          {
+            "name": "keyword",
+            "required": true,
+            "in": "query",
+            "description": "Từ khóa tìm kiếm",
+            "schema": {
+              "example": "Ngày mới",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Tìm kiếm sự kiện theo từ khoá",
         "tags": [
           "Search"
         ]
@@ -1480,6 +2511,550 @@
         "summary": "Tìm kiếm người dùng theo từ khoá",
         "tags": [
           "Search"
+        ]
+      }
+    },
+    "/api/v1/search/friends": {
+      "get": {
+        "operationId": "SearchController_searchFriends_v1",
+        "parameters": [
+          {
+            "name": "keyword",
+            "required": true,
+            "in": "query",
+            "description": "Từ khóa tìm kiếm",
+            "schema": {
+              "example": "Ngày mới",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Tìm kiếm người dùng theo từ khoá",
+        "tags": [
+          "Search"
+        ]
+      }
+    },
+    "/api/v1/search/posts/hashtag": {
+      "get": {
+        "operationId": "SearchController_searchPostsByHashtag_v1",
+        "parameters": [
+          {
+            "name": "keyword",
+            "required": true,
+            "in": "query",
+            "description": "Từ khóa tìm kiếm",
+            "schema": {
+              "example": "Ngày mới",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Tìm kiếm bài viết theo hashtag",
+        "tags": [
+          "Search"
+        ]
+      }
+    },
+    "/api/v1/search/events/hashtag": {
+      "get": {
+        "operationId": "SearchController_searchEventsByHashtag_v1",
+        "parameters": [
+          {
+            "name": "keyword",
+            "required": true,
+            "in": "query",
+            "description": "Từ khóa tìm kiếm",
+            "schema": {
+              "example": "Ngày mới",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Tìm kiếm sự kiện theo hashtag",
+        "tags": [
+          "Search"
+        ]
+      }
+    },
+    "/api/v1/conversations": {
+      "post": {
+        "operationId": "ConversationController_CreateConversation_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateConversationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseConversationDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Tạo cuộc trò chuyện với người dùng khác",
+        "tags": [
+          "Conversations"
+        ]
+      }
+    },
+    "/api/v1/conversations/me": {
+      "get": {
+        "operationId": "ConversationController_getConversationById_v1",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Trang hiện tại",
+            "schema": {
+              "example": "1",
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Số lượng mỗi trang",
+            "schema": {
+              "example": "10",
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedConversationResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Lấy phân trang cuộc trò chuyện theo của bản thân",
+        "tags": [
+          "Conversations"
+        ]
+      }
+    },
+    "/api/v1/conversations/{conversationId}": {
+      "patch": {
+        "operationId": "ConversationController_updateConversation_v1",
+        "parameters": [
+          {
+            "name": "conversationId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateConversationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseConversationDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Cập nhật thông tin cuộc trò chuyện (tên/ảnh)",
+        "tags": [
+          "Conversations"
+        ]
+      }
+    },
+    "/api/v1/conversations/{conversationId}/add-members": {
+      "patch": {
+        "operationId": "ConversationController_addMembersToConversation_v1",
+        "parameters": [
+          {
+            "name": "conversationId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateConversationMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseConversationDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Thêm thành viên vào nhóm",
+        "tags": [
+          "Conversations"
+        ]
+      }
+    },
+    "/api/v1/conversations/{conversationId}/leave": {
+      "patch": {
+        "operationId": "ConversationController_leaveGroupConversation_v1",
+        "parameters": [
+          {
+            "name": "conversationId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseConversationDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Rời khỏi nhóm trò chuyện",
+        "tags": [
+          "Conversations"
+        ]
+      }
+    },
+    "/api/v1/conversations/{conversationId}/kick": {
+      "patch": {
+        "operationId": "ConversationController_kickMemberFromGroup_v1",
+        "parameters": [
+          {
+            "name": "conversationId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateConversationMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseConversationDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Kick người ra khỏi nhóm trò chuyện (chỉ owner)",
+        "tags": [
+          "Conversations"
+        ]
+      }
+    },
+    "/api/v1/conversations/{conversationId}/members": {
+      "get": {
+        "operationId": "ConversationController_getGroupMembers_v1",
+        "parameters": [
+          {
+            "name": "conversationId",
+            "required": true,
+            "in": "path",
+            "description": "ID của cuộc trò chuyện (conversation)",
+            "schema": {
+              "example": "664b1d0fa1a98d5f6721aa01",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ResponseUserDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Lấy danh sách thành viên trong nhóm trò chuyện",
+        "tags": [
+          "Conversations"
+        ]
+      }
+    },
+    "/api/v1/messages/first": {
+      "post": {
+        "operationId": "MessageController_sendFirstMessage_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateFirstMessageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseMessageDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Gửi tin nhắn mới, tạo cuộc trò chuyện với bạn bè",
+        "tags": [
+          "Messages"
+        ]
+      }
+    },
+    "/api/v1/messages": {
+      "post": {
+        "operationId": "MessageController_sendMessage_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMessageDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseMessageDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Gửi tin nhắn trong một cuộc trò chuyện",
+        "tags": [
+          "Messages"
+        ]
+      }
+    },
+    "/api/v1/messages/conversation/{conversationId}": {
+      "get": {
+        "operationId": "MessageController_getMessages_v1",
+        "parameters": [
+          {
+            "name": "conversationId",
+            "required": true,
+            "in": "path",
+            "description": "ID cuộc trò chuyện",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ResponseMessageDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Lấy danh sách tin nhắn trong một cuộc trò chuyện (phân trang)",
+        "tags": [
+          "Messages"
+        ]
+      }
+    },
+    "/api/v1/messages/{id}/revoke": {
+      "patch": {
+        "operationId": "MessageController_revokeMessage_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID tin nhắn",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseMessageDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Thu hồi tin nhắn (chỉ người gửi được quyền)",
+        "tags": [
+          "Messages"
         ]
       }
     }
@@ -2025,6 +3600,139 @@
           "avatarUrl"
         ]
       },
+      "ActorDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "fullName",
+          "avatarUrl"
+        ]
+      },
+      "ResponseNotificationDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "actor": {
+            "$ref": "#/components/schemas/ActorDto"
+          },
+          "type": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "metaRef": {
+            "type": "string"
+          },
+          "metaModel": {
+            "type": "string"
+          },
+          "isRead": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "actor",
+          "type",
+          "isRead",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PagingMetaDto": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "number",
+            "example": "20"
+          },
+          "page": {
+            "type": "number",
+            "example": "1"
+          },
+          "limit": {
+            "type": "number",
+            "example": "10"
+          }
+        },
+        "required": [
+          "total",
+          "page",
+          "limit"
+        ]
+      },
+      "PaginatedNotificationResponseDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Lấy danh sách thông báo thành công"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseNotificationDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PagingMetaDto"
+          }
+        },
+        "required": [
+          "message",
+          "data",
+          "meta"
+        ]
+      },
+      "RegisterDeviceDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Firebase device token (FCM token)",
+            "example": "dSJxleYhTfylF38...x8QweT"
+          },
+          "platform": {
+            "type": "string",
+            "description": "Nền tảng thiết bị",
+            "example": "android",
+            "enum": [
+              "ios",
+              "android",
+              "web"
+            ]
+          }
+        },
+        "required": [
+          "token",
+          "platform"
+        ]
+      },
       "EventCreatorDto": {
         "type": "object",
         "properties": {
@@ -2052,11 +3760,15 @@
           },
           "name": {
             "type": "string"
+          },
+          "iconUrl": {
+            "type": "string"
           }
         },
         "required": [
           "_id",
-          "name"
+          "name",
+          "iconUrl"
         ]
       },
       "ResponseEventDto": {
@@ -2080,8 +3792,11 @@
           "creator": {
             "$ref": "#/components/schemas/EventCreatorDto"
           },
-          "sport": {
-            "$ref": "#/components/schemas/EventSportDto"
+          "sports": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EventSportDto"
+            }
           },
           "location": {
             "type": "object",
@@ -2096,6 +3811,20 @@
               "district": "Quận 1"
             }
           },
+          "taggedFriends": {
+            "description": "Danh sách bạn bè được gắn thẻ",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EventCreatorDto"
+            }
+          },
+          "hashtags": {
+            "description": "Danh sách hashtag",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
           "time": {
             "format": "date-time",
             "type": "string"
@@ -2103,11 +3832,25 @@
           "maxParticipants": {
             "type": "number"
           },
+          "participantsCount": {
+            "type": "number"
+          },
           "isPublic": {
             "type": "boolean"
           },
           "requiresApproval": {
             "type": "boolean"
+          },
+          "participationStatus": {
+            "type": "string",
+            "enum": [
+              "none",
+              "requested",
+              "joined",
+              "invited",
+              "rejected",
+              "creator"
+            ]
           },
           "createdAt": {
             "format": "date-time",
@@ -2125,10 +3868,35 @@
           "location",
           "time",
           "maxParticipants",
+          "participantsCount",
           "isPublic",
           "requiresApproval",
+          "participationStatus",
           "createdAt",
           "updatedAt"
+        ]
+      },
+      "PaginatedEventResponseDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Lấy danh sách bài viết thành công"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseEventDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PagingMetaDto"
+          }
+        },
+        "required": [
+          "message",
+          "data",
+          "meta"
         ]
       },
       "CreateEventDto": {
@@ -2151,10 +3919,16 @@
               "type": "string"
             }
           },
-          "sport": {
-            "type": "string",
-            "description": "ID môn thể thao",
-            "example": "665a7e1e81ab123456789012"
+          "sports": {
+            "description": "Danh sách ID môn thể thao",
+            "example": [
+              "665a7e1e81ab123456789012",
+              "665a7e1e81ab123456789013"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "location": {
             "type": "object",
@@ -2167,6 +3941,17 @@
               "address": "123 Lê Lợi, Quận 1",
               "city": "Hồ Chí Minh",
               "district": "Quận 1"
+            }
+          },
+          "taggedFriends": {
+            "description": "Danh sách ID của bạn bè được gắn thẻ",
+            "example": [
+              "60d21b4667d0d8992e610c85",
+              "60d21b4967d0d8992e610c86"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
             }
           },
           "time": {
@@ -2217,10 +4002,16 @@
               "type": "string"
             }
           },
-          "sport": {
-            "type": "string",
-            "description": "ID môn thể thao",
-            "example": "665a7e1e81ab123456789012"
+          "sports": {
+            "description": "Danh sách ID môn thể thao",
+            "example": [
+              "665a7e1e81ab123456789012",
+              "665a7e1e81ab123456789013"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "location": {
             "type": "object",
@@ -2258,6 +4049,78 @@
           }
         }
       },
+      "UserShortDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "fullName",
+          "avatarUrl"
+        ]
+      },
+      "EventJoinRequestDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "accepted",
+              "rejected",
+              "cancelled"
+            ]
+          },
+          "user": {
+            "$ref": "#/components/schemas/UserShortDto"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "status",
+          "user",
+          "createdAt"
+        ]
+      },
+      "PaginatedEventJoinRequestDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Lấy danh sách yêu cầu thành công"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EventJoinRequestDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PagingMetaDto"
+          }
+        },
+        "required": [
+          "message",
+          "data",
+          "meta"
+        ]
+      },
       "UpdateRespondJoinRequestDto": {
         "type": "object",
         "properties": {
@@ -2272,6 +4135,50 @@
         },
         "required": [
           "status"
+        ]
+      },
+      "EventInvitationItemDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "event": {
+            "$ref": "#/components/schemas/ResponseEventDto"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "example": "2025-07-14T10:00:00.000Z"
+          }
+        },
+        "required": [
+          "_id",
+          "event",
+          "createdAt"
+        ]
+      },
+      "PaginatedEventInvitationDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Lấy danh sách yêu cầu thành công"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EventInvitationItemDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PagingMetaDto"
+          }
+        },
+        "required": [
+          "message",
+          "data",
+          "meta"
         ]
       },
       "PostAuthorDto": {
@@ -2291,6 +4198,21 @@
           "_id",
           "fullName",
           "avatarUrl"
+        ]
+      },
+      "MediaResponseItemDto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "type"
         ]
       },
       "PostResponseDto": {
@@ -2316,14 +4238,51 @@
             "type": "string",
             "example": "Tốt cho sức khỏe"
           },
-          "imageUrls": {
-            "example": [
-              "image.jpg"
-            ],
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MediaResponseItemDto"
+            }
+          },
+          "sports": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EventSportDto"
+            }
+          },
+          "location": {
+            "type": "object",
+            "example": {
+              "type": "Point",
+              "coordinates": [
+                106.660172,
+                10.762622
+              ],
+              "address": "123 Lê Lợi, Quận 1",
+              "city": "Hồ Chí Minh",
+              "district": "Quận 1"
+            }
+          },
+          "taggedFriends": {
+            "description": "Danh sách bạn bè được gắn thẻ",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PostAuthorDto"
+            }
+          },
+          "hashtags": {
+            "description": "Danh sách hashtag",
             "type": "array",
             "items": {
               "type": "string"
             }
+          },
+          "sharedPost": {
+            "$ref": "#/components/schemas/PostResponseDto"
+          },
+          "sharedPostIsRestricted": {
+            "type": "boolean",
+            "description": "Shared post đã bị giới hạn quyền xem hay không"
           },
           "visibility": {
             "type": "string",
@@ -2359,34 +4318,14 @@
           "author",
           "title",
           "content",
+          "media",
+          "location",
           "visibility",
           "likeCount",
           "commentCount",
           "isLiked",
           "createdAt",
           "updatedAt"
-        ]
-      },
-      "PagingMetaDto": {
-        "type": "object",
-        "properties": {
-          "total": {
-            "type": "number",
-            "example": "20"
-          },
-          "page": {
-            "type": "number",
-            "example": "1"
-          },
-          "limit": {
-            "type": "number",
-            "example": "10"
-          }
-        },
-        "required": [
-          "total",
-          "page",
-          "limit"
         ]
       },
       "PaginatedPostResponseDto": {
@@ -2412,6 +4351,67 @@
           "meta"
         ]
       },
+      "ResponseFeedPostGroupDto": {
+        "type": "object",
+        "properties": {
+          "sharePost": {
+            "nullable": true,
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/PostResponseDto"
+              }
+            ]
+          },
+          "sharedPostIsRestricted": {
+            "type": "boolean",
+            "description": "Bài viết gốc có bị giới hạn quyền xem hay không"
+          },
+          "posts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PostResponseDto"
+            }
+          }
+        },
+        "required": [
+          "sharePost",
+          "sharedPostIsRestricted",
+          "posts"
+        ]
+      },
+      "PaginatedFeedPostResponseDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseFeedPostGroupDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PagingMetaDto"
+          }
+        },
+        "required": [
+          "items",
+          "meta"
+        ]
+      },
+      "MediaItemDto": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string"
+          },
+          "mimeType": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "url",
+          "mimeType"
+        ]
+      },
       "CreatePostDto": {
         "type": "object",
         "properties": {
@@ -2423,12 +4423,51 @@
             "type": "string",
             "description": "Nội dung bài viết"
           },
-          "imageUrls": {
-            "description": "Danh sách URL hình ảnh",
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MediaItemDto"
+            }
+          },
+          "sports": {
+            "description": "Danh sách ID môn thể thao",
+            "example": [
+              "665a7e1e81ab123456789012",
+              "665a7e1e81ab123456789013"
+            ],
             "type": "array",
             "items": {
               "type": "string"
             }
+          },
+          "location": {
+            "type": "object",
+            "description": "Địa chỉ người dùng (tọa độ + thông tin)",
+            "example": {
+              "coordinates": [
+                106.660172,
+                10.762622
+              ],
+              "address": "123 Lê Lợi, Quận 1",
+              "city": "Hồ Chí Minh",
+              "district": "Quận 1"
+            }
+          },
+          "taggedFriends": {
+            "description": "Danh sách ID của bạn bè được gắn thẻ",
+            "example": [
+              "60d21b4667d0d8992e610c85",
+              "60d21b4967d0d8992e610c86"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "sharedPost": {
+            "type": "string",
+            "description": "ID của bài viết gốc",
+            "example": "60d21b4667d0d8992e610c85"
           },
           "visibility": {
             "type": "string",
@@ -2445,35 +4484,6 @@
           "content"
         ]
       },
-      "UpdatePostDto": {
-        "type": "object",
-        "properties": {
-          "title": {
-            "type": "string",
-            "description": "Tiêu đề bài viết"
-          },
-          "content": {
-            "type": "string",
-            "description": "Nội dung bài viết"
-          },
-          "imageUrls": {
-            "description": "Danh sách URL hình ảnh",
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "visibility": {
-            "type": "string",
-            "enum": [
-              "public",
-              "friends",
-              "private"
-            ],
-            "default": "public"
-          }
-        }
-      },
       "CreateCommentDto": {
         "type": "object",
         "properties": {
@@ -2488,6 +4498,34 @@
           "content": {
             "type": "string",
             "description": "Nội dung bình luận"
+          },
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MediaItemDto"
+            }
+          },
+          "taggedFriends": {
+            "description": "Danh sách ID của bạn bè được gắn thẻ",
+            "example": [
+              "60d21b4667d0d8992e610c85",
+              "60d21b4967d0d8992e610c86"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "mentionedFriends": {
+            "description": "Danh sách ID của bạn bè được nhắc tên",
+            "example": [
+              "60d21b4667d0d8992e610c85",
+              "60d21b4967d0d8992e610c86"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         },
         "required": [
@@ -2529,6 +4567,12 @@
           "content": {
             "type": "string"
           },
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MediaItemDto"
+            }
+          },
           "likeCount": {
             "type": "number",
             "example": "123"
@@ -2555,6 +4599,7 @@
           "author",
           "postId",
           "content",
+          "media",
           "likeCount",
           "commentCount",
           "isLiked",
@@ -2652,6 +4697,427 @@
           "reactionType",
           "createdAt",
           "updatedAt"
+        ]
+      },
+      "CreateSavedPostListDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Danh sách yêu thích",
+            "description": "Tên danh sách lưu bài viết"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "ResponseSavedPostListDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "example": "dfew2..."
+          },
+          "name": {
+            "type": "string"
+          },
+          "mediaUrl": {
+            "type": "string",
+            "example": "https://example.com/image.jpg"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "name",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PaginatedSavedPostListDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Lấy danh sách lưu bài viết thành công"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseSavedPostListDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PagingMetaDto"
+          }
+        },
+        "required": [
+          "message",
+          "data",
+          "meta"
+        ]
+      },
+      "AddPostToSavedListDto": {
+        "type": "object",
+        "properties": {
+          "postIds": {
+            "description": "Danh sách postId cần thêm vào danh sách lưu",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "postIds"
+        ]
+      },
+      "RemoveSavedPostDto": {
+        "type": "object",
+        "properties": {
+          "postId": {
+            "type": "string",
+            "description": "ID bài viết cần gỡ khỏi danh sách",
+            "example": "60d..."
+          }
+        },
+        "required": [
+          "postId"
+        ]
+      },
+      "CreateBlockDto": {
+        "type": "object",
+        "properties": {
+          "blockedUserId": {
+            "type": "string",
+            "description": "ID người bị chặn",
+            "example": "664b1d0fa1a98d5f6721aa01"
+          },
+          "blockType": {
+            "type": "string",
+            "description": "Loại hành vi bị chặn: post, message, event",
+            "example": "post"
+          }
+        },
+        "required": [
+          "blockedUserId",
+          "blockType"
+        ]
+      },
+      "BlockedUserDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "fullName",
+          "avatarUrl"
+        ]
+      },
+      "ResponseBlockDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "blocked": {
+            "$ref": "#/components/schemas/BlockedUserDto"
+          },
+          "blockTypes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "post",
+                "message",
+                "event"
+              ]
+            }
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "blocked",
+          "blockTypes",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "CreateConversationDto": {
+        "type": "object",
+        "properties": {
+          "friendIds": {
+            "description": "Danh sách ID người bạn cần tạo cuộc trò chuyện cùng",
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "isGroup": {
+            "type": "boolean",
+            "description": "Loại hội thoại: true nếu là nhóm, false nếu là trò chuyện 1-1",
+            "example": false
+          }
+        },
+        "required": [
+          "friendIds",
+          "isGroup"
+        ]
+      },
+      "MessageSenderDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "fullName",
+          "avatarUrl"
+        ]
+      },
+      "ResponseMessageDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "conversationId": {
+            "type": "string"
+          },
+          "sender": {
+            "$ref": "#/components/schemas/MessageSenderDto"
+          },
+          "text": {
+            "type": "string"
+          },
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MediaItemDto"
+            }
+          },
+          "replyTo": {
+            "$ref": "#/components/schemas/ResponseMessageDto"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "sent",
+              "delivered",
+              "seen"
+            ]
+          },
+          "isRevoked": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "conversationId",
+          "sender",
+          "text",
+          "media",
+          "status",
+          "isRevoked",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "ResponseConversationDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": "string"
+          },
+          "owner": {
+            "$ref": "#/components/schemas/MessageSenderDto"
+          },
+          "participants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageSenderDto"
+            }
+          },
+          "lastMessage": {
+            "$ref": "#/components/schemas/ResponseMessageDto"
+          },
+          "isGroup": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "name",
+          "avatarUrl",
+          "participants",
+          "isGroup",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
+      "PaginatedConversationResponseDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "example": "Lấy danh sách bài viết thành công"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseConversationDto"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/PagingMetaDto"
+          }
+        },
+        "required": [
+          "message",
+          "data",
+          "meta"
+        ]
+      },
+      "UpdateConversationDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Tên nhóm (nếu là group)"
+          },
+          "avatarUrl": {
+            "type": "string",
+            "description": "Ảnh đại diện của cuộc trò chuyện"
+          }
+        }
+      },
+      "UpdateConversationMemberDto": {
+        "type": "object",
+        "properties": {
+          "memberIds": {
+            "description": "Danh sách ID của thành viên cần thêm hoặc xoá",
+            "example": [
+              "664b1d0fa1a98d5f6721aa01",
+              "664b1d12a1a98d5f6721aa02"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "memberIds"
+        ]
+      },
+      "CreateFirstMessageDto": {
+        "type": "object",
+        "properties": {
+          "userIds": {
+            "description": "Danh sách userId (bao gồm user hiện tại và người muốn gửi)",
+            "example": [
+              "664b1d0fa1a98d5f6721aa01",
+              "664b1d12a1a98d5f6721aa02"
+            ],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "text": {
+            "type": "string",
+            "description": "Nội dung tin nhắn"
+          },
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MediaItemDto"
+            }
+          }
+        },
+        "required": [
+          "userIds"
+        ]
+      },
+      "CreateMessageDto": {
+        "type": "object",
+        "properties": {
+          "conversationId": {
+            "type": "string",
+            "description": "ID cuộc trò chuyện"
+          },
+          "text": {
+            "type": "string",
+            "description": "Nội dung tin nhắn"
+          },
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MediaItemDto"
+            }
+          },
+          "replyTo": {
+            "type": "string",
+            "description": "ID tin nhắn trả lời"
+          }
+        },
+        "required": [
+          "conversationId"
         ]
       }
     }

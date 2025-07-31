@@ -74,4 +74,13 @@ export class UserRepositoryImpl implements IUserRepository {
 		}
 		return user;
 	}
+
+	async findByUsernames(usernames: string[]): Promise<User[]> {
+		if (usernames.length === 0) return [];
+
+		return this.userModel
+			.find({ username: { $in: usernames.map(name => name.toLowerCase()) } })
+			.select('_id fullName username avatarUrl') // chọn field cần thiết
+			.exec();
+	}
 }

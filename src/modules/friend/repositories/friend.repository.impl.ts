@@ -15,7 +15,6 @@ export class FriendRepositoryImpl implements IFriendRepository {
 		}
 		// đảm bảo user1Id < user2Id để tránh duplication
 		const [u1, u2] = [user1Id, user2Id].sort();
-		// console.log('User1: ', u1, 'User2: ', u2);
 
 		return this.model.create({
 			user1: new Types.ObjectId(u1),
@@ -41,6 +40,27 @@ export class FriendRepositoryImpl implements IFriendRepository {
 
 		// Trích danh sách bạn bè từ user1/user2
 		const friendIds = friends.map(f => (f.user1.equals(userObjectId) ? f.user2 : f.user1));
+
+		return friendIds;
+	}
+
+	async filterFriendIds(userId: string, targetUserIds: string[]): Promise<string[]> {
+		if (!userId || !targetUserIds?.length) return [];
+
+		const userObjectId = new Types.ObjectId(userId);
+		const targetObjectIds = targetUserIds.map(id => new Types.ObjectId(id));
+
+		const friends = await this.model.find({
+			$or: [
+				{ user1: userObjectId, user2: { $in: targetObjectIds } },
+				{ user2: userObjectId, user1: { $in: targetObjectIds } },
+			],
+		});
+
+		// Trích ra danh sách bạn bè thực sự từ các document
+		const friendIds = friends.map(f =>
+			f.user1.equals(userObjectId) ? f.user2.toString() : f.user1.toString(),
+		);
 
 		return friendIds;
 	}

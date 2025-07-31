@@ -14,4 +14,5 @@ export abstract class ICommentRepository {
 	abstract updateCommentCount(commentId: string, increment: number): Promise<void>;
 	abstract findAllByPostId(postId: string): Promise<CommentDocument[]>;
 	abstract deleteManyByIds(commentIds: string[]): Promise<void>;
+	abstract revokeComment(commentId: string, userId: string): Promise<CommentDocument | null>;
 }

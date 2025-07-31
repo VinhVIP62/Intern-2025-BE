@@ -33,6 +33,6 @@ import { FriendModule } from '@modules/friend/friend.module';
 			useClass: UserRepositoryImpl,
 		},
 	],
-	exports: [UserService],
+	exports: [UserService, IUserRepository],
 })
 export class UserModule {}

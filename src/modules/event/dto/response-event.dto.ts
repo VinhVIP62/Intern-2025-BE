@@ -1,3 +1,4 @@
+import { ParticipationStatus } from '@common/enum/event-participation-status';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, Transform, Type } from 'class-transformer';
 import { Types } from 'mongoose';
@@ -26,6 +27,10 @@ export class EventSportDto {
 	@ApiProperty()
 	@Expose()
 	name: string;
+
+	@ApiProperty()
+	@Expose()
+	iconUrl: string;
 }
 
 export class ResponseEventDto {
@@ -51,10 +56,10 @@ export class ResponseEventDto {
 	@Type(() => EventCreatorDto)
 	creator: EventCreatorDto;
 
-	@ApiPropertyOptional({ type: () => EventSportDto })
-	@Expose({ name: 'sport' })
+	@ApiPropertyOptional({ type: () => [EventSportDto] })
+	@Expose({ name: 'sports' })
 	@Type(() => EventSportDto)
-	sport?: EventSportDto;
+	sports?: EventSportDto[];
 
 	@ApiProperty({
 		example: {
@@ -74,6 +79,18 @@ export class ResponseEventDto {
 		district: string;
 	};
 
+	@Expose()
+	@ApiPropertyOptional({
+		type: () => [EventCreatorDto],
+		description: 'Danh sách bạn bè được gắn thẻ',
+	})
+	@Type(() => EventCreatorDto)
+	taggedFriends?: EventCreatorDto[];
+
+	@ApiPropertyOptional({ type: [String], description: 'Danh sách hashtag' })
+	@Expose()
+	hashtags?: string[];
+
 	@ApiProperty()
 	@Expose()
 	time: Date;
@@ -84,11 +101,22 @@ export class ResponseEventDto {
 
 	@ApiProperty()
 	@Expose()
+	participantsCount: number;
+
+	@Expose()
+	avatarUrls?: string[];
+
+	@ApiProperty()
+	@Expose()
 	isPublic: boolean;
 
 	@ApiProperty()
 	@Expose()
 	requiresApproval: boolean;
+
+	@ApiProperty({ enum: ParticipationStatus })
+	@Expose()
+	participationStatus: ParticipationStatus;
 
 	@ApiProperty()
 	@Expose()

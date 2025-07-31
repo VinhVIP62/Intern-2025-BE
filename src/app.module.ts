@@ -18,6 +18,7 @@ import { LoggerMiddleware } from '@common/middleware/logger.middleware';
 import { OptionalJwtMiddleware } from '@common/middleware/optional-jwt.middleware';
 import { JwtModule } from '@nestjs/jwt';
 import { ElasticModule } from '@modules/elastic/elastic.module';
+import { RealtimeModule } from '@modules/realtime/realtime.module';
 
 @Module({
 	imports: [
@@ -43,6 +44,7 @@ import { ElasticModule } from '@modules/elastic/elastic.module';
 		ThrottlerModule.forRootAsync(ThrottlerConfig),
 		ElasticModule,
 		LoggerModule,
+		RealtimeModule,
 		RouteModule,
 	],
 	providers: [

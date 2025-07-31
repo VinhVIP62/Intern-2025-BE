@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types } from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class EventParticipant {
@@ -7,11 +7,16 @@ export class EventParticipant {
 
 	@Prop({ type: Types.ObjectId, ref: 'User', required: true }) user: Types.ObjectId;
 
-	@Prop({ enum: ['pending', 'accepted', 'rejected', 'cancelled'], default: 'pending' })
-	status: 'pending' | 'accepted' | 'rejected' | 'cancelled';
+	@Prop({ enum: ['pending', 'accepted', 'rejected', 'cancelled', 'invited'], default: 'pending' })
+	status: 'pending' | 'accepted' | 'rejected' | 'cancelled' | 'invited';
 
 	@Prop({ default: null }) respondedAt: Date;
+
+	@Prop({ default: Date.now }) createdAt: Date;
+	@Prop({ default: Date.now }) updatedAt: Date;
 }
+
+export type EventParticipantDocument = HydratedDocument<EventParticipant>;
 
 export const EventParticipantSchema = SchemaFactory.createForClass(EventParticipant);
 

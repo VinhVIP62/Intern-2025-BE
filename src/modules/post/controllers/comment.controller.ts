@@ -4,6 +4,7 @@ import {
 	Controller,
 	Get,
 	Param,
+	Patch,
 	Post,
 	Query,
 	Req,
@@ -56,5 +57,18 @@ export class CommentController {
 	) {
 		const userId = req.user?.id ?? null;
 		return this.commentService.getCommentsByPost(postId, userId, query);
+	}
+
+	@Version('1')
+	@Patch(':id/revoke')
+	@ApiBearerAuth()
+	@UseInterceptors(ClassSerializerInterceptor)
+	@ApiOperation({ summary: 'Thu hồi comment (chỉ người tạo comment được quyền)' })
+	@ApiParam({ name: 'id', description: 'ID comment', type: String })
+	@Response('response.comment.revoke.success')
+	@ApiResponse({ status: 200, type: CommentResponseDto })
+	async revokeComment(@Param('id') id: string, @Req() req: Request): Promise<CommentResponseDto> {
+		const userId = req.user!.id;
+		return this.commentService.revokeComment(userId, id);
 	}
 }

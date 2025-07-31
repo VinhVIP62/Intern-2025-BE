@@ -81,6 +81,11 @@ export class UserService {
 
 			if (Object.keys(partialUpdate).length > 0) {
 				await this.elasticIndexingService.updateUser(userId, partialUpdate);
+
+				// Đồng bộ tên mới với các bài viết và sự kiện của người dùng
+				if (dto.fullName) {
+					await this.elasticIndexingService.updateAuthorNameForPostsAndEvents(userId, dto.fullName);
+				}
 			}
 		} catch (err) {
 			this.logger.warn(

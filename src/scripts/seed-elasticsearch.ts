@@ -3,8 +3,8 @@ import { Model } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
 import { Post } from '@modules/post/entities/post.schema';
 import { User } from '@modules/user/entities/user.schema';
-import { SearchService } from '@modules/search/providers/search.service';
 import { AppModule } from 'src/app.module';
+import { ElasticIndexingService } from '@modules/elastic/elastic-indexing.service';
 
 type PostWithAuthor = {
 	_id: string;
@@ -14,6 +14,20 @@ type PostWithAuthor = {
 		_id: string;
 		fullName: string;
 	};
+	hashtags: string[];
+	sports: { _id: string; name: string }[];
+};
+
+type EventWithCreatorAndSports = {
+	_id: string;
+	title: string;
+	description?: string;
+	sports: { _id: string; name: string }[];
+	creator: {
+		_id: string;
+		fullName: string;
+	};
+	hashtags: string[];
 };
 
 async function bootstrap() {
@@ -21,28 +35,59 @@ async function bootstrap() {
 
 	const postModel = app.get<Model<Post>>(getModelToken(Post.name));
 	const userModel = app.get<Model<User>>(getModelToken(User.name));
-	const searchService = app.get(SearchService);
+	const elasticIndexingService = app.get(ElasticIndexingService);
 
 	// --- Seed Posts ---
-	const posts = await postModel.find().populate('author', '_id fullName').lean<PostWithAuthor[]>();
+	const posts = await postModel
+		.find()
+		.populate('author', '_id fullName')
+		.populate('sports')
+		.lean<PostWithAuthor[]>();
 
 	for (const post of posts) {
-		await searchService.indexPost({
+		await elasticIndexingService.indexPost({
 			id: post._id.toString(),
 			title: post.title,
 			content: post.content,
 			authorId: post.author._id.toString(),
 			authorName: post.author?.fullName,
+			hashtags: post.hashtags,
+			sports: post.sports?.map(p => p.name) ?? [],
 		});
 	}
 
 	console.log(`✅ Indexed ${posts.length} posts to Elasticsearch`);
 
+	// --- Seed Events ---
+	const eventModel = app.get<Model<Event>>(getModelToken(Event.name));
+
+	const events = await eventModel
+		.find()
+		.populate('creator', '_id fullName')
+		.populate('sports', '_id name') // populate sport names
+		.lean<EventWithCreatorAndSports[]>();
+
+	for (const event of events) {
+		const sportNames = event.sports?.map(s => s.name) ?? [];
+
+		await elasticIndexingService.indexEvent({
+			id: event._id.toString(),
+			creatorId: event.creator._id.toString(),
+			creatorName: event.creator.fullName,
+			title: event.title,
+			description: event.description,
+			sports: sportNames,
+			hashtags: event.hashtags,
+		});
+	}
+
+	console.log(`✅ Indexed ${events.length} events to Elasticsearch`);
+
 	// --- Seed Users ---
 	const users = await userModel.find().lean();
 
 	for (const user of users) {
-		await searchService.indexUser({
+		await elasticIndexingService.indexUser({
 			id: user._id.toString(),
 			fullName: user.fullName,
 			// bio: user.bio || '',

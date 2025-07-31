@@ -42,18 +42,21 @@
 	},
 	"event": {
 		"create": { "success": "Tạo sự kiện thành công" },
-		"get": { "list": "Lấy danh sách sự kiện", "detail": "Chi tiết sự kiện" },
-		"invite": { "success": "Mời bạn bè tham gia" },
-		"respond": { "success": "Phản hồi tham gia sự kiện" },
+		"update": { "success": "Cập nhật sự kiện thành công" },
+		"get": { "list": "Lấy danh sách sự kiện thành công", "detail": "Chi tiết sự kiện thành công" },
+		"invite": { "success": "Mời bạn bè tham gia sự kiện thành công" },
+		"respond": { "success": "Phản hồi tham gia sự kiện thành công" },
 		"participants": { "list": "Danh sách người tham gia" },
-		"join": {
-			"success": "Yêu cầu tham gia sự kiện đã được gửi."
+		"join": { "success": "Yêu cầu tham gia sự kiện đã được gửi." },
+		"explore": { "success": "Khám phá sự kiện gần bạn thành công" },
+		"requests": { "success": "Lấy danh sách yêu cầu tham gia sự kiện thành công" },
+		"invitations": {
+			"success": "Lấy danh sách lời mời tham gia sự kiện thành công",
+			"response": "Phản hồi lời mời tham gia sự kiện thành công"
 		},
-		"request": {
-			"respond": {
-				"success": "Phản hồi yêu cầu tham gia sự kiện thành công"
-			}
-		}
+		"paticipants": { "success": "Lấy danh sách người tham gia sự kiện thành công" },
+		"createdList": { "success": "Lấy danh sách sự kiện do người dùng tạo thành công" },
+		"joinedList": { "success": "Lấy danh sách sự kiện đã tham gia thành công" }
 	},
 	"notification": {
 		"list": "Lấy danh sách thông báo",

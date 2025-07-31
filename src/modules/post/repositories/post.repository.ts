@@ -11,15 +11,44 @@ export abstract class IPostRepository {
 		limit: number;
 		friendIds?: string[];
 	}): Promise<{ data: PostDocument[]; total: number }>;
+
 	abstract findManyByIds(
 		postIds: Types.ObjectId[],
 		viewerId: string | null,
+		friendIds: string[],
+		blockedUserIds: string[],
 	): Promise<PostDocument[]>;
-	abstract findById(postId: string): Promise<Post | null>;
+
+	abstract findDetailById(
+		postId: string,
+		viewerId: string | null,
+		friendIds: string[],
+	): Promise<PostDocument | null>;
+
+	abstract findById(postId: string): Promise<PostDocument | null>;
+
 	abstract create(postData: Partial<Post>): Promise<PostDocument>;
+
 	abstract updateById(postId: string, update: Partial<Post>): Promise<Post | null>;
+
 	abstract deleteById(postId: string): Promise<void>;
 
 	abstract updateLikeCount(postId: string, increment: number): Promise<void>;
+
 	abstract updateCommentCount(postId: string, increment: number): Promise<void>;
+
+	abstract getFeedPosts(
+		userId: string | null,
+		friendIds: string[],
+		blockedUserIds: string[],
+		page: number,
+		groupLimit: number,
+	): Promise<{
+		data: {
+			sharedPost: PostDocument | null;
+			sharedPostIsRestricted: boolean;
+			posts: PostDocument[];
+		}[];
+		total: number;
+	}>;
 }

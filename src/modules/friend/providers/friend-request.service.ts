@@ -2,17 +2,26 @@ import { Injectable } from '@nestjs/common';
 import { IFriendRequestRepository } from '../repositories/friend-request.repository';
 import { CreateFriendRequestDto } from '../dto/create-friend-request.dto';
 import { Types } from 'mongoose';
-import { BadRequest } from '@common/exceptions';
+import { BadRequest, EntityNotFound } from '@common/exceptions';
 import { IFriendRepository } from '../repositories/friend.repository';
 import { ResponseFriendRequestDto } from '../dto/reponse-friend-request.dto';
 import { plainToInstance } from 'class-transformer';
 import { checkCooldown } from '@common/utils/time.util';
+import { NotificationService } from '@modules/notification/providers/notification.service';
+import { NotificationType } from '@modules/notification/type/notification-type.enum';
+import { UserService } from '@modules/user/providers/user.service';
+import { SocketEventService } from '@modules/realtime/socket-event.service';
+import { FirebaseService } from '@modules/firebase/providers/firebase.service';
 
 @Injectable()
 export class FriendRequestService {
 	constructor(
 		private readonly friendRequestRepository: IFriendRequestRepository,
 		private readonly friendRepository: IFriendRepository,
+		private readonly notificationService: NotificationService,
+		private readonly userService: UserService,
+		private readonly socketEventService: SocketEventService,
+		private readonly firebaseService: FirebaseService,
 	) {}
 
 	async sendRequest(senderId: string, dto: CreateFriendRequestDto) {
@@ -65,6 +74,55 @@ export class FriendRequestService {
 			status: 'pending',
 		});
 
+		// Gửi thông báo realtime
+		const actor = await this.userService.findById(senderId);
+
+		if (!actor) {
+			throw new EntityNotFound('exception.user.notFound');
+		}
+
+		await this.notificationService.create({
+			actor: senderId,
+			receiver: dto.receiver,
+			type: NotificationType.FriendRequest,
+			title: 'Bạn có một lời mời kết bạn mới từ:',
+			content: `${actor?.fullName}`,
+			metaRef: friendRequest._id.toString(),
+			metaModel: 'FriendRequest',
+		});
+
+		this.socketEventService.sendNotification(dto.receiver, {
+			actor: {
+				_id: actor?._id.toString(),
+				fullName: actor?.fullName,
+				avatarUrl: actor?.avatarUrl,
+			},
+			type: NotificationType.FriendRequest,
+			title: 'Bạn có một lời mời kết bạn mới từ:',
+			content: `${actor?.fullName}`,
+			metaRef: friendRequest._id.toString(),
+			metaModel: 'FriendRequest',
+			isRead: false,
+			createdAt: new Date().toISOString(),
+		});
+
+		// Gửi push notification qua Firebase
+		await this.firebaseService.sendNotificationToUser(
+			dto.receiver,
+			'Lời mời kết bạn',
+			`${actor.fullName} đã gửi cho bạn một lời mời kết bạn.`,
+			{
+				actor: {
+					_id: actor._id.toString(),
+					fullName: actor.fullName,
+					avatarUrl: actor.avatarUrl,
+				},
+				type: NotificationType.FriendRequest,
+				metaRef: friendRequest._id.toString(),
+				metaModel: 'FriendRequest',
+			},
+		);
+
 		return friendRequest;
 	}
 
@@ -87,6 +145,38 @@ export class FriendRequestService {
 
 		// Cập nhật trạng thái lời mời thành accepted
 		await this.friendRequestRepository.updateStatus(senderId, receiverId, 'accepted');
+
+		await this.notificationService.create({
+			actor: receiverId,
+			receiver: senderId,
+			type: NotificationType.FriendRequestAccepted,
+			title: 'Lời mời kết bạn của bạn đã được chấp nhận',
+			content: '',
+			metaRef: request._id.toString(),
+			metaModel: 'FriendRequest',
+		});
+
+		// Gửi thông báo realtime
+		const actor = await this.userService.findById(receiverId);
+
+		if (!actor) {
+			throw new EntityNotFound('exception.user.notFound');
+		}
+
+		this.socketEventService.sendNotification(senderId, {
+			actor: {
+				_id: actor._id.toString(),
+				fullName: actor.fullName,
+				avatarUrl: actor.avatarUrl,
+			},
+			type: NotificationType.FriendRequestAccepted,
+			title: 'Lời mời kết bạn của bạn đã được chấp nhận',
+			content: '',
+			metaRef: request._id.toString(),
+			metaModel: 'FriendRequest',
+			isRead: false,
+			createdAt: new Date().toISOString(),
+		});
 
 		return {};
 	}

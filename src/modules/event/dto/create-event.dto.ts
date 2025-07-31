@@ -27,10 +27,14 @@ export class CreateEventDto {
 	@IsString({ each: true })
 	imageUrls?: string[];
 
-	@ApiPropertyOptional({ description: 'ID môn thể thao', example: '665a7e1e81ab123456789012' })
+	@ApiPropertyOptional({
+		description: 'Danh sách ID môn thể thao',
+		example: ['665a7e1e81ab123456789012', '665a7e1e81ab123456789013'],
+		type: [String],
+	})
 	@IsOptional()
-	@IsMongoId()
-	sport?: string;
+	@IsMongoId({ each: true })
+	sports?: string[];
 
 	@ApiPropertyOptional({
 		description: 'Địa chỉ người dùng (tọa độ + thông tin)',
@@ -49,6 +53,16 @@ export class CreateEventDto {
 		city: string;
 		district: string;
 	};
+
+	@ApiPropertyOptional({
+		description: 'Danh sách ID của bạn bè được gắn thẻ',
+		type: [String],
+		example: ['60d21b4667d0d8992e610c85', '60d21b4967d0d8992e610c86'],
+	})
+	@IsArray()
+	@IsString({ each: true })
+	@IsOptional()
+	taggedFriends?: string[];
 
 	@ApiProperty({ description: 'Thời gian diễn ra sự kiện', example: '2025-07-09T08:30:00.000Z' })
 	@IsDateString()

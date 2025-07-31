@@ -14,3 +14,4 @@ export class FriendRequest {
 export type FriendRequestDocument = HydratedDocument<FriendRequest>;
 
 export const FriendRequestSchema = SchemaFactory.createForClass(FriendRequest);
+FriendRequestSchema.index({ sender: 1, receiver: 1 }, { unique: true });

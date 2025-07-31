@@ -11,6 +11,9 @@ import { Friend, FriendSchema } from './entities/friend.schema';
 import { FriendController } from './controllers/friend.controller';
 import { FriendService } from './providers/friend.service';
 import { UserModule } from '@modules/user/user.module';
+import { NotificationModule } from '@modules/notification/notification.module';
+import { RealtimeModule } from '@modules/realtime/realtime.module';
+import { FirebaseModule } from '@modules/firebase/firebase.module';
 
 @Module({
 	imports: [
@@ -19,6 +22,9 @@ import { UserModule } from '@modules/user/user.module';
 			{ name: Friend.name, schema: FriendSchema },
 		]),
 		forwardRef(() => UserModule),
+		NotificationModule,
+		RealtimeModule,
+		FirebaseModule,
 	],
 	controllers: [FriendRequestController, FriendController],
 	providers: [

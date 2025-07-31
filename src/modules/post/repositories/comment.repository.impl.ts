@@ -9,12 +9,12 @@ export class CommentRepositoryImpl implements ICommentRepository {
 	constructor(@InjectModel(Comment.name) private readonly commentModel: Model<Comment>) {}
 
 	async findById(id: string): Promise<Comment | null> {
-		return this.commentModel.findById(id).populate('author', '_id fullName avatarUrl').exec();
+		return await this.commentModel.findById(id).populate('author', '_id fullName avatarUrl').exec();
 	}
 
 	async create(comment: Partial<Comment>): Promise<Comment> {
 		const created = new this.commentModel(comment);
-		return created.save();
+		return await created.save();
 	}
 
 	async findByPostIdWithPagination(params: {
@@ -65,5 +65,17 @@ export class CommentRepositoryImpl implements ICommentRepository {
 				_id: { $in: commentIds.map(id => new Types.ObjectId(id)) },
 			})
 			.exec();
+	}
+
+	async revokeComment(commentId: string, userId: string): Promise<CommentDocument | null> {
+		const comment = await this.commentModel
+			.findOneAndUpdate(
+				{ _id: new Types.ObjectId(commentId), author: new Types.ObjectId(userId) },
+				{ isRevoked: true },
+				{ new: true },
+			)
+			.populate('author', '_id fullName avatarUrl');
+
+		return comment;
 	}
 }

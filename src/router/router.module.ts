@@ -11,6 +11,9 @@ import {
 	SearchModule,
 	UserModule,
 } from '../modules';
+import { ChatModule } from '@modules/chat/chat.module';
+import { FirebaseModule } from '@modules/firebase/firebase.module';
+import { BlockModule } from '@modules/block/block.module';
 
 @Module({
 	imports: [
@@ -26,6 +29,9 @@ import {
 					{ path: '', module: PostModule },
 					{ path: '', module: SearchModule },
 					{ path: '', module: UserModule },
+					{ path: '', module: ChatModule },
+					{ path: '', module: FirebaseModule },
+					{ path: '', module: BlockModule },
 				],
 			},
 		]),
@@ -37,6 +43,9 @@ import {
 		PostModule,
 		SearchModule,
 		UserModule,
+		ChatModule,
+		FirebaseModule,
+		BlockModule,
 	],
 })
 export class RouteModule {}

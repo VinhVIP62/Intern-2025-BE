@@ -1,4 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { EventSportDto } from '@modules/event/dto/response-event.dto';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Expose, Transform, Type } from 'class-transformer';
 import { Types } from 'mongoose';
 
@@ -15,6 +16,16 @@ export class PostAuthorDto {
 	@ApiProperty()
 	@Expose()
 	avatarUrl: string;
+}
+
+class MediaResponseItemDto {
+	@ApiProperty()
+	@Expose()
+	url: string;
+
+	@ApiProperty()
+	@Expose()
+	type: string;
 }
 
 export class PostResponseDto {
@@ -36,9 +47,54 @@ export class PostResponseDto {
 	@Expose()
 	content: string;
 
-	@ApiProperty({ type: [String], required: false, example: ['image.jpg'] })
+	@ApiProperty({ type: [MediaResponseItemDto] })
+	@Expose({ name: 'media' })
+	@Type(() => MediaResponseItemDto)
+	media?: MediaResponseItemDto[];
+
+	@ApiPropertyOptional({ type: () => [EventSportDto] })
+	@Expose({ name: 'sports' })
+	@Type(() => EventSportDto)
+	sports?: EventSportDto[];
+
+	@ApiProperty({
+		example: {
+			type: 'Point',
+			coordinates: [106.660172, 10.762622],
+			address: '123 Lê Lợi, Quận 1',
+			city: 'Hồ Chí Minh',
+			district: 'Quận 1',
+		},
+	})
 	@Expose()
-	imageUrls?: string[];
+	location: {
+		type: 'Point';
+		coordinates: [number, number];
+		address: string;
+		city: string;
+		district: string;
+	};
+
+	@Expose()
+	@ApiPropertyOptional({
+		type: () => [PostAuthorDto],
+		description: 'Danh sách bạn bè được gắn thẻ',
+	})
+	@Type(() => PostAuthorDto)
+	taggedFriends?: PostAuthorDto[];
+
+	@ApiPropertyOptional({ type: [String], description: 'Danh sách hashtag' })
+	@Expose()
+	hashtags?: string[];
+
+	@Expose()
+	@Type(() => PostResponseDto)
+	@ApiPropertyOptional({ type: () => PostResponseDto })
+	sharedPost?: PostResponseDto;
+
+	@ApiPropertyOptional({ description: 'Shared post đã bị giới hạn quyền xem hay không' })
+	@Expose()
+	sharedPostIsRestricted?: boolean;
 
 	@ApiProperty({ enum: ['public', 'friends', 'private'] })
 	@Expose()

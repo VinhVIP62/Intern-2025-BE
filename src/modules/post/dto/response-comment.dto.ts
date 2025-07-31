@@ -2,6 +2,16 @@ import { Expose, Transform, Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { Types } from 'mongoose';
 
+class MediaItemDto {
+	@ApiProperty()
+	@Expose()
+	url: string;
+
+	@ApiProperty()
+	@Expose()
+	type: string;
+}
+
 export class CommentAuthorDto {
 	@ApiProperty()
 	@Expose({ name: '_id' })
@@ -26,7 +36,6 @@ export class CommentResponseDto {
 	@ApiProperty({ type: CommentAuthorDto })
 	@Expose({ name: 'author' })
 	@Type(() => CommentAuthorDto)
-	@ApiProperty({ type: CommentAuthorDto })
 	author: CommentAuthorDto;
 
 	@ApiProperty()
@@ -37,6 +46,11 @@ export class CommentResponseDto {
 	@Expose()
 	@ApiProperty()
 	content: string;
+
+	@ApiProperty({ type: [MediaItemDto] })
+	@Expose({ name: 'media' })
+	@Type(() => MediaItemDto)
+	media?: MediaItemDto[];
 
 	@ApiProperty({ example: '123' })
 	@Expose()

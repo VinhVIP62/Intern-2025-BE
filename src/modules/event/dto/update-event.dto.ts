@@ -26,10 +26,15 @@ export class UpdateEventDto {
 	@IsString({ each: true })
 	imageUrls?: string[];
 
-	@ApiPropertyOptional({ description: 'ID môn thể thao', example: '665a7e1e81ab123456789012' })
+	@ApiPropertyOptional({
+		description: 'Danh sách ID môn thể thao',
+		example: ['665a7e1e81ab123456789012', '665a7e1e81ab123456789013'],
+		type: [String],
+	})
 	@IsOptional()
-	@IsMongoId()
-	sport?: string;
+	@IsArray()
+	@IsMongoId({ each: true })
+	sports?: string[];
 
 	@ApiPropertyOptional({
 		description: 'Địa chỉ người dùng (tọa độ + thông tin)',

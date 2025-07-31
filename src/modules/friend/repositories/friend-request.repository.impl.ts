@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { FriendRequest } from '../entities/friend-request.schema';
+import { FriendRequest, FriendRequestDocument } from '../entities/friend-request.schema';
 import { Model, Types } from 'mongoose';
 import { IFriendRequestRepository } from './friend-request.repository';
 
@@ -11,7 +11,7 @@ export class FriendRequestRepositoryImpl implements IFriendRequestRepository {
 		private readonly friendRequestModel: Model<FriendRequest>,
 	) {}
 
-	async create(data: Partial<FriendRequest>): Promise<FriendRequest> {
+	async create(data: Partial<FriendRequest>): Promise<FriendRequestDocument> {
 		return this.friendRequestModel.create(data);
 	}
 
@@ -22,7 +22,7 @@ export class FriendRequestRepositoryImpl implements IFriendRequestRepository {
 		});
 	}
 
-	async findPending(senderId: string, receiverId: string): Promise<FriendRequest | null> {
+	async findPending(senderId: string, receiverId: string): Promise<FriendRequestDocument | null> {
 		return this.friendRequestModel.findOne({
 			sender: new Types.ObjectId(senderId),
 			receiver: new Types.ObjectId(receiverId),

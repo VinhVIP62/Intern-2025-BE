@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument } from 'mongoose';
 
 @Schema({ timestamps: true })
 export class Sport {
@@ -11,5 +12,7 @@ export class Sport {
 	@Prop()
 	iconUrl?: string;
 }
+
+export type SportDocument = HydratedDocument<Sport>;
 
 export const SportSchema = SchemaFactory.createForClass(Sport);
