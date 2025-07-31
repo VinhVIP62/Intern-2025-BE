@@ -25,10 +25,7 @@ export class SocialPostSchemaDef
 	@Prop({ type: String, enum: Visibility, required: true, index: true })
 	visibility!: Visibility;
 
-	@Prop({ type: String, index: 'text', required: true })
-	title!: string;
-
-	@Prop({ type: String, index: 'text', required: true })
+	@Prop({ type: String, index: 'text', default: null })
 	content!: string;
 
 	@Prop({ type: [String], default: null })

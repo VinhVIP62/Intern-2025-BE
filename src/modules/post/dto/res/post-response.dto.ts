@@ -16,9 +16,6 @@ export class ResponsePostDto {
 	visibility!: Visibility;
 
 	@Expose()
-	title!: string;
-
-	@Expose()
 	content!: string;
 
 	@Expose()

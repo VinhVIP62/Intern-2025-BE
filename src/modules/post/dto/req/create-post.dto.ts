@@ -11,13 +11,9 @@ import { PostType } from '../../enums';
 export class CreatePostDto {
 	@Expose()
 	@IsNotEmpty()
+	@IsOptional()
 	@IsString()
-	title!: string;
-
-	@Expose()
-	@IsNotEmpty()
-	@IsString()
-	content!: string;
+	content?: string;
 
 	@Expose()
 	@IsEnum(Visibility)

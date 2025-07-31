@@ -5,8 +5,7 @@ import { PostType } from '../enums';
 
 export class SocialPost extends ISoftDeletableEntity {
 	visibility!: Visibility;
-	title!: string;
-	content!: string;
+	content!: string | null;
 
 	userId!: string;
 	// if there's event, file is set to null
