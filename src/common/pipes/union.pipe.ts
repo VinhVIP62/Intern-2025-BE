@@ -4,6 +4,7 @@ import { validate } from 'class-validator';
 
 interface UnionPipeOptions<T extends Record<string, any>, D extends keyof T = keyof T> {
 	discriminator: D;
+	defaultDiscriminatorValue?: T[D];
 	types: Record<T[D], Type<T>>;
 }
 
@@ -16,7 +17,11 @@ export class UnionValidationPipe<T extends Record<string, any>> implements PipeT
 
 		const typeKey = value[discriminator];
 
-		const TargetDtoType = types[typeKey];
+		let TargetDtoType = types[typeKey];
+
+		if (!TargetDtoType && this.options.defaultDiscriminatorValue) {
+			TargetDtoType = types[this.options.defaultDiscriminatorValue];
+		}
 
 		if (!TargetDtoType) {
 			throw new BadRequestException(

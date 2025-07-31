@@ -3,6 +3,7 @@ import { Exclude, Expose, Transform, Type } from 'class-transformer';
 import { Populated } from '@common/crud/entities';
 import { Visibility } from '@common/enums';
 
+import { PostType } from '@modules/post/enums';
 import { User } from '@modules/user/entities';
 
 import { SocialPost } from '../../entities';
@@ -11,6 +12,9 @@ import { SocialPost } from '../../entities';
 export class ResponsePostDto {
 	@Expose()
 	id!: string;
+
+	@Expose()
+	postType!: PostType;
 
 	@Expose()
 	visibility!: Visibility;

@@ -3,7 +3,7 @@ import { ArrayMaxSize, IsArray, IsEnum, IsNotEmpty, IsOptional, IsString } from 
 import { HasExtension, HasMimeType, IsFile, MemoryStoredFile } from 'nestjs-form-data';
 
 import { MAX_FILES_NUM } from '@common/constants';
-import { IsValidId } from '@common/decorators/class-validator';
+import { AnyOf, IsValidId } from '@common/decorators/class-validator';
 import { Visibility } from '@common/enums';
 
 import { PostType } from '../../enums';
@@ -21,7 +21,8 @@ export class CreatePostDto {
 
 	@Expose()
 	@IsEnum(PostType)
-	postType!: PostType;
+	@IsOptional()
+	postType: PostType = PostType.FILES;
 
 	@Expose()
 	@IsOptional()
@@ -41,6 +42,7 @@ export class CreatePostDto {
 	invisibleToUsersIds: string[] = [];
 }
 
+@AnyOf(['content', 'files'])
 export class CreateFilePostDto extends CreatePostDto {
 	@Expose()
 	@Type(() => MemoryStoredFile)
@@ -49,8 +51,7 @@ export class CreateFilePostDto extends CreatePostDto {
 	@HasMimeType(['image/*', 'video/*'], { each: true })
 	@IsArray()
 	@IsFile({ each: true })
-	@IsOptional()
-	files?: MemoryStoredFile[];
+	files!: MemoryStoredFile[];
 
 	@Expose()
 	@Transform(() => PostType.FILES)
@@ -59,6 +60,12 @@ export class CreateFilePostDto extends CreatePostDto {
 }
 
 export class CreateSharePostDto extends CreatePostDto {
+	@Expose()
+	@Type(() => String)
+	@IsString()
+	@IsValidId()
+	parentPostId!: string;
+
 	@Expose()
 	@Transform(() => PostType.SHARED)
 	@IsEnum(PostType)

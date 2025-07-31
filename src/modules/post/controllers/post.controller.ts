@@ -20,6 +20,7 @@ import { AuthenticatedRequest, CursorPaginatedData } from '@common/types/data';
 import { plainToInstanceStrict } from '@common/utils';
 
 import {
+	CreateEventPostDto,
 	CreateFilePostDto,
 	CreateSharePostDto,
 	FeedPostDto,
@@ -41,7 +42,18 @@ export class PostController {
 	@FormDataRequest({ storage: MemoryStoredFile })
 	async createPost(
 		@Req() request: AuthenticatedRequest,
-		@Body() body: CreateFilePostDto,
+		@Body(
+			new UnionValidationPipe<UpdateEventPostDto | UpdateFilePostDto | UpdateSharePostDto>({
+				discriminator: 'postType',
+				defaultDiscriminatorValue: PostType.FILES,
+				types: {
+					[PostType.EVENT]: CreateEventPostDto,
+					[PostType.FILES]: CreateFilePostDto,
+					[PostType.SHARED]: CreateSharePostDto,
+				},
+			}),
+		)
+		body: CreateEventPostDto | CreateFilePostDto | CreateSharePostDto,
 	): Promise<Populated<ResponsePostDto>> {
 		const createdPost = await this.postService.createPost({ ...body, userId: request.user.id });
 		return plainToInstanceStrict(ResponsePostDto, createdPost);
