@@ -15,6 +15,7 @@ import { ElasticModule } from '@modules/elastic/elastic.module';
 import { FileModule } from '@modules/file/file.module';
 import { NotificationModule } from '@modules/notification/notification.module';
 import { RealtimeModule } from '@modules/realtime/realtime.module';
+import { BlockModule } from '@modules/block/block.module';
 
 @Module({
 	imports: [
@@ -27,6 +28,7 @@ import { RealtimeModule } from '@modules/realtime/realtime.module';
 		FileModule,
 		NotificationModule,
 		RealtimeModule,
+		BlockModule,
 	],
 	controllers: [EventController],
 	providers: [

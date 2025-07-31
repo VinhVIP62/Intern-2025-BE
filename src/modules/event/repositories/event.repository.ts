@@ -24,13 +24,10 @@ export abstract class IEventRepository {
 		limit: number,
 		viewerId?: string,
 		friendIds?: string[],
+		blockedUserIds?: string[],
 	): Promise<[EventDocument[], number]>;
 
-	abstract findManyByIds(
-		eventIds: string[],
-		viewerId?: string | null,
-		friendIds?: string[],
-	): Promise<EventDocument[]>;
+	abstract findManyByIds(eventIds: string[], blockedUserIds?: string[]): Promise<EventDocument[]>;
 
 	abstract updateParticipantsCount(eventId: string, delta: number);
 }

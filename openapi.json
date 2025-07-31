@@ -1512,6 +1512,166 @@
         ]
       }
     },
+    "/api/v1/blocked-users": {
+      "post": {
+        "operationId": "BlockedUserController_blockUser_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateBlockDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResponseBlockDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Chặn một người dùng với một loại hành vi cụ thể (post, message, etc)",
+        "tags": [
+          "Blocked Users"
+        ]
+      },
+      "get": {
+        "operationId": "BlockedUserController_getBlockedUsers_v1",
+        "parameters": [
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "Lọc theo loại block",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ResponseBlockDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Lấy danh sách người dùng bị chặn (có thể lọc theo loại)",
+        "tags": [
+          "Blocked Users"
+        ]
+      }
+    },
+    "/api/v1/blocked-users/{id}": {
+      "delete": {
+        "operationId": "BlockedUserController_unblockUser_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID người dùng bị chặn",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": true,
+            "in": "query",
+            "description": "Loại hành vi bị chặn (post, message, etc)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Bỏ chặn người dùng theo blockType cụ thể",
+        "tags": [
+          "Blocked Users"
+        ]
+      }
+    },
+    "/api/v1/blocked-users/{id}/check": {
+      "get": {
+        "operationId": "BlockedUserController_isBlocked_v1",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "ID người cần kiểm tra",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "type",
+            "required": false,
+            "in": "query",
+            "description": "Loại block (post, message, etc)",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "summary": "Kiểm tra xem người dùng đã bị chặn hay chưa (có thể theo loại)",
+        "tags": [
+          "Blocked Users"
+        ]
+      }
+    },
     "/api/v1/posts": {
       "get": {
         "description": "Lấy các bài viết public nếu chưa đăng nhập, hoặc thêm bài viết của bạn bè nếu đã đăng nhập. (phân trang, lọc)",
@@ -2227,166 +2387,6 @@
         "summary": "Xoá một danh sách đã lưu của người dùng",
         "tags": [
           "SavedPost"
-        ]
-      }
-    },
-    "/api/v1/blocked-users": {
-      "post": {
-        "operationId": "BlockedUserController_blockUser_v1",
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateBlockDto"
-              }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ResponseBlockDto"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Chặn một người dùng với một loại hành vi cụ thể (post, message, etc)",
-        "tags": [
-          "Blocked Users"
-        ]
-      },
-      "get": {
-        "operationId": "BlockedUserController_getBlockedUsers_v1",
-        "parameters": [
-          {
-            "name": "type",
-            "required": false,
-            "in": "query",
-            "description": "Lọc theo loại block",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/ResponseBlockDto"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Lấy danh sách người dùng bị chặn (có thể lọc theo loại)",
-        "tags": [
-          "Blocked Users"
-        ]
-      }
-    },
-    "/api/v1/blocked-users/{id}": {
-      "delete": {
-        "operationId": "BlockedUserController_unblockUser_v1",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "description": "ID người dùng bị chặn",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "type",
-            "required": true,
-            "in": "query",
-            "description": "Loại hành vi bị chặn (post, message, etc)",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Bỏ chặn người dùng theo blockType cụ thể",
-        "tags": [
-          "Blocked Users"
-        ]
-      }
-    },
-    "/api/v1/blocked-users/{id}/check": {
-      "get": {
-        "operationId": "BlockedUserController_isBlocked_v1",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "description": "ID người cần kiểm tra",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "type",
-            "required": false,
-            "in": "query",
-            "description": "Loại block (post, message, etc)",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "boolean"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "summary": "Kiểm tra xem người dùng đã bị chặn hay chưa (có thể theo loại)",
-        "tags": [
-          "Blocked Users"
         ]
       }
     },
@@ -4181,6 +4181,81 @@
           "meta"
         ]
       },
+      "CreateBlockDto": {
+        "type": "object",
+        "properties": {
+          "blockedUserId": {
+            "type": "string",
+            "description": "ID người bị chặn",
+            "example": "664b1d0fa1a98d5f6721aa01"
+          },
+          "blockType": {
+            "type": "string",
+            "description": "Loại hành vi bị chặn: post, message, event",
+            "example": "post"
+          }
+        },
+        "required": [
+          "blockedUserId",
+          "blockType"
+        ]
+      },
+      "BlockedUserDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "avatarUrl": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "fullName",
+          "avatarUrl"
+        ]
+      },
+      "ResponseBlockDto": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string"
+          },
+          "blocked": {
+            "$ref": "#/components/schemas/BlockedUserDto"
+          },
+          "blockTypes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "post",
+                "message",
+                "event"
+              ]
+            }
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string"
+          },
+          "updatedAt": {
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "_id",
+          "blocked",
+          "blockTypes",
+          "createdAt",
+          "updatedAt"
+        ]
+      },
       "PostAuthorDto": {
         "type": "object",
         "properties": {
@@ -4791,81 +4866,6 @@
         },
         "required": [
           "postId"
-        ]
-      },
-      "CreateBlockDto": {
-        "type": "object",
-        "properties": {
-          "blockedUserId": {
-            "type": "string",
-            "description": "ID người bị chặn",
-            "example": "664b1d0fa1a98d5f6721aa01"
-          },
-          "blockType": {
-            "type": "string",
-            "description": "Loại hành vi bị chặn: post, message, event",
-            "example": "post"
-          }
-        },
-        "required": [
-          "blockedUserId",
-          "blockType"
-        ]
-      },
-      "BlockedUserDto": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string"
-          },
-          "fullName": {
-            "type": "string"
-          },
-          "avatarUrl": {
-            "type": "string"
-          }
-        },
-        "required": [
-          "_id",
-          "fullName",
-          "avatarUrl"
-        ]
-      },
-      "ResponseBlockDto": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string"
-          },
-          "blocked": {
-            "$ref": "#/components/schemas/BlockedUserDto"
-          },
-          "blockTypes": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": [
-                "post",
-                "message",
-                "event"
-              ]
-            }
-          },
-          "createdAt": {
-            "format": "date-time",
-            "type": "string"
-          },
-          "updatedAt": {
-            "format": "date-time",
-            "type": "string"
-          }
-        },
-        "required": [
-          "_id",
-          "blocked",
-          "blockTypes",
-          "createdAt",
-          "updatedAt"
         ]
       },
       "CreateConversationDto": {

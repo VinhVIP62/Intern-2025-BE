@@ -67,6 +67,7 @@ export class EventRepositoryImpl implements IEventRepository {
 		limit = 10,
 		viewerId?: string,
 		friendIds: string[] = [],
+		blockedUserIds: string[] = [],
 	): Promise<[EventDocument[], number]> {
 		const now = new Date();
 
@@ -86,12 +87,23 @@ export class EventRepositoryImpl implements IEventRepository {
 			matchConditions.requiresApproval = filters.requiresApproval;
 		}
 
+		if (blockedUserIds.length > 0) {
+			matchConditions.creator = {
+				...((matchConditions.creator as object) ?? {}),
+				$nin: blockedUserIds.map(id => new Types.ObjectId(id)),
+			};
+		}
+
 		if (viewerId) {
 			matchConditions.$or = [
 				{ isPublic: true },
 				{
 					isPublic: false,
-					creator: { $in: [...friendIds, viewerId].map(id => new Types.ObjectId(id)) },
+					creator: {
+						$in: [...friendIds, viewerId]
+							.map(id => new Types.ObjectId(id))
+							.filter(id => !blockedUserIds.includes(id.toString())),
+					},
 				},
 			];
 		} else {
@@ -176,10 +188,13 @@ export class EventRepositoryImpl implements IEventRepository {
 		return [results, countResult];
 	}
 
-	async findManyByIds(eventIds: string[]): Promise<EventDocument[]> {
+	async findManyByIds(eventIds: string[], blockedUserIds: string[] = []): Promise<EventDocument[]> {
 		const objectIds = eventIds.map(id => new Types.ObjectId(id));
 		const events = await this.model
-			.find({ _id: { $in: objectIds } })
+			.find({
+				_id: { $in: objectIds },
+				creator: { $nin: blockedUserIds.map(id => new Types.ObjectId(id)) },
+			})
 			.populate('creator', '_id fullName avatarUrl')
 			.populate('taggedFriends', '_id fullName avatarUrl')
 			.populate('sports', '_id name iconUrl');

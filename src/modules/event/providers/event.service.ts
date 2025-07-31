@@ -21,6 +21,7 @@ import { NotificationService } from '@modules/notification/providers/notificatio
 import { NotificationType } from '@modules/notification/type/notification-type.enum';
 import { SocketEventService } from '@modules/realtime/socket-event.service';
 import { extractHashtags } from '@common/utils/hashtag.util';
+import { BlockService } from '@modules/block/providers/block.service';
 
 @Injectable()
 export class EventService {
@@ -34,6 +35,7 @@ export class EventService {
 		private readonly fileService: FileService,
 		private readonly notificationService: NotificationService,
 		private readonly socketEventService: SocketEventService,
+		private readonly blockService: BlockService,
 	) {}
 
 	async createEvent(userId: string, dto: CreateEventDto): Promise<ResponseEventDto> {
@@ -706,6 +708,13 @@ export class EventService {
 
 		const [lng, lat] = user.location.coordinates;
 
+		let blockedUserIds: string[] = [];
+
+		if (userId) {
+			const blockObjects = await this.blockService.getBlockedUsers(userId, 'event');
+			blockedUserIds = blockObjects.map(p => p.blocked._id);
+		}
+
 		const friendIds =
 			userId ? (await this.friendRepository.findAllByUserId(userId)).map(id => id.toString()) : [];
 
@@ -716,6 +725,7 @@ export class EventService {
 			limit,
 			userId,
 			friendIds,
+			blockedUserIds,
 		);
 
 		const eventIds = events.map(event => event._id.toString());
@@ -782,7 +792,14 @@ export class EventService {
 		const friendIds =
 			userId ? (await this.friendRepository.findAllByUserId(userId)).map(id => id.toString()) : [];
 
-		const events = await this.eventRepository.findManyByIds(eventIds);
+		let blockedUserIds: string[] = [];
+
+		if (userId) {
+			const blockObjects = await this.blockService.getBlockedUsers(userId, 'event');
+			blockedUserIds = blockObjects.map(p => p.blocked._id);
+		}
+
+		const events = await this.eventRepository.findManyByIds(eventIds, blockedUserIds);
 
 		// Kiểm tra quyền xem từng event
 		const visibleEvents = events.filter(event => {
