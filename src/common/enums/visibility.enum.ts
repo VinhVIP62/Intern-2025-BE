@@ -3,4 +3,5 @@ export enum Visibility {
 	PUBLIC = 'public',
 	FRIENDS = 'friends',
 	LIMITED = 'limited',
+	EXCLUDED = 'excluded',
 }
