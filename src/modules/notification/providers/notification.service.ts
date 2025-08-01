@@ -76,16 +76,18 @@ export class NotificationService {
 		comment: Comment,
 	): Promise<Populated<Notification>[]> => {
 		const subsciberIds = await this.getSubsscribersOf(comment.targetId);
-		const notifications: NotificationCreateInput[] = subsciberIds.map(id => ({
-			actorsIds: [],
-			addActorIds: [comment.userId],
-			actorType: SystemEntity.USER,
-			targetId: comment.targetId,
-			targetType: comment.targetId == comment.rootId ? comment.rootType : SystemEntity.COMMENT,
-			toUserId: id,
-			isRead: false,
-			notifType: NotificationType.COMMENTED,
-		}));
+		const notifications: NotificationCreateInput[] = subsciberIds
+			.filter(id => id != comment.userId)
+			.map(id => ({
+				actorsIds: [],
+				addActorIds: [comment.userId],
+				actorType: SystemEntity.USER,
+				targetId: comment.targetId,
+				targetType: comment.targetId == comment.rootId ? comment.rootType : SystemEntity.COMMENT,
+				toUserId: id,
+				isRead: false,
+				notifType: NotificationType.COMMENTED,
+			}));
 		const createdNotifications =
 			await this.notificationRepository.createNotificationBulk(notifications);
 		return createdNotifications;
@@ -127,16 +129,18 @@ export class NotificationService {
 		reaction: Reaction,
 	): Promise<Populated<Notification>[]> => {
 		const subsciberIds = await this.getSubsscribersOf(reaction.targetId);
-		const notifications: NotificationCreateInput[] = subsciberIds.map(id => ({
-			actorsIds: [],
-			addActorIds: [reaction.userId],
-			actorType: SystemEntity.USER,
-			targetId: reaction.targetId,
-			targetType: reaction.targetType,
-			toUserId: id,
-			isRead: false,
-			notifType: NotificationType.REACTED,
-		}));
+		const notifications: NotificationCreateInput[] = subsciberIds
+			.filter(id => id != reaction.userId)
+			.map(id => ({
+				actorsIds: [],
+				addActorIds: [reaction.userId],
+				actorType: SystemEntity.USER,
+				targetId: reaction.targetId,
+				targetType: reaction.targetType,
+				toUserId: id,
+				isRead: false,
+				notifType: NotificationType.REACTED,
+			}));
 		const createdNotifications =
 			await this.notificationRepository.createNotificationBulk(notifications);
 		return createdNotifications;
