@@ -13,6 +13,7 @@ export interface IFriendshipRepository extends IBaseRepository<Friendship> {
 	getFriendship(
 		uid: string,
 		status: FriendStatus,
+		isReceiver: boolean,
 		options?: OffsetPaginationOption,
 	): Promise<FriendshipInfo[]>;
 }

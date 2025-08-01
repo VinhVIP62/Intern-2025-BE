@@ -1,5 +1,5 @@
 export enum RelationshipType {
-	NONE,
-	FRIEND,
-	BLOCKED,
+	NONE = 'none',
+	FRIEND = 'friend',
+	BLOCKED = 'blocked',
 }

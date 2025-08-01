@@ -66,7 +66,24 @@ export class UserRelationshipController {
 		@Query() query: GetFriendRequestsDto,
 		@Req() request: AuthenticatedRequest,
 	): Promise<OffsetPaginatedData<ResponseFriendshipDto>> {
-		const friendRequests = await this.relationshipService.getFriendRequestOf(
+		const friendRequests = await this.relationshipService.getFriendRequestsOf(
+			request.user.id,
+			query,
+		);
+		return new OffsetPaginatedData<ResponseFriendshipDto>(
+			query.page,
+			query.limit,
+			plainToInstanceStrict(ResponseFriendshipDto, friendRequests),
+		);
+	}
+
+	@Get('friends/my-requests')
+	@ResponseTransform({ pagination: true })
+	async getOutgoingFriendRequest(
+		@Query() query: GetFriendRequestsDto,
+		@Req() request: AuthenticatedRequest,
+	): Promise<OffsetPaginatedData<ResponseFriendshipDto>> {
+		const friendRequests = await this.relationshipService.getFriendRequestsFrom(
 			request.user.id,
 			query,
 		);

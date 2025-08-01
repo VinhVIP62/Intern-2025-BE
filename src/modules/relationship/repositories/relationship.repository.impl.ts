@@ -72,6 +72,7 @@ export class FriendshipRepositoryImpl
 	async getFriendship(
 		uid: string,
 		status: FriendStatus,
+		isReceiver: boolean,
 		options?: OffsetPaginationOption,
 	): Promise<FriendshipInfo[]> {
 		const limitOptions = options?.limit || 10;
@@ -79,6 +80,7 @@ export class FriendshipRepositoryImpl
 		const matchStage: PipelineStage.Match = {
 			$match: {
 				userIds: new mongoose.Types.ObjectId(uid),
+				...(!isReceiver && { requestedFrom: new mongoose.Types.ObjectId(uid) }),
 				status,
 			},
 		};

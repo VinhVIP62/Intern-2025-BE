@@ -84,18 +84,33 @@ export class RelationshipService {
 		const foundFriends = this.friendshipRepository.getFriendship(
 			uid,
 			FriendStatus.ACCEPTED,
+			true,
 			options,
 		);
 		return foundFriends;
 	}
 
-	async getFriendRequestOf(
+	async getFriendRequestsOf(
 		uid: string,
 		options?: OffsetPaginationOption,
 	): Promise<FriendshipInfo[]> {
 		const foundRequests = this.friendshipRepository.getFriendship(
 			uid,
 			FriendStatus.PENDING,
+			true,
+			options,
+		);
+		return foundRequests;
+	}
+
+	async getFriendRequestsFrom(
+		uid: string,
+		options?: OffsetPaginationOption,
+	): Promise<FriendshipInfo[]> {
+		const foundRequests = this.friendshipRepository.getFriendship(
+			uid,
+			FriendStatus.PENDING,
+			false,
 			options,
 		);
 		return foundRequests;

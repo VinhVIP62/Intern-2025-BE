@@ -2,6 +2,8 @@ import { Exclude, Expose, Transform, Type } from 'class-transformer';
 
 import { Populated } from '@common/crud/entities';
 
+import { RelationshipType } from '@modules/relationship/enums';
+
 import { GoogleLoginInfo, Location, User } from '../../entities';
 import { ResponseUserDto } from './user-response.dto';
 
@@ -49,4 +51,7 @@ export class ResponseProfileDto extends ResponseUserDto {
 
 	@Expose()
 	googleLoginInfo!: GoogleLoginInfo | null;
+
+	@Expose()
+	relationship!: RelationshipType;
 }
