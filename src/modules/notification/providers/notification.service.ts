@@ -34,7 +34,7 @@ type NotificationCreationMap = {
 	[NotificationType.EVENT_INVITE]: (
 		event: Event,
 		fromUserId: string,
-		toUserId: string,
+		toUserIds: string[],
 	) => Promise<Populated<Notification>[]>;
 	[NotificationType.COMMENTED]: (comment: Comment) => Promise<Populated<Notification>[]>;
 	[NotificationType.FRIEND_ACCEPTED]: (
@@ -57,19 +57,21 @@ export class NotificationService {
 	private createNotifcationOnEventInvitation = async (
 		event: Event,
 		fromUserId: string,
-		toUserId: string,
+		toUserIds: string[],
 	): Promise<Populated<Notification>[]> => {
-		const notification = await this.notificationRepository.createNotification({
+		const notifications: NotificationCreateInput[] = toUserIds.map(id => ({
 			actorsIds: [],
 			addActorIds: [fromUserId],
 			actorType: SystemEntity.USER,
 			targetId: event.id,
 			targetType: SystemEntity.EVENT,
-			toUserId,
+			toUserId: id,
 			isRead: false,
 			notifType: NotificationType.EVENT_INVITE,
-		});
-		return [notification];
+		}));
+		const createdNotifications =
+			await this.notificationRepository.createNotificationBulk(notifications);
+		return createdNotifications;
 	};
 
 	private createNotificationOnComment = async (

@@ -99,13 +99,13 @@ export class EventService {
 		return deletedEvent;
 	}
 
-	async inviteUserToEvent(eventId: string, fromUserId: string, toUserId: string) {
+	async inviteUsersToEvent(eventId: string, fromUserId: string, toUserIds: string[]) {
 		const foundEvent = await this.eventRepository.findOneByIdOrFail(eventId);
 		await this.notifcationService.createAndSendNotification(
 			NotificationType.EVENT_INVITE,
 			foundEvent,
 			fromUserId,
-			toUserId,
+			toUserIds,
 		);
 	}
 

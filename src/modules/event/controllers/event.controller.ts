@@ -160,6 +160,6 @@ export class EventController {
 		@Req() req: AuthenticatedRequest,
 	) {
 		const fromUserId = req.user.id;
-		return await this.eventService.inviteUserToEvent(eventId, fromUserId, body.toUserId);
+		return await this.eventService.inviteUsersToEvent(eventId, fromUserId, body.toUserIds);
 	}
 }
