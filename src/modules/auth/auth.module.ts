@@ -14,7 +14,7 @@ import { JwtAccessConfig, JwtRefreshConfig } from '@configs/index';
 import { JwtRefreshStrategy } from './strategies/jwt-refresh-strategy';
 import googleOauthConfig from '@configs/google-oauth.config';
 import { GoogleStrategy } from './strategies/google.strategy';
-import { VerificationModule } from 'src/shared/verification/verification.module';
+import { VerificationModule } from '@modules/verification/verification.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Token, TokenSchema } from './entities/token.schema';
 @Global()

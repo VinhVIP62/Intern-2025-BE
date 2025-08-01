@@ -31,13 +31,12 @@ import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagg
 import { ResponsePaging } from '@common/decorators/responsePaging.decorator';
 import { Response } from '@common/decorators/response.decorator';
 import { GoogleAuthGuard } from '@common/guards/google-auth.guard';
-import { RequestOtpDto, VerifyOtpDto } from '../../../shared/verification/dto/otp.dto';
-import { verificationService } from 'src/shared/verification/providers/verification.service';
-import { TokenRequireDto } from '../dto/token.require.dto';
-import { User } from '@modules/user/entities/user.schema';
+import { RequestOtpDto, VerifyOtpDto } from '@modules/verification/dto/otp.dto';
+import { verificationService } from '@modules/verification/providers/verification.service';
 import { UserService } from '@modules/user/providers/user.service';
 import { ChangePasswordDto } from '@modules/user/dto/change-password.dto';
-import { OTPType } from '@common/enum/otp.enum';
+import { OTPType } from '@modules/auth/enum/otp.enum';
+import { RedisService } from '@modules/redis/redis.service';
 
 @Public()
 @ApiTags('Auth')
@@ -47,6 +46,7 @@ export class AuthController {
 		private readonly authService: AuthService,
 		private readonly verificationService: verificationService,
 		private readonly userService: UserService,
+		private readonly redisService: RedisService,
 	) {}
 
 	@Version('1')
@@ -60,7 +60,8 @@ export class AuthController {
 	})
 	async login(@Body() body: LoginDto): Promise<ResponseEntity<ResponseAuthDto>> {
 		const tokens = await this.authService.login(body);
-		console.log('controller return token', tokens);
+		// console.log('controller return token', tokens);
+		console.log('login success');
 		return {
 			success: true,
 			data: tokens,
@@ -106,13 +107,17 @@ export class AuthController {
 	@Post('request-otp')
 	async requestOtp(@Body() dto: RequestOtpDto): Promise<ResponseEntity<ResponseAuthDto>> {
 		try {
-			await this.verificationService.requestOtp(dto.account, dto.otpType);
-			return { success: true, message: 'OTP sent successfully', statusCode: HttpStatus.OK };
+			const result = await this.verificationService.requestOtp(dto.account, dto.otpType);
+			return {
+				success: true,
+				message: result,
+				statusCode: HttpStatus.OK,
+			};
 		} catch (error) {
 			return {
 				success: false,
 				message: error.message,
-				statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+				statusCode: HttpStatus.BAD_REQUEST,
 			};
 		}
 	}
@@ -265,5 +270,16 @@ export class AuthController {
 			message: 'Password changed successfully',
 			statusCode: HttpStatus.OK,
 		};
+	}
+
+	@Get('test-redis')
+	async testRedis() {
+		try {
+			await this.redisService.set('test', 'Hello Upstash Redis!', 60);
+			const value = await this.redisService.get('test');
+			return { success: true, message: 'Redis connection working', value };
+		} catch (error) {
+			return { success: false, message: 'Redis connection failed', error: error.message };
+		}
 	}
 }

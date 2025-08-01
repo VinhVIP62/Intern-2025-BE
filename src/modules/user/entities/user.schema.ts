@@ -40,10 +40,10 @@ export class User {
 	@Prop()
 	birthday?: Date;
 
-	@Prop({ default: null })
+	@Prop({ default: '' })
 	description?: string;
 
-	@Prop({ default: null })
+	@Prop({ default: '' })
 	background?: string;
 
 	@Prop({ default: null })
@@ -55,6 +55,7 @@ export const UserSchema = SchemaFactory.createForClass(User);
 // Create unique indexes for individual emails and phone numbers
 UserSchema.index({ emails: 1 }, { unique: true, sparse: true });
 UserSchema.index({ phoneNumbers: 1 }, { unique: true, sparse: true });
+UserSchema.index({ fullName: 'text' });
 
 //handle expired account not verified
 //userSchema.index({ createdAt: 1 }, { expireAfterSeconds: 900, partialFilterExpression: { isVerified: false } });

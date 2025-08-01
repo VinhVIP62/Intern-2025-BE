@@ -13,6 +13,7 @@ import { JwtAuthGuard } from '@common/guards';
 import { ThrottlerGuard, ThrottlerModule, ThrottlerModuleOptions } from '@nestjs/throttler';
 import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 import { ResponsePagingInterceptor } from '@common/interceptors/responsePaging.interceptor';
+import { RedisModule } from './modules/redis/redis.module';
 // import { redisStore } from 'cache-manager-redis-store';
 @Module({
 	imports: [
@@ -36,6 +37,7 @@ import { ResponsePagingInterceptor } from '@common/interceptors/responsePaging.i
 		}),
 		LoggerModule,
 		RouteModule,
+		RedisModule,
 		ThrottlerModule.forRootAsync({
 			inject: [ConfigService],
 			useFactory: (config: ConfigService): ThrottlerModuleOptions => ({

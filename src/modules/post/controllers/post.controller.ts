@@ -1,30 +1,28 @@
 import {
 	Controller,
-	UploadedFile,
 	HttpStatus,
 	ParseFilePipeBuilder,
 	Req,
 	UseInterceptors,
 	BadRequestException,
 	Body,
-	NotFoundException,
 	Param,
 	Query,
 	UploadedFiles,
-	ForbiddenException,
 } from '@nestjs/common';
 import { PostService } from '../providers/post.service';
-import { UploadService } from 'src/shared/upload/providers/upload.service';
+import { UploadService } from '@modules/upload/providers/upload.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { Post, Get, UseGuards, Delete, Put } from '@nestjs/common';
 import { JwtAuthGuard } from '@common/guards';
-import { CreatePostDto } from '../dto/create-post.dto';
+import { CreatePostDto } from '../dto/request/create-post.dto';
 import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { Request } from 'express';
-import { PostQueryDto } from '../dto/post-query.dto';
-import { UpdatePostDto } from '../dto/update-post.dto';
-import { CreateCommentDto } from '../dto/create-comment.dto';
-import { Response } from 'src/common/decorators/response.decorator';
+import { PostQueryDto } from '../dto/request/post-query.dto';
+import { UpdatePostDto } from '../dto/request/update-post.dto';
+import { Response } from '@common/decorators/response.decorator';
+import { PaginationQuery } from '@common/decorators/paginationQuery.decorator';
+import { FileType } from '@common/types/file.type';
 
 @Controller()
 export class PostController {
@@ -45,9 +43,9 @@ export class PostController {
 		@Body() dto: CreatePostDto,
 		@UploadedFiles(
 			new ParseFilePipeBuilder()
-				.addFileTypeValidator({
-					fileType: 'jpeg|png|jpg|webp|bmp|heic',
-				})
+				// .addFileTypeValidator({
+				// 	fileType: '.*',
+				// })
 				.addMaxSizeValidator({
 					maxSize: 1024 * 1024 * 50,
 				})
@@ -70,12 +68,12 @@ export class PostController {
 			});
 		}
 
-		const uploadedImages = await this.uploadService.uploadMultipleImages(files, 'posts');
+		const images = files ? await this.uploadService.uploadMultipleFiles(files, 'posts') : [];
+
 		return await this.postService.createPost({
 			...dto,
 			userId,
-			images: uploadedImages.map(image => image.url),
-			imagesIds: uploadedImages.map(image => image.publicId),
+			images,
 		});
 	}
 	@UseGuards(JwtAuthGuard)
@@ -133,10 +131,30 @@ export class PostController {
 	@ApiResponse({ status: 200, description: 'Post updated successfully' })
 	@ApiOperation({ summary: 'Update a post' })
 	@Response()
+	@UseInterceptors(FilesInterceptor('files'))
 	@Put(':id')
-	async updatePost(@Param('id') id: string, @Body() dto: UpdatePostDto, @Req() req: Request) {
+	async updatePost(
+		@Param('id') id: string,
+		@Body() dto: UpdatePostDto,
+		@Req() req: Request,
+		@UploadedFiles(
+			new ParseFilePipeBuilder()
+				.addFileTypeValidator({
+					fileType: 'jpeg|png|jpg|webp|bmp|heic|mp4|mov|avi|mkv|webm|video/x-matroska|video/mp4',
+				})
+				.addMaxSizeValidator({
+					maxSize: 1024 * 1024 * 50,
+				})
+				.build({
+					errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+					fileIsRequired: false,
+				}),
+		)
+		files?: Express.Multer.File[],
+	) {
 		const userId = (req.user as any).id;
-		return await this.postService.updatePost(userId, id, dto);
+		const images = files ? await this.uploadService.uploadMultipleFiles(files, 'posts') : [];
+		return await this.postService.updatePost(userId, id, { ...dto, images });
 	}
 
 	@UseGuards(JwtAuthGuard)
@@ -160,6 +178,7 @@ export class PostController {
 				isOriginal: false,
 			},
 			dto.parentCommentId,
+			userId,
 		);
 	}
 	@UseGuards(JwtAuthGuard)
@@ -174,12 +193,16 @@ export class PostController {
 		@Req() req: Request,
 	) {
 		const userId = (req.user as any).id;
-		return await this.postService.commentPost({
-			content: dto.content,
-			postId: id,
+		return await this.postService.commentPost(
+			{
+				content: dto.content,
+				postId: id,
+				userId,
+				isOriginal: true,
+			},
+			null,
 			userId,
-			isOriginal: true,
-		});
+		);
 	}
 
 	@UseGuards(JwtAuthGuard)
@@ -188,29 +211,41 @@ export class PostController {
 	@ApiResponse({ status: 200, description: 'Comments fetched successfully' })
 	@Response()
 	@Get(':id/comments')
-	async getComments(@Param('id') id: string) {
-		return await this.postService.getCommentsByPostId(id);
+	async getComments(
+		@Param('id') id: string,
+		@Req() req: Request,
+		@PaginationQuery() paginationQuery: { page: number; limit: number },
+	) {
+		const userId = (req.user as any).id;
+		return await this.postService.getCommentsByPostId(
+			id,
+			userId,
+			paginationQuery.page,
+			paginationQuery.limit,
+		);
 	}
+
 	@UseGuards(JwtAuthGuard)
 	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Get more comments of a post' })
 	@ApiResponse({ status: 200, description: 'More comments fetched successfully' })
 	@Response()
 	@Get(':id/comments/:rootCommentId')
-	async getMoreComments(@Param('id') id: string, @Param('rootCommentId') rootCommentId: string) {
-		return await this.postService.getMoreCommentsByRootCommentId(id, rootCommentId);
+	async getMoreComments(
+		@Param('id') id: string,
+		@Param('rootCommentId') rootCommentId: string,
+		@PaginationQuery() paginationQuery: { page: number; limit: number },
+		@Req() req: Request,
+	) {
+		const userId = (req.user as any).id;
+		return await this.postService.getMoreCommentsByRootCommentId(
+			id,
+			rootCommentId,
+			paginationQuery.page,
+			paginationQuery.limit,
+			userId,
+		);
 	}
-	// @UseGuards(JwtAuthGuard)
-	// @ApiBearerAuth()
-	// @Post(':id/comments/:rootCommentId/like')
-	// async likeComment(@Param('id') id: string, @Param('rootCommentId') rootCommentId: string, @Req() req: Request) {
-	// 	const userId = (req.user as any).id;
-	// 	const comment = await this.postService.likeComment(userId, id, rootCommentId);
-	// 	return {
-	// 		success: true,
-	// 		comment,
-	// 	};
-	// }
 
 	@UseGuards(JwtAuthGuard)
 	@ApiBearerAuth()
@@ -246,5 +281,60 @@ export class PostController {
 	async unlikePost(@Param('id') id: string, @Req() req: Request) {
 		const userId = (req.user as any).id;
 		return await this.postService.unlikePost(userId, id);
+	}
+	@UseGuards(JwtAuthGuard)
+	@ApiBearerAuth()
+	@ApiOperation({ summary: 'Get all posts by with optional filters and pagination' })
+	@ApiResponse({ status: 200, description: 'Posts fetched successfully' })
+	@Response()
+	@Post(':id/comments/:commentId/like')
+	async likeComment(
+		@Param('id') id: string,
+		@Param('commentId') commentId: string,
+		@Req() req: Request,
+	) {
+		const userId = (req.user as any).id;
+		return await this.postService.likeComment(userId, id, commentId);
+	}
+	@UseGuards(JwtAuthGuard)
+	@ApiBearerAuth()
+	@ApiOperation({ summary: 'Unlike a comment' })
+	@ApiResponse({ status: 200, description: 'Comment unliked successfully' })
+	@Response()
+	@Delete(':id/comments/:commentId/unlike')
+	async unlikeComment(
+		@Param('id') id: string,
+		@Param('commentId') commentId: string,
+		@Req() req: Request,
+	) {
+		const userId = (req.user as any).id;
+		return await this.postService.unlikeComment(userId, id, commentId);
+	}
+
+	@UseGuards(JwtAuthGuard)
+	@ApiBearerAuth()
+	@ApiOperation({ summary: 'Get all posts by with optional filters and pagination' })
+	@ApiResponse({ status: 200, description: 'Posts fetched successfully' })
+	@Response()
+	@Get(':id/likes')
+	async getUserLikedPosts(
+		@Param('id') id: string,
+		@PaginationQuery() paginationQuery: { page: number; limit: number },
+	) {
+		return await this.postService.getUserLikedPosts(
+			id,
+			paginationQuery.page,
+			paginationQuery.limit,
+		);
+	}
+	@UseGuards(JwtAuthGuard)
+	@ApiBearerAuth()
+	@ApiOperation({ summary: 'Share a post' })
+	@ApiResponse({ status: 200, description: 'Post shared successfully' })
+	@Response()
+	@Post(':id/share')
+	async sharePost(@Param('id') id: string, @Body() dto: CreatePostDto, @Req() req: Request) {
+		const userId = (req.user as any).id;
+		return await this.postService.sharePost(id, { ...dto, userId });
 	}
 }

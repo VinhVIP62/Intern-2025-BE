@@ -11,7 +11,7 @@ import { Payload, Tokens } from '../types';
 import { CreateUserByExternalDto } from '@modules/user/dto';
 import { RegisterDto } from '../dto/register.dto';
 import { isEmail } from 'class-validator';
-import { verificationService } from '../../../shared/verification/providers/verification.service';
+import { verificationService } from '@modules/verification/providers/verification.service';
 import { OAuth2Client } from 'google-auth-library';
 import { AuthGoogleLoginDto, LoginDto } from '../dto';
 import { error } from 'console';

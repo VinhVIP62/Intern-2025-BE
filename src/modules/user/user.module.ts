@@ -5,9 +5,9 @@ import { UserRepositoryImpl } from './repositories/user.repository.impl';
 import { IUserRepository } from './repositories/user.repository';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './entities/user.schema';
-import { UploadModule } from '../../shared/upload/upload.module';
-import { VerificationModule } from 'src/shared/verification/verification.module';
-import { Otp, OtpSchema } from 'src/shared/verification/entities/otp.schema';
+import { UploadModule } from '../upload/upload.module';
+import { VerificationModule } from '@modules/verification/verification.module';
+import { FriendModule } from '../friend/friend.module';
 @Module({
 	imports: [
 		MongooseModule.forFeature([
@@ -18,6 +18,7 @@ import { Otp, OtpSchema } from 'src/shared/verification/entities/otp.schema';
 		]),
 		UploadModule,
 		forwardRef(() => VerificationModule),
+		forwardRef(() => FriendModule),
 	],
 	controllers: [UserController],
 	providers: [

@@ -11,6 +11,10 @@ interface JwtVars {
 	refreshTokenExpiration: string | number;
 }
 
+interface ElasticsearchVars {
+	readonly host: string;
+}
+
 export interface IEnvVars {
 	readonly env: 'development' | 'production';
 	readonly port: number;
@@ -19,6 +23,9 @@ export interface IEnvVars {
 	readonly cors?: string;
 	readonly throttle_ttl?: number;
 	readonly throttle_limit?: number;
+	readonly upstash_redis_rest_url?: string;
+	readonly upstash_redis_rest_token?: string;
+	// readonly elasticsearch: ElasticsearchVars;
 }
 
 // env validation schema for Joi
@@ -34,9 +41,14 @@ const envFileSchema = Joi.object<IEnvVars, true>({
 		accessTokenExpiration: Joi.alternatives(Joi.number(), Joi.string()).default('15m'),
 		refreshTokenExpiration: Joi.alternatives(Joi.number(), Joi.string()).default('7d'),
 	}).required(),
+	// elasticsearch: Joi.object<ElasticsearchVars, true>({
+	// 	host: Joi.string().uri().required(),
+	// }).required(),
 	cors: Joi.string().uri().optional(),
 	throttle_ttl: Joi.number().default(60000), // 1 minute
 	throttle_limit: Joi.number().default(50),
+	upstash_redis_rest_url: Joi.string().uri().optional(),
+	upstash_redis_rest_token: Joi.string().optional(),
 });
 
 // map your env vars to ConfigService's properties
@@ -55,6 +67,11 @@ const loadEnv = () => ({
 	cors: process.env.CORS,
 	throttle_ttl: process.env.THROTTLE_TTL,
 	throttle_limit: process.env.THROTTLE_LIMIT,
+	upstash_redis_rest_url: process.env.UPSTASH_REDIS_REST_URL,
+	upstash_redis_rest_token: process.env.UPSTASH_REDIS_REST_TOKEN,
+	// elasticsearch: {
+	// 	host: process.env.ELASTICSEARCH_HOST,
+	// },
 });
 
 // validate and optionally transform your env variables here

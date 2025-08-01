@@ -60,9 +60,13 @@ export class ResponseUserDto {
 
 	@ApiProperty({ description: 'Background URL', required: true })
 	@Expose()
-	background?: string | null;
+	background?: string | '';
 
 	@ApiProperty({ description: 'Mô tả', required: true })
 	@Expose()
-	description?: string | null;
+	description?: string | '';
+
+	@ApiProperty({ description: 'Là bạn bè', required: false })
+	@Expose()
+	isFriend?: string;
 }

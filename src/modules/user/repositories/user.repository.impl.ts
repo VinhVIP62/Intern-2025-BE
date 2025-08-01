@@ -5,11 +5,11 @@ import { Model } from 'mongoose';
 import { User } from '../entities/user.schema';
 import { IUserRepository } from './user.repository';
 import { EntityNotFound } from '@common/exceptions/EntityNotFound.error';
-import { aw } from '@upstash/redis/zmscore-DzNHSWxc';
 import { RegisterDto } from '@modules/auth/dto/register.dto';
 import { isEmailOrPhone } from '@common/utils/check-email-or-phone';
 import { isEmail, length } from 'class-validator';
 import { response } from 'express';
+import Fuse from 'fuse.js';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -174,10 +174,17 @@ export class UserRepositoryImpl implements IUserRepository {
 		return await bcrypt.compare(password, user.password || '');
 	}
 	async search(query: any): Promise<User[]> {
-		if (!query || query.trim() === '') return [];
-		// console.log('User Repository - Received query:', query);
-		return await this.userModel.find({
-			fullName: { $regex: query, $options: 'i' },
+		// if (!query || query.trim() === '') return [];
+		// // console.log('User Repository - Received query:', query);
+		// return await this.userModel.find({
+		// 	fullName: { $regex: query, $options: 'i' },
+		// });
+		const allUsers = await this.userModel.find().lean();
+		const fuse = new Fuse(allUsers, {
+			keys: ['fullName'],
+			threshold: 0.3,
 		});
+		const results = fuse.search(query);
+		return results.map(result => result.item);
 	}
 }

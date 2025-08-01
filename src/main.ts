@@ -7,6 +7,7 @@ import { VersioningType } from '@nestjs/common';
 import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
 import { AppLoggerService } from '@common/logger/logger.service';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { RedisIoAdapter } from './modules/redis/redis-io.adapter';
 import * as fs from 'fs';
 
 async function bootstrap() {
@@ -14,10 +15,17 @@ async function bootstrap() {
 		bufferLogs: true,
 	});
 
+	// Initialize Redis WebSocket adapter
+	const configService = app.get(ConfigService<IEnvVars>);
+	// use redis local with docker
+	// const redisIoAdapter = new RedisIoAdapter(app, configService);
+	// await redisIoAdapter.connectToRedis();
+	// app.useWebSocketAdapter(redisIoAdapter);
+
+	// use upstash redis
+
 	const logger = app.get(AppLoggerService);
 	app.useLogger(logger);
-
-	const configService = app.get(ConfigService<IEnvVars>);
 
 	// /api/v1
 

@@ -2,7 +2,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { ICommentRepository } from './comment.repository';
 import { Comment } from '../entities/comment.schema';
 import { Model } from 'mongoose';
-import { CreateCommentDto } from '../dto/create-comment.dto';
+import { CreateCommentDto } from '../dto/request/create-comment.dto';
+import { CommentResponseDto } from '../dto/response/comment-response.dto';
+import { plainToInstance } from 'class-transformer';
 
 export class CommentRepositoryImpl implements ICommentRepository {
 	constructor(@InjectModel(Comment.name) private readonly commentModel: Model<Comment>) {}
@@ -26,38 +28,60 @@ export class CommentRepositoryImpl implements ICommentRepository {
 			return newComment;
 		}
 
-		return await this.commentModel.create({
+		const newComment = await this.commentModel.create({
 			...comment,
 			isOriginal: true,
 		});
+		return newComment;
 	}
-	async findById(id: string): Promise<Comment | null> {
-		return await this.commentModel.findById(id);
+	async findById(id: string): Promise<CommentResponseDto | null> {
+		const comment = await this.commentModel.findById(id);
+		return plainToInstance(CommentResponseDto, comment, {
+			excludeExtraneousValues: true,
+		});
 	}
-	async findAll(): Promise<Comment[]> {
-		return await this.commentModel.find();
+	async findAll(): Promise<CommentResponseDto[]> {
+		const comments = await this.commentModel.find();
+		return comments.map(comment =>
+			plainToInstance(CommentResponseDto, comment, {
+				excludeExtraneousValues: true,
+			}),
+		);
 	}
-	async findByPostId(postId: string): Promise<Comment[]> {
-		const comments = await this.commentModel
-			.find({ postId, isOriginal: true })
-			.sort({ createdAt: -1 });
+	async findByPostId(
+		postId: string,
+		page: number = 1,
+		limit: number = 10,
+	): Promise<{ comments: CommentResponseDto[]; total: number }> {
+		const [comments, total] = await Promise.all([
+			this.commentModel
+				.find({ postId, isOriginal: true })
+				.sort({ createdAt: -1, likesCount: -1 })
+				.skip((page - 1) * limit)
+				.limit(limit),
+			this.commentModel.countDocuments({ postId, isOriginal: true }),
+		]);
 		//get reply count
-		return await Promise.all(
-			comments.map(async comment => {
+		const commentsWithReplyCount = await Promise.all(
+			comments.map(async (comment: Comment) => {
 				const plainComment = JSON.parse(JSON.stringify(comment));
 				return {
 					...plainComment,
 					replyCount: await this.commentModel.countDocuments({
-						parentCommentId: comment._id,
+						rootCommentId: comment._id.toString(),
 					}),
 				};
 			}),
 		);
+		return {
+			comments: commentsWithReplyCount,
+			total,
+		};
 	}
-	async update(id: string, comment: Comment): Promise<Comment | null> {
+	async update(id: string, comment: Comment): Promise<CommentResponseDto | null> {
 		return await this.commentModel.findByIdAndUpdate(id, comment, { new: true });
 	}
-	async delete(userId: string, postId: string, id: string): Promise<Comment> {
+	async delete(userId: string, postId: string, id: string): Promise<CommentResponseDto> {
 		const comment = await this.commentModel.findById(id);
 
 		//delete all child comment if comment is original
@@ -70,19 +94,50 @@ export class CommentRepositoryImpl implements ICommentRepository {
 		if (!deletedComment) {
 			throw new Error('Comment not found');
 		}
-		return deletedComment;
+		return plainToInstance(CommentResponseDto, deletedComment, {
+			excludeExtraneousValues: true,
+		});
 	}
 
 	async deleteAllByPostId(postId: string): Promise<void> {
 		await this.commentModel.deleteMany({ postId });
 	}
-	async showMoreComment(postId: string, commentId: string): Promise<Comment[]> {
-		const comments = await this.commentModel
-			.find({ postId, rootCommentId: commentId, isOriginal: false })
-			.sort({ createdAt: -1 });
-		return comments.map(comment => JSON.parse(JSON.stringify(comment)));
+	async showMoreComment(
+		postId: string,
+		commentId: string,
+		page: number = 1,
+		limit: number = 10,
+	): Promise<{ comments: CommentResponseDto[]; total: number }> {
+		const [comments, total] = await Promise.all([
+			this.commentModel
+				.find({ postId, rootCommentId: commentId, isOriginal: false })
+				.sort({ createdAt: -1 })
+				.skip((page - 1) * limit)
+				.limit(limit),
+			this.commentModel.countDocuments({ postId, rootCommentId: commentId, isOriginal: false }),
+		]);
+		return {
+			comments: await Promise.all(
+				comments.map(async (comment: Comment) => {
+					const plainComment = JSON.parse(JSON.stringify(comment));
+					return {
+						...plainComment,
+						replyCount: await this.commentModel.countDocuments({
+							parentCommentId: comment._id.toString(),
+						}),
+					};
+				}),
+			),
+			total,
+		};
 	}
 	async getCommentCountByPostId(postId: string): Promise<number> {
 		return await this.commentModel.countDocuments({ postId });
+	}
+	async findOne(query: any): Promise<CommentResponseDto | null> {
+		const comment = await this.commentModel.findOne(query);
+		return plainToInstance(CommentResponseDto, comment, {
+			excludeExtraneousValues: true,
+		});
 	}
 }

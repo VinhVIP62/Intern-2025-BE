@@ -1,22 +1,40 @@
-import { CreateCommentDto } from '../dto/create-comment.dto';
+import { CreateCommentDto } from '../dto/request/create-comment.dto';
 import { Comment } from '../entities/comment.schema';
+import { CommentResponseDto } from '../dto/response/comment-response.dto';
 
 export abstract class ICommentRepository {
 	abstract create(comment: CreateCommentDto, parentCommentId: string | null): Promise<Comment>;
 
-	abstract findById(id: string): Promise<Comment | null>;
+	abstract findById(id: string): Promise<CommentResponseDto | null>;
 
-	abstract findAll(): Promise<Comment[]>;
+	abstract findAll(): Promise<CommentResponseDto[]>;
 
-	abstract findByPostId(postId: string): Promise<Comment[]>;
+	abstract findByPostId(
+		postId: string,
+		page: number,
+		limit: number,
+	): Promise<{
+		comments: CommentResponseDto[];
+		total: number;
+	}>;
 
-	abstract update(id: string, comment: Partial<Comment>): Promise<Comment | null>;
+	abstract update(id: string, comment: Partial<Comment>): Promise<CommentResponseDto | null>;
 
-	abstract delete(userId: string, postId: string, id: string): Promise<Comment>;
+	abstract delete(userId: string, postId: string, id: string): Promise<CommentResponseDto>;
 
 	abstract deleteAllByPostId(postId: string): Promise<void>;
 
-	abstract showMoreComment(postId: string, commentId: string): Promise<Comment[]>;
+	abstract showMoreComment(
+		postId: string,
+		commentId: string,
+		page: number,
+		limit: number,
+	): Promise<{
+		comments: CommentResponseDto[];
+		total: number;
+	}>;
+
+	abstract findOne(query: any): Promise<CommentResponseDto | null>;
 
 	abstract getCommentCountByPostId(postId: string): Promise<number>;
 }

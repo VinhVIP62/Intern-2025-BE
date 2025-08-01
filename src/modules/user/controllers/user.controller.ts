@@ -24,14 +24,15 @@ import { ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { RemoveContactDto, AddContactDto } from '../dto/manage-contacts.dto';
 import { UserService } from '../providers/user.service';
 import { Request } from 'express';
-import { UploadService } from '../../../shared/upload/providers/upload.service';
+import { UploadService } from '../../upload/providers/upload.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { ChangePasswordDto } from '../dto/change-password.dto';
-import { verificationService } from '../../../shared/verification/providers/verification.service';
+import { verificationService } from '@modules/verification/providers/verification.service';
 import { isEmailOrPhone } from '@common/utils/check-email-or-phone';
 import { ImageType } from '@common/enum/image.enum';
 import { Response } from '@common/decorators/response.decorator';
+import { FileType } from '@common/types/file.type';
 
 @Controller()
 export class UserController {
@@ -50,9 +51,9 @@ export class UserController {
 	async uploadAvatar(
 		@UploadedFile(
 			new ParseFilePipeBuilder()
-				.addFileTypeValidator({
-					fileType: 'jpeg|png|jpg|webp|bmp',
-				})
+				// .addFileTypeValidator({
+				// 	fileType: FileType,
+				// })
 				.addMaxSizeValidator({
 					maxSize: 1024 * 1024 * 5,
 				})
@@ -89,9 +90,9 @@ export class UserController {
 	async uploadBackground(
 		@UploadedFile(
 			new ParseFilePipeBuilder()
-				.addFileTypeValidator({
-					fileType: 'jpeg|png|jpg|webp|bmp|heic',
-				})
+				// .addFileTypeValidator({
+				// 	fileType: FileType,
+				// })
 				.addMaxSizeValidator({
 					maxSize: 1024 * 1024 * 5,
 				})
@@ -128,9 +129,9 @@ export class UserController {
 		@Param('type') type: ImageType.AVATAR | ImageType.BACKGROUND,
 		@UploadedFile(
 			new ParseFilePipeBuilder()
-				.addFileTypeValidator({
-					fileType: 'jpeg|png|jpg|webp|bmp|heic',
-				})
+				// .addFileTypeValidator({
+				// 	fileType: FileType,
+				// })
 				.addMaxSizeValidator({
 					maxSize: 1024 * 1024 * 5,
 				})
@@ -360,8 +361,9 @@ export class UserController {
 	@ApiBearerAuth()
 	@ApiOperation({ summary: 'Get user by id' })
 	@ApiResponse({ status: 200, description: 'User retrieved successfully' })
-	async getInfo(@Param('id') id: string) {
-		const user = await this.userService.getUserById(id);
+	async getInfo(@Param('id') id: string, @Req() req: Request) {
+		const userId = (req.user as any).id;
+		const user = await this.userService.getUserById(id, userId);
 
 		if (!user) {
 			throw new NotFoundException('User not found');

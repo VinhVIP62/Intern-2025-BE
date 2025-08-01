@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { IUserRepository } from '../repositories/user.repository';
 import { User } from '../entities/user.schema';
 import { ResponseUserDto } from '../dto/user-response.dto';
@@ -7,9 +7,13 @@ import { plainToInstance } from 'class-transformer';
 
 import * as bcrypt from 'bcrypt';
 import { isEmailOrPhone } from '@common/utils/check-email-or-phone';
+import { FriendService } from 'src/modules/friend/providers/friend.service';
 @Injectable()
 export class UserService {
-	constructor(private readonly userRepository: IUserRepository) {}
+	constructor(
+		private readonly userRepository: IUserRepository,
+		private readonly friendService: FriendService,
+	) {}
 
 	async create(data: Partial<User>): Promise<ResponseUserDto> {
 		const newUser = await this.userRepository.create(data);
@@ -82,9 +86,16 @@ export class UserService {
 		}
 	}
 
-	async getUserById(userId: string): Promise<ResponseUserDto | null> {
+	async getUserById(userId: string, MyId?: string): Promise<ResponseUserDto | null> {
 		const user = await this.userRepository.findOneById(userId);
-		return user ? this.toSafeUserResponse(user) : null;
+		if (!user) {
+			throw new NotFoundException('User not found');
+		}
+		if (userId === MyId) {
+			return this.toSafeUserResponse(user, 'self');
+		}
+		const isFriend = MyId ? await this.friendService.isFriend(MyId, userId) : 'self';
+		return this.toSafeUserResponse(user, isFriend);
 	}
 	async getAllUsers(): Promise<ResponseUserDto[]> {
 		const users = await this.userRepository.getAllUsers();
@@ -96,13 +107,24 @@ export class UserService {
 	/**
 	 * Convert User entity to safe response DTO (excluding password and sensitive data)
 	 */
-	async searchUser(query: string): Promise<ResponseUserDto[]> {
+	async searchUser(query: string, userId: string) {
 		const users = await this.userRepository.search(query);
-		return users.map(user => this.toSafeUserResponse(user));
-	}
-	toSafeUserResponse(user: User): ResponseUserDto {
-		return plainToInstance(ResponseUserDto, JSON.parse(JSON.stringify(user)), {
-			excludeExtraneousValues: true,
+		return users.map(user => {
+			return {
+				id: user._id,
+				avatar: user.avatar,
+				fullName: user.fullName,
+				description: user.description,
+			};
 		});
+	}
+	toSafeUserResponse(user: User, isFriend?: string): ResponseUserDto {
+		return plainToInstance(
+			ResponseUserDto,
+			{ ...JSON.parse(JSON.stringify(user)), isFriend },
+			{
+				excludeExtraneousValues: true,
+			},
+		);
 	}
 }

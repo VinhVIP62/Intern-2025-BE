@@ -1,18 +1,24 @@
+import { FriendStatus } from '@modules/friend/enum/friendStatus.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IsNotEmpty, IsString } from 'class-validator';
+import { Types } from 'mongoose';
+import { User } from '@modules/user/entities/user.schema';
+
 @Schema({ timestamps: true })
 export class FriendReq {
-	@Prop()
+	_id: Types.ObjectId;
+
+	@Prop({ type: String, ref: User.name })
 	@IsNotEmpty()
 	@IsString()
-	senderId: string;
+	sender: string;
 
-	@Prop()
+	@Prop({ type: String, ref: User.name })
 	@IsNotEmpty()
 	@IsString()
-	receiverId: string;
+	receiver: string;
 
-	@Prop({ default: 'pending', enum: ['pending', 'accepted'] })
+	@Prop({ default: FriendStatus.PENDING, enum: [FriendStatus.PENDING, FriendStatus.ACCEPTED] })
 	status: string;
 
 	@Prop()

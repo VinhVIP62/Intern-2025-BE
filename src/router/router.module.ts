@@ -9,7 +9,8 @@ import {
 	PostModule,
 	UserModule,
 } from '../modules';
-import { SearchModule } from '../shared/search/search.module';
+import { SearchModule } from '@modules/search/search.module';
+import { NotificationModule } from '@modules/notification/notification.module';
 
 @Module({
 	imports: [
@@ -27,6 +28,7 @@ import { SearchModule } from '../shared/search/search.module';
 					{ path: 'posts', module: PostModule },
 					{ path: 'users', module: UserModule },
 					{ path: 'search', module: SearchModule },
+					{ path: 'notifications', module: NotificationModule },
 				],
 			},
 		]),
@@ -37,6 +39,7 @@ import { SearchModule } from '../shared/search/search.module';
 		PostModule,
 		UserModule,
 		SearchModule,
+		NotificationModule,
 	],
 })
 export class RouteModule {}

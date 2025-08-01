@@ -1,18 +1,23 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
+import { User } from '@modules/user/entities/user.schema';
+import { Post } from '@modules/post/entities/post.schema';
+
+export type CommentDocument = Comment & Document;
 
 @Schema({ timestamps: true })
 export class Comment {
-	@Prop()
+	_id: Types.ObjectId;
+	@Prop({ type: String, ref: User.name })
 	userId: string;
-	@Prop()
+	@Prop({ type: String, ref: Post.name })
 	postId: string;
 
 	@Prop()
 	content: string;
 
-	@Prop({ default: [] })
-	likedUserIds?: string[];
+	@Prop({ default: 0 })
+	likeCount?: number = 0;
 
 	@Prop()
 	rootCommentId?: string;
@@ -22,9 +27,6 @@ export class Comment {
 
 	@Prop({ default: true })
 	isOriginal?: boolean = true;
-
-	@Prop({ default: 0 })
-	replyCount?: number = 0;
 }
 
 export const CommentSchema = SchemaFactory.createForClass(Comment);
@@ -35,6 +37,7 @@ CommentSchema.pre('findOneAndDelete', async function () {
 	if (commentId) {
 		// Delete all child comments (comments that have this comment as parent)
 		await this.model.deleteMany({ parentCommentId: commentId });
+		await this.model.db.collection('likecomments').deleteMany({ commentId });
 	}
 });
 
@@ -43,6 +46,7 @@ CommentSchema.pre('deleteOne', async function () {
 	if (commentId) {
 		// Delete all child comments (comments that have this comment as parent)
 		await this.model.deleteMany({ parentCommentId: commentId });
+		await this.model.db.collection('likecomments').deleteMany({ commentId });
 	}
 });
 
@@ -56,5 +60,6 @@ CommentSchema.pre('deleteMany', async function () {
 	if (commentIds.length > 0) {
 		// Delete all child comments of these comments
 		await this.model.deleteMany({ parentCommentId: { $in: commentIds } });
+		await this.model.db.collection('likecomments').deleteMany({ commentId: { $in: commentIds } });
 	}
 });
