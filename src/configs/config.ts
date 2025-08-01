@@ -16,12 +16,17 @@ const googleOAuth2VarsSchema = z.object({
 	secret: z.string(),
 });
 
+const redisVarsSchema = z.object({
+	uri: z.string(),
+});
+
 export const envFileSchema = z.object({
 	env: z.union([z.literal('development'), z.literal('production')]),
 	port: z.coerce.number().default(3000),
 	database: dbVarsSchema,
 	jwt: jwtVarsSchema,
 	googleOAuth2: googleOAuth2VarsSchema,
+	redis: redisVarsSchema,
 	imgKitKey: z.string(),
 });
 
@@ -45,6 +50,9 @@ const loadEnv = (): IEnvVars => ({
 		secret: process.env.GOOGLE_OA2_CLIENT_SECRET,
 	},
 	imgKitKey: Buffer.from(process.env.IMGKIT_API_PRIVATE_KEY + ':').toString('base64'),
+	redis: {
+		uri: process.env.REDIS_URI,
+	},
 });
 
 // validate and optionally transform your env variables here

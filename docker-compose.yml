@@ -27,5 +27,14 @@ services:
     environment:
       MONGO_INITDB_DATABASE: myapp
 
+  redis:
+    image: redis:8.0-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
 volumes:
   mongo_data:
+  redis_data:

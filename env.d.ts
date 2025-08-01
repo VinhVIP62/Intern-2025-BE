@@ -14,5 +14,6 @@ declare namespace NodeJS {
 		readonly IMGKIT_API_PRIVATE_KEY: string;
 		readonly GOOGLE_OA2_CLIENT_ID: string;
 		readonly GOOGLE_OA2_CLIENT_SECRET: string;
+		readonly REDIS_URI: string;
 	}
 }

@@ -9,6 +9,8 @@ import { IEnvVars, JwtAccessConfig, JwtRefreshConfig } from '@configs';
 
 import { UserModule } from '@modules/user';
 
+import { KeyvRedisModule } from '@shared/modules/cache';
+
 import { AuthController } from './controllers';
 import { GoogleOAuth2Guard, JwtAuthGuard, JwtRefreshAuthGuard } from './guards';
 import { AuthService, TokenService } from './providers';
@@ -44,6 +46,7 @@ import { GoogleOAuth2Strategy, JwtRefreshStrategy, JwtStrategy } from './strateg
 				return new JwtService(config);
 			},
 		},
+		KeyvRedisModule,
 	],
 	exports: [
 		JwtAuthGuard,

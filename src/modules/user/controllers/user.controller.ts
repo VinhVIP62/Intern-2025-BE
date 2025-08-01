@@ -63,6 +63,7 @@ export class UserController {
 		@Body() body: SetupUserDto,
 	): Promise<ResponseProfileDto & ResponseAuthDto> {
 		const finishedProfile = await this.userService.updateWithSetup(request.user.id, body);
+		await this.tokenService.invalidateAccessTokensOf(request.user.id);
 		const tokens = await this.tokenService.generateTokens(createPayload(finishedProfile), true);
 		return {
 			...plainToInstanceStrict(ResponseProfileDto, finishedProfile),
@@ -79,6 +80,7 @@ export class UserController {
 		@Body() body: SetupGoogleUserDto,
 	): Promise<ResponseProfileDto & ResponseAuthDto> {
 		const finishedProfile = await this.userService.updateWithSetup(request.user.id, body);
+		await this.tokenService.invalidateAccessTokensOf(request.user.id);
 		const tokens = await this.tokenService.generateTokens(createPayload(finishedProfile), true);
 		return {
 			...plainToInstanceStrict(ResponseProfileDto, finishedProfile),
@@ -94,6 +96,7 @@ export class UserController {
 		@Body() body: UpdateUserDto,
 	): Promise<ResponseProfileDto & ResponseAuthDto> {
 		const updatedProfile = await this.userService.update(request.user.id, body);
+		await this.tokenService.invalidateAccessTokensOf(request.user.id);
 		const tokens = await this.tokenService.generateTokens(createPayload(updatedProfile), true);
 		return {
 			...plainToInstanceStrict(ResponseProfileDto, updatedProfile),
