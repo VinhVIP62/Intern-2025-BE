@@ -72,6 +72,72 @@ export class FriendshipRepositoryImpl
 	async getFriendship(
 		uid: string,
 		status: FriendStatus,
+		options?: OffsetPaginationOption,
+	): Promise<FriendshipInfo[]> {
+		const limitOptions = options?.limit || 10;
+		const skipOption = (options?.page || 0) * limitOptions;
+		const matchStage: PipelineStage.Match = {
+			$match: {
+				userIds: new mongoose.Types.ObjectId(uid),
+				status,
+			},
+		};
+		const skipStage: PipelineStage.Skip = { $skip: skipOption };
+		const limitStage: PipelineStage.Limit = { $limit: limitOptions };
+		const setStage: PipelineStage.Set = {
+			$set: {
+				userIds: {
+					$arrayElemAt: [
+						{
+							$filter: {
+								input: '$userIds',
+								as: 'userId',
+								cond: { $ne: ['$$userId', new mongoose.Types.ObjectId(uid)] },
+							},
+						},
+						0,
+					],
+				},
+			},
+		};
+		const lookupStage: PipelineStage.Lookup = {
+			$lookup: {
+				from: 'users',
+				localField: 'userIds',
+				foreignField: '_id',
+				as: 'userIdsPopulated',
+			},
+		};
+		const unwindStage: PipelineStage.Unwind = {
+			$unwind: '$userIdsPopulated',
+		};
+		const setPopulatedIdToStringStage: PipelineStage.Set = {
+			$set: {
+				'userIdsPopulated.id': { $toString: '$userIdsPopulated._id' },
+			},
+		};
+		const convertUserIdToStringStage: PipelineStage.Set = {
+			$set: {
+				userIds: { $toString: '$userIds' },
+				id: { $toString: '$_id' },
+			},
+		};
+		const foundFriendship = this.friendshipModel.aggregate<FriendshipInfo>([
+			matchStage,
+			skipStage,
+			limitStage,
+			setStage,
+			lookupStage,
+			unwindStage,
+			setPopulatedIdToStringStage,
+			convertUserIdToStringStage,
+		]);
+		return foundFriendship;
+	}
+
+	async getFriendshipWithDirection(
+		uid: string,
+		status: FriendStatus,
 		isReceiver: boolean,
 		options?: OffsetPaginationOption,
 	): Promise<FriendshipInfo[]> {
