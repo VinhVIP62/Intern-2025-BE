@@ -80,7 +80,9 @@ export class FriendshipRepositoryImpl
 		const matchStage: PipelineStage.Match = {
 			$match: {
 				userIds: new mongoose.Types.ObjectId(uid),
-				...(!isReceiver && { requestedFrom: new mongoose.Types.ObjectId(uid) }),
+				...(isReceiver ?
+					{ requestedFrom: { $ne: new mongoose.Types.ObjectId(uid) } }
+				:	{ requestedFrom: new mongoose.Types.ObjectId(uid) }),
 				status,
 			},
 		};
