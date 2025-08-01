@@ -1,9 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { MemoryStoredFile } from 'nestjs-form-data';
-import { FileHostService } from 'src/shared/modules/file-host/provider/file-host.service';
 
 import { CreateType, Populated } from '@common/crud/entities';
 import { Role } from '@common/enums';
+
+import { FileHostService } from '@shared/modules/file-host/providers/file-host.service';
 
 import { User } from '../entities';
 import { IUserRepository, IUserRepositoryToken } from '../repositories/user.repository';

@@ -1,2 +1,2 @@
 export * from './file-host.module';
-export * from './provider';
+export * from './providers';

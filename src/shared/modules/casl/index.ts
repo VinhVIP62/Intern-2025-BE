@@ -1,2 +1,2 @@
 export * from './casl.module';
-export * from './provider';
+export * from './providers';

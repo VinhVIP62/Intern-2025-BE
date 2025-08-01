@@ -1,7 +1,7 @@
 import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 
-import { FileHostService } from './provider/file-host.service';
+import { FileHostService } from './providers/file-host.service';
 
 @Module({
 	imports: [
