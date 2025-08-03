@@ -181,7 +181,6 @@ export class PostService {
 		if (viewerId) {
 			const blockObjects = await this.blockService.getBlockedUsers(viewerId, 'post');
 			blockedUserIds = blockObjects.map(p => p.blocked._id);
-			console.log(blockObjects, blockedUserIds);
 		}
 
 		let friendIds: string[] = [];

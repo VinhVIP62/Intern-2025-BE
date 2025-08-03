@@ -178,8 +178,6 @@ export class ConversationService {
 		const isParticipant = conversation.participants.some(p => p._id.toString() === userId);
 		if (!isParticipant) throw new Forbidden('You are not a member of this group');
 
-		console.log(conversation.participants.map(p => p._id.toString()));
-
 		const users = await this.userService.findManyByIds(
 			conversation.participants.map(p => p._id.toString()),
 		);

@@ -15,6 +15,7 @@ import { MessageRepositoryImpl } from './repositories/message.repository.impl';
 import { IConversationRepository } from './repositories/conversation.repository';
 import { ConversationRepositoryImpl } from './repositories/conversation.repository.impl';
 import { RealtimeModule } from '@modules/realtime/realtime.module';
+import { BlockModule } from '@modules/block/block.module';
 
 @Module({
 	imports: [
@@ -25,6 +26,7 @@ import { RealtimeModule } from '@modules/realtime/realtime.module';
 		LoggerModule,
 		FileModule,
 		RealtimeModule,
+		BlockModule,
 	],
 	controllers: [ConversationController, MessageController],
 	providers: [

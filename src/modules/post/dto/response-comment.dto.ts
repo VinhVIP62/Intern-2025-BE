@@ -64,6 +64,10 @@ export class CommentResponseDto {
 	@Expose()
 	isLiked: boolean;
 
+	@ApiProperty({ example: 'false' })
+	@Expose()
+	isRevoked: boolean;
+
 	@Expose()
 	@ApiProperty()
 	createdAt: Date;

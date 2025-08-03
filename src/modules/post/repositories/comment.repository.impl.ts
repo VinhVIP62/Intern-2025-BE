@@ -9,7 +9,10 @@ export class CommentRepositoryImpl implements ICommentRepository {
 	constructor(@InjectModel(Comment.name) private readonly commentModel: Model<Comment>) {}
 
 	async findById(id: string): Promise<Comment | null> {
-		return await this.commentModel.findById(id).populate('author', '_id fullName avatarUrl').exec();
+		return await this.commentModel
+			.findOne({ _id: id, isRevoked: { $ne: true } })
+			.populate('author', '_id fullName avatarUrl')
+			.exec();
 	}
 
 	async create(comment: Partial<Comment>): Promise<Comment> {
@@ -27,7 +30,8 @@ export class CommentRepositoryImpl implements ICommentRepository {
 		const filter = {
 			postId: new Types.ObjectId(postId),
 			parentCommentId: parentCommentId ? new Types.ObjectId(parentCommentId) : null,
-		}; // chỉ lấy comment cấp 1
+			isRevoked: { $ne: true },
+		};
 
 		const [data, total] = await Promise.all([
 			this.commentModel
@@ -56,7 +60,9 @@ export class CommentRepositoryImpl implements ICommentRepository {
 	}
 
 	async findAllByPostId(postId: string): Promise<CommentDocument[]> {
-		return this.commentModel.find({ postId: new Types.ObjectId(postId) }).exec();
+		return this.commentModel
+			.find({ postId: new Types.ObjectId(postId), isRevoked: { $ne: true } })
+			.exec();
 	}
 
 	async deleteManyByIds(commentIds: string[]): Promise<void> {

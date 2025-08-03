@@ -9,6 +9,8 @@ import { CreateFirstMessageDto } from '../dto/create-first-message.dto';
 import { SocketEventService } from '@modules/realtime/socket-event.service';
 import { ResponseConversationDto } from '../dto/response-conversation.dto';
 import { mapMimeTypeToType } from '@common/utils/media.util';
+import { BlockService } from '@modules/block/providers/block.service';
+import { Forbidden } from '@common/exceptions';
 
 @Injectable()
 export class MessageService {
@@ -16,6 +18,7 @@ export class MessageService {
 		private readonly conversationRepository: IConversationRepository,
 		private readonly messageRepository: IMessageRepository,
 		private readonly socketEventService: SocketEventService,
+		private readonly blockService: BlockService,
 	) {}
 
 	async sendFirstMessage(userId: string, dto: CreateFirstMessageDto): Promise<ResponseMessageDto> {
@@ -26,6 +29,20 @@ export class MessageService {
 
 		if (!conversation) {
 			conversation = await this.conversationRepository.createConversation(userId, userIds, isGroup);
+		}
+
+		if (!conversation.isGroup) {
+			const otherParticipants = conversation.participants
+				.map(p => p._id.toString())
+				.filter(id => id !== userId);
+
+			for (const participantId of otherParticipants) {
+				if (await this.blockService.isBlocked(userId, participantId)) {
+					throw new Forbidden('Không thể gửi tin nhắn vì đã chặn');
+				} else if (await this.blockService.isBlocked(participantId, userId)) {
+					throw new Forbidden('Không thể gửi tin nhắn vì đã bị chặn');
+				}
+			}
 		}
 
 		const processedMedia = (dto.media ?? []).map(item => ({
@@ -72,6 +89,20 @@ export class MessageService {
 		const conversation = await this.conversationRepository.findById(dto.conversationId);
 		if (!conversation || !conversation.participants.some(p => p._id.toString() === userId)) {
 			throw new Error('Not a participant of the conversation');
+		}
+
+		if (!conversation.isGroup) {
+			const otherParticipants = conversation.participants
+				.map(p => p._id.toString())
+				.filter(id => id !== userId);
+
+			for (const participantId of otherParticipants) {
+				if (await this.blockService.isBlocked(userId, participantId)) {
+					throw new Forbidden('Không thể gửi tin nhắn vì đã chặn');
+				} else if (await this.blockService.isBlocked(participantId, userId)) {
+					throw new Forbidden('Không thể gửi tin nhắn vì đã bị chặn');
+				}
+			}
 		}
 
 		const processedMedia = (dto.media ?? []).map(item => ({

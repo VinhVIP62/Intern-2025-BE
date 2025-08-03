@@ -4660,6 +4660,10 @@
             "type": "boolean",
             "example": "true"
           },
+          "isRevoked": {
+            "type": "boolean",
+            "example": "false"
+          },
           "createdAt": {
             "format": "date-time",
             "type": "string"
@@ -4678,6 +4682,7 @@
           "likeCount",
           "commentCount",
           "isLiked",
+          "isRevoked",
           "createdAt",
           "updatedAt"
         ]
