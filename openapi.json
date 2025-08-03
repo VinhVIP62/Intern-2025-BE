@@ -1134,6 +1134,29 @@
         ]
       }
     },
+    "/api/v1/client/events/friendsInEvent/{eventId}": {
+      "get": {
+        "operationId": "EventController_friendInEvent_v1",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Events"
+        ]
+      }
+    },
     "/api/v1/client/notifications": {
       "get": {
         "operationId": "NotificationController_getNotification_v1",
@@ -1790,6 +1813,29 @@
         ]
       }
     },
+    "/api/v1/friends/friend/{friendId}": {
+      "delete": {
+        "operationId": "FriendController_deleteFriend_v1",
+        "parameters": [
+          {
+            "name": "friendId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Friends"
+        ]
+      }
+    },
     "/api/v1/friends": {
       "get": {
         "operationId": "FriendController_getMyFriends_v1",
@@ -2038,7 +2084,8 @@
               "accepted",
               "interested",
               "rejected",
-              "pending"
+              "pending",
+              "none"
             ]
           }
         },

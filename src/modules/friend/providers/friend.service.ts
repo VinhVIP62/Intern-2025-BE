@@ -38,7 +38,6 @@ export class FriendService {
 		if (response === FriendState.REJECTED) {
 			const deleted = await this.friendRepository.deleteRequest(fromUserId, toUserId);
 			await this.notiService.friendRequestNoti(toUserId, fromUserId, FriendState.REJECTED);
-
 			if (!deleted) {
 				throw new NotFoundException('friend.REQUEST_NOT_FOUND');
 			}
@@ -106,5 +105,15 @@ export class FriendService {
 			}),
 		);
 		return res;
+	}
+
+	async deleteFriend(userId: string, friendId: string) {
+		const isFriend = await this.friendRepository.findBetween(userId, friendId);
+		if (!isFriend) throw new NotFoundException('friend.REQUEST_NOT_FOUND');
+		const deleted = await this.friendRepository.deleteRequest(
+			isFriend.fromUserId,
+			isFriend.toUserId,
+		);
+		return deleted;
 	}
 }

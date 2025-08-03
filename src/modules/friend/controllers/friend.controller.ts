@@ -1,5 +1,5 @@
 import { ResponseEntity } from '@common/types';
-import { Controller, Get, Post, Body, Req, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Req, Param, Delete } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Version } from '@nestjs/common/decorators/core/version.decorator';
 import { Response } from '@common/decorators/response.decorator';
@@ -47,6 +47,21 @@ export class FriendController {
 		return {
 			success: true,
 			data: result,
+		};
+	}
+
+	@Delete('friend/:friendId')
+	@Version('1')
+	@Response()
+	async deleteFriend(
+		@Req() req: Request,
+		@Param('friendId') friendId: string,
+	): Promise<ResponseEntity<any>> {
+		const user = req.user as { id: string };
+		const res = await this.friendService.deleteFriend(user.id, friendId);
+		return {
+			success: true,
+			data: res,
 		};
 	}
 
