@@ -34,6 +34,29 @@
         ]
       }
     },
+    "/api/v1/client/auth/auth/logout": {
+      "get": {
+        "description": "Đăng xuất tài khoản người dùng",
+        "operationId": "AuthController_logout_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Log out thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LogoutResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Logout user",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
     "/api/v1/client/auth/auth/register": {
       "post": {
         "description": "Đăng ký tài khoản mới",
@@ -95,6 +118,105 @@
         ]
       }
     },
+    "/api/v1/client/auth/auth/get-otp": {
+      "post": {
+        "description": "Yêu cầu gửi OTP để xác thực",
+        "operationId": "AuthController_requestOtp_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ForgotPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Yêu cầu OTP đã được gửi",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OtpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Request OTP",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/client/auth/auth/verify-otp": {
+      "post": {
+        "description": "Xác thực OTP đã gửi đến email",
+        "operationId": "AuthController_verifyOtp_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OtpCodeDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Xác thực OTP thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VerifyOtpResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Verify OTP",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/v1/client/auth/auth/reset-password": {
+      "post": {
+        "description": "Thay đổi mật khẩu",
+        "operationId": "AuthController_resetPassword_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Thay đổi mật khẩu thành công",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResetPasswordResponse"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Reset Password",
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
     "/api/v1/client/users/user/admin-only": {
       "get": {
         "operationId": "UserController_adminOnlyRoute_v1",
@@ -137,6 +259,1655 @@
         "summary": "Tất cả user có thể truy cập",
         "tags": [
           "User"
+        ]
+      }
+    },
+    "/api/v1/client/users/profile": {
+      "get": {
+        "operationId": "ProfileController_getProfile_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thành công lấy thông tin hồ sơ người dùng"
+          }
+        },
+        "summary": "Lấy thông tin hồ sơ người dùng",
+        "tags": [
+          "Profile"
+        ]
+      }
+    },
+    "/api/v1/client/users/profile/create": {
+      "post": {
+        "operationId": "ProfileController_createProfile_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Thành công tạo mới hồ sơ người dùng"
+          }
+        },
+        "summary": "Tạo mới hồ sơ người dùng",
+        "tags": [
+          "Profile"
+        ]
+      }
+    },
+    "/api/v1/client/users/profile/update": {
+      "post": {
+        "operationId": "ProfileController_updateProfile_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProfileDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Thành công cập nhật hồ sơ người dùng"
+          }
+        },
+        "summary": "Cập nhật hồ sơ người dùng",
+        "tags": [
+          "Profile"
+        ]
+      }
+    },
+    "/api/v1/client/users/profile/me": {
+      "get": {
+        "operationId": "ProfileController_getCurrentUserProfile_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Thành công lấy thông tin hồ sơ của người dùng hiện tại"
+          }
+        },
+        "summary": "Lấy thông tin hồ sơ của người dùng hiện tại",
+        "tags": [
+          "Profile"
+        ]
+      }
+    },
+    "/api/v1/client/search/all": {
+      "get": {
+        "operationId": "SearchController_searchAll_v1",
+        "parameters": [
+          {
+            "name": "keyword",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Search"
+        ]
+      }
+    },
+    "/api/v1/client/search/profile/reindex": {
+      "get": {
+        "operationId": "SearchController_reindexProfile_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Search"
+        ]
+      }
+    },
+    "/api/v1/client/search/profiles": {
+      "get": {
+        "operationId": "SearchController_searchProfiles_v1",
+        "parameters": [
+          {
+            "name": "keyword",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Tìm kiếm hồ sơ người dùng",
+        "tags": [
+          "Search"
+        ]
+      }
+    },
+    "/api/v1/client/search/posts": {
+      "get": {
+        "operationId": "SearchController_searchPosts_v1",
+        "parameters": [
+          {
+            "name": "keyword",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Search"
+        ]
+      }
+    },
+    "/api/v1/client/search/posts/reindex": {
+      "get": {
+        "operationId": "SearchController_reindexPosts_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Search"
+        ]
+      }
+    },
+    "/api/v1/client/search/events": {
+      "get": {
+        "operationId": "SearchController_searchEvents_v1",
+        "parameters": [
+          {
+            "name": "keyword",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Search"
+        ]
+      }
+    },
+    "/api/v1/client/search/events/reindex": {
+      "get": {
+        "operationId": "SearchController_reindexEvents_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Search"
+        ]
+      }
+    },
+    "/api/v1/chat/history": {
+      "get": {
+        "operationId": "ChatController_getChatHistory_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "before",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Chat"
+        ]
+      }
+    },
+    "/api/v1/chat/conversations": {
+      "get": {
+        "operationId": "ChatController_getConversations_v1",
+        "parameters": [
+          {
+            "name": "before",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Chat"
+        ]
+      }
+    },
+    "/api/v1/admin/admin/report/users": {
+      "get": {
+        "operationId": "AdminController_getUserReport_v1",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Admin"
+        ]
+      }
+    },
+    "/api/v1/admin/admin/report/posts": {
+      "get": {
+        "operationId": "AdminController_getPostReport_v1",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Admin"
+        ]
+      }
+    },
+    "/api/v1/admin/admin/deleted/posts": {
+      "get": {
+        "operationId": "AdminController_getDeletedPosts_v1",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "page",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Admin"
+        ]
+      }
+    },
+    "/api/v1/admin/admin/ban/user": {
+      "post": {
+        "operationId": "AdminController_banUser_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListUserIdDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Admin"
+        ]
+      }
+    },
+    "/api/v1/admin/admin/unban/user": {
+      "post": {
+        "operationId": "AdminController_unbanUser_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListUserIdDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Admin"
+        ]
+      }
+    },
+    "/api/v1/client/events": {
+      "post": {
+        "operationId": "EventController_create_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEventDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Events",
+          "Create new event"
+        ]
+      }
+    },
+    "/api/v1/client/events/me": {
+      "get": {
+        "operationId": "EventController_getMyEvents_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/api/v1/client/events/detail/{eventId}": {
+      "get": {
+        "operationId": "EventController_getDetailEvent_v1",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/api/v1/client/events/attendees/{eventId}": {
+      "post": {
+        "operationId": "EventController_getAttendees_v1",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RSVPDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/api/v1/client/events/invite": {
+      "post": {
+        "operationId": "EventController_inviteMembers_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/api/v1/client/events/invitations": {
+      "post": {
+        "operationId": "EventController_invitation_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RSVPDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/api/v1/client/events/invitations/{eventId}": {
+      "patch": {
+        "operationId": "EventController_respondInvitation_v1",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RSVPDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/api/v1/client/events/leaves/{eventId}": {
+      "patch": {
+        "operationId": "EventController_leaveEvent_v1",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/api/v1/client/events/interest/{eventId}": {
+      "post": {
+        "operationId": "EventController_interestEvent_v1",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/api/v1/client/events/uninterest/{eventId}": {
+      "delete": {
+        "operationId": "EventController_unInterestEvent_v1",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/api/v1/client/events/join/{eventId}": {
+      "put": {
+        "operationId": "EventController_joinEvent_v1",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/api/v1/client/events/accept/{eventId}": {
+      "put": {
+        "operationId": "EventController_accept_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcceptMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/api/v1/client/events/reject/{eventId}": {
+      "put": {
+        "operationId": "EventController_reject_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AcceptMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/api/v1/client/events/delete/{eventId}": {
+      "put": {
+        "operationId": "EventController_deletemember_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteMemberDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Events"
+        ]
+      },
+      "delete": {
+        "operationId": "EventController_deleteEvent_v1",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/api/v1/client/events/nearby": {
+      "post": {
+        "operationId": "EventController_getNearbyEvents_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LocationDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/api/v1/client/events/recommendations": {
+      "get": {
+        "operationId": "EventController_getRecommendations_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/api/v1/client/events/overdue": {
+      "get": {
+        "operationId": "EventController_getOverdueEvents_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/api/v1/client/events/within24h": {
+      "get": {
+        "operationId": "EventController_within24hEvents_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/api/v1/client/events/friendsInEvent/{eventId}": {
+      "get": {
+        "operationId": "EventController_friendInEvent_v1",
+        "parameters": [
+          {
+            "name": "eventId",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Events"
+        ]
+      }
+    },
+    "/api/v1/client/notifications": {
+      "get": {
+        "operationId": "NotificationController_getNotification_v1",
+        "parameters": [
+          {
+            "name": "before",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Notification"
+        ]
+      }
+    },
+    "/api/v1/client/notifications/unread": {
+      "get": {
+        "operationId": "NotificationController_getUnreadNotification_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Notification"
+        ]
+      }
+    },
+    "/api/v1/client/notifications/read/{notificationId}": {
+      "post": {
+        "operationId": "NotificationController_updateReadNotification_v1",
+        "parameters": [
+          {
+            "name": "notificationId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Notification"
+        ]
+      }
+    },
+    "/api/v1/client/posts/detail/{postId}": {
+      "get": {
+        "operationId": "PostController_getPostById_v1",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Posts"
+        ]
+      }
+    },
+    "/api/v1/client/posts/user/{userId}": {
+      "get": {
+        "operationId": "PostController_getPostOfUser_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "updatedBefore",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Posts"
+        ]
+      }
+    },
+    "/api/v1/client/posts/newsfeed": {
+      "get": {
+        "operationId": "PostController_getNewsfeed_v1",
+        "parameters": [
+          {
+            "name": "updatedBefore",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Lấy newsfeed",
+        "tags": [
+          "Posts"
+        ]
+      }
+    },
+    "/api/v1/client/posts": {
+      "post": {
+        "operationId": "PostController_createPost_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePostDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tạo bài viết thành công"
+          }
+        },
+        "summary": "Tạo bài viết mới",
+        "tags": [
+          "Posts"
+        ]
+      },
+      "get": {
+        "operationId": "PostController_getMyPosts_v1",
+        "parameters": [
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "updatedBefore",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Danh sách bài viết của bạn"
+          }
+        },
+        "summary": "Lấy bài viết của tôi",
+        "tags": [
+          "Posts"
+        ]
+      }
+    },
+    "/api/v1/client/posts/{postId}": {
+      "put": {
+        "operationId": "PostController_updatePost_v1",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePostDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Chỉnh sửa bài viết",
+        "tags": [
+          "Posts"
+        ]
+      },
+      "delete": {
+        "operationId": "PostController_deletePost_v1",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "summary": "Xoá bài viết",
+        "tags": [
+          "Posts"
+        ]
+      }
+    },
+    "/api/v1/client/posts/react/{postId}": {
+      "post": {
+        "operationId": "ReactController_react_v1",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReactDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "react bài viết",
+        "tags": [
+          "Reacts"
+        ]
+      }
+    },
+    "/api/v1/client/posts/update/{postId}": {
+      "put": {
+        "operationId": "ReactController_update_v1",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReactDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Reacts"
+        ]
+      }
+    },
+    "/api/v1/client/posts/unreact/{postId}": {
+      "post": {
+        "operationId": "ReactController_unReact_v1",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Unreact bài viết",
+        "tags": [
+          "Reacts"
+        ]
+      }
+    },
+    "/api/v1/client/posts/isreacted/{postId}": {
+      "get": {
+        "operationId": "ReactController_isReacted_v1",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Reacts"
+        ]
+      }
+    },
+    "/api/v1/client/posts/reactCmt/react/{cmtId}": {
+      "post": {
+        "operationId": "ReactCmtController_react_v1",
+        "parameters": [
+          {
+            "name": "cmtId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReactDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "React cmt",
+        "tags": [
+          "React Comment"
+        ]
+      }
+    },
+    "/api/v1/client/posts/reactCmt/update/{cmtId}": {
+      "put": {
+        "operationId": "ReactCmtController_updateReact_v1",
+        "parameters": [
+          {
+            "name": "cmtId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReactDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "React Comment"
+        ]
+      }
+    },
+    "/api/v1/client/posts/reactCmt/unreact/{cmtId}": {
+      "post": {
+        "operationId": "ReactCmtController_unReact_v1",
+        "parameters": [
+          {
+            "name": "cmtId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "summary": "Unreact cmt",
+        "tags": [
+          "React Comment"
+        ]
+      }
+    },
+    "/api/v1/client/posts/reactCmt/isreacted/{cmtId}": {
+      "get": {
+        "operationId": "ReactCmtController_isReacted_v1",
+        "parameters": [
+          {
+            "name": "cmtId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "React Comment"
+        ]
+      }
+    },
+    "/api/v1/client/posts/comments": {
+      "post": {
+        "operationId": "CommentController_create_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCommentDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Comments"
+        ]
+      }
+    },
+    "/api/v1/client/posts/comments/{postId}": {
+      "get": {
+        "operationId": "CommentController_getCmt_v1",
+        "parameters": [
+          {
+            "name": "postId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "before",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "format": "date-time",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Comments"
+        ]
+      }
+    },
+    "/api/v1/client/posts/comments/{cmtId}/childcounts": {
+      "get": {
+        "operationId": "CommentController_getChildCount_v1",
+        "parameters": [
+          {
+            "name": "cmtId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Comments"
+        ]
+      }
+    },
+    "/api/v1/client/posts/comments/replies/{cmtId}": {
+      "get": {
+        "operationId": "CommentController_getRepliesCmt_v1",
+        "parameters": [
+          {
+            "name": "cmtId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Comments"
+        ]
+      }
+    },
+    "/api/v1/friends/request": {
+      "post": {
+        "operationId": "FriendController_sendRequest_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendFriendRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Gửi lời mời kết bạn thành công"
+          }
+        },
+        "summary": "Gửi lời mời kết bạn",
+        "tags": [
+          "Friends"
+        ]
+      }
+    },
+    "/api/v1/friends/respond": {
+      "post": {
+        "operationId": "FriendController_respondRequest_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResponseFriendRequestDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Phản hồi lời mời thành công"
+          }
+        },
+        "summary": "Phản hồi lời mời kết bạn",
+        "tags": [
+          "Friends"
+        ]
+      }
+    },
+    "/api/v1/friends/friend/{friendId}": {
+      "delete": {
+        "operationId": "FriendController_deleteFriend_v1",
+        "parameters": [
+          {
+            "name": "friendId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Friends"
+        ]
+      }
+    },
+    "/api/v1/friends": {
+      "get": {
+        "operationId": "FriendController_getMyFriends_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Trả về danh sách bạn bè"
+          }
+        },
+        "summary": "Lấy danh sách bạn bè của tôi",
+        "tags": [
+          "Friends"
+        ]
+      }
+    },
+    "/api/v1/friends/pendinglist": {
+      "get": {
+        "operationId": "FriendController_pendingList_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Friends"
+        ]
+      }
+    },
+    "/api/v1/friends/friendlist/{userId}": {
+      "get": {
+        "operationId": "FriendController_getFriendList_v1",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Friends"
+        ]
+      }
+    },
+    "/api/v1/friends/isfriend/{friendId}": {
+      "get": {
+        "operationId": "FriendController_isFriend_v1",
+        "parameters": [
+          {
+            "name": "friendId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Friends"
         ]
       }
     }
@@ -188,6 +1959,10 @@
           }
         }
       },
+      "LogoutResponse": {
+        "type": "object",
+        "properties": {}
+      },
       "RegisterDto": {
         "type": "object",
         "properties": {
@@ -196,6 +1971,11 @@
             "description": "Tên đăng nhập",
             "example": "johndoe"
           },
+          "email": {
+            "type": "string",
+            "description": "Email",
+            "example": "abc@def.xyz"
+          },
           "password": {
             "type": "string",
             "description": "Mật khẩu mạnh (tối thiểu 8 ký tự, 1 số, 1 chữ in hoa, 1 ký tự đặc biệt)",
@@ -203,7 +1983,7 @@
           },
           "roles": {
             "type": "array",
-            "description": "Danh sách role (ADMIN, MODERATOR, USER)",
+            "description": "Danh sách role (ADMIN, USER)",
             "items": {
               "type": "string",
               "enum": [
@@ -216,8 +1996,142 @@
         },
         "required": [
           "username",
+          "email",
           "password"
         ]
+      },
+      "ForgotPasswordDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "OtpResponseDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "OTP code sent to the user"
+          }
+        }
+      },
+      "OtpCodeDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "VerifyOtpResponseDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Message indicating the result of the OTP verification"
+          },
+          "isValid": {
+            "type": "boolean",
+            "description": "Indicates whether the OTP verification was successful"
+          },
+          "resetPasswordToken": {
+            "type": "string",
+            "description": "Token to be used for reset password"
+          }
+        }
+      },
+      "ResetPasswordDto": {
+        "type": "object",
+        "properties": {
+          "newPassword": {
+            "type": "string",
+            "description": "Mật khẩu mạnh (tối thiểu 8 ký tự, 1 số, 1 chữ in hoa, 1 ký tự đặc biệt)",
+            "example": "StrongP@ssw0rd"
+          },
+          "resetPasswordToken": {
+            "type": "string",
+            "description": "Token to be used for reset password",
+            "example": "hashed-reset-password-token"
+          }
+        },
+        "required": [
+          "newPassword",
+          "resetPasswordToken"
+        ]
+      },
+      "ResetPasswordResponse": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateProfileDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateProfileDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "ListUserIdDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateEventDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "RSVPDto": {
+        "type": "object",
+        "properties": {
+          "state": {
+            "type": "string",
+            "enum": [
+              "owner",
+              "invited",
+              "accepted",
+              "interested",
+              "rejected",
+              "pending",
+              "none"
+            ]
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "InviteMemberDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "AcceptMemberDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "DeleteMemberDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "LocationDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreatePostDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdatePostDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "ReactDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "CreateCommentDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "SendFriendRequestDto": {
+        "type": "object",
+        "properties": {}
+      },
+      "ResponseFriendRequestDto": {
+        "type": "object",
+        "properties": {}
       }
     }
   }

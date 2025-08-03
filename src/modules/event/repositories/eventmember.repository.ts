@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { EventMember } from '../entities/eventmember.schema';
-import { RSVP } from '@common/enum/event.member.enum';
+import { RSVP } from '@common/enum/event/event.member.enum';
 
 @Injectable()
 export abstract class IEventMemberRepository {

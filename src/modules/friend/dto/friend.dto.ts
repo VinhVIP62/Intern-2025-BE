@@ -1,5 +1,5 @@
 import { IsUUID, IsIn } from 'class-validator';
-import { FriendState } from '@common/enum/friend.state.enum';
+import { FriendState } from '@common/enum/friend/friend.state.enum';
 
 export class SendFriendRequestDto {
 	@IsUUID()

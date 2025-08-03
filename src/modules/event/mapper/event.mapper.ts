@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IProfileRepository } from '@modules/user/repositories/profile.repository';
+import { IProfileRepository } from '@modules/user/repositories/interfaces/profile.repository';
 import { Event } from '../entities/event.schema';
 
 @Injectable()
@@ -16,13 +16,19 @@ export class EventMapper {
 			content: event.content,
 			mediaUrls: event.mediaUrls,
 			interestedCount: event.interestedCount,
+			startTime: event.startTime,
+			endTime: event?.endTime,
 			createdAt: event.createdAt,
 			updatedAt: event.updatedAt,
 			rsvp: rsvp,
 			isDeleted: event.isDeleted,
 			address: event.address,
 			numOfMem: event.numOfMem,
+			maxMem: event.maxMem,
+			sportInterests: event.sportInterests,
 			state: event.state,
+			longitude: event.location.coordinates[0],
+			latitude: event.location.coordinates[1],
 		};
 	}
 }

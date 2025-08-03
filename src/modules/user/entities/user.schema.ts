@@ -1,5 +1,4 @@
-// src/modules/user/entities/user.schema.ts
-import { Role } from '@common/enum/roles.enum';
+import { Role } from '@common/enum/user/roles.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import bcrypt from 'bcrypt';
 import { randomUUID } from 'crypto';

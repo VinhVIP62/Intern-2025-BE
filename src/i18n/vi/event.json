@@ -1,3 +1,4 @@
 {
-    "NOT_FOUND": "Không tìm thấy hoạt động của bạn"
+    "NOT_FOUND": "Không tìm thấy hoạt động của bạn",
+    "MAX_MEMBERS_REACHED": "Số lượng thành viên tối đa cho hoạt động này đã đạt. Bạn không thể xác nhận tham gia vào thời điểm này."
 }

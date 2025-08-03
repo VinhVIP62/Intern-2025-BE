@@ -1,5 +1,5 @@
 import { Roles } from '@common/decorators';
-import { Role } from '@common/enum';
+import { Role } from '@common/enum/user/roles.enum';
 import { RolesGuard } from '@common/guards';
 import { Controller, Get, UseGuards, Version } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';

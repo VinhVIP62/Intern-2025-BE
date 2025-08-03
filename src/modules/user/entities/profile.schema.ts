@@ -1,6 +1,6 @@
-import { Gender } from '@common/enum/gender.enum';
-import { SportLevel } from '@common/enum/sport-level.enum';
-import { Sports } from '@common/enum/sports.enum';
+import { Gender } from '@common/enum/user/gender.enum';
+import { SportLevel } from '@common/enum/user/sport-level.enum';
+import { Sports } from '@common/enum/user/sports.enum';
 import { Prop, Schema } from '@nestjs/mongoose';
 import { SchemaFactory } from '@nestjs/mongoose';
 

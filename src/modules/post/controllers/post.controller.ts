@@ -1,6 +1,6 @@
 import { Controller, Post, Body, Req, Get } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Param, Put, Query, Version } from '@nestjs/common/decorators';
+import { Delete, Param, Put, Query, Version } from '@nestjs/common/decorators';
 import { PostService } from '../providers/post.service';
 import { CreatePostDto } from '../dto/createPost.dto';
 import { Response } from '@common/decorators/response.decorator';
@@ -33,8 +33,15 @@ export class PostController {
 	@Get('user/:userId')
 	@Version('1')
 	@Response()
-	async getPostOfUser(@Param('userId') userId: string): Promise<ResponseEntity<any>> {
-		const res = await this.postService.getUserPosts(userId);
+	async getPostOfUser(
+		@Req() req: Request,
+		@Param('userId') userId: string,
+		@Query('limit') limit: number = 10,
+		@Query('updatedBefore') updatedBefore?: Date,
+	): Promise<ResponseEntity<any>> {
+		const user = req.user as { id: string };
+		const myId = user.id;
+		const res = await this.postService.getUserPosts(myId, userId, limit, updatedBefore);
 		return {
 			success: true,
 			data: res,
@@ -93,12 +100,32 @@ export class PostController {
 	@ApiOperation({ summary: 'Lấy bài viết của tôi' })
 	@ApiResponse({ status: 200, description: 'Danh sách bài viết của bạn' })
 	@Response()
-	async getMyPosts(@Req() req: Request): Promise<ResponseEntity<any>> {
+	async getMyPosts(
+		@Req() req: Request,
+		@Query('limit') limit: number = 10,
+		@Query('updatedBefore') updatedBefore?: Date,
+	): Promise<ResponseEntity<any>> {
 		const user = req.user as { id: string };
-		const post = await this.postService.getUserPosts(user.id);
+		const post = await this.postService.getUserPosts(user.id, user.id, limit, updatedBefore);
 		return {
 			success: true,
 			data: post,
+		};
+	}
+
+	@Delete('/:postId')
+	@Version('1')
+	@ApiOperation({ summary: 'Xoá bài viết' })
+	@Response()
+	async deletePost(
+		@Req() req: Request,
+		@Param('postId') postId: string,
+	): Promise<ResponseEntity<any>> {
+		const user = req.user as { id: string };
+		await this.postService.deletePost(user.id, postId);
+		return {
+			success: true,
+			data: null,
 		};
 	}
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Friend } from '../entities/friend.schema';
-import { FriendState } from '@common/enum/friend.state.enum';
+import { FriendState } from '@common/enum/friend/friend.state.enum';
 import { IFriendRepository } from './friend.repository';
 
 @Injectable()
@@ -43,6 +43,10 @@ export class FriendRepository implements IFriendRepository {
 				{ toUserId: userId, state: FriendState.ACCEPTED },
 			],
 		});
+	}
+
+	async getPending(userId: string): Promise<Friend[]> {
+		return this.model.find({ toUserId: userId, state: FriendState.PENDING });
 	}
 
 	async deleteRequest(fromUserId: string, toUserId: string): Promise<Friend | null> {

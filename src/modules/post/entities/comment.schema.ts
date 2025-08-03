@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { randomUUID } from 'node:crypto';
-import { ReactType } from '@common/enum/react.type.enum';
+import { ReactType } from '@common/enum/post/react.type.enum';
 
 @Schema({ timestamps: true })
 export class Comment {
@@ -16,6 +16,9 @@ export class Comment {
 
 	@Prop({ required: true })
 	postId: string;
+
+	@Prop({ type: [String], default: [] })
+	taggedUserIds: string[]; // UUID của user được tag
 
 	@Prop({ required: false, default: null })
 	parentId?: string;

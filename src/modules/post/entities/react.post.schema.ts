@@ -1,4 +1,4 @@
-import { ReactType } from '@common/enum/react.type.enum';
+import { ReactType } from '@common/enum/post/react.type.enum';
 import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 
 @Schema({ timestamps: true })

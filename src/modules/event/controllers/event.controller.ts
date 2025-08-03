@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, Get, Patch, Param, Delete, Put } from '@nestjs/common';
+import { Body, Controller, Post, Req, Get, Patch, Param, Delete, Put, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateEventDto } from '../dto/createEvent.dto';
 import { Response } from '@common/decorators/response.decorator';
@@ -8,6 +8,9 @@ import { ResponseEntity } from '@common/types';
 import { InviteMemberDto } from '../dto/invite.members.dto';
 import { RSVPDto } from '../dto/rsvp.dto';
 import { AcceptMemberDto } from '../dto/accept.members.dto';
+import { LocationDto } from '../dto/location.dto';
+import { DeleteMemberDto } from '../dto/delete.members.dto';
+import { FriendInEvent } from '../dto/friendsInEvent.dto';
 
 @ApiTags('Events')
 @Controller({
@@ -193,14 +196,92 @@ export class EventController {
 		};
 	}
 
-	@Get('/nearby')
+	@Put('/delete/:eventId')
 	@Response()
-	async getNearbyEvents(@Req() request: Request): Promise<ResponseEntity<any>> {
+	async deletemember(
+		@Req() request: Request,
+		@Body() deleteMemberDto: DeleteMemberDto,
+	): Promise<ResponseEntity<any>> {
 		const user = request.user as { id: string };
-		const events = await this.eventService.getNearbyEvents(user.id);
+		const res = await this.eventService.deleteMembers(user.id, deleteMemberDto);
+		return {
+			success: true,
+			data: res,
+		};
+	}
+
+	@Post('/nearby')
+	@Response()
+	async getNearbyEvents(
+		@Req() request: Request,
+		@Body() body: LocationDto,
+	): Promise<ResponseEntity<any>> {
+		const user = request.user as { id: string };
+		const events = await this.eventService.getNearbyEvents(user.id, body, body.radiusInMeters);
 		return {
 			success: true,
 			data: events,
+		};
+	}
+
+	@Get('/recommendations')
+	@Response()
+	async getRecommendations(@Req() request: Request): Promise<ResponseEntity<any>> {
+		const user = request.user as { id: string };
+		const recommendations = await this.eventService.getRecommendations(user.id);
+		return {
+			success: true,
+			data: recommendations,
+		};
+	}
+
+	@Get('/overdue')
+	@Response()
+	async getOverdueEvents(@Req() request: Request): Promise<ResponseEntity<any>> {
+		const user = request.user as { id: string };
+		const overdueEvents = await this.eventService.overdueEvents(user.id);
+		return {
+			success: true,
+			data: overdueEvents,
+		};
+	}
+
+	@Delete('/delete/:eventId')
+	@Response()
+	async deleteEvent(
+		@Req() request: Request,
+		@Param('eventId') eventId: string,
+	): Promise<ResponseEntity<any>> {
+		const user = request.user as { id: string };
+		const res = await this.eventService.deleteEvent(user.id, eventId);
+		return {
+			success: true,
+			data: res,
+		};
+	}
+
+	@Get('/within24h')
+	@Response()
+	async within24hEvents(@Req() request: Request): Promise<ResponseEntity<any>> {
+		const user = request.user as { id: string };
+		const res = await this.eventService.within24h(user.id);
+		return {
+			success: true,
+			data: res,
+		};
+	}
+
+	@Get('/friendsInEvent/:eventId')
+	@Response()
+	async friendInEvent(
+		@Query('eventId') eventId: string,
+		@Req() request: Request,
+	): Promise<ResponseEntity<FriendInEvent[]>> {
+		const user = request.user as { id: string };
+		const res = await this.eventService.friendsInEvent(user.id, eventId);
+		return {
+			success: true,
+			data: res,
 		};
 	}
 }

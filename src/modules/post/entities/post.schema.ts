@@ -1,5 +1,5 @@
-import { PostState } from '@common/enum/post.state.enum';
-import { ReactType } from '@common/enum/react.type.enum';
+import { PostState } from '@common/enum/post/post.state.enum';
+import { ReactType } from '@common/enum/post/react.type.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { randomUUID } from 'crypto';
 

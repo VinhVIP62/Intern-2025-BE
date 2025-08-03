@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Req, Get, Param } from '@nestjs/common';
+import { Controller, Post, Body, Req, Get, Param, Query } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { CreateCommentDto } from '../dto/createComment.dto';
 import { Request } from 'express';
@@ -30,8 +30,14 @@ export class CommentController {
 
 	@Get('/:postId')
 	@Response()
-	async getCmt(@Param('postId') postId: string): Promise<ResponseEntity<any>> {
-		const res = await this.commentService.findByPost(postId);
+	async getCmt(
+		@Req() request: Request,
+		@Param('postId') postId: string,
+		@Query('limit') limit: number = 10,
+		@Query('before') before: Date,
+	): Promise<ResponseEntity<any>> {
+		const user = request.user as { id: string };
+		const res = await this.commentService.findByPost(user.id, postId, limit, before);
 		return {
 			success: true,
 			data: res,
@@ -50,8 +56,12 @@ export class CommentController {
 
 	@Get('/replies/:cmtId')
 	@Response()
-	async getRepliesCmt(@Param('cmtId') cmtId: string): Promise<ResponseEntity<any>> {
-		const res = await this.commentService.findChild(cmtId);
+	async getRepliesCmt(
+		@Req() request: Request,
+		@Param('cmtId') cmtId: string,
+	): Promise<ResponseEntity<any>> {
+		const user = request.user as { id: string };
+		const res = await this.commentService.findChild(user.id, cmtId);
 		return {
 			success: true,
 			data: res,

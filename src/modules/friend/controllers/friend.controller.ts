@@ -1,5 +1,5 @@
 import { ResponseEntity } from '@common/types';
-import { Controller, Get, Post, Body, Req, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Req, Param, Delete } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { Version } from '@nestjs/common/decorators/core/version.decorator';
 import { Response } from '@common/decorators/response.decorator';
@@ -50,6 +50,21 @@ export class FriendController {
 		};
 	}
 
+	@Delete('friend/:friendId')
+	@Version('1')
+	@Response()
+	async deleteFriend(
+		@Req() req: Request,
+		@Param('friendId') friendId: string,
+	): Promise<ResponseEntity<any>> {
+		const user = req.user as { id: string };
+		const res = await this.friendService.deleteFriend(user.id, friendId);
+		return {
+			success: true,
+			data: res,
+		};
+	}
+
 	@Get()
 	@Version('1')
 	@ApiOperation({ summary: 'Lấy danh sách bạn bè của tôi' })
@@ -61,6 +76,33 @@ export class FriendController {
 		return {
 			success: true,
 			data: friends,
+		};
+	}
+
+	@Get('pendinglist')
+	@Version('1')
+	@Response()
+	async pendingList(@Req() req: Request): Promise<ResponseEntity<any>> {
+		const user = req.user as { id: string };
+		const friends = await this.friendService.getPendingList(user.id);
+		return {
+			success: true,
+			data: friends,
+		};
+	}
+
+	@Get('friendlist/:userId')
+	@Version('1')
+	@Response()
+	async getFriendList(
+		@Req() request: Request,
+		@Param('userId') userId: string,
+	): Promise<ResponseEntity<any>> {
+		const myId = request.user as { id: string };
+		const friendList = await this.friendService.getFriendList(myId.id, userId);
+		return {
+			success: true,
+			data: friendList,
 		};
 	}
 

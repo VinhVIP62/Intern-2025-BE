@@ -4,14 +4,19 @@ import { CreateEventDto } from '../dto/createEvent.dto';
 import { EventMapper } from '../mapper/event.mapper';
 import { IEventMemberRepository } from '../repositories/eventmember.repository';
 import { InviteMemberDto } from '../dto/invite.members.dto';
-import { IUserRepository } from '@modules/user/repositories/user.repository';
-import { RSVP } from '@common/enum/event.member.enum';
+import { IUserRepository } from '@modules/user/repositories/interfaces/user.repository';
+import { RSVP } from '@common/enum/event/event.member.enum';
 import { SearchService } from '@modules/search/search.service';
-import { EventState } from '@common/enum/event.state';
-import { IProfileRepository } from '@modules/user/repositories/profile.repository';
+import { EventState } from '@common/enum/event/event.state';
+import { IProfileRepository } from '@modules/user/repositories/interfaces/profile.repository';
 import { RSVPDto } from '../dto/rsvp.dto';
 import { AcceptMemberDto } from '../dto/accept.members.dto';
 import { RejectMemberDto } from '../dto/reject.members.dto';
+import { NotificationService } from '@modules/notification/providers/notification.service';
+import { LocationDto } from '../dto/location.dto';
+import { DeleteMemberDto } from '../dto/delete.members.dto';
+import { IFriendRepository } from '@modules/friend/repositories/friend.repository';
+import { FriendInEvent } from '../dto/friendsInEvent.dto';
 
 @Injectable()
 export class EventService {
@@ -21,7 +26,9 @@ export class EventService {
 		private readonly eventMemberRepo: IEventMemberRepository,
 		private readonly userRepo: IUserRepository,
 		private readonly profileRepo: IProfileRepository,
+		private readonly friendRepo: IFriendRepository,
 		private readonly searchService: SearchService,
+		private readonly notificationService: NotificationService,
 	) {}
 
 	async create(userId: string, body: CreateEventDto) {
@@ -63,6 +70,36 @@ export class EventService {
 		return events.filter(event => event != null);
 	}
 
+	async overdueEvents(userId: string) {
+		const within24hEvents = await this.eventRepo.overdueEvents(userId);
+		console.log('overdue events: ');
+		const res = await Promise.all(
+			within24hEvents.map(async event => {
+				const invitation = await this.eventMemberRepo.getByUserIdAndEventId(
+					event.ownerId,
+					event.id,
+				);
+				return this.eventMapper.toResponse(event, invitation?.state);
+			}),
+		);
+		return res;
+	}
+
+	async within24h(userId: string) {
+		const within24hEvents = await this.eventRepo._24hEvents(userId);
+		console.log('within 24h events: ');
+		const res = await Promise.all(
+			within24hEvents.map(async event => {
+				const invitation = await this.eventMemberRepo.getByUserIdAndEventId(
+					event.ownerId,
+					event.id,
+				);
+				return this.eventMapper.toResponse(event, invitation?.state);
+			}),
+		);
+		return res;
+	}
+
 	async inviteMembers(userId: string, inviteMemberDto: InviteMemberDto) {
 		const eventId = inviteMemberDto.eventId;
 		const already = await this.eventRepo.getEventByUserIdAndEventId(userId, eventId);
@@ -77,6 +114,7 @@ export class EventService {
 					memberId: memberId,
 					state: RSVP.INVITED,
 				});
+				await this.notificationService.inviteToEventNoti(memberId, eventId, userId);
 			}),
 		);
 	}
@@ -96,11 +134,17 @@ export class EventService {
 	}
 
 	async updateState(userId: string, eventId: string, state: RSVP) {
+		const event = await this.eventRepo.getEventById(eventId);
+		if (!event) throw new NotFoundException('event.NOT_FOUND');
+		const curMem = event.numOfMem;
+		if (curMem >= event.maxMem && state === RSVP.ACCEPTED) {
+			throw new ConflictException('event.MAX_MEMBERS_REACHED');
+		}
 		const invitation = await this.eventMemberRepo.updateInvitation(userId, eventId, state);
 		if (!invitation) throw new NotFoundException('event.NOT_FOUND');
-
 		//update number of member
 		if (state === RSVP.ACCEPTED) await this.eventRepo.updateMemberCount(eventId, 1);
+		await this.notificationService.rsvpReplyNoti(event.ownerId, userId, eventId, state);
 
 		const updated = await this.eventRepo.getEventById(eventId);
 		if (!updated) throw new NotFoundException('event.NOT_FOUND');
@@ -113,14 +157,18 @@ export class EventService {
 		if (!invitation) throw new NotFoundException('event.NOT_FOUND');
 
 		await this.eventRepo.updateMemberCount(eventId, -1);
+		const event = await this.eventRepo.getEventById(eventId);
+		if (!event) throw new NotFoundException('event.NOT_FOUND');
+		const ownerId = event.ownerId;
+		await this.notificationService.rsvpReplyNoti(ownerId, userId, eventId, RSVP.REJECTED);
 		const updated = await this.eventRepo.getEventById(eventId);
 		if (!updated) throw new NotFoundException('event.NOT_FOUND');
 
 		return this.eventMapper.toResponse(updated, RSVP.REJECTED);
 	}
 
-	async getNearbyEvents(userId: string, radiusInMeters = 5000) {
-		const [lng, lat] = [106.7008, 10.7769]; // mock data
+	async getNearbyEvents(userId: string, body: LocationDto, radiusInMeters = 5000) {
+		const [lng, lat] = [body.longitude, body.latitude];
 
 		const events = await this.eventRepo.getEventsNearby([lng, lat], radiusInMeters);
 		const res = await Promise.all(
@@ -134,6 +182,24 @@ export class EventService {
 	}
 
 	async interest(userId: string, eventId: string) {
+		const invitation = await this.eventMemberRepo.getByUserIdAndEventId(userId, eventId);
+		if (invitation) {
+			if (invitation.state === RSVP.ACCEPTED) {
+				throw new ConflictException('event.ALREADY_ACCEPTED');
+			}
+			if (invitation.state === RSVP.INTERESTED) {
+				throw new ConflictException('event.ALREADY_INTERESTED');
+			}
+			if (invitation.state === RSVP.REJECTED) {
+				throw new ConflictException('event.ALREADY_REJECTED');
+			}
+			if (invitation.state === RSVP.INVITED) {
+				throw new ConflictException('event.ALREADY_INVITED');
+			}
+			if (invitation.state === RSVP.PENDING) {
+				throw new ConflictException('event.ALREADY_PENDING');
+			}
+		}
 		await this.eventMemberRepo.create({
 			eventId: eventId,
 			memberId: userId,
@@ -141,10 +207,26 @@ export class EventService {
 		});
 
 		await this.eventRepo.updateInterestedCount(eventId, 1);
+		await this.notificationService.interestNoti(userId, eventId);
 		return { message: 'event.IS_INTERESTED' };
 	}
 
 	async unInterest(userId: string, eventId: string) {
+		const invitation = await this.eventMemberRepo.getByUserIdAndEventId(userId, eventId);
+		if (invitation) {
+			if (invitation.state === RSVP.ACCEPTED) {
+				throw new ConflictException('event.ALREADY_ACCEPTED');
+			}
+			if (invitation.state === RSVP.REJECTED) {
+				throw new ConflictException('event.ALREADY_REJECTED');
+			}
+			if (invitation.state === RSVP.INVITED) {
+				throw new ConflictException('event.ALREADY_INVITED');
+			}
+			if (invitation.state === RSVP.PENDING) {
+				throw new ConflictException('event.ALREADY_PENDING');
+			}
+		}
 		const deleted = await this.eventMemberRepo.delete(userId, eventId);
 		if (!deleted) {
 			throw new NotFoundException('event.NOT_FOUND');
@@ -161,6 +243,7 @@ export class EventService {
 			eventId: eventId,
 			state: RSVP.PENDING,
 		});
+		await this.notificationService.requestJoinNoti(userId, eventId);
 		return required;
 	}
 
@@ -188,11 +271,22 @@ export class EventService {
 		const already = await this.eventRepo.getEventByUserIdAndEventId(userId, eventId);
 		if (!already) throw new NotFoundException('event.NOT_FOUND');
 		const memberIds = acceptMemberDto.memberIds;
+		const curMem = already.numOfMem;
+		if (curMem + acceptMemberDto.memberIds.length >= already.maxMem) {
+			throw new ConflictException('event.MAX_MEMBERS_REACHED');
+		}
 		await Promise.all(
 			memberIds.map(async memberId => {
 				const userfound = await this.userRepo.findOneById(memberId);
 				if (!userfound) throw new NotFoundException('common.error');
 				await this.eventMemberRepo.updateInvitation(userfound.id, eventId, RSVP.ACCEPTED);
+				await this.notificationService.replyRequestToEventNoti(
+					userId,
+					memberId,
+					eventId,
+					RSVP.ACCEPTED,
+				);
+				await this.eventRepo.updateMemberCount(eventId, 1);
 			}),
 		);
 	}
@@ -207,8 +301,36 @@ export class EventService {
 				const userfound = await this.userRepo.findOneById(memberId);
 				if (!userfound) throw new NotFoundException('common.error');
 				await this.eventMemberRepo.updateInvitation(userfound.id, eventId, RSVP.REJECTED);
+				await this.notificationService.replyRequestToEventNoti(
+					userId,
+					memberId,
+					eventId,
+					RSVP.REJECTED,
+				);
 			}),
 		);
+	}
+
+	async deleteMembers(userId: string, deleteMemberDto: DeleteMemberDto) {
+		const eventId = deleteMemberDto.eventId;
+		const already = await this.eventRepo.getEventByUserIdAndEventId(userId, eventId);
+		if (!already) throw new NotFoundException('event.NOT_FOUND');
+		const memberIds = deleteMemberDto.memberIds;
+		if (memberIds.length > already.numOfMem) {
+			throw new ConflictException('common.error');
+		}
+		await Promise.all(
+			memberIds.map(async memberId => {
+				const userfound = await this.userRepo.findOneById(memberId);
+				if (!userfound) throw new NotFoundException('common.error');
+				await this.eventMemberRepo.delete(userfound.id, eventId);
+				await this.eventRepo.updateMemberCount(eventId, -1);
+			}),
+		);
+		const updatedEvent = await this.eventRepo.getEventById(eventId);
+		if (!updatedEvent) throw new NotFoundException('event.NOT_FOUND');
+		const res = await this.eventMapper.toResponse(updatedEvent, RSVP.OWNER);
+		return res;
 	}
 
 	async getDetail(userId: string, eventId: string) {
@@ -233,5 +355,59 @@ export class EventService {
 			}),
 		);
 		return res;
+	}
+
+	async deleteEvent(userId: string, eventId: string) {
+		const event = await this.eventRepo.getEventByUserIdAndEventId(userId, eventId);
+		if (!event) throw new NotFoundException('event.NOT_FOUND');
+
+		const invitations = await this.eventMemberRepo.getByEventId(eventId);
+
+		await Promise.all(
+			invitations.map(async invitation => {
+				if (invitation.state === RSVP.OWNER) return;
+				await this.notificationService.deleteEventNoti(invitation.memberId, eventId);
+				return this.eventMemberRepo.delete(invitation.memberId, eventId);
+			}),
+		);
+
+		const isDeleted = await this.eventRepo.delete(eventId);
+		if (!isDeleted) throw new NotFoundException('event.NOT_FOUND');
+		await this.searchService.delete('event', eventId);
+		const res = await this.eventMapper.toResponse(isDeleted, RSVP.OWNER);
+		return res;
+	}
+
+	async getRecommendations(userId: string) {
+		const events = await this.eventRepo.getEventsNearby([0, 0], 5000);
+		const res = await Promise.all(
+			events.map(async event => {
+				const invitation = await this.eventMemberRepo.getByUserIdAndEventId(userId, event.id);
+				return this.eventMapper.toResponse(event, invitation?.state);
+			}),
+		);
+		return res;
+	}
+
+	async friendsInEvent(userId: string, eventId: string): Promise<FriendInEvent[]> {
+		const friends = await this.friendRepo.getAccepted(userId);
+		const result = await Promise.all(
+			friends.map(async friend => {
+				const friendId = friend.fromUserId === userId ? friend.toUserId : friend.fromUserId;
+				const invitaion = await this.eventMemberRepo.getByUserIdAndEventId(friendId, eventId);
+				let state: RSVP = RSVP.NONE;
+				if (invitaion) state = invitaion.state;
+				const friendProfile = await this.profileRepo.findById(friendId);
+				const res: FriendInEvent = {
+					friendId: friendId,
+					friendAvatarUrl: friendProfile.avatarUrl,
+					friendFirstname: friendProfile.firstName,
+					friendLastname: friendProfile.lastName,
+					state: state,
+				};
+				return res;
+			}),
+		);
+		return result;
 	}
 }

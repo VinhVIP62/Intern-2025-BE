@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateProfileDto } from '../dto/create-profile.dto';
 import { UpdateProfileDto } from '../dto/update-profile.dto';
-import { IProfileRepository } from '../repositories/profile.repository';
+import { IProfileRepository } from '../repositories/interfaces/profile.repository';
 import { ProfileResponseDto } from '../dto/profile-response.dto';
 import { ProfileMapper } from '../mapper/profile.mapper';
 import { ConflictException } from '@nestjs/common/exceptions/conflict.exception';

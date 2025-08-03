@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { randomUUID } from 'crypto';
-import { Sports } from '@common/enum/sports.enum';
-import { EventState } from '@common/enum/event.state';
+import { Sports } from '@common/enum/user/sports.enum';
+import { EventState } from '@common/enum/event/event.state';
 
 @Schema({ timestamps: true })
 export class Event {
@@ -15,7 +15,7 @@ export class Event {
 	content?: string;
 
 	@Prop({ type: String, enum: EventState, default: EventState.PUBLIC })
-	state: string;
+	state: EventState;
 
 	@Prop({
 		type: { type: String, enum: ['Point'], default: 'Point' },
@@ -65,6 +65,9 @@ export class Event {
 
 	@Prop({ default: false })
 	isDeleted: boolean;
+
+	@Prop({ default: 10 })
+	maxMem: number;
 
 	@Prop({ default: 0 })
 	numOfMem: number;

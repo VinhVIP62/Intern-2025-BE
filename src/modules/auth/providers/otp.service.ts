@@ -13,7 +13,7 @@ export class OtpService {
 	constructor(
 		@Inject('REDIS_CLIENT') private readonly redis: Redis,
 		private readonly userService: UserService,
-		private readonly mailService: MailService, // Assuming you have a MailService to send OTP emails
+		private readonly mailService: MailService,
 	) {}
 
 	generateOtp(): string {
